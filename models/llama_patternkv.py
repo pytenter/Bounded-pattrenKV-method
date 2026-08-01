@@ -13,8 +13,15 @@ from quant.matmul import cuda_bmm_fA_qB_outer, cuda_bmm_fA_qB_outer_with_base, c
 from transformers.models.llama.configuration_llama import *
 from transformers.models.llama.modeling_llama import *
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
-from cuml.cluster import KMeans
-import cupy
+try:
+    from cuml.cluster import KMeans  # type: ignore
+except ImportError:
+    KMeans = None
+
+try:
+    import cupy  # type: ignore
+except ImportError:
+    cupy = None
 
 
 _CONFIG_FOR_DOC = "LlamaConfig"

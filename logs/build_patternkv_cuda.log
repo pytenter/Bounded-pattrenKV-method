@@ -1,0 +1,65 @@
+Obtaining file:///data/zypan/PatternKV-repro/quant
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build editable did not run successfully.
+  │ exit code: 1
+  ╰─> [19 lines of output]
+      Traceback (most recent call last):
+        File "/data/zypan/.local/share/mamba/envs/patternkv/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
+          main()
+        File "/data/zypan/.local/share/mamba/envs/patternkv/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+        File "/data/zypan/.local/share/mamba/envs/patternkv/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 157, in get_requires_for_build_editable
+          return hook(config_settings)
+        File "/tmp/pip-build-env-m2rgjuf5/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 481, in get_requires_for_build_editable
+          return self.get_requires_for_build_wheel(config_settings)
+        File "/tmp/pip-build-env-m2rgjuf5/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File "/tmp/pip-build-env-m2rgjuf5/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "/tmp/pip-build-env-m2rgjuf5/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 520, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/tmp/pip-build-env-m2rgjuf5/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 2, in <module>
+      ModuleNotFoundError: No module named 'torch'
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed to build 'file:///data/zypan/PatternKV-repro/quant' when getting requirements to build editable
+Obtaining file:///data/zypan/PatternKV-repro/quant
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: patternkv_gemv
+  Building editable for patternkv_gemv (pyproject.toml): started
+  Building editable for patternkv_gemv (pyproject.toml): finished with status 'done'
+  Created wheel for patternkv_gemv: filename=patternkv_gemv-0.0.0-0.editable-cp310-cp310-linux_x86_64.whl size=2768 sha256=f86a01b6b8cbdbd633aec30299cb05d791615560428001f0a58fd43912622c0c
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ofg8p3gb/wheels/67/52/00/83653e7e736a5b8468f76d02cb18efde04418856a3f6b8d64f
+Successfully built patternkv_gemv
+Installing collected packages: patternkv_gemv
+Successfully installed patternkv_gemv-0.0.0
+Obtaining file:///data/zypan/PatternKV-repro/quant
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: patternkv_gemv
+  Building editable for patternkv_gemv (pyproject.toml): started
+  Building editable for patternkv_gemv (pyproject.toml): finished with status 'done'
+  Created wheel for patternkv_gemv: filename=patternkv_gemv-0.0.0-0.editable-cp310-cp310-linux_x86_64.whl size=2768 sha256=897a3bfb08f180cf93fb2959b2fda00a48664038f5e84bd9984cb2995d5ee58d
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ewpzty8n/wheels/67/52/00/83653e7e736a5b8468f76d02cb18efde04418856a3f6b8d64f
+Successfully built patternkv_gemv
+Installing collected packages: patternkv_gemv
+  Attempting uninstall: patternkv_gemv
+    Found existing installation: patternkv_gemv 0.0.0
+    Uninstalling patternkv_gemv-0.0.0:
+      Successfully uninstalled patternkv_gemv-0.0.0
+Successfully installed patternkv_gemv-0.0.0

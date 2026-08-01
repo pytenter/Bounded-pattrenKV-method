@@ -1,6 +1,10 @@
+import os
+
+import torch
 from setuptools import find_packages, setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension, CppExtension
 
+torch_lib_dir = os.path.join(os.path.dirname(torch.__file__), "lib")
 
 extra_compile_args = {
     "cxx": [
@@ -39,6 +43,8 @@ setup(
                 "csrc/gemv_cuda.cu"
             ],
             extra_compile_args=extra_compile_args,
+            library_dirs=[torch_lib_dir],
+            extra_link_args=[f"-Wl,-rpath,{torch_lib_dir}"],
         ),
     ],
     cmdclass={"build_ext": BuildExtension},

@@ -1,0 +1,11 @@
+downloads/
+build/
+dist/
+*.egg-info/
+*.so
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+logs/*.tmp
