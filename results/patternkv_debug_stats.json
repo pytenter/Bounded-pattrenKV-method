@@ -1,0 +1,4013 @@
+{
+  "method": "patternkv",
+  "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+  "input_tokens": 296,
+  "config": {
+    "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+    "method": "patternkv",
+    "device": "cuda:0",
+    "dtype": "float16",
+    "k_bits": 2,
+    "v_bits": 2,
+    "group_size": 128,
+    "residual_length": 128,
+    "num_k_base": 32,
+    "num_v_base": 32,
+    "max_new_tokens": 160,
+    "prompt_file": null,
+    "seed": 0,
+    "output_json": "results/smoke_patternkv.json"
+  },
+  "oom": false,
+  "error": null,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "capability": [
+    8,
+    6
+  ],
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "wall_clock_latency_s": 9.703131504938938,
+  "cuda_event_latency_ms": 9703.1015625,
+  "output_tokens": 160,
+  "stop_reason": "max_new_tokens",
+  "output_text": " You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value",
+  "patternkv_layers": {
+    "layers": [
+      {
+        "layer": 0,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 1,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 2,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 3,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 4,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 5,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 6,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 7,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 8,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 9,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 10,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 11,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 12,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 13,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 14,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 15,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 16,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 17,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 18,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 19,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 20,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 21,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 22,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 23,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 24,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 25,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 26,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 27,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 28,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 29,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 30,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      },
+      {
+        "layer": 31,
+        "k_base": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "v_centroids": {
+          "shape": [
+            8,
+            33,
+            128
+          ],
+          "dtype": "torch.float16"
+        }
+      }
+    ]
+  },
+  "patternkv_cache": {
+    "layers": [
+      {
+        "layer": 0,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9762369990348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 1,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.927734375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 2,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9772135615348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 3,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9544271230697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 4,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9703776240348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 5,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9801432490348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 6,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9505208730697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 7,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.96484375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 8,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9368489980697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 9,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.93359375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 10,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9501953125
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 11,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9576823115348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 12,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9251302480697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 13,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9303385615348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 14,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9485677480697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 15,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9016927480697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 16,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9514974355697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 17,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9388021230697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 18,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9462890625
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 19,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.943359375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 20,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9417318105697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 21,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9397786855697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 22,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.90234375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 23,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.916015625
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 24,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9345703125
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 25,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9521484375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 26,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.94140625
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 27,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9427083730697632
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 28,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9384765625
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 29,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9609375
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 30,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9140625
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      },
+      {
+        "layer": 31,
+        "key_states_quant_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            24
+          ],
+          "dtype": "torch.int32"
+        },
+        "key_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_scale_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "key_mn_trans": {
+          "shape": [
+            1,
+            8,
+            128,
+            3
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_states_quant": {
+          "shape": [
+            1,
+            8,
+            384,
+            8
+          ],
+          "dtype": "torch.int32"
+        },
+        "value_states_full": {
+          "shape": [
+            1,
+            8,
+            71,
+            128
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_scale": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "value_mn": {
+          "shape": [
+            1,
+            8,
+            384,
+            1
+          ],
+          "dtype": "torch.float16"
+        },
+        "kv_seq_len": 455,
+        "k_assignments": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        },
+        "v_mask": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.uint8",
+          "mean": 0.9723307490348816
+        },
+        "v_assignments_idx": {
+          "shape": [
+            1,
+            8,
+            384
+          ],
+          "dtype": "torch.int64",
+          "min": 0,
+          "max": 32
+        }
+      }
+    ]
+  },
+  "peak_allocated_bytes": 16314717184,
+  "peak_reserved_bytes": 16527654912
+}
