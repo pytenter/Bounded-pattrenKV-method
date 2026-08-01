@@ -1,0 +1,272 @@
+{
+  "status": "PASS",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "capability": [
+    8,
+    6
+  ],
+  "cases": [
+    {
+      "batch": 1,
+      "kv_heads": 8,
+      "head_dim": 128,
+      "sequence_length": 128,
+      "bits": 2,
+      "group_size": 128,
+      "input_dtype": "torch.float16",
+      "k_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          8
+        ],
+        "dtype": "torch.int32"
+      },
+      "v_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          8
+        ],
+        "dtype": "torch.int32"
+      },
+      "k_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "v_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "k_dequant_error_vs_input": {
+        "mae": 0.42996373772621155,
+        "mse": 0.2525172233581543,
+        "max_abs": 1.2275390625
+      },
+      "v_dequant_error_vs_input": {
+        "mae": 0.42751839756965637,
+        "mse": 0.24994106590747833,
+        "max_abs": 1.2701416015625
+      },
+      "qk_cuda_error_vs_dequant_reference": {
+        "mae": 0.0018268227577209473,
+        "mse": 1.475657700211741e-05,
+        "max_abs": 0.03125
+      },
+      "av_cuda_error_vs_dequant_reference": {
+        "mae": 0.0017710626125335693,
+        "mse": 1.405989041813882e-05,
+        "max_abs": 0.015625
+      }
+    },
+    {
+      "batch": 1,
+      "kv_heads": 8,
+      "head_dim": 128,
+      "sequence_length": 128,
+      "bits": 4,
+      "group_size": 128,
+      "input_dtype": "torch.float16",
+      "k_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          16
+        ],
+        "dtype": "torch.int32"
+      },
+      "v_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          16
+        ],
+        "dtype": "torch.int32"
+      },
+      "k_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "v_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "k_dequant_error_vs_input": {
+        "mae": 0.08528833091259003,
+        "mse": 0.00995827466249466,
+        "max_abs": 0.25439453125
+      },
+      "v_dequant_error_vs_input": {
+        "mae": 0.08486250042915344,
+        "mse": 0.009874917566776276,
+        "max_abs": 0.243408203125
+      },
+      "qk_cuda_error_vs_dequant_reference": {
+        "mae": 0.005298107862472534,
+        "mse": 5.5787120800232515e-05,
+        "max_abs": 0.03125
+      },
+      "av_cuda_error_vs_dequant_reference": {
+        "mae": 0.005188591778278351,
+        "mse": 5.2605115342885256e-05,
+        "max_abs": 0.0234375
+      }
+    },
+    {
+      "batch": 1,
+      "kv_heads": 8,
+      "head_dim": 128,
+      "sequence_length": 256,
+      "bits": 2,
+      "group_size": 128,
+      "input_dtype": "torch.float16",
+      "k_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          16
+        ],
+        "dtype": "torch.int32"
+      },
+      "v_code": {
+        "shape": [
+          1,
+          8,
+          256,
+          8
+        ],
+        "dtype": "torch.int32"
+      },
+      "k_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          2
+        ],
+        "dtype": "torch.float16"
+      },
+      "v_scale": {
+        "shape": [
+          1,
+          8,
+          256,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "k_dequant_error_vs_input": {
+        "mae": 0.43043893575668335,
+        "mse": 0.2534850835800171,
+        "max_abs": 1.3145751953125
+      },
+      "v_dequant_error_vs_input": {
+        "mae": 0.42639869451522827,
+        "mse": 0.2486642748117447,
+        "max_abs": 1.2733154296875
+      },
+      "qk_cuda_error_vs_dequant_reference": {
+        "mae": 0.0016882643103599548,
+        "mse": 1.3163940820959397e-05,
+        "max_abs": 0.015625
+      },
+      "av_cuda_error_vs_dequant_reference": {
+        "mae": 0.002472028136253357,
+        "mse": 2.531982318032533e-05,
+        "max_abs": 0.03125
+      }
+    },
+    {
+      "batch": 1,
+      "kv_heads": 8,
+      "head_dim": 128,
+      "sequence_length": 256,
+      "bits": 4,
+      "group_size": 128,
+      "input_dtype": "torch.float16",
+      "k_code": {
+        "shape": [
+          1,
+          8,
+          128,
+          32
+        ],
+        "dtype": "torch.int32"
+      },
+      "v_code": {
+        "shape": [
+          1,
+          8,
+          256,
+          16
+        ],
+        "dtype": "torch.int32"
+      },
+      "k_scale": {
+        "shape": [
+          1,
+          8,
+          128,
+          2
+        ],
+        "dtype": "torch.float16"
+      },
+      "v_scale": {
+        "shape": [
+          1,
+          8,
+          256,
+          1
+        ],
+        "dtype": "torch.float16"
+      },
+      "k_dequant_error_vs_input": {
+        "mae": 0.08540560305118561,
+        "mse": 0.009994754567742348,
+        "max_abs": 0.26708984375
+      },
+      "v_dequant_error_vs_input": {
+        "mae": 0.08518293499946594,
+        "mse": 0.009950019419193268,
+        "max_abs": 0.2548828125
+      },
+      "qk_cuda_error_vs_dequant_reference": {
+        "mae": 0.005370527505874634,
+        "mse": 5.6720993597991765e-05,
+        "max_abs": 0.02734375
+      },
+      "av_cuda_error_vs_dequant_reference": {
+        "mae": 0.007212042808532715,
+        "mse": 0.00010150687012355775,
+        "max_abs": 0.03125
+      }
+    }
+  ]
+}

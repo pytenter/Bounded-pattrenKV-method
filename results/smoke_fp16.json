@@ -1,0 +1,38 @@
+{
+  "method": "fp16",
+  "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+  "input_tokens": 296,
+  "config": {
+    "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+    "method": "fp16",
+    "device": "cuda:0",
+    "dtype": "float16",
+    "k_bits": 2,
+    "v_bits": 2,
+    "group_size": 128,
+    "residual_length": 128,
+    "num_k_base": 32,
+    "num_v_base": 32,
+    "max_new_tokens": 160,
+    "prompt_file": null,
+    "min_input_tokens": 256,
+    "seed": 0,
+    "output_json": "results/smoke_fp16.json"
+  },
+  "oom": false,
+  "error": null,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "capability": [
+    8,
+    6
+  ],
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "wall_clock_latency_s": 7.071599395014346,
+  "cuda_event_latency_ms": 7071.54638671875,
+  "output_tokens": 160,
+  "stop_reason": "max_new_tokens",
+  "output_text": " You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value cache blocks while keeping a residual window. You are validating a deterministic language model inference path. Continue the following technical note with concise, ordinary prose. Do not end early. PatternKV quantizes historical key and value",
+  "peak_allocated_bytes": 16338081280,
+  "peak_reserved_bytes": 16544432128
+}
