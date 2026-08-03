@@ -1,0 +1,32 @@
+dataset: aime24
+num_problems: 30
+methods:
+  - fp16
+  - kivi_paper_g128
+  - patternkv_paper
+num_samples_per_problem: 2
+batch_size: 1
+num_return_sequences: 1
+generation:
+  do_sample: true
+  temperature: 0.6
+  top_p: 0.95
+  max_new_tokens: 32768
+  repetition_penalty: 1.0
+  use_cache: true
+model_dtype: float16
+base_seed: 42
+prompt_protocol: deepseek_r1_recommended
+force_think_prefix: true
+quantization:
+  k_bits: 2
+  v_bits: 2
+  group_size: 128
+  residual_length: 128
+patternkv:
+  initial_k_patterns: 32
+  initial_v_patterns: 32
+  pattern_group_size: 128
+  key_axis: per_channel
+  value_axis: per_token
+  selection_position: post_rope

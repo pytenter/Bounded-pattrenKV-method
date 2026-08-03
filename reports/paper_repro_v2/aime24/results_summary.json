@@ -1,0 +1,131 @@
+{
+  "methods": {
+    "fp16": {
+      "avg_at_n": null,
+      "avg_generated_tokens": null,
+      "avg_tokens_per_second": null,
+      "avg_wall_time": null,
+      "cache_bitwidth_samples": [],
+      "completed": 0,
+      "correct": 0,
+      "eos_stop": 0,
+      "length_buckets": {},
+      "length_stop": 0,
+      "majority_correct": 0,
+      "majority_tie_rate": null,
+      "majority_ties": 0,
+      "median_generated_tokens": null,
+      "oom": 0,
+      "other_errors": 0,
+      "p90_generated_tokens": null,
+      "p95_generated_tokens": null,
+      "p95_wall_time": null,
+      "parse_rate": null,
+      "parser_failures": 0,
+      "peak_reserved_bytes_max": null,
+      "peak_reserved_bytes_mean": null,
+      "planned_tasks": 60,
+      "sample_accuracy": {
+        "sample_id_0_accuracy": null,
+        "sample_id_1_accuracy": null
+      },
+      "strict_avg": 0.0,
+      "valid_responses": 0
+    },
+    "kivi_paper_g128": {
+      "avg_at_n": null,
+      "avg_generated_tokens": null,
+      "avg_tokens_per_second": null,
+      "avg_wall_time": null,
+      "cache_bitwidth_samples": [],
+      "completed": 0,
+      "correct": 0,
+      "eos_stop": 0,
+      "length_buckets": {},
+      "length_stop": 0,
+      "majority_correct": 0,
+      "majority_tie_rate": null,
+      "majority_ties": 0,
+      "median_generated_tokens": null,
+      "oom": 0,
+      "other_errors": 0,
+      "p90_generated_tokens": null,
+      "p95_generated_tokens": null,
+      "p95_wall_time": null,
+      "parse_rate": null,
+      "parser_failures": 0,
+      "peak_reserved_bytes_max": null,
+      "peak_reserved_bytes_mean": null,
+      "planned_tasks": 60,
+      "sample_accuracy": {
+        "sample_id_0_accuracy": null,
+        "sample_id_1_accuracy": null
+      },
+      "strict_avg": 0.0,
+      "valid_responses": 0
+    },
+    "patternkv_paper": {
+      "avg_at_n": null,
+      "avg_generated_tokens": null,
+      "avg_tokens_per_second": null,
+      "avg_wall_time": null,
+      "cache_bitwidth_samples": [],
+      "completed": 0,
+      "correct": 0,
+      "eos_stop": 0,
+      "length_buckets": {},
+      "length_stop": 0,
+      "majority_correct": 0,
+      "majority_tie_rate": null,
+      "majority_ties": 0,
+      "median_generated_tokens": null,
+      "oom": 0,
+      "other_errors": 0,
+      "p90_generated_tokens": null,
+      "p95_generated_tokens": null,
+      "p95_wall_time": null,
+      "parse_rate": null,
+      "parser_failures": 0,
+      "peak_reserved_bytes_max": null,
+      "peak_reserved_bytes_mean": null,
+      "planned_tasks": 60,
+      "sample_accuracy": {
+        "sample_id_0_accuracy": null,
+        "sample_id_1_accuracy": null
+      },
+      "strict_avg": 0.0,
+      "valid_responses": 0
+    }
+  },
+  "num_samples": 2,
+  "paired": [
+    {
+      "both_correct": 0,
+      "both_wrong": 0,
+      "comparison": "patternkv_paper-kivi_paper_g128",
+      "paired_accuracy_difference": null,
+      "paired_n": 0,
+      "patternkv_paper_correct_kivi_paper_g128_wrong": 0,
+      "patternkv_paper_wrong_kivi_paper_g128_correct": 0
+    },
+    {
+      "both_correct": 0,
+      "both_wrong": 0,
+      "comparison": "patternkv_paper-fp16",
+      "paired_accuracy_difference": null,
+      "paired_n": 0,
+      "patternkv_paper_correct_fp16_wrong": 0,
+      "patternkv_paper_wrong_fp16_correct": 0
+    },
+    {
+      "both_correct": 0,
+      "both_wrong": 0,
+      "comparison": "kivi_paper_g128-fp16",
+      "kivi_paper_g128_correct_fp16_wrong": 0,
+      "kivi_paper_g128_wrong_fp16_correct": 0,
+      "paired_accuracy_difference": null,
+      "paired_n": 0
+    }
+  ],
+  "results_dir": "results/paper_repro_v2/aime24_budget_n2"
+}

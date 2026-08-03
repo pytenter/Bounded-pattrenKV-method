@@ -1,0 +1,12 @@
+{
+  "normalization": "project copy keeps problem text and answer, assigns problem_id 0..29",
+  "num_examples": 30,
+  "prepared_at": "2026-08-03T17:00:50.178411+00:00",
+  "revision": "main",
+  "sha256": "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f",
+  "source": "/data/zypan/kvarn-repro/datasets/aime/aime24.jsonl",
+  "source_config": null,
+  "source_sha256_original_file": "71ddb0950cc39f58767f7217f328cd759cfefcf70ca91cfcd5c777155a5f9b63",
+  "split": "train",
+  "upstream_source": "HuggingFaceH4/aime_2024"
+}

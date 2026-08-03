@@ -1,0 +1,6 @@
+{
+  "status": "NOT_RUN",
+  "reason": "MODEL_PATH is not set and no local DeepSeek-R1-Distill-Llama-8B candidate was found",
+  "can_estimate_10h": false,
+  "recommendation": "Run ETA first after setting MODEL_PATH; do not start full 180-task run yet."
+}
