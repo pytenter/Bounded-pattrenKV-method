@@ -1,0 +1,54 @@
+name: longbench_paper_v2
+model_path: /data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct
+output_dir: results/paper_repro_v2/longbench
+log_dir: logs/paper_repro_v2/longbench
+status_dir: run/paper_repro_v2/longbench
+max_input_length: 31500
+seed: 0
+dtype: float16
+num_samples: 0
+methods:
+  fp16: {}
+  kivi_paper_g128:
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    key_quant_axis: per-channel
+    value_quant_axis: per-token
+    asym: true
+  patternkv_paper:
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    initial_pattern_count: 32
+    G_pattern: 128
+    pattern_selection_position: post-RoPE
+tasks:
+  - narrativeqa
+  - qasper
+  - multifieldqa_en
+  - multifieldqa_zh
+  - hotpotqa
+  - 2wikimqa
+  - musique
+  - dureader
+  - gov_report
+  - qmsum
+  - multi_news
+  - vcsum
+  - trec
+  - triviaqa
+  - samsum
+  - lsht
+  - passage_count
+  - passage_retrieval_en
+  - passage_retrieval_zh
+  - lcc
+  - repobench-p
+expected_samples:
+  default: 200
+  multifieldqa_en: 150
+  lcc: 500
+  repobench-p: 500

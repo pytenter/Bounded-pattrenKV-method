@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 0.0,
+  "avg_output_tokens": 0.0,
+  "empty_predictions": 1,
+  "expected_samples": 1,
+  "failures": 1,
+  "method": "fp16",
+  "metric": "code_sim",
+  "path": "results/paper_repro_v2/smoke_retry_flash/fp16/lcc.jsonl",
+  "samples": 1,
+  "score": 0.0,
+  "task": "lcc",
+  "updated_at": "2026-08-03T16:33:11.465725+00:00",
+  "wall_time_s": 4.05
+}

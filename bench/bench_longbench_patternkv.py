@@ -19,19 +19,11 @@ from transformers import AutoTokenizer, LlamaConfig, LlamaForCausalLM
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from bench._longbench_scorer import score_example, score_subtask
-from bench.longbench_config import LONGBENCH_PIN, MAX_NEW_TOKENS, METRIC_NAMES, PROMPT_TEMPLATES
+from bench.longbench_config import DEFAULT_INPUT_CAP, LONGBENCH_PIN, MAX_NEW_TOKENS, METRIC_NAMES, PROMPT_TEMPLATES, SUBTASKS
+from bench.paper_config import apply_method_defaults, cache_storage_summary, method_config_dict
 
 
-TASKS = (
-    "qasper",
-    "multifieldqa_en",
-    "hotpotqa",
-    "2wikimqa",
-    "gov_report",
-    "trec",
-    "passage_retrieval_en",
-    "lcc",
-)
+TASKS = SUBTASKS
 SKIP_CHAT = {"trec", "triviaqa", "samsum", "lsht", "lcc", "repobench-p"}
 CACHE_NAMES = (
     "key_states_quant_trans",
@@ -105,7 +97,7 @@ def load_task(task: str, num_samples: int, data_dir: Path | None) -> list[dict]:
         data = []
         with path.open(encoding="utf-8") as f:
             for i, line in enumerate(f):
-                if i >= num_samples:
+                if num_samples > 0 and i >= num_samples:
                     break
                 data.append(json.loads(line))
         return data
@@ -116,7 +108,7 @@ def load_task(task: str, num_samples: int, data_dir: Path | None) -> list[dict]:
         with zipfile.ZipFile(path) as zf:
             with zf.open(member) as f:
                 for i, raw in enumerate(f):
-                    if i >= num_samples:
+                    if num_samples > 0 and i >= num_samples:
                         break
                     data.append(json.loads(raw.decode("utf-8")))
         return data
@@ -132,27 +124,35 @@ def load_task(task: str, num_samples: int, data_dir: Path | None) -> list[dict]:
     return read_zip_limited(zip_path)
 
 
-def truncate_middle(prompt: str, tokenizer, max_tokens: int) -> tuple[str, int, bool]:
+def truncate_middle(prompt: str, tokenizer, max_tokens: int) -> tuple[str, int, int, bool]:
     toks = tokenizer.encode(prompt, add_special_tokens=False)
     if len(toks) <= max_tokens:
-        return prompt, len(toks), False
+        return prompt, len(toks), len(toks), False
     half = max_tokens // 2
     kept = toks[:half] + toks[-half:]
-    return tokenizer.decode(toks[:half], skip_special_tokens=True) + tokenizer.decode(toks[-half:], skip_special_tokens=True), len(kept), True
+    return tokenizer.decode(toks[:half], skip_special_tokens=True) + tokenizer.decode(toks[-half:], skip_special_tokens=True), len(toks), len(kept), True
 
 
-def build_prompt(ex: dict, tokenizer, task: str, max_input: int, instruct_model: bool) -> tuple[str, bool]:
+def build_prompt(ex: dict, tokenizer, task: str, max_input: int, instruct_model: bool) -> tuple[str, dict]:
     raw = PROMPT_TEMPLATES[task].format(context=ex["context"], input=ex["input"])
-    prompt, _, truncated = truncate_middle(raw, tokenizer, max_input)
+    prompt, raw_prompt_tokens, truncated_prompt_tokens, truncated = truncate_middle(raw, tokenizer, max_input)
+    raw_chat_tokens = None
+    truncated_chat_tokens = None
     if instruct_model and task not in SKIP_CHAT:
         prompt = tokenizer.apply_chat_template(
             [{"role": "user", "content": prompt}],
             tokenize=False,
             add_generation_prompt=True,
         )
-        prompt, _, truncated_after_chat = truncate_middle(prompt, tokenizer, max_input)
+        prompt, raw_chat_tokens, truncated_chat_tokens, truncated_after_chat = truncate_middle(prompt, tokenizer, max_input)
         truncated = truncated or truncated_after_chat
-    return prompt, truncated
+    return prompt, {
+        "raw_prompt_tokens": raw_prompt_tokens,
+        "truncated_prompt_tokens": truncated_prompt_tokens,
+        "raw_chat_tokens": raw_chat_tokens,
+        "truncated_chat_tokens": truncated_chat_tokens,
+        "prompt_truncated_to_max_input": truncated,
+    }
 
 
 def tensor_info(value) -> dict | int | None:
@@ -202,13 +202,16 @@ def load_model(args):
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
     args.cache_factory = None
-    if args.method in ("fp16", "kivi"):
-        model = LlamaForCausalLM.from_pretrained(
-            args.model_path,
-            torch_dtype=dtype,
-            low_cpu_mem_usage=True,
-        ).to("cuda:0")
-        if args.method == "kivi":
+    backend_method = getattr(args, "paper_method_config", None).backend_method if getattr(args, "paper_method_config", None) else args.method
+    if backend_method in ("fp16", "hf_flexible_quantized_cache"):
+        load_kwargs = {
+            "torch_dtype": dtype,
+            "low_cpu_mem_usage": True,
+        }
+        if args.attn_implementation:
+            load_kwargs["attn_implementation"] = args.attn_implementation
+        model = LlamaForCausalLM.from_pretrained(args.model_path, **load_kwargs).to("cuda:0")
+        if backend_method == "hf_flexible_quantized_cache":
             if not hasattr(hf_cache_utils, "is_optimum_quanto_available"):
                 hf_cache_utils.is_optimum_quanto_available = lambda: False
             kvtuner_flex = Path(args.kvtuner_flex_root)
@@ -233,6 +236,21 @@ def load_model(args):
                 per_layer_quant=False,
             )
             args.cache_factory = lambda: FlexibleVanillaQuantizedCache(cache_config=cache_config)
+    elif backend_method == "kivi_official":
+        from models.llama_kivi import LlamaForCausalLM_KIVI
+
+        config = LlamaConfig.from_pretrained(args.model_path)
+        config.k_bits = args.k_bits
+        config.v_bits = args.v_bits
+        config.group_size = args.group_size
+        config.residual_length = args.residual_length
+        config.use_flash = True
+        model = LlamaForCausalLM_KIVI.from_pretrained(
+            args.model_path,
+            config=config,
+            torch_dtype=dtype,
+            low_cpu_mem_usage=True,
+        ).to("cuda:0")
     else:
         from models.llama_patternkv import LlamaForCausalLM_PatternKV
 
@@ -272,10 +290,11 @@ def task_status(args, status_path: Path, current_task: str | None, current_sampl
             "physical_gpu_id": args.gpu_id,
             "logical_gpu_id": 0,
             "method": args.method,
+            "paper_method_config": method_config_dict(args),
             "mode": args.mode,
             "tasks": args.tasks,
             "num_samples_per_task": args.num_samples,
-            "total_samples": args.num_samples * len(args.tasks),
+            "total_samples": (args.num_samples * len(args.tasks)) if args.num_samples > 0 else None,
             "completed_samples": completed,
             "failures": failures,
             "current_task": current_task,
@@ -290,7 +309,7 @@ def task_status(args, status_path: Path, current_task: str | None, current_sampl
 @torch.no_grad()
 def run_one_sample(model, tokenizer, args, task: str, index: int, ex: dict) -> dict:
     sid = sample_id(task, index, ex)
-    prompt, truncated = build_prompt(ex, tokenizer, task, args.max_input_length, args.instruct_model)
+    prompt, prompt_stats = build_prompt(ex, tokenizer, task, args.max_input_length, args.instruct_model)
     add_special = not (args.instruct_model and task not in SKIP_CHAT)
     encoded = tokenizer(prompt, return_tensors="pt", add_special_tokens=add_special)
     input_ids = encoded.input_ids.to("cuda:0")
@@ -316,6 +335,14 @@ def run_one_sample(model, tokenizer, args, task: str, index: int, ex: dict) -> d
     latency = time.perf_counter() - t0
     seq = output.sequences
     pred = tokenizer.decode(seq[0, input_ids.shape[1] :], skip_special_tokens=True)
+    total_cached_tokens = int(seq.shape[1])
+    cache_stats = cache_storage_summary(
+        args.method,
+        getattr(output, "past_key_values", None),
+        model=model,
+        total_cached_tokens=total_cached_tokens,
+        residual_length=args.residual_length,
+    )
     refs = list(ex.get("answers") or [])
     all_classes = list(ex.get("all_classes") or [])
     score = score_example(task, pred, refs, all_classes=all_classes or None)
@@ -331,15 +358,24 @@ def run_one_sample(model, tokenizer, args, task: str, index: int, ex: dict) -> d
         "metric": METRIC_NAMES[task],
         "input_tokens": int(input_ids.shape[1]),
         "output_tokens": int(seq.shape[1] - input_ids.shape[1]),
+        "raw_input_tokens": prompt_stats["raw_prompt_tokens"],
+        "truncated_input_tokens": prompt_stats["truncated_prompt_tokens"],
+        "raw_chat_tokens": prompt_stats["raw_chat_tokens"],
+        "truncated_chat_tokens": prompt_stats["truncated_chat_tokens"],
+        "total_cached_tokens": total_cached_tokens,
+        "quantized_tokens": cache_stats["quantized_tokens"],
+        "fp16_residual_tokens": cache_stats["fp16_residual_tokens"],
         "max_new_tokens": MAX_NEW_TOKENS[task],
-        "prompt_truncated_to_max_input": truncated,
+        "prompt_truncated_to_max_input": prompt_stats["prompt_truncated_to_max_input"],
+        "paper_config_snapshot": method_config_dict(args),
+        "cache_bitwidth_stats": cache_stats,
         "latency_s": round(latency, 4),
         "peak_allocated_bytes": int(torch.cuda.max_memory_allocated()),
         "peak_reserved_bytes": int(torch.cuda.max_memory_reserved()),
         "error": None,
         "created_at": utc_now(),
     }
-    if args.method == "patternkv":
+    if args.method in ("patternkv", "patternkv_paper"):
         rec["patternkv_runtime_evidence"] = patternkv_evidence(model, getattr(output, "past_key_values", None))
     if args.method == "kivi":
         rec["kivi_runtime_evidence"] = {
@@ -350,11 +386,23 @@ def run_one_sample(model, tokenizer, args, task: str, index: int, ex: dict) -> d
             "axis_key": 1,
             "axis_value": 0,
         }
+    if args.method in ("kivi_official", "kivi_paper_g128", "kivi_original_g32"):
+        rec["kivi_runtime_evidence"] = {
+            "method": args.method,
+            "model_class": "LlamaForCausalLM_KIVI",
+            "k_bits": args.k_bits,
+            "v_bits": args.v_bits,
+            "group_size": args.group_size,
+            "residual_length": args.residual_length,
+            "use_flash": True,
+            "axis_key": "per-channel: transposed K last dim is sequence length",
+            "axis_value": "per-token: V last dim is head_dim",
+        }
     del output, seq, input_ids, attention_mask, encoded
     return rec
 
 
-def summarize_task(path: Path, task: str, args, started_at: float) -> dict:
+def summarize_task(path: Path, task: str, args, started_at: float, expected_samples: int | None = None) -> dict:
     rows = read_jsonl(path)
     preds = [str(row.get("prediction") or "") for row in rows]
     refs = [list(row.get("answers") or []) for row in rows]
@@ -369,7 +417,7 @@ def summarize_task(path: Path, task: str, args, started_at: float) -> dict:
         "method": args.method,
         "path": str(path),
         "samples": len(rows),
-        "expected_samples": args.num_samples,
+        "expected_samples": expected_samples if expected_samples is not None else args.num_samples,
         "failures": sum(1 for row in rows if row.get("error")),
         "empty_predictions": sum(1 for row in rows if not str(row.get("prediction") or "").strip()),
         "score": score["score"],
@@ -385,17 +433,18 @@ def summarize_task(path: Path, task: str, args, started_at: float) -> dict:
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--method", choices=["fp16", "patternkv", "kivi"], required=True)
+    parser.add_argument("--method", choices=["fp16", "patternkv", "patternkv_paper", "kivi", "kivi_official", "kivi_paper_g128", "kivi_original_g32"], required=True)
     parser.add_argument("--tasks", nargs="+", choices=TASKS, required=True)
-    parser.add_argument("--num-samples", type=int, required=True)
+    parser.add_argument("--num-samples", type=int, required=True, help="Use <=0 for the full available LongBench split for each task.")
     parser.add_argument("--model-path", default="/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct")
     parser.add_argument("--data-dir", default=os.environ.get("LONGBENCH_DATA_DIR"))
     parser.add_argument("--output-dir", type=Path, default=Path("results/longbench"))
     parser.add_argument("--status-dir", type=Path, default=Path("run/longbench"))
     parser.add_argument("--mode", default="manual")
     parser.add_argument("--gpu-id", required=True)
-    parser.add_argument("--max-input-length", type=int, default=8192)
+    parser.add_argument("--max-input-length", type=int, default=DEFAULT_INPUT_CAP)
     parser.add_argument("--dtype", choices=["float16", "bfloat16"], default="float16")
+    parser.add_argument("--attn-implementation", default=os.environ.get("ATTN_IMPLEMENTATION", "flash_attention_2"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--k-bits", type=int, default=2)
     parser.add_argument("--v-bits", type=int, default=2)
@@ -411,6 +460,7 @@ def parse_args():
 
 def main() -> None:
     args = parse_args()
+    args.paper_method_config = apply_method_defaults(args)
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     args.output_dir = Path(args.output_dir)
@@ -427,6 +477,7 @@ def main() -> None:
         "gpu_name": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "gpu_capability": list(torch.cuda.get_device_capability(0)) if torch.cuda.is_available() else None,
         "method": args.method,
+        "paper_method_config": method_config_dict(args),
         "tasks": args.tasks,
         "started_at": started_at,
         "model_path": args.model_path,
@@ -435,18 +486,20 @@ def main() -> None:
         "device_policy": "CUDA_VISIBLE_DEVICES exposes one physical GPU; model.to('cuda:0'); no device_map='auto'",
     }
     print(json.dumps(header, indent=2, sort_keys=True), flush=True)
+    print("[PaperConfigCheck] " + json.dumps(method_config_dict(args), ensure_ascii=False, sort_keys=True), flush=True)
     task_status(args, status_path, None, None, started_at)
     model, tokenizer = load_model(args)
     all_summaries = []
     try:
         for task in args.tasks:
             out_path = args.output_dir / args.method / f"{task}.jsonl"
-            if args.skip_existing and len(read_jsonl(out_path)) >= args.num_samples:
+            data = load_task(task, args.num_samples, data_dir)
+            expected_count = len(data)
+            if args.skip_existing and expected_count > 0 and len(read_jsonl(out_path)) >= expected_count:
                 print(f"[{utc_now()}] skip complete {args.method}/{task}: {out_path}", flush=True)
-                all_summaries.append(summarize_task(out_path, task, args, time.perf_counter()))
+                all_summaries.append(summarize_task(out_path, task, args, time.perf_counter(), expected_count))
                 continue
             task_t0 = time.perf_counter()
-            data = load_task(task, args.num_samples, data_dir)
             done = existing_ids(out_path)
             for i, ex in enumerate(data):
                 sid = sample_id(task, i, ex)
@@ -469,6 +522,7 @@ def main() -> None:
                         "input_tokens": None,
                         "output_tokens": 0,
                         "max_new_tokens": MAX_NEW_TOKENS[task],
+                        "paper_config_snapshot": method_config_dict(args),
                         "error": repr(exc),
                         "created_at": utc_now(),
                     }
@@ -480,8 +534,8 @@ def main() -> None:
                 gc.collect()
                 torch.cuda.empty_cache()
                 task_status(args, status_path, task, sid, started_at)
-                print(f"[{utc_now()}] done {args.method}/{task} {len(done)}/{args.num_samples} sid={sid}", flush=True)
-            summary = summarize_task(out_path, task, args, task_t0)
+                print(f"[{utc_now()}] done {args.method}/{task} {len(done)}/{expected_count} sid={sid}", flush=True)
+            summary = summarize_task(out_path, task, args, task_t0, expected_count)
             all_summaries.append(summary)
             print(f"[{utc_now()}] task summary {json.dumps(summary, sort_keys=True)}", flush=True)
             os.system("nvidia-smi --query-compute-apps=pid,used_memory --format=csv,noheader")

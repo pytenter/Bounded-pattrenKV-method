@@ -1,0 +1,14 @@
+name: longbench_paper_v2_smoke
+inherits: configs/longbench_paper_v2.yaml
+output_dir: results/paper_repro_v2/smoke
+log_dir: logs/paper_repro_v2/smoke
+status_dir: run/paper_repro_v2/smoke
+num_samples: 1
+tasks:
+  - qasper
+  - passage_retrieval_en
+  - lcc
+methods:
+  - fp16
+  - kivi_paper_g128
+  - patternkv_paper

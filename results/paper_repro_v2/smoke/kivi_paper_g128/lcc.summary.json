@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 0.0,
+  "avg_output_tokens": 0.0,
+  "empty_predictions": 1,
+  "expected_samples": 1,
+  "failures": 1,
+  "method": "kivi_paper_g128",
+  "metric": "code_sim",
+  "path": "results/paper_repro_v2/smoke/kivi_paper_g128/lcc.jsonl",
+  "samples": 1,
+  "score": 0.0,
+  "task": "lcc",
+  "updated_at": "2026-08-03T16:26:59.411865+00:00",
+  "wall_time_s": 4.04
+}

@@ -1,0 +1,182 @@
+{
+  "actual_total_records": 9,
+  "avg_normalized": {
+    "fp16": 43.1367,
+    "kivi_paper_g128": 41.6667,
+    "patternkv_paper": 42.2233
+  },
+  "baseline_method": "fp16",
+  "expected_samples_per_task": 1,
+  "expected_total_records": 9,
+  "generated_at": "2026-08-04T00:35:31.821860",
+  "issues": [],
+  "kivi_paper_g128_minus_fp16": -1.47,
+  "methods": [
+    "fp16",
+    "kivi_paper_g128",
+    "patternkv_paper"
+  ],
+  "patternkv_bit_accounting": {
+    "avg_input_tokens": 6795.0,
+    "avg_output_tokens": 42.0,
+    "avg_v_mask_mean": 0.78889,
+    "cuda_compact_transfer_bits": {
+      "assumptions": "Same payload and scale/min, but CUDA wrapper compact transfer dtypes: K assignment int16, V assignment uint8.",
+      "centroid_fp16_bits_per_dim_amortized_per_k_or_v": 0.0763,
+      "k_assignment_actual_cache_bits_per_dim": 0.125,
+      "k_payload_bits_per_dim": 2.0,
+      "k_scale_min_bits_per_dim": 0.25,
+      "v_assignment_actual_cache_bits_per_dim": 0.0625,
+      "v_mask_actual_cache_bits_per_dim": 0.0625,
+      "v_payload_bits_per_dim": 2.0,
+      "v_scale_min_bits_per_dim": 0.25
+    },
+    "current_cache_layout_bits": {
+      "assumptions": "2-bit packed payload, group_size=128, head_dim=128, FP16 scale/min, current Python cache stores K/V assignments as torch.long and V mask as uint8.",
+      "centroid_fp16_bits_per_dim_amortized_per_k_or_v": 0.0763,
+      "k_assignment_actual_cache_bits_per_dim": 0.5,
+      "k_payload_bits_per_dim": 2.0,
+      "k_scale_min_bits_per_dim": 0.25,
+      "v_assignment_actual_cache_bits_per_dim": 0.5,
+      "v_mask_actual_cache_bits_per_dim": 0.0625,
+      "v_payload_bits_per_dim": 2.0,
+      "v_scale_min_bits_per_dim": 0.25
+    }
+  },
+  "primary_method": "kivi_paper_g128",
+  "quality_retention_percent": 96.5922,
+  "status": "SMOKE PASS",
+  "tasks": [
+    {
+      "avg_input_tokens": 4034.0,
+      "avg_output_tokens": 34.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:33:52.961602",
+      "method": "fp16",
+      "metric": "qa_f1",
+      "path": "results/paper_repro_v2/smoke_8192_compat/fp16/qasper.jsonl",
+      "samples": 1,
+      "score": 29.41,
+      "task": "qasper"
+    },
+    {
+      "avg_input_tokens": 8183.0,
+      "avg_output_tokens": 32.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:33:57.151033",
+      "method": "fp16",
+      "metric": "retrieval",
+      "path": "results/paper_repro_v2/smoke_8192_compat/fp16/passage_retrieval_en.jsonl",
+      "samples": 1,
+      "score": 0.0,
+      "task": "passage_retrieval_en"
+    },
+    {
+      "avg_input_tokens": 8168.0,
+      "avg_output_tokens": 64.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:34:02.149464",
+      "method": "fp16",
+      "metric": "code_sim",
+      "path": "results/paper_repro_v2/smoke_8192_compat/fp16/lcc.jsonl",
+      "samples": 1,
+      "score": 100.0,
+      "task": "lcc"
+    },
+    {
+      "avg_input_tokens": 4034.0,
+      "avg_output_tokens": 42.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:33:57.919822",
+      "method": "kivi_paper_g128",
+      "metric": "qa_f1",
+      "path": "results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/qasper.jsonl",
+      "samples": 1,
+      "score": 25.0,
+      "task": "qasper"
+    },
+    {
+      "avg_input_tokens": 8183.0,
+      "avg_output_tokens": 32.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:34:03.317542",
+      "method": "kivi_paper_g128",
+      "metric": "retrieval",
+      "path": "results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/passage_retrieval_en.jsonl",
+      "samples": 1,
+      "score": 0.0,
+      "task": "passage_retrieval_en"
+    },
+    {
+      "avg_input_tokens": 8168.0,
+      "avg_output_tokens": 64.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:34:11.648758",
+      "method": "kivi_paper_g128",
+      "metric": "code_sim",
+      "path": "results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/lcc.jsonl",
+      "samples": 1,
+      "score": 100.0,
+      "task": "lcc"
+    },
+    {
+      "avg_input_tokens": 4034.0,
+      "avg_output_tokens": 30.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:33:57.279736",
+      "method": "patternkv_paper",
+      "metric": "qa_f1",
+      "path": "results/paper_repro_v2/smoke_8192_compat/patternkv_paper/qasper.jsonl",
+      "samples": 1,
+      "score": 26.67,
+      "task": "qasper"
+    },
+    {
+      "avg_input_tokens": 8183.0,
+      "avg_output_tokens": 32.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:34:03.286877",
+      "method": "patternkv_paper",
+      "metric": "retrieval",
+      "path": "results/paper_repro_v2/smoke_8192_compat/patternkv_paper/passage_retrieval_en.jsonl",
+      "samples": 1,
+      "score": 0.0,
+      "task": "passage_retrieval_en"
+    },
+    {
+      "avg_input_tokens": 8168.0,
+      "avg_output_tokens": 64.0,
+      "empty_predictions": 0,
+      "expected_samples": 1,
+      "failures": 0,
+      "last_mtime": "2026-08-04T00:34:10.211541",
+      "method": "patternkv_paper",
+      "metric": "code_sim",
+      "path": "results/paper_repro_v2/smoke_8192_compat/patternkv_paper/lcc.jsonl",
+      "samples": 1,
+      "score": 100.0,
+      "task": "lcc"
+    }
+  ],
+  "tasks_requested": [
+    "qasper",
+    "passage_retrieval_en",
+    "lcc"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 4034.0,
+  "avg_output_tokens": 30.0,
+  "empty_predictions": 0,
+  "expected_samples": 1,
+  "failures": 0,
+  "method": "patternkv_paper",
+  "metric": "qa_f1",
+  "path": "results/paper_repro_v2/smoke/patternkv_paper/qasper.jsonl",
+  "samples": 1,
+  "score": 26.67,
+  "task": "qasper",
+  "updated_at": "2026-08-03T16:26:49.076309+00:00",
+  "wall_time_s": 5.23
+}

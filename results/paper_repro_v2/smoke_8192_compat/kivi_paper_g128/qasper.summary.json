@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 4034.0,
+  "avg_output_tokens": 42.0,
+  "empty_predictions": 0,
+  "expected_samples": 1,
+  "failures": 0,
+  "method": "kivi_paper_g128",
+  "metric": "qa_f1",
+  "path": "results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/qasper.jsonl",
+  "samples": 1,
+  "score": 25.0,
+  "task": "qasper",
+  "updated_at": "2026-08-03T16:33:58.106941+00:00",
+  "wall_time_s": 5.43
+}

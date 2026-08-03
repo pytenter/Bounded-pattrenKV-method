@@ -11,6 +11,10 @@ from typing import List, Optional, Sequence
 
 from fuzzywuzzy import fuzz
 from rouge import Rouge
+try:
+    import jieba
+except Exception:  # pragma: no cover - only used on zh LongBench tasks.
+    jieba = None
 
 from bench.longbench_config import METRIC_NAMES, SUBTASKS
 
@@ -27,6 +31,17 @@ def _normalize_answer(s: str) -> str:
         return "".join(ch for ch in text if ch not in exclude)
 
     return white_space_fix(remove_articles(remove_punc(s.lower())))
+
+
+def _normalize_zh_answer(s: str) -> str:
+    def white_space_fix(text):
+        return "".join(text.split())
+
+    def remove_punc(text):
+        cn_punctuation = "！？｡。＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏."
+        return "".join(ch for ch in text if ch not in set(string.punctuation + cn_punctuation))
+
+    return white_space_fix(remove_punc(s.lower()))
 
 
 def _f1_score(prediction_tokens, ground_truth_tokens) -> float:
@@ -47,6 +62,20 @@ def _qa_f1_score(prediction: str, ground_truth: str, **kwargs) -> float:
     return _f1_score(p_tok, g_tok)
 
 
+def _qa_f1_zh_score(prediction: str, ground_truth: str, **kwargs) -> float:
+    if jieba is None:
+        p_tok = list(_normalize_zh_answer(prediction))
+        g_tok = list(_normalize_zh_answer(ground_truth))
+    else:
+        p_tok = [_normalize_zh_answer(tok) for tok in jieba.cut(prediction, cut_all=False)]
+        g_tok = [_normalize_zh_answer(tok) for tok in jieba.cut(ground_truth, cut_all=False)]
+        p_tok = [tok for tok in p_tok if tok]
+        g_tok = [tok for tok in g_tok if tok]
+    if not p_tok or not g_tok:
+        return 0.0
+    return _f1_score(p_tok, g_tok)
+
+
 def _rouge_score(prediction: str, ground_truth: str, **kwargs) -> float:
     rouge = Rouge()
     try:
@@ -54,6 +83,23 @@ def _rouge_score(prediction: str, ground_truth: str, **kwargs) -> float:
     except Exception:
         return 0.0
     return scores["rouge-l"]["f"]
+
+
+def _rouge_zh_score(prediction: str, ground_truth: str, **kwargs) -> float:
+    if jieba is None:
+        prediction = " ".join(_normalize_zh_answer(prediction))
+        ground_truth = " ".join(_normalize_zh_answer(ground_truth))
+    else:
+        prediction = " ".join(jieba.cut(prediction, cut_all=False))
+        ground_truth = " ".join(jieba.cut(ground_truth, cut_all=False))
+    return _rouge_score(prediction, ground_truth)
+
+
+def _count_score(prediction: str, ground_truth: str, **kwargs) -> float:
+    nums = re.findall(r"\d+", prediction)
+    if not nums:
+        return 0.0
+    return sum(1 for n in nums if str(n) == str(ground_truth)) / len(nums)
 
 
 def _retrieval_score(prediction: str, ground_truth: str, **kwargs) -> float:
@@ -66,6 +112,17 @@ def _retrieval_score(prediction: str, ground_truth: str, **kwargs) -> float:
         return 0.0
     right = sum(1 for n in nums if str(n) == str(gt_id))
     return right / len(nums)
+
+
+def _retrieval_zh_score(prediction: str, ground_truth: str, **kwargs) -> float:
+    matches = re.findall(r"段落(\d+)", ground_truth)
+    if not matches:
+        return 0.0
+    gt_id = matches[0]
+    nums = re.findall(r"\d+", prediction)
+    if not nums:
+        return 0.0
+    return sum(1 for n in nums if str(n) == str(gt_id)) / len(nums)
 
 
 def _code_sim_score(prediction: str, ground_truth: str, **kwargs) -> float:
@@ -87,18 +144,26 @@ def _classification_score(prediction: str, ground_truth: str, **kwargs) -> float
 
 
 _DATASET2METRIC = {
+    "narrativeqa": _qa_f1_score,
     "qasper": _qa_f1_score,
     "multifieldqa_en": _qa_f1_score,
+    "multifieldqa_zh": _qa_f1_zh_score,
     "hotpotqa": _qa_f1_score,
     "2wikimqa": _qa_f1_score,
+    "musique": _qa_f1_score,
+    "dureader": _rouge_zh_score,
     "gov_report": _rouge_score,
-    "trec": _classification_score,
-    "passage_retrieval_en": _retrieval_score,
-    "lcc": _code_sim_score,
     "qmsum": _rouge_score,
     "multi_news": _rouge_score,
+    "vcsum": _rouge_zh_score,
+    "trec": _classification_score,
     "triviaqa": _qa_f1_score,
     "samsum": _rouge_score,
+    "lsht": _classification_score,
+    "passage_count": _count_score,
+    "passage_retrieval_en": _retrieval_score,
+    "passage_retrieval_zh": _retrieval_zh_score,
+    "lcc": _code_sim_score,
     "repobench-p": _code_sim_score,
 }
 

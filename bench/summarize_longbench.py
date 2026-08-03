@@ -9,20 +9,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from bench._longbench_scorer import score_subtask
-from bench.longbench_config import METRIC_NAMES
+from bench.longbench_config import METRIC_NAMES, SUBTASKS, expected_samples
 
 
-TASKS = (
-    "qasper",
-    "multifieldqa_en",
-    "hotpotqa",
-    "2wikimqa",
-    "gov_report",
-    "trec",
-    "passage_retrieval_en",
-    "lcc",
-)
-DEFAULT_METHODS = ("fp16", "patternkv")
+TASKS = SUBTASKS
+DEFAULT_METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -91,11 +82,12 @@ def patternkv_bit_accounting(rows: list[dict]) -> dict:
 def summarize(args):
     base = args.results_dir
     methods = tuple(args.methods)
+    tasks = tuple(args.tasks or TASKS)
     detail_rows = []
     issues = []
     all_records = {}
     for method in methods:
-        for task in TASKS:
+        for task in tasks:
             path = base / method / f"{task}.jsonl"
             rows = read_jsonl(path)
             all_records[(method, task)] = rows
@@ -106,8 +98,9 @@ def summarize(args):
             nan_inf = [row for row in rows if has_nan_inf(row)]
             if not path.exists():
                 issues.append({"method": method, "task": task, "issue": "missing_file", "path": str(path)})
-            if len(rows) != args.expected_samples:
-                issues.append({"method": method, "task": task, "issue": "wrong_sample_count", "actual": len(rows), "expected": args.expected_samples})
+            expected = expected_samples(task) if args.expected_samples <= 0 else args.expected_samples
+            if len(rows) != expected:
+                issues.append({"method": method, "task": task, "issue": "wrong_sample_count", "actual": len(rows), "expected": expected})
             if duplicate_ids:
                 issues.append({"method": method, "task": task, "issue": "duplicate_sample_id", "sample_ids": duplicate_ids[:20]})
             if errors:
@@ -121,7 +114,7 @@ def summarize(args):
                 "method": method,
                 "task": task,
                 "samples": len(rows),
-                "expected_samples": args.expected_samples,
+                "expected_samples": expected,
                 "failures": len(errors),
                 "empty_predictions": len(empty),
                 "score": score,
@@ -131,7 +124,7 @@ def summarize(args):
                 "last_mtime": datetime.fromtimestamp(path.stat().st_mtime).isoformat() if path.exists() else None,
                 "path": str(path),
             })
-    for task in TASKS:
+    for task in tasks:
         reference_method = methods[0]
         ref_ids = {str(row.get("sample_id")) for row in all_records[(reference_method, task)]}
         for method in methods[1:]:
@@ -155,8 +148,9 @@ def summarize(args):
     delta = method_scores[primary] - method_scores[baseline] if not any(math.isnan(method_scores[m]) for m in (baseline, primary)) else math.nan
     retention = 100.0 * method_scores[primary] / method_scores[baseline] if method_scores[baseline] and not math.isnan(delta) else math.nan
     total_records = sum(len(rows) for rows in all_records.values())
-    complete = not issues and total_records == args.expected_samples * len(TASKS) * len(methods)
-    if args.expected_samples == 50:
+    expected_total = sum((expected_samples(task) if args.expected_samples <= 0 else args.expected_samples) for task in tasks) * len(methods)
+    complete = not issues and total_records == expected_total
+    if args.expected_samples <= 0 or args.expected_samples == 50:
         status = "FULL RUN PASS" if complete else "FULL RUN PARTIAL"
     else:
         status = "SMOKE PASS" if complete else "SMOKE PARTIAL"
@@ -164,16 +158,17 @@ def summarize(args):
         "status": status,
         "expected_samples_per_task": args.expected_samples,
         "methods": list(methods),
+        "tasks_requested": list(tasks),
         "baseline_method": baseline,
         "primary_method": primary,
-        "expected_total_records": args.expected_samples * len(TASKS) * len(methods),
+        "expected_total_records": expected_total,
         "actual_total_records": total_records,
         "avg_normalized": method_scores,
         f"{primary}_minus_{baseline}": round(delta, 4) if not math.isnan(delta) else None,
         "quality_retention_percent": round(retention, 4) if not math.isnan(retention) else None,
         "issues": issues,
         "tasks": detail_rows,
-        "patternkv_bit_accounting": patternkv_bit_accounting([row for (method, _), rows in all_records.items() if method == "patternkv" for row in rows]),
+        "patternkv_bit_accounting": patternkv_bit_accounting([row for (method, _), rows in all_records.items() if method in ("patternkv", "patternkv_paper") for row in rows]),
         "generated_at": datetime.now().isoformat(),
     }
     return summary
@@ -191,7 +186,7 @@ def write_outputs(summary: dict, args) -> None:
             writer.writerow(row)
     args.report_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# PatternKV LongBench 8x50 Report",
+        "# PatternKV LongBench Paper v2 Report",
         "",
         f"Status: {summary['status']}",
         f"Expected total records: {summary['expected_total_records']}",
@@ -230,6 +225,7 @@ def parse_args():
     parser.add_argument("--report-path", type=Path, default=Path("reports/patternkv_longbench_8x50.md"))
     parser.add_argument("--require-complete", action="store_true")
     parser.add_argument("--methods", nargs="+", default=list(DEFAULT_METHODS))
+    parser.add_argument("--tasks", nargs="+", choices=TASKS)
     parser.add_argument("--summary-name", default="summary")
     return parser.parse_args()
 

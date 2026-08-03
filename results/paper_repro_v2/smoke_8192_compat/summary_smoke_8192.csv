@@ -1,0 +1,10 @@
+method,task,samples,expected_samples,failures,empty_predictions,score,metric,avg_input_tokens,avg_output_tokens,last_mtime,path
+fp16,qasper,1,1,0,0,29.41,qa_f1,4034.0,34.0,2026-08-04T00:33:52.961602,results/paper_repro_v2/smoke_8192_compat/fp16/qasper.jsonl
+fp16,passage_retrieval_en,1,1,0,0,0.0,retrieval,8183.0,32.0,2026-08-04T00:33:57.151033,results/paper_repro_v2/smoke_8192_compat/fp16/passage_retrieval_en.jsonl
+fp16,lcc,1,1,0,0,100.0,code_sim,8168.0,64.0,2026-08-04T00:34:02.149464,results/paper_repro_v2/smoke_8192_compat/fp16/lcc.jsonl
+kivi_paper_g128,qasper,1,1,0,0,25.0,qa_f1,4034.0,42.0,2026-08-04T00:33:57.919822,results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/qasper.jsonl
+kivi_paper_g128,passage_retrieval_en,1,1,0,0,0.0,retrieval,8183.0,32.0,2026-08-04T00:34:03.317542,results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/passage_retrieval_en.jsonl
+kivi_paper_g128,lcc,1,1,0,0,100.0,code_sim,8168.0,64.0,2026-08-04T00:34:11.648758,results/paper_repro_v2/smoke_8192_compat/kivi_paper_g128/lcc.jsonl
+patternkv_paper,qasper,1,1,0,0,26.67,qa_f1,4034.0,30.0,2026-08-04T00:33:57.279736,results/paper_repro_v2/smoke_8192_compat/patternkv_paper/qasper.jsonl
+patternkv_paper,passage_retrieval_en,1,1,0,0,0.0,retrieval,8183.0,32.0,2026-08-04T00:34:03.286877,results/paper_repro_v2/smoke_8192_compat/patternkv_paper/passage_retrieval_en.jsonl
+patternkv_paper,lcc,1,1,0,0,100.0,code_sim,8168.0,64.0,2026-08-04T00:34:10.211541,results/paper_repro_v2/smoke_8192_compat/patternkv_paper/lcc.jsonl
