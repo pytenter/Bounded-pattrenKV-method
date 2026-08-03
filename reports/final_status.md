@@ -33,10 +33,17 @@ KIVI status:
 - The first KIVI run was completed but is invalid as a paper baseline because the axes were reversed (`axis_key=0`, `axis_value=1`).
 - The invalid KIVI artifacts are preserved under `results/longbench/kivi_invalid_axis0_1_20260803_171756/` and `reports/kivi_invalid_axis0_1_20260803_171756/`.
 - The KIVI runner has been fixed to the paper/KVTuner configuration: `axis_key=1`, `axis_value=0`, `group_size=128`, `residual_length=128`.
-- The corrected KIVI full run is queued by `scripts/wait_and_run_longbench_6x3090_kivi_full.sh` and will start when GPUs 0-5 are free enough.
+- The corrected KIVI full run is complete on 8 LongBench tasks x 50 samples.
+
+Corrected KIVI score summary:
+
+```text
+KIVI      avg_normalized = 45.7450
+KIVI retention           = 90.8891%
+status                   = FULL RUN PASS
+```
 
 Not yet covered:
-- Corrected KIVI full LongBench result
 - Full 21-task LongBench paper reproduction
 - End-to-end latency and throughput evaluation
 - Multi-request serving benchmark
@@ -117,7 +124,7 @@ CUDA: 12.4
 - RTX 3090 / SM86 兼容: 已完成第一阶段功能验证；尚未做完整质量/吞吐实验。
 - 软件版本问题: flash-attn 安装脚本跨文件系统 rename 失败，已手动安装 release wheel。
 - 模型问题: 本地模型可用，路径 `/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct`。
-- 尚未验证内容: corrected KIVI LongBench/GSM8K/AIME、大 batch、系统吞吐和真实性能。
+- 尚未验证内容: 21-task LongBench/GSM8K/AIME、大 batch、系统吞吐和真实性能。
 
 ## 9. 精确复现命令
 

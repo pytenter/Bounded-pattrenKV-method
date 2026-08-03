@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 5885.34,
+  "avg_output_tokens": 63.62,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "classification",
+  "path": "results/longbench/kivi/trec.jsonl",
+  "samples": 50,
+  "score": 72.0,
+  "task": "trec",
+  "updated_at": "2026-08-03T09:46:10.561736+00:00",
+  "wall_time_s": 237.11
+}

@@ -13,3 +13,4 @@ logs/longbench/
 run/
 bench/**/__pycache__/
 bench/**/*.py[cod]
+results/longbench/kivi/worker_*debug_n1*.summary.json

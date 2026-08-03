@@ -1,0 +1,17 @@
+method,task,samples,expected_samples,failures,empty_predictions,score,metric,avg_input_tokens,avg_output_tokens,last_mtime,path
+fp16,qasper,50,50,0,0,41.08,qa_f1,5146.64,35.4,2026-08-02T00:07:18.624813,results/longbench/fp16/qasper.jsonl
+fp16,multifieldqa_en,50,50,0,0,51.37,qa_f1,6344.64,27.82,2026-08-02T00:08:12.173093,results/longbench/fp16/multifieldqa_en.jsonl
+fp16,hotpotqa,50,50,0,0,22.61,qa_f1,7864.46,28.58,2026-08-02T00:09:12.174409,results/longbench/fp16/hotpotqa.jsonl
+fp16,2wikimqa,50,50,0,0,40.13,qa_f1,6257.58,13.08,2026-08-02T00:11:07.569019,results/longbench/fp16/2wikimqa.jsonl
+fp16,gov_report,50,50,0,0,35.47,rouge_l,7308.98,465.94,2026-08-02T00:24:12.839221,results/longbench/fp16/gov_report.jsonl
+fp16,trec,50,50,0,0,72.0,classification,5885.34,64.0,2026-08-02T00:11:28.341130,results/longbench/fp16/trec.jsonl
+fp16,passage_retrieval_en,50,50,0,0,76.0,retrieval,8182.94,9.32,2026-08-02T00:13:42.946847,results/longbench/fp16/passage_retrieval_en.jsonl
+fp16,lcc,50,50,0,0,63.98,code_sim,2983.78,64.0,2026-08-02T00:13:47.623872,results/longbench/fp16/lcc.jsonl
+kivi,qasper,50,50,0,0,37.14,qa_f1,5146.64,35.5,2026-08-03T17:41:21.036242,results/longbench/kivi/qasper.jsonl
+kivi,multifieldqa_en,50,50,0,0,48.52,qa_f1,6344.64,29.04,2026-08-03T17:42:13.239325,results/longbench/kivi/multifieldqa_en.jsonl
+kivi,hotpotqa,50,50,0,0,14.27,qa_f1,7864.46,29.36,2026-08-03T17:43:22.808547,results/longbench/kivi/hotpotqa.jsonl
+kivi,2wikimqa,50,50,0,0,36.42,qa_f1,6257.58,14.26,2026-08-03T17:45:29.153212,results/longbench/kivi/2wikimqa.jsonl
+kivi,gov_report,50,50,0,0,31.62,rouge_l,7308.98,492.32,2026-08-03T18:02:46.001367,results/longbench/kivi/gov_report.jsonl
+kivi,trec,50,50,0,0,72.0,classification,5885.34,63.62,2026-08-03T17:46:10.444624,results/longbench/kivi/trec.jsonl
+kivi,passage_retrieval_en,50,50,0,0,75.33,retrieval,8182.94,26.78,2026-08-03T17:44:08.192221,results/longbench/kivi/passage_retrieval_en.jsonl
+kivi,lcc,50,50,0,0,50.66,code_sim,2983.78,64.0,2026-08-03T17:46:50.456969,results/longbench/kivi/lcc.jsonl

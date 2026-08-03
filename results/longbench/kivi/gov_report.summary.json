@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 7308.98,
+  "avg_output_tokens": 492.32,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "rouge_l",
+  "path": "results/longbench/kivi/gov_report.jsonl",
+  "samples": 50,
+  "score": 31.62,
+  "task": "gov_report",
+  "updated_at": "2026-08-03T10:02:53.202397+00:00",
+  "wall_time_s": 1291.94
+}

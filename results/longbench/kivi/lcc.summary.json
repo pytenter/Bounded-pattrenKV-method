@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 2983.78,
+  "avg_output_tokens": 64.0,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "code_sim",
+  "path": "results/longbench/kivi/lcc.jsonl",
+  "samples": 50,
+  "score": 50.66,
+  "task": "lcc",
+  "updated_at": "2026-08-03T09:46:50.560443+00:00",
+  "wall_time_s": 162.13
+}
