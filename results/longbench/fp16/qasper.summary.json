@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 5146.64,
+  "avg_output_tokens": 35.4,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "qa_f1",
+  "path": "results/longbench/fp16/qasper.jsonl",
+  "samples": 50,
+  "score": 41.08,
+  "task": "qasper",
+  "updated_at": "2026-08-01T16:07:18.740478+00:00",
+  "wall_time_s": 29.89
+}

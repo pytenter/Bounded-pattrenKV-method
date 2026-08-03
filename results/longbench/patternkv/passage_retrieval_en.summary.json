@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 8182.94,
+  "avg_output_tokens": 21.76,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "retrieval",
+  "path": "results/longbench/patternkv/passage_retrieval_en.jsonl",
+  "samples": 50,
+  "score": 71.67,
+  "task": "passage_retrieval_en",
+  "updated_at": "2026-08-01T16:18:26.965827+00:00",
+  "wall_time_s": 217.81
+}

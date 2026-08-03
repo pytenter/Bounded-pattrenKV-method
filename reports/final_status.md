@@ -1,10 +1,47 @@
-# PatternKV 单卡 RTX 4090 第一阶段复现报告
+# PatternKV 单卡 RTX 3090 第一阶段复现报告
 
 ## 1. 最终状态
 
-PARTIAL PASS
+Final Status: PARTIAL PASS
 
-原因：官方代码、独立环境、CUDA extension、量化单测、FP16/PatternKV 端到端 smoke 和 packed KV 路径均在当前服务器跑通；但当前服务器可见 GPU 是 RTX 3090 / SM86，不是请求的 RTX 4090 / SM89，因此不能声明 4090 验收 PASS。
+Scope:
+PatternKV official implementation stage-1 functional validation and the current LongBench reproduction artifacts on NVIDIA RTX 3090 / SM86.
+
+Validated:
+- CUDA extension build
+- `patternkv_gemv` import
+- quantization unit tests
+- FP16 smoke inference
+- PatternKV smoke inference
+- packed INT32 KV-cache path
+- pattern update path
+- V-mask generation
+- LongBench FP16 baseline: 8 tasks x 50 samples, complete
+- LongBench PatternKV: 8 tasks x 50 samples, complete
+
+LongBench 8-task score summary:
+
+```text
+FP16      avg_normalized = 50.3300
+PatternKV avg_normalized = 48.9163
+PatternKV retention      = 97.1911%
+status                   = FULL RUN PASS
+```
+
+KIVI status:
+
+- The first KIVI run was completed but is invalid as a paper baseline because the axes were reversed (`axis_key=0`, `axis_value=1`).
+- The invalid KIVI artifacts are preserved under `results/longbench/kivi_invalid_axis0_1_20260803_171756/` and `reports/kivi_invalid_axis0_1_20260803_171756/`.
+- The KIVI runner has been fixed to the paper/KVTuner configuration: `axis_key=1`, `axis_value=0`, `group_size=128`, `residual_length=128`.
+- The corrected KIVI full run is queued by `scripts/wait_and_run_longbench_6x3090_kivi_full.sh` and will start when GPUs 0-5 are free enough.
+
+Not yet covered:
+- Corrected KIVI full LongBench result
+- Full 21-task LongBench paper reproduction
+- End-to-end latency and throughput evaluation
+- Multi-request serving benchmark
+
+这不是“整篇论文完整复现 PASS”；PASS 范围覆盖官方实现第一阶段功能验收，以及 8 个 LongBench 任务上的 FP16/PatternKV 50 样本对照，目标硬件为当前服务器的 RTX 3090 / SM86。
 
 ## 2. 硬件与软件环境
 
@@ -18,7 +55,16 @@ PARTIAL PASS
 - Transformers: 4.43.1
 - GCC/G++: 13.3.0
 - PatternKV upstream commit: aba09a82e14732f6a0ed1f2b133925ff368d0538
-- PatternKV repro commit: f3b63d311fd1ccf440655a6b7216cbd21c49ec7a on branch repro/patternkv-4090-smoke
+- PatternKV repro commit: 5ba536a5c80366d6d384d9dca1e656325d36c436 on branch repro/longbench-3090
+
+Hardware evidence:
+
+```text
+GPU: NVIDIA GeForce RTX 3090
+Compute capability: (8, 6)
+PyTorch: 2.4.1+cu124
+CUDA: 12.4
+```
 
 ## 3. 官方代码改动
 
@@ -32,7 +78,7 @@ PARTIAL PASS
 ## 4. CUDA extension
 
 - 编译状态: 成功
-- 编译架构: SM86 (`TORCH_CUDA_ARCH_LIST=8.6`)，不是 SM89
+- 编译架构: SM86 (`TORCH_CUDA_ARCH_LIST=8.6`)
 - 导入状态: `import patternkv_gemv` 成功
 - 单元测试: PASS
 - 真实调用: 单测调用 `gemv_forward_cuda_outer_dim`；Smoke B cache 显示 packed K/V 被后续 decode 使用。
@@ -68,10 +114,10 @@ PARTIAL PASS
 ## 8. 已知问题
 
 - 官方仓库问题: `cuml/cupy` 未声明且未使用；`patternkv` 包名无导入锚点；`flash-attn` 依赖在 requirements 中被注释。
-- RTX 4090 兼容问题: 当前无 4090，不能验证 SM89 kernel image、非法访存或性能。
+- RTX 3090 / SM86 兼容: 已完成第一阶段功能验证；尚未做完整质量/吞吐实验。
 - 软件版本问题: flash-attn 安装脚本跨文件系统 rename 失败，已手动安装 release wheel。
 - 模型问题: 本地模型可用，路径 `/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct`。
-- 尚未验证内容: LongBench/GSM8K/AIME、大 batch、SM89 编译和真实性能。
+- 尚未验证内容: corrected KIVI LongBench/GSM8K/AIME、大 batch、系统吞吐和真实性能。
 
 ## 9. 精确复现命令
 
@@ -84,4 +130,4 @@ CUDA_VISIBLE_DEVICES=0 PATTERNKV_DEBUG_STATS=1 /data/zypan/kvarn-repro/tools/bin
 
 ## 10. 下一阶段建议
 
-在真实 RTX 4090 上重建/重编译 SM89 后，做 LongBench 4任务 x 5条 smoke，比较 FP16、KIVI、PatternKV 三方法的质量、峰值显存、prefill/decode latency、TTFT/TPOT 和 Pattern 统计。
+下一阶段在同一 RTX 3090 / SM86 环境上执行 LongBench 任务质量实验，先做 8 任务 x 2 样本 smoke，再扩展到 8 任务 x 50 样本，比较 FP16 与 PatternKV 的任务质量、峰值显存、prefill/decode latency、TTFT/TPOT 和 Pattern 统计。

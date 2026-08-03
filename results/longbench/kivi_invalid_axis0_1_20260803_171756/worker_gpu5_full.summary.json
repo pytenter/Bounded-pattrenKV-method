@@ -1,0 +1,40 @@
+{
+  "summaries": [
+    {
+      "avg_input_tokens": 2983.78,
+      "avg_output_tokens": 64.0,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "kivi",
+      "metric": "code_sim",
+      "path": "results/longbench/kivi/lcc.jsonl",
+      "samples": 50,
+      "score": 33.76,
+      "task": "lcc",
+      "updated_at": "2026-08-01T16:42:59.585598+00:00",
+      "wall_time_s": 160.23
+    }
+  ],
+  "worker": {
+    "device_policy": "CUDA_VISIBLE_DEVICES exposes one physical GPU; model.to('cuda:0'); no device_map='auto'",
+    "gpu_capability": [
+      8,
+      6
+    ],
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "logical_gpu_count": 1,
+    "logical_gpu_id": 0,
+    "longbench_pin": "2e00731f8d0bff23dc4325161044d0ed8af94c1e",
+    "max_input_length": 8192,
+    "method": "kivi",
+    "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+    "physical_gpu_id": "5",
+    "pid": 2886348,
+    "started_at": "2026-08-01T16:40:11.652123+00:00",
+    "tasks": [
+      "lcc"
+    ],
+    "visible_devices": "5"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6344.64,
+  "avg_output_tokens": 35.62,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "qa_f1",
+  "path": "results/longbench/kivi/multifieldqa_en.jsonl",
+  "samples": 50,
+  "score": 30.74,
+  "task": "multifieldqa_en",
+  "updated_at": "2026-08-01T16:42:03.238575+00:00",
+  "wall_time_s": 184.05
+}

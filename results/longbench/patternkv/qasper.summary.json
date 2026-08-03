@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 5146.64,
+  "avg_output_tokens": 35.66,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "qa_f1",
+  "path": "results/longbench/patternkv/qasper.jsonl",
+  "samples": 50,
+  "score": 41.59,
+  "task": "qasper",
+  "updated_at": "2026-08-01T16:10:34.601606+00:00",
+  "wall_time_s": 165.41
+}

@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6257.58,
+  "avg_output_tokens": 13.08,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "qa_f1",
+  "path": "results/longbench/fp16/2wikimqa.jsonl",
+  "samples": 50,
+  "score": 40.13,
+  "task": "2wikimqa",
+  "updated_at": "2026-08-01T16:11:07.674518+00:00",
+  "wall_time_s": 115.28
+}

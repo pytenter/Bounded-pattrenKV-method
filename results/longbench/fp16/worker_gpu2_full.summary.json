@@ -1,0 +1,72 @@
+{
+  "summaries": [
+    {
+      "avg_input_tokens": 7864.46,
+      "avg_output_tokens": 28.58,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "fp16",
+      "metric": "qa_f1",
+      "path": "results/longbench/fp16/hotpotqa.jsonl",
+      "samples": 50,
+      "score": 22.61,
+      "task": "hotpotqa",
+      "updated_at": "2026-08-01T16:09:12.281294+00:00",
+      "wall_time_s": 103.27
+    },
+    {
+      "avg_input_tokens": 6257.58,
+      "avg_output_tokens": 13.08,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "fp16",
+      "metric": "qa_f1",
+      "path": "results/longbench/fp16/2wikimqa.jsonl",
+      "samples": 50,
+      "score": 40.13,
+      "task": "2wikimqa",
+      "updated_at": "2026-08-01T16:11:07.674518+00:00",
+      "wall_time_s": 115.28
+    },
+    {
+      "avg_input_tokens": 8182.94,
+      "avg_output_tokens": 9.32,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "fp16",
+      "metric": "retrieval",
+      "path": "results/longbench/fp16/passage_retrieval_en.jsonl",
+      "samples": 50,
+      "score": 76.0,
+      "task": "passage_retrieval_en",
+      "updated_at": "2026-08-01T16:13:43.052824+00:00",
+      "wall_time_s": 155.26
+    }
+  ],
+  "worker": {
+    "device_policy": "CUDA_VISIBLE_DEVICES exposes one physical GPU; model.to('cuda:0'); no device_map='auto'",
+    "gpu_capability": [
+      8,
+      6
+    ],
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "logical_gpu_count": 1,
+    "logical_gpu_id": 0,
+    "longbench_pin": "2e00731f8d0bff23dc4325161044d0ed8af94c1e",
+    "max_input_length": 8192,
+    "method": "fp16",
+    "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+    "physical_gpu_id": "2",
+    "pid": 2877161,
+    "started_at": "2026-08-01T16:07:21.233476+00:00",
+    "tasks": [
+      "hotpotqa",
+      "2wikimqa",
+      "passage_retrieval_en"
+    ],
+    "visible_devices": "2"
+  }
+}

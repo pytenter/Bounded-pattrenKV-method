@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6257.58,
+  "avg_output_tokens": 13.04,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "qa_f1",
+  "path": "results/longbench/patternkv/2wikimqa.jsonl",
+  "samples": 50,
+  "score": 37.82,
+  "task": "2wikimqa",
+  "updated_at": "2026-08-01T16:14:49.036815+00:00",
+  "wall_time_s": 162.77
+}

@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 2983.78,
+  "avg_output_tokens": 64.0,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "code_sim",
+  "path": "results/longbench/patternkv/lcc.jsonl",
+  "samples": 50,
+  "score": 62.74,
+  "task": "lcc",
+  "updated_at": "2026-08-01T16:19:24.136581+00:00",
+  "wall_time_s": 216.48
+}

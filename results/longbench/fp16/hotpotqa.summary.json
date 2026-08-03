@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 7864.46,
+  "avg_output_tokens": 28.58,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "qa_f1",
+  "path": "results/longbench/fp16/hotpotqa.jsonl",
+  "samples": 50,
+  "score": 22.61,
+  "task": "hotpotqa",
+  "updated_at": "2026-08-01T16:09:12.281294+00:00",
+  "wall_time_s": 103.27
+}

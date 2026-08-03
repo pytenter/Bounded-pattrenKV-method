@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6344.64,
+  "avg_output_tokens": 32.3,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "qa_f1",
+  "path": "results/longbench/patternkv/multifieldqa_en.jsonl",
+  "samples": 50,
+  "score": 49.21,
+  "task": "multifieldqa_en",
+  "updated_at": "2026-08-01T16:11:18.967312+00:00",
+  "wall_time_s": 189.91
+}

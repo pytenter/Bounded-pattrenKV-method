@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6344.64,
+  "avg_output_tokens": 27.82,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "qa_f1",
+  "path": "results/longbench/fp16/multifieldqa_en.jsonl",
+  "samples": 50,
+  "score": 51.37,
+  "task": "multifieldqa_en",
+  "updated_at": "2026-08-01T16:08:12.272356+00:00",
+  "wall_time_s": 63.5
+}

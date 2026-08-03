@@ -9,3 +9,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 logs/*.tmp
+logs/longbench/
+run/
+bench/**/__pycache__/
+bench/**/*.py[cod]

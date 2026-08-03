@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 5885.34,
+  "avg_output_tokens": 64.0,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "classification",
+  "path": "results/longbench/patternkv/trec.jsonl",
+  "samples": 50,
+  "score": 72.0,
+  "task": "trec",
+  "updated_at": "2026-08-01T16:15:47.541465+00:00",
+  "wall_time_s": 268.46
+}

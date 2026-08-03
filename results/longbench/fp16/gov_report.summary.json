@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 7308.98,
+  "avg_output_tokens": 465.94,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "rouge_l",
+  "path": "results/longbench/fp16/gov_report.jsonl",
+  "samples": 50,
+  "score": 35.47,
+  "task": "gov_report",
+  "updated_at": "2026-08-01T16:24:19.060038+00:00",
+  "wall_time_s": 1020.2
+}

@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 6257.58,
+  "avg_output_tokens": 21.14,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "qa_f1",
+  "path": "results/longbench/kivi/2wikimqa.jsonl",
+  "samples": 50,
+  "score": 21.0,
+  "task": "2wikimqa",
+  "updated_at": "2026-08-01T16:42:02.578014+00:00",
+  "wall_time_s": 143.1
+}

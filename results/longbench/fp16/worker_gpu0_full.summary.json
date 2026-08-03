@@ -1,0 +1,56 @@
+{
+  "summaries": [
+    {
+      "avg_input_tokens": 5146.64,
+      "avg_output_tokens": 35.4,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "fp16",
+      "metric": "qa_f1",
+      "path": "results/longbench/fp16/qasper.jsonl",
+      "samples": 50,
+      "score": 41.08,
+      "task": "qasper",
+      "updated_at": "2026-08-01T16:07:18.740478+00:00",
+      "wall_time_s": 29.89
+    },
+    {
+      "avg_input_tokens": 7308.98,
+      "avg_output_tokens": 465.94,
+      "empty_predictions": 0,
+      "expected_samples": 50,
+      "failures": 0,
+      "method": "fp16",
+      "metric": "rouge_l",
+      "path": "results/longbench/fp16/gov_report.jsonl",
+      "samples": 50,
+      "score": 35.47,
+      "task": "gov_report",
+      "updated_at": "2026-08-01T16:24:19.060038+00:00",
+      "wall_time_s": 1020.2
+    }
+  ],
+  "worker": {
+    "device_policy": "CUDA_VISIBLE_DEVICES exposes one physical GPU; model.to('cuda:0'); no device_map='auto'",
+    "gpu_capability": [
+      8,
+      6
+    ],
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "logical_gpu_count": 1,
+    "logical_gpu_id": 0,
+    "longbench_pin": "2e00731f8d0bff23dc4325161044d0ed8af94c1e",
+    "max_input_length": 8192,
+    "method": "fp16",
+    "model_path": "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct",
+    "physical_gpu_id": "0",
+    "pid": 2876654,
+    "started_at": "2026-08-01T16:06:41.216124+00:00",
+    "tasks": [
+      "qasper",
+      "gov_report"
+    ],
+    "visible_devices": "0"
+  }
+}

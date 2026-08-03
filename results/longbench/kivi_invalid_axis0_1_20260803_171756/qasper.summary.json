@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 5146.64,
+  "avg_output_tokens": 34.52,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "qa_f1",
+  "path": "results/longbench/kivi/qasper.jsonl",
+  "samples": 50,
+  "score": 23.77,
+  "task": "qasper",
+  "updated_at": "2026-08-01T16:41:09.491985+00:00",
+  "wall_time_s": 150.42
+}

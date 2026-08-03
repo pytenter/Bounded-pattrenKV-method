@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 7864.46,
+  "avg_output_tokens": 26.52,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "qa_f1",
+  "path": "results/longbench/patternkv/hotpotqa.jsonl",
+  "samples": 50,
+  "score": 22.26,
+  "task": "hotpotqa",
+  "updated_at": "2026-08-01T16:12:06.161420+00:00",
+  "wall_time_s": 217.08
+}

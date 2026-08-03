@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 7308.98,
+  "avg_output_tokens": 502.18,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "patternkv",
+  "metric": "rouge_l",
+  "path": "results/longbench/patternkv/gov_report.jsonl",
+  "samples": 50,
+  "score": 34.04,
+  "task": "gov_report",
+  "updated_at": "2026-08-01T16:32:13.213876+00:00",
+  "wall_time_s": 1298.5
+}

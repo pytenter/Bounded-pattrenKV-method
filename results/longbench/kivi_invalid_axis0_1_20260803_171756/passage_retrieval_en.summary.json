@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 8182.94,
+  "avg_output_tokens": 32.0,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "kivi",
+  "metric": "retrieval",
+  "path": "results/longbench/kivi/passage_retrieval_en.jsonl",
+  "samples": 50,
+  "score": 41.48,
+  "task": "passage_retrieval_en",
+  "updated_at": "2026-08-01T16:43:23.544077+00:00",
+  "wall_time_s": 204.14
+}

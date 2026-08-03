@@ -1,0 +1,15 @@
+{
+  "avg_input_tokens": 2983.78,
+  "avg_output_tokens": 64.0,
+  "empty_predictions": 0,
+  "expected_samples": 50,
+  "failures": 0,
+  "method": "fp16",
+  "metric": "code_sim",
+  "path": "results/longbench/fp16/lcc.jsonl",
+  "samples": 50,
+  "score": 63.98,
+  "task": "lcc",
+  "updated_at": "2026-08-01T16:13:47.727766+00:00",
+  "wall_time_s": 139.17
+}
