@@ -727,6 +727,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # ---- (A) 用 minmax 的“Chebyshev center”当新质心（每个 head 1 个）----
                 
                 cur_centroid = self._chebyshev_center_per_head(Xw).to(self.k_base.dtype)   # [H, 1, D]
+                _insight_old_k_base = self.k_base
+                _insight_new_k_base = torch.cat([_insight_old_k_base, cur_centroid], dim=1)
+                record_decode_k_window_metrics(
+                    window_raw=key_states_full,
+                    old_k_base=_insight_old_k_base,
+                    new_k_base=_insight_new_k_base,
+                    layer_idx=self.layer_idx,
+                    window_idx=int(assignments.shape[-1] // self.residual_length) if assignments is not None else 0,
+                    bits=self.k_bits,
+                    group_size=self.group_size,
+                )
 
                 # ---- (B) 质心集合追加一列（K -> K+1）----
                 self.k_base = torch.cat([self.k_base, cur_centroid], dim=1)                # [H, K+1, D]
@@ -749,21 +760,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     assignments = cur_assignments
 
                 # 残差化 + 量化 pack（沿最后一维）
-                _insight_old_k_count = int(self.k_base.shape[1] - 1)
                 key_states_full = key_states_full - k_base_per_pos
-                try:
-                    record_decode_k_window_metrics(
-                        old_count=_insight_old_k_count,
-                        new_count=int(self.k_base.shape[1]),
-                        old_mse=0.0,
-                        new_mse=0.0,
-                        selected_count=int((cur_assignments == (self.k_base.shape[1] - 1)).sum().item()),
-                        total_count=int(cur_assignments.numel()),
-                        layer_idx=self.layer_idx,
-                        window_idx=int(assignments.shape[-1] // self.residual_length) if assignments is not None else 0,
-                    )
-                except Exception:
-                    pass
                 key_states_quant_trans_new, key_scale_trans_new, key_mn_trans_new = \
                     triton_quantize_and_pack_along_last_dim(
                         key_states_full.transpose(2, 3).contiguous(), self.group_size, self.k_bits
@@ -850,7 +847,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # 1) 先追加一个由当前满窗生成的 Chebyshev center（每个 head 1 个），与 K 侧语义一致
                 #    注：_append_v_centroid_from_window 内部已处理 self.v_centroids 是否为 None 的情况
                 
-                _insight_old_v_count = int(self.v_centroids.shape[1]) if self.v_centroids is not None else 0
+                _insight_old_v_centroids = self.v_centroids
                 self._append_v_centroid_from_window(value_states_full)  # self.v_centroids: [n_kv, m(+1), hd]
 
                 # 2) 用“最新质心集合”对整个窗口做最近质心分配（minmax 距离）
@@ -861,20 +858,24 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # 3) 阈值/掩码（范围收缩检验），并条件性做残差化
                 
                 _T, v_mask_w = self._v_threshold_and_mask(value_states_full, base_override=cent_w)  # v_mask_w: [bz, n_kv, Lr]
-                value_states_full_adj = value_states_full - v_mask_w.unsqueeze(-1).to(value_states_full.dtype) * cent_w
-                try:
+                if _insight_old_v_centroids is not None:
+                    old_idx_w = self._nearest_v_centroid(value_states_full, _insight_old_v_centroids)
+                    old_cent_w = self._gather_centroids(old_idx_w, _insight_old_v_centroids)
+                    _old_T, old_v_mask_w = self._v_threshold_and_mask(value_states_full, base_override=old_cent_w)
                     record_decode_v_window_metrics(
-                        old_count=_insight_old_v_count,
-                        new_count=int(self.v_centroids.shape[1]),
-                        old_mse=0.0,
-                        new_mse=0.0,
-                        selected_count=int(v_mask_w.sum().item()),
-                        total_count=int(v_mask_w.numel()),
+                        window_raw=value_states_full,
+                        old_v_centroids=_insight_old_v_centroids,
+                        new_v_centroids=self.v_centroids,
+                        old_idx=old_idx_w,
+                        new_idx=idx_w,
+                        old_mask=old_v_mask_w,
+                        new_mask=v_mask_w,
                         layer_idx=self.layer_idx,
                         window_idx=int(v_assignments.shape[-1] // self.residual_length) if v_assignments is not None else 0,
+                        bits=self.v_bits,
+                        group_size=self.group_size,
                     )
-                except Exception:
-                    pass
+                value_states_full_adj = value_states_full - v_mask_w.unsqueeze(-1).to(value_states_full.dtype) * cent_w
 
                 # 4) 量化打包（沿最后一维），并把整窗拼接到量化段尾部
                 value_states_quant_new, scale_new, mn_new = triton_quantize_and_pack_along_last_dim(
@@ -978,19 +979,16 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     assignments.unsqueeze(-1).expand(-1, -1, -1, hd)
                 )  # [bsz, n_kv, seq_len, hd]
                 key_states_quant = key_states_quant - k_base_per_pos
-                try:
-                    record_prefill_k_metrics(
-                        key_states=key_states,
-                        key_states_quant=key_states_quant,
-                        assignments=assignments,
-                        k_base=self.k_base,
-                        key_states_full=key_states_quant + k_base_per_pos,
-                        layer_idx=self.layer_idx,
-                        bits=self.k_bits,
-                        group_size=self.group_size,
-                    )
-                except Exception:
-                    pass
+                record_prefill_k_metrics(
+                    key_states=key_states,
+                    key_states_quant=key_states_quant,
+                    assignments=assignments,
+                    k_base=self.k_base,
+                    key_states_full=key_states_quant + k_base_per_pos,
+                    layer_idx=self.layer_idx,
+                    bits=self.k_bits,
+                    group_size=self.group_size,
+                )
                 key_states_quant_trans, key_scale_trans, key_mn_trans = triton_quantize_and_pack_along_last_dim(key_states_quant.transpose(2, 3).contiguous(), self.group_size, self.k_bits)
             else:
                 key_states_quant_trans = None
@@ -1028,19 +1026,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # 条件性减质心（做残差化）
                 _insight_value_states_quant_raw = value_states_quant
                 value_states_quant = value_states_quant - v_mask_q.unsqueeze(-1).to(value_states.dtype) * v_cent_per_pos_q
-                try:
-                    record_prefill_v_metrics(
-                        value_states_quant=value_states_quant,
-                        idx_q=idx_q,
-                        v_centroids=self.v_centroids,
-                        v_mask_q=v_mask_q,
-                        value_states_full=_insight_value_states_quant_raw,
-                        layer_idx=self.layer_idx,
-                        bits=self.v_bits,
-                        group_size=self.group_size,
-                    )
-                except Exception:
-                    pass
+                record_prefill_v_metrics(
+                    value_states_quant=value_states_quant,
+                    idx_q=idx_q,
+                    v_centroids=self.v_centroids,
+                    v_mask_q=v_mask_q,
+                    value_states_full=_insight_value_states_quant_raw,
+                    layer_idx=self.layer_idx,
+                    bits=self.v_bits,
+                    group_size=self.group_size,
+                    rho=T1,
+                )
 
                 # 量化 pack（沿最后一维）
                 value_states_quant, value_scale, value_mn = triton_quantize_and_pack_along_last_dim(

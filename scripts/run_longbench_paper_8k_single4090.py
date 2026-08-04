@@ -221,6 +221,8 @@ def run_one(model, tokenizer, args: Namespace, task: str, index: int, ex: dict, 
     prompt_info = {}
     try:
         prompt_info, input_ids, attention_mask = encode_prompt(ex, tokenizer, task, args.max_input_length)
+        input_token_ids = [int(x) for x in input_ids[0].detach().cpu().tolist()]
+        input_token_ids_sha256 = sha256_text(json.dumps(input_token_ids, separators=(",", ":")))
         if prompt_info["input_tokens_after_special_tokens"] > args.max_input_length:
             raise RuntimeError(f"encoded prompt exceeds max_input_length: {prompt_info['input_tokens_after_special_tokens']} > {args.max_input_length}")
         last_op = "generate"
@@ -242,6 +244,7 @@ def run_one(model, tokenizer, args: Namespace, task: str, index: int, ex: dict, 
         torch.cuda.synchronize()
         seq = output.sequences
         output_ids = [int(x) for x in seq[0, input_ids.shape[1]:].detach().cpu().tolist()]
+        generated_token_ids_sha256 = sha256_text(json.dumps(output_ids, separators=(",", ":")))
         generated = tokenizer.decode(seq[0, input_ids.shape[1]:], skip_special_tokens=True)
         stop_reason, hit_max = generation_stop(output_ids, MAX_NEW_TOKENS[task], tokenizer.eos_token_id)
         refs = list(ex.get("answers") or [])
@@ -272,6 +275,9 @@ def run_one(model, tokenizer, args: Namespace, task: str, index: int, ex: dict, 
         rec.update(
             {
                 "generated_text": generated,
+                "input_token_ids_sha256": input_token_ids_sha256,
+                "generated_token_ids": output_ids,
+                "generated_token_ids_sha256": generated_token_ids_sha256,
                 "generated_tokens": len(output_ids),
                 "prediction": generated,
                 "score": score,

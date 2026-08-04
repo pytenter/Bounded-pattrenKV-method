@@ -1,0 +1,7 @@
+{
+  "generated_at": "2026-08-04T13:34:07.228381+00:00",
+  "reason": "micro-smoke observer files were not provided",
+  "rows": [],
+  "schema_version": "insight_v2.micro_smoke_report",
+  "status": "blocked"
+}

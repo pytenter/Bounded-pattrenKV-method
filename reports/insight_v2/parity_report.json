@@ -1,17 +1,7 @@
 {
-  "generated_at": "2026-08-04T12:58:07.730362+00:00",
-  "git_commit": "9d0afb7ef470253cb16fdb02c34d4685e44c65d2",
-  "reason": "bench/bench_pattern_insight.py real generation lifecycle is not connected yet",
-  "required_comparison": [
-    "input_token_ids",
-    "generated_token_ids",
-    "sha256",
-    "generated_text",
-    "score_or_is_correct",
-    "stop_reason",
-    "cache_length",
-    "last_token_id"
-  ],
+  "generated_at": "2026-08-04T13:34:05.276608+00:00",
+  "git_commit": "3e989f28b1fc0f1dcd96fe622de1649509dd8807",
+  "reason": "parity generation files were not provided",
   "required_samples": [
     {
       "count": 1,
@@ -29,6 +19,7 @@
       "task": "gsm8k"
     }
   ],
+  "rows": [],
   "schema_version": "insight_v2.parity_report",
   "status": "blocked"
 }

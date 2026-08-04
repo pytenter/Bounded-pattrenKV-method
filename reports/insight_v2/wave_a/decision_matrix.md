@@ -1,3 +1,3 @@
 # Decision Matrix
 
-Status: PARTIAL_OR_BLOCKED
+Status: DATA INSUFFICIENT

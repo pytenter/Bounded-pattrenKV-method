@@ -24,7 +24,7 @@ def _metadata():
 
 
 def test_prefill_k_hook_records_bounded_scalars(tmp_path: Path):
-    cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, sample_tokens=4, max_sample_records=8)
+    cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, sample_tokens=4, max_sample_records=32)
     begin_sample(_metadata(), cfg)
     raw = torch.randn(1, 1, 128, 4, dtype=torch.float16)
     base = torch.zeros(1, 2, 4, dtype=torch.float16)
@@ -43,12 +43,13 @@ def test_prefill_k_hook_records_bounded_scalars(tmp_path: Path):
     out = tmp_path / "k.json"
     end_sample(out)
     text = out.read_text()
-    assert "prefill.k.layer0.raw_mse" in text
+    assert "prefill.k.layer0.head0.bucket" in text
+    assert "raw_mse" in text
     assert "assignment_histogram" in text
 
 
 def test_prefill_v_hook_records_gate_confusion(tmp_path: Path):
-    cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, sample_tokens=2, max_sample_records=8)
+    cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, sample_tokens=2, max_sample_records=32)
     begin_sample(_metadata(), cfg)
     raw = torch.randn(1, 1, 2, 128, dtype=torch.float16)
     residual = raw.clone()
@@ -68,5 +69,5 @@ def test_prefill_v_hook_records_gate_confusion(tmp_path: Path):
     out = tmp_path / "v.json"
     end_sample(out)
     text = out.read_text()
-    assert "prefill.v.layer0.gate_acceptance" in text
-    assert "gate_vs_selected_oracle" in text
+    assert "prefill.v.layer0.head0.gate_acceptance" in text
+    assert "gate_vs_mse_oracle" in text

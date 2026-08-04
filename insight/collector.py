@@ -131,6 +131,15 @@ class InsightCollector:
                     cleaned[str(k)] = v.detach().to("cpu").item()
                 elif isinstance(v, (int, float, str, bool)) or v is None:
                     cleaned[str(k)] = v
+                elif isinstance(v, (list, tuple)) and len(v) <= 16 and all(isinstance(x, (int, float, str, bool)) or x is None for x in v):
+                    cleaned[str(k)] = list(v)
+                elif isinstance(v, (list, tuple)) and len(v) <= 16 and all(isinstance(x, (list, tuple)) for x in v):
+                    nested = []
+                    for row in v:
+                        if len(row) > 16 or not all(isinstance(x, (int, float, str, bool)) or x is None for x in row):
+                            raise ValueError(f"sample record field {key}.{k!r} has unsupported nested list")
+                        nested.append(list(row))
+                    cleaned[str(k)] = nested
                 else:
                     raise ValueError(f"sample record field {key}.{k!r} has unsupported value type {type(v).__name__}")
             return cleaned

@@ -84,6 +84,8 @@ def run_one(args, model, tokenizer, row, cfg_hash, git_commit):
     encoded = tokenizer(rendered_prompt, return_tensors="pt", add_special_tokens=False)
     input_ids = encoded.input_ids.to("cuda:0")
     attention_mask = encoded.attention_mask.to("cuda:0")
+    input_token_ids = [int(x) for x in input_ids[0].detach().cpu().tolist()]
+    input_token_ids_sha256 = config_hash({"input_token_ids": input_token_ids})
     torch.cuda.reset_peak_memory_stats()
     t0 = time.perf_counter()
     out = model.generate(
@@ -105,6 +107,8 @@ def run_one(args, model, tokenizer, row, cfg_hash, git_commit):
     wall = time.perf_counter() - t0
     seq = out.sequences
     gen_ids = seq[0, input_ids.shape[1] :].tolist()
+    gen_ids = [int(x) for x in gen_ids]
+    generated_token_ids_sha256 = config_hash({"generated_token_ids": gen_ids})
     text = tokenizer.decode(gen_ids, skip_special_tokens=True)
     parsed = parse_prediction(text)
     ref = extract_reference(row["answer"])
@@ -130,6 +134,9 @@ def run_one(args, model, tokenizer, row, cfg_hash, git_commit):
         "num_return_sequences": 1,
         "max_new_tokens": args.max_new_tokens,
         "generated_text": text,
+        "input_token_ids_sha256": input_token_ids_sha256,
+        "generated_token_ids": gen_ids,
+        "generated_token_ids_sha256": generated_token_ids_sha256,
         "raw_prediction": text,
         "generated_tokens": len(gen_ids),
         "total_sequence_tokens": int(seq.shape[1]),

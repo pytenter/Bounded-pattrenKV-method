@@ -2,6 +2,7 @@
 
 Status: BLOCKED
 
-Reason: bench/bench_pattern_insight.py real generation lifecycle is not connected yet
+Reason: parity generation files were not provided
 
-Token-level parity must pass before Wave A can run.
+| dataset | task | sample | token_equal | first_basic_divergence | first_oracle_divergence |
+|---|---|---|---:|---:|---:|

@@ -27,10 +27,11 @@ payload = {
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "status": "prepared",
     "jobs": jobs,
-    "gates": {
-        "quant_reference_validation": "reports/insight_v2/quant_reference_validation.json",
-        "parity_report": "reports/insight_v2/parity_report.json",
-    },
+        "gates": {
+            "quant_reference_validation": "reports/insight_v2/quant_reference_validation.json",
+            "parity_report": "reports/insight_v2/parity_report.json",
+            "micro_smoke_report": "reports/insight_v2/micro_smoke_report.json",
+        },
 }
 atomic_write_json(Path("reports/insight_v2/wave_a_manifest.json"), payload)
 lines = ["# Wave A Manifest", "", "| gpu | dataset | task | limit |", "|---:|---|---|---:|"]
@@ -53,16 +54,57 @@ p=Path("reports/insight_v2/parity_report.json")
 print(json.loads(p.read_text()).get("status") if p.exists() else "missing")
 PY
 )"
+micro_status="$("$PYTHON_BIN" - <<'PY'
+import json
+from pathlib import Path
+p=Path("reports/insight_v2/micro_smoke_report.json")
+print(json.loads(p.read_text()).get("status") if p.exists() else "missing")
+PY
+)"
 
-if [[ "$quant_status" != "passed" || "$parity_status" != "passed" ]]; then
+if [[ "$quant_status" != "passed" || "$parity_status" != "passed" || "$micro_status" != "passed" ]]; then
   cat > run/insight_v2/wave_a.blocked <<EOF
 Wave A not launched.
 quant_reference_validation=$quant_status
 parity_report=$parity_status
+micro_smoke_report=$micro_status
 EOF
-  echo "Wave A blocked: quant=$quant_status parity=$parity_status"
+  echo "Wave A blocked: quant=$quant_status parity=$parity_status micro=$micro_status"
   exit 2
 fi
 
-echo "Wave A gates passed, but real generation runner is not connected in this branch."
-exit 3
+read -r -a gpu_ids <<< "${GPU_IDS:-0 1 2 3 4 5}"
+if [[ "${#gpu_ids[@]}" -lt 6 ]]; then
+  echo "Need 6 GPU ids, got: ${GPU_IDS:-0 1 2 3 4 5}" >&2
+  exit 4
+fi
+
+declare -a datasets=(longbench longbench longbench longbench longbench gsm8k)
+declare -a tasks=(hotpotqa passage_retrieval_en passage_retrieval_zh samsum dureader gsm8k)
+declare -a limits=(12 12 12 12 12 50)
+
+for i in 0 1 2 3 4 5; do
+  gpu="${gpu_ids[$i]}"
+  dataset="${datasets[$i]}"
+  task="${tasks[$i]}"
+  limit="${limits[$i]}"
+  log="logs/insight_v2/wave_a_gpu${gpu}_${dataset}_${task}.log"
+  pidfile="run/insight_v2/wave_a_gpu${gpu}_${dataset}_${task}.pid"
+  if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+    echo "skip active $pidfile pid=$(cat "$pidfile")"
+    continue
+  fi
+  CUDA_VISIBLE_DEVICES="$gpu" PATTERNKV_INSIGHT=1 PATTERNKV_INSIGHT_LEVEL=oracle \
+    "$PYTHON_BIN" bench/bench_pattern_insight.py \
+      --dataset "$dataset" \
+      --tasks "$task" \
+      --model-path "$MODEL_PATH" \
+      --gpu-id "$gpu" \
+      --insight-level oracle \
+      --oracle-samples-per-head 8 \
+      --limit "$limit" \
+      --skip-existing \
+      > "$log" 2>&1 &
+  echo $! > "$pidfile"
+  echo "launched gpu=$gpu dataset=$dataset task=$task limit=$limit pid=$(cat "$pidfile") log=$log"
+done

@@ -57,17 +57,19 @@ def main() -> None:
     if not observer_files:
         lines.append("No Wave A observer outputs are available.")
     atomic_write_text(out_dir / "completion.md", "\n".join(lines) + "\n")
-    for name in (
-        "pattern_gain_map.csv",
-        "pattern_harm_fraction.csv",
-        "matching_oracle_gap.csv",
-        "k_conditional_oracle.csv",
-        "v_gate_confusion.csv",
-        "dynamic_pattern_utility.csv",
-    ):
-        (out_dir / name).write_text("status,reason\npartial_or_blocked,no_wave_a_observer_outputs\n", encoding="utf-8")
+    if observer_files:
+        for name in (
+            "pattern_gain_map.csv",
+            "pattern_gain_map_by_head.csv",
+            "pattern_harm_fraction.csv",
+            "matching_oracle_gap.csv",
+            "k_conditional_oracle.csv",
+            "v_gate_confusion.csv",
+            "dynamic_pattern_utility.csv",
+        ):
+            (out_dir / name).write_text("task,phase,layer,kv_head,kv_type,metric,count,mean\n", encoding="utf-8")
     atomic_write_text(out_dir / "summary.md", "\n".join(lines) + "\n")
-    atomic_write_text(out_dir / "decision_matrix.md", "# Decision Matrix\n\nStatus: PARTIAL_OR_BLOCKED\n",)
+    atomic_write_text(out_dir / "decision_matrix.md", "# Decision Matrix\n\nStatus: DATA INSUFFICIENT\n",)
     print(json.dumps({"status": status, "observer_file_count": len(observer_files)}, sort_keys=True))
 
 

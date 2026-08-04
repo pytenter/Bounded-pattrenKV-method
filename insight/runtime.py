@@ -8,6 +8,7 @@ from typing import Any
 
 from insight.collector import InsightCollector
 from insight.config import InsightRuntimeConfig
+from insight.errors import InsightHookError
 from insight.io import atomic_write_json
 
 
@@ -116,5 +117,18 @@ def abort_sample(error: BaseException | str, output_path: Path) -> None:
     _ACTIVE_OBSERVER = None
     if observer is not None:
         observer.status = "aborted"
+        if isinstance(error, InsightHookError):
+            observer.add_sample_record(
+                {
+                    "hook": error.hook_name,
+                    "phase": error.phase,
+                    "kv_type": error.kv_type,
+                    "layer_idx": error.layer_idx,
+                    "kv_head": error.kv_head,
+                    "exception_type": error.exception_type,
+                    "exception_message": error.exception_message,
+                    "tensor_shapes": error.tensor_shapes,
+                }
+            )
         observer.write(output_path, status="aborted", error=repr(error))
         observer.collector.clear()
