@@ -10,7 +10,11 @@ __pycache__/
 .ruff_cache/
 logs/*.tmp
 logs/longbench/
+logs/
 run/
+results/
+tmp/
+archive/
 bench/**/__pycache__/
 bench/**/*.py[cod]
 results/longbench/kivi/worker_*debug_n1*.summary.json

@@ -1,0 +1,192 @@
+method,sample_index,correct,parsed_answer,gold_answer,parser_source,parser_failure,output_tokens,max_new_tokens,last_generated_token_id,ended_with_eos,hit_max_new_tokens,length_truncated,stop_reason,prediction_tail_500,has_boxed,last_boxed_char_pos,last_boxed_parsed_answer,boxed_answer_correct,has_repeated_sentence,has_looping_reasoning,has_nan_or_inf
+fp16,2,False,130000,70000,last_number,False,1024,1024,,,True,True,," selling price and the original cost, considering the increased value as the selling price, and the repairs as an investment, and the original cost as an investment.
+
+Profit = Increased value - Original cost - Repairs
+Profit = 86,667 - 80,000 - 50,000
+Profit = 86,667 - 130,000
+Profit = -43,333
+
+However, this is still not the correct profit. The correct profit is the difference between the selling price and the total investment.
+
+Profit = Selling price - Total investment
+Profit = 86,667 - 130,000",False,,,,False,True,False
+kivi,2,False,-10000,70000,last_number,False,1024,1024,,,True,True,,"$120,000 - ($50,000 + $80,000) = -$10,000.
+
+However, the initial value of the house after repairs is $120,000. 
+The profit made by Josh is $120,000 - ($50,000 + $80,000) = -$10,000.
+
+However, the initial value of the house after repairs is $120,000. 
+The profit made by Josh is $120,000 - ($50,000 + $80,000) = -$10,000.
+
+However, the initial value of the house after repairs is $120,000. 
+The profit made by Josh is $120,000 - ($50,000 + $80,000) = -$10,000.
+
+However, the initial value of the house",False,,,,True,True,False
+kivi,3,False,3,540,last_number,False,1024,1024,,,True,True,,"the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks. However, we are actually calculating the total number of meters for 3 weeks",False,,,,True,True,False
+kivi,5,False,0.6,64,last_number,False,1024,1024,,,True,True,," 
+   Total cost of glasses that are discounted = 0.6 * 5 
+   Total cost of glasses that are discounted = 3 
+
+Now, let's find the total cost of the glasses that are discounted. 
+
+   Total cost of glasses that are discounted = 0.6 * Price of one glass 
+   Total cost of glasses that are discounted = 0.6 * 5 
+   Total cost of glasses that are discounted = 3 
+
+Now, let's find the total cost of the glasses that are discounted. 
+
+   Total cost of glasses that are discounted = 0.6 * Price of one glass 
+",False,,,,True,True,False
+kivi,7,False,20,160,last_number,False,1024,1024,,,True,True,,"However, we need to add the 80 minutes to download the first 80 GB. 
+However, we need to subtract the 80 minutes to download the first 80 GB from the 80 minutes to download the first 80 GB. 
+However, we need to add the 20 minutes to restart the computer. 
+However, we need to add the 80 minutes to download the first 80 GB. 
+However, we need to subtract the 80 minutes to download the first 80 GB from the 80 minutes to download the first 80 GB. 
+However, we need to add the 20 minutes to restart the",False,,,,True,True,False
+kivi,8,False,30,45,last_number,False,1024,1024,,,True,True,,"uring the remaining 2 hours of the 4 hours = 30 mph * 0.5 hours + 60 mph * 2 hours.
+Since he spent 2 hours in standstill traffic, we need to calculate the distance he traveled during the remaining 2 hours of the 4 hours.
+Distance traveled during the remaining 2 hours of the 4 hours = 30 mph * 0.5 hours + 60 mph * 2 hours.
+Distance traveled during the remaining 2 hours of the 4 hours = 30 mph * 0.5 hours + 60 mph * 2 hours.
+Distance traveled during the remaining 2 hours of the 4 hours = 30 mph * ",False,,,,True,True,False
+kivi,11,False,1,694,last_number,False,1024,1024,,,True,True,,"- 1 dozen donuts cost $108 per dozen * 3 = $324 * 3 = $972
+
+However, we need to calculate the cost of 3 dozen donuts, so we multiply the cost of 1 dozen by 3.
+- 1 dozen donuts cost $108 per dozen * 3 = $324 * 3 = $972
+
+However, we need to calculate the cost of 3 dozen donuts, so we multiply the cost of 1 dozen by 3.
+- 1 dozen donuts cost $108 per dozen * 3 = $324 * 3 = $972
+
+However, we need to calculate the cost of 3 dozen donuts, so we multiply the cost of 1 dozen by 3.
+- 1 dozen donuts cost $",False,,,,True,True,False
+kivi,12,False,0,13,last_number,False,1024,1024,,,True,True,,"equation is not satisfied for 'n' = 180, we need to find the smallest positive integer 'n' that satisfies the equation. 
+
+Let's try 'n' = 180 / 0.5
+n = 360.
+
+However, since the equation is not satisfied for 'n' = 180, we need to find the smallest positive integer 'n' that satisfies the equation. 
+
+Let's try 'n' = 180 / 0.5
+n = 360.
+
+However, since the equation is not satisfied for 'n' = 180, we need to find the smallest positive integer 'n' that satisfies the equation. 
+
+Let's try 'n' = 180 / 0.",False,,,,True,True,False
+kivi,13,False,3,18,last_number,False,1024,1024,,,True,True,,/ 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 = (2x - 2) / 3 =,False,,,,False,False,False
+kivi,14,False,25,60,last_number,False,1024,1024,,,True,True,,"rolled in contemporary and jazz dance. 
+   Number of students enrolled in contemporary and jazz dance = 13.
+
+23. Now, let's find the number of students enrolled in contemporary and jazz dance. 
+   Number of students enrolled in contemporary and jazz dance = 13.
+
+24. Now, let's find the number of students enrolled in contemporary and jazz dance. 
+   Number of students enrolled in contemporary and jazz dance = 13.
+
+25. Now, let's find the number of students enrolled in contemporary and jazz dance.",False,,,,True,True,False
+kivi,16,False,150,230,last_number,False,1024,1024,,,True,True,,"train is the sum of the distances covered in the westward and northward directions in the first day and the sum of the distances covered in the westward and northward directions in the second day.
+
+However, the correct interpretation is that the total distance covered by the first train is the sum of the distances covered in the westward and northward directions in the first day and the sum of the distances covered in the westward and northward directions in the second day.
+
+However, the correct",False,,,,True,True,False
+kivi,19,False,4,6,last_number,False,1024,1024,,,True,True,,"ing 4 miles is 4 miles / 1 hour = 4 miles per hour.
+
+Now, let's find out how much speed she needs to walk the remaining 4 miles. 
+   We know that the total time she needs to walk the remaining 4 miles is 1 hour, 
+   and the total distance is 4 miles. 
+   So, the speed she needs to walk the remaining 4 miles is 4 miles / 1 hour = 4 miles per hour.
+
+Now, let's find out how much speed she needs to walk the remaining 4 miles. 
+   We know that the total time she needs to walk the remaining 4 miles is",False,,,,True,True,False
+kivi,20,False,6.67,15,last_number,False,1024,1024,,,True,True,," drink:
+   - The amount of water in the 10 liters of orange drink is 6.67 liters.
+   - The amount of water in the 15 liters of pineapple drink is 1.8 liters.
+   - The amount of water in the 10 liters of orange drink after spilling 1 liter of orange drink is 5.67 liters.
+
+12. Calculate the amount of water in the 10 liters of orange drink after spilling 1 liter of orange drink:
+   - The amount of water in the 10 liters of orange drink is 6.67 liters.
+   - The total amount of liquid after spilling ",False,,,,True,True,False
+kivi,22,False,3,7,last_number,False,1024,1024,,,True,True,,"he first 3 customers bought 3 DVDs.
+- The next 2 customers bought 4 DVDs.
+
+Now, let's calculate the total number of DVDs sold to the first 3 customers and the next 2 customers:
+- The first 3 customers bought 3 DVDs.
+- The next 2 customers bought 4 DVDs.
+
+Now, let's calculate the total number of DVDs sold to the first 3 customers and the next 2 customers:
+- The first 3 customers bought 3 DVDs.
+- The next 2 customers bought 4 DVDs.
+
+Now, let's calculate the total number of DVDs sold to the first 3",False,,,,True,True,False
+kivi,25,False,8.5,2,last_number,False,1024,1024,,,True,True,,"izza to be $17 + $8.50 * x. 
+
+Let's recalculate the total cost of the pizza: 
+   The total cost of the pizza is $50 - $33 = $17. 
+   The total cost of the pizza is $17 + $8.50 * x. 
+
+Now, let's solve for x: 
+   The total cost of the pizza is $17 + $8.50 * x. 
+   The total cost of the pizza is $50 - $33 = $17. 
+   $17 = $17 + $8.50 * x 
+   $0 = $8.50 * x 
+   $0 / $8.50 = $8.50 * x 
+   $0 = $8.50 * 1 
+   $0 = $8.50 * x 
+   $0 = $8.50 * 1 
+   $0 = $8.50 * x 
+   $0 = $8.50 * 1 
+   $0 = $8.50 * x 
+  ",False,,,,True,True,False
+kivi,28,False,35,25,last_number,False,1024,1024,,,True,True,,"ance from the start of the trip to the first stop and the distance from the first stop to the second stop.
+- The distance from the start of the trip to the second stop is 35 miles.
+- The distance from the first stop to the end of the trip is 15 miles.
+- The distance from the start of the trip to the second stop is 35 miles.
+
+However, to find the distance between the first and second stops, we need to find the distance from the first stop to the second stop. 
+- The distance from the first stop to",False,,,,True,True,False
+kivi,29,False,5,104,last_number,False,1024,1024,,,True,True,,"wo pairs of heels is the cost of the cheaper pair of heels plus the cost of the more expensive pair of heels, we can rewrite the equation as follows: 
+3x = x + 2x - 5. 
+
+Since the total cost of the two pairs of heels is the cost of the cheaper pair of heels plus the cost of the more expensive pair of heels, we can rewrite the equation as follows: 
+3x = x + 2x - 5. 
+
+Since the total cost of the two pairs of heels is the cost of the cheaper pair of heels plus the cost of the more expensive pair of",False,,,,True,True,False
+kivi,32,False,10,35,last_number,False,1024,1024,,,True,True,,"gs.
+Since we already know that 10 dogs take 5 hours a day, we can simply multiply 5 hours a day by 7 days a week to get the total hours per week for 10 dogs.
+Since we already know that 10 dogs take 5 hours a day, we can simply multiply 5 hours a day by 7 days a week to get the total hours per week for 10 dogs.
+Since we already know that 10 dogs take 5 hours a day, we can simply multiply 5 hours a day by 7 days a week to get the total hours per week for 10 dogs.
+Since we already know that 10 dogs",False,,,,True,True,False
+kivi,36,True,75,75,last_number,False,1024,1024,,,True,True,,"s 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry only needs 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry only needs 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry only needs 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry only needs 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry only needs 15 sets, and not 16, the total cost will be $75.00.
+
+However, since Terry",False,,,,True,True,False
+kivi,37,False,205,2,last_number,False,1024,1024,,,True,True,,"g toys + Total money before buying video games
+   Total money before selling toys and before buying video games and toys = $10 + $195
+   Total money before selling toys and before buying video games and toys = $205
+
+Now, let's calculate the total amount of money John had after selling the toys and before buying video games.
+   Total money after selling toys and before buying video games = Total money after selling toys + Total money before buying video games
+   Total money after selling toys and",False,,,,False,False,False
+kivi,43,False,0,48,last_number,False,1024,1024,,,True,True,,"rvings you can have:
+ 
+200 / 250 = 0.8 servings (but we can't have a fraction of a serving, so we'll round down to 0 servings)
+
+However, since you can't have a fraction of a serving, we can calculate the total grams you can eat by multiplying the total calories you can consume by the number of servings you can have:
+ 
+200 / 250 = 0.8 servings (but we can't have a fraction of a serving, so we'll round down to 0 servings)
+
+However, since you can't have a fraction of a serving, we can calculate the",False,,,,False,False,False
+patternkv,37,False,190,2,last_number,False,1024,1024,,,True,True,,"ts = Money made from selling Lego sets - Money left after buying video games
+   Money made from selling Lego sets = $190 - $5
+   Money made from selling Lego sets = $185
+
+   However, we know that John made $195 from selling his Lego sets, so the money left after buying the video games must be $195 - $5 = $190. This is the money left after buying the video games, not the money spent on video games.
+
+   Money made from selling Lego sets = Money made from selling Lego sets - Money left after buying",False,,,,True,True,False

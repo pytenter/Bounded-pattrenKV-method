@@ -1,0 +1,128 @@
+{
+  "created_at": "2026-08-03T12:55:47.794465+00:00",
+  "expected_samples": 50,
+  "issues": [],
+  "methods": [
+    {
+      "accuracy": 0.82,
+      "accuracy_percent": 82.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 9.119,
+      "avg_output_tokens": 274.56,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 41,
+      "delta_vs_fp16_points": 0.0,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 1,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/smoke/fp16/all.jsonl",
+      "method": "fp16",
+      "oom_errors": 0,
+      "p50_output_tokens": 237.5,
+      "p95_output_tokens": 462.9,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.316,
+      "retention_vs_fp16_percent": 100.0,
+      "rows": 50,
+      "shard_counts": {
+        "0": 13,
+        "1": 13,
+        "2": 12,
+        "3": 12
+      }
+    },
+    {
+      "accuracy": 0.36,
+      "accuracy_percent": 36.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 22.73,
+      "avg_output_tokens": 590.88,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 18,
+      "delta_vs_fp16_points": -46.0,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 20,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/smoke/kivi/all.jsonl",
+      "method": "kivi",
+      "oom_errors": 0,
+      "p50_output_tokens": 357.0,
+      "p95_output_tokens": 1024.0,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.322,
+      "retention_vs_fp16_percent": 43.902,
+      "rows": 50,
+      "shard_counts": {
+        "0": 13,
+        "1": 13,
+        "2": 12,
+        "3": 12
+      }
+    },
+    {
+      "accuracy": 0.84,
+      "accuracy_percent": 84.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 13.3224,
+      "avg_output_tokens": 259.8,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 42,
+      "delta_vs_fp16_points": 2.0,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 1,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/smoke/patternkv/all.jsonl",
+      "method": "patternkv",
+      "oom_errors": 0,
+      "p50_output_tokens": 238.5,
+      "p95_output_tokens": 382.15,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.299,
+      "retention_vs_fp16_percent": 102.439,
+      "rows": 50,
+      "shard_counts": {
+        "0": 13,
+        "1": 13,
+        "2": 12,
+        "3": 12
+      }
+    }
+  ],
+  "mode": "smoke",
+  "num_shards": 4,
+  "pairwise_patternkv_kivi": {
+    "bootstrap_delta_accuracy_points_ci95": {
+      "p2_5": 34.0,
+      "p50": 48.0,
+      "p97_5": 62.0
+    },
+    "both_correct": 18,
+    "both_wrong": 8,
+    "common_samples": 50,
+    "mcnemar_exact_p": 0.0,
+    "only_kivi_correct": 0,
+    "only_patternkv_correct": 24
+  },
+  "pass": true
+}

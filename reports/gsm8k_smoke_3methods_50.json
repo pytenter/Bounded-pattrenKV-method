@@ -1,0 +1,140 @@
+{
+  "created_at": "2026-08-03T13:25:04.782264+00:00",
+  "expected_samples": 50,
+  "issues": [
+    "missing_sample_index:patternkv:count=20 first=[7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 35, 36, 37, 46, 47, 48, 49]",
+    "wrong_total_rows:patternkv:30!=expected:50"
+  ],
+  "methods": [
+    {
+      "accuracy": 0.82,
+      "accuracy_percent": 82.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 9.0197,
+      "avg_output_tokens": 274.56,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 41,
+      "delta_vs_fp16_points": 0.0,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 1,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/smoke_1024/fp16/all.jsonl",
+      "method": "fp16",
+      "normal_eos_rate": 0.98,
+      "normal_eos_rate_percent": 98.0,
+      "oom_errors": 0,
+      "p50_output_tokens": 237.5,
+      "p95_output_tokens": 462.9,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.318,
+      "retention_vs_fp16_percent": 100.0,
+      "rows": 50,
+      "shard_counts": {
+        "0": 13,
+        "1": 13,
+        "2": 12,
+        "3": 12
+      }
+    },
+    {
+      "accuracy": 0.36,
+      "accuracy_percent": 36.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 21.8985,
+      "avg_output_tokens": 590.88,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 18,
+      "delta_vs_fp16_points": -46.0,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 20,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/smoke_1024/kivi/all.jsonl",
+      "method": "kivi",
+      "normal_eos_rate": 0.6,
+      "normal_eos_rate_percent": 60.0,
+      "oom_errors": 0,
+      "p50_output_tokens": 357.0,
+      "p95_output_tokens": 1024.0,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.32,
+      "retention_vs_fp16_percent": 43.902,
+      "rows": 50,
+      "shard_counts": {
+        "0": 13,
+        "1": 13,
+        "2": 12,
+        "3": 12
+      }
+    },
+    {
+      "accuracy": 0.933333,
+      "accuracy_percent": 93.333,
+      "avg_input_tokens": 107.5,
+      "avg_latency_s": 11.7703,
+      "avg_output_tokens": 233.3,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "correct": 28,
+      "delta_vs_fp16_points": 11.333,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [
+        "missing_sample_index:patternkv:count=20 first=[7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 35, 36, 37, 46, 47, 48, 49]",
+        "wrong_total_rows:patternkv:30!=expected:50"
+      ],
+      "length_truncated": 0,
+      "max_output_tokens": 343,
+      "merged_path": "results/gsm8k/smoke_1024/patternkv/all.jsonl",
+      "method": "patternkv",
+      "normal_eos_rate": 1.0,
+      "normal_eos_rate_percent": 100.0,
+      "oom_errors": 0,
+      "p50_output_tokens": 234.0,
+      "p95_output_tokens": 333.75,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.299,
+      "retention_vs_fp16_percent": 113.821,
+      "rows": 30,
+      "shard_counts": {
+        "0": 7,
+        "1": 6,
+        "2": 9,
+        "3": 8
+      }
+    }
+  ],
+  "mode": "smoke",
+  "num_shards": 4,
+  "pairwise_patternkv_kivi": {
+    "bootstrap_delta_accuracy_points_ci95": {
+      "p2_5": 40.0,
+      "p50": 56.6667,
+      "p97_5": 73.3333
+    },
+    "both_correct": 11,
+    "both_wrong": 2,
+    "common_samples": 30,
+    "mcnemar_exact_p": 1.5e-05,
+    "only_kivi_correct": 0,
+    "only_patternkv_correct": 17
+  },
+  "pass": false
+}

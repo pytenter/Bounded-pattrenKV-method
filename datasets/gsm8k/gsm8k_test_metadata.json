@@ -1,0 +1,10 @@
+{
+  "config": "main",
+  "duplicate_questions": 0,
+  "num_examples": 1319,
+  "prepared_at": "2026-08-04T00:40:13.159368+00:00",
+  "revision": "local_prepared_previous_run",
+  "sha256": "abc53551be3430370b069ed676832d027e89970e73b9ea8164971ffcf96fdb2b",
+  "source": "local data/gsm8k/test.jsonl",
+  "split": "test"
+}

@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-08-03T15:24:40.596475+00:00",
+  "expected_samples": 50,
+  "issues": [],
+  "methods": [
+    {
+      "accuracy": 0.86,
+      "accuracy_percent": 86.0,
+      "avg_input_tokens": 107.22,
+      "avg_latency_s": 19.4221,
+      "avg_output_tokens": 293.26,
+      "bad_json_lines": {
+        "0": 0,
+        "1": 0
+      },
+      "correct": 43,
+      "empty_predictions": 0,
+      "errors": 0,
+      "issues": [],
+      "length_truncated": 3,
+      "max_output_tokens": 1024,
+      "merged_path": "results/gsm8k/kivi_official_smoke_1024_g32r32/smoke/kivi_official/all.jsonl",
+      "method": "kivi_official",
+      "normal_eos_rate": 0.94,
+      "normal_eos_rate_percent": 94.0,
+      "oom_errors": 0,
+      "p50_output_tokens": 242.5,
+      "p95_output_tokens": 735.55,
+      "parser_failures": 0,
+      "peak_reserved_gb": 15.277,
+      "rows": 50,
+      "shard_counts": {
+        "0": 25,
+        "1": 25
+      }
+    }
+  ],
+  "mode": "smoke",
+  "num_shards": 2,
+  "pairwise_patternkv_kivi": null,
+  "pass": true
+}
