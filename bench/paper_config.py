@@ -181,6 +181,8 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             "initial_pattern_count": None,
             "dynamic_pattern_count_k": None,
             "dynamic_pattern_count_v": None,
+            "persistent_key_heads": None,
+            "persistent_value_heads": None,
         }
     )
     for layer in past_key_values or []:
@@ -205,6 +207,14 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             out["scale_min_bytes"] += tensor_bytes(vals.get(name))
         for name in ("key_states_full", "value_states_full"):
             out["fp16_residual_bytes"] += tensor_bytes(vals.get(name))
+        for name in ("key_states_quant_trans", "key_states_full"):
+            value = vals.get(name)
+            if torch.is_tensor(value):
+                out["persistent_key_heads"] = out["persistent_key_heads"] or int(value.shape[1])
+        for name in ("value_states_quant", "value_states_full"):
+            value = vals.get(name)
+            if torch.is_tensor(value):
+                out["persistent_value_heads"] = out["persistent_value_heads"] or int(value.shape[1])
         for name in ("k_assignments", "v_assignments_idx"):
             value = vals.get(name)
             out["assignment_bytes"] += tensor_bytes(value)

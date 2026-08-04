@@ -1,4 +1,6 @@
 import math
+import os
+import sys
 import warnings
 from typing import List, Optional, Tuple
 
@@ -14,6 +16,52 @@ from transformers.models.llama.modeling_llama import *
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 _CONFIG_FOR_DOC = "LlamaConfig"
+
+
+def repeat_kv_for_gqa(
+    hidden_states: torch.Tensor,
+    num_key_value_groups: int,
+    *,
+    expected_heads: int | None = None,
+    tensor_name: str = "kv",
+) -> torch.Tensor:
+    if hidden_states is None:
+        return hidden_states
+    if hidden_states.dim() != 4:
+        raise ValueError(f"{tensor_name} must be 4D [B,H,L,D], got shape={tuple(hidden_states.shape)}")
+    repeated = repeat_kv(hidden_states, num_key_value_groups)
+    if expected_heads is not None and repeated.shape[1] != expected_heads:
+        raise ValueError(
+            f"{tensor_name} repeated heads mismatch: got shape={tuple(repeated.shape)}, "
+            f"expected_heads={expected_heads}, num_key_value_groups={num_key_value_groups}"
+        )
+    return repeated
+
+
+def kivi_gqa_attention_reference(
+    query_states: torch.Tensor,
+    key_states: torch.Tensor,
+    value_states: torch.Tensor,
+    num_key_value_groups: int,
+    attention_mask: torch.Tensor | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    key_for_attention = repeat_kv_for_gqa(
+        key_states,
+        num_key_value_groups,
+        expected_heads=query_states.shape[1],
+        tensor_name="key_states",
+    )
+    value_for_attention = repeat_kv_for_gqa(
+        value_states,
+        num_key_value_groups,
+        expected_heads=query_states.shape[1],
+        tensor_name="value_states",
+    )
+    attn_weights = torch.matmul(query_states, key_for_attention.transpose(2, 3)) / math.sqrt(query_states.shape[-1])
+    if attention_mask is not None:
+        attn_weights = attn_weights + attention_mask
+    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+    return torch.matmul(attn_weights, value_for_attention), attn_weights
 
 
 class LlamaAttention_KIVI(nn.Module):
@@ -36,6 +84,13 @@ class LlamaAttention_KIVI(nn.Module):
         self.group_size = config.group_size
         self.residual_length = config.residual_length
         assert getattr(config, "use_flash", False), "currently KIVI is only available for flash-attn. Please add ```config.use_flash = True```"
+        if self.num_heads % self.num_key_value_heads != 0:
+            raise ValueError(
+                f"num_attention_heads must be divisible by num_key_value_heads, got "
+                f"num_attention_heads={self.num_heads}, num_key_value_heads={self.num_key_value_heads}"
+            )
+        self.layer_idx = None
+        self._gqa_debug_printed = set()
 
         if (self.head_dim * self.num_heads) != self.hidden_size:
             raise ValueError(
@@ -49,6 +104,63 @@ class LlamaAttention_KIVI(nn.Module):
         self.o_proj = nn.Linear(self.num_heads * self.head_dim, self.hidden_size, bias=config.attention_bias)
         self.rotary_emb = LlamaRotaryEmbedding(config=self.config)
 
+
+    def _check_persistent_cache_heads(self, tensor: torch.Tensor | None, name: str) -> None:
+        if tensor is not None and tensor.shape[1] != self.num_key_value_heads:
+            raise ValueError(
+                f"{name} persistent cache must keep num_key_value_heads={self.num_key_value_heads}, "
+                f"got shape={tuple(tensor.shape)}, num_attention_heads={self.num_heads}, "
+                f"num_key_value_groups={self.num_key_value_groups}"
+            )
+
+    def _debug_gqa_shapes(
+        self,
+        *,
+        phase: str,
+        q_len: int,
+        kv_len: int,
+        query_states: torch.Tensor,
+        key_states_quant_trans: torch.Tensor | None,
+        value_states_quant: torch.Tensor | None,
+        key_states_full: torch.Tensor | None,
+        value_states_full: torch.Tensor | None,
+        key_for_attention: torch.Tensor | None = None,
+        value_for_attention: torch.Tensor | None = None,
+        backend: str = "torch",
+    ) -> None:
+        if os.environ.get("KIVI_GQA_DEBUG") != "1":
+            return
+        layer_filter = os.environ.get("KIVI_GQA_DEBUG_LAYER")
+        if layer_filter is not None and str(self.layer_idx) != layer_filter:
+            return
+        key = (self.layer_idx, phase, backend)
+        if key in self._gqa_debug_printed:
+            return
+        self._gqa_debug_printed.add(key)
+
+        def shape(x):
+            return None if x is None else tuple(x.shape)
+
+        print(
+            "[KIVI GQA DEBUG] "
+            f"phase={phase} layer_idx={self.layer_idx} q_len={q_len} kv_len={kv_len} "
+            f"query_shape={shape(query_states)} "
+            f"quantized_key_shape={shape(key_states_quant_trans)} "
+            f"quantized_value_shape={shape(value_states_quant)} "
+            f"residual_key_shape={shape(key_states_full)} "
+            f"residual_value_shape={shape(value_states_full)} "
+            f"dequantized_key_shape=None dequantized_value_shape=None "
+            f"key_for_attention_shape={shape(key_for_attention)} "
+            f"value_for_attention_shape={shape(value_for_attention)} "
+            f"num_attention_heads={self.num_heads} "
+            f"num_key_value_heads={self.num_key_value_heads} "
+            f"num_key_value_groups={self.num_key_value_groups} "
+            f"persistent_cache_heads={self.num_key_value_heads} "
+            f"temporary_attention_heads={self.num_heads} "
+            f"backend={backend} dtype={query_states.dtype} device={query_states.device}",
+            file=sys.stderr,
+            flush=True,
+        )
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         return tensor.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2).contiguous()
@@ -111,6 +223,10 @@ class LlamaAttention_KIVI(nn.Module):
             value_states_full = past_key_value[5]
             value_scale = past_key_value[6]
             value_mn = past_key_value[7]
+            self._check_persistent_cache_heads(key_states_quant_trans, "key_states_quant_trans")
+            self._check_persistent_cache_heads(key_states_full, "key_states_full")
+            self._check_persistent_cache_heads(value_states_quant, "value_states_quant")
+            self._check_persistent_cache_heads(value_states_full, "value_states_full")
 
             if key_states_quant_trans is not None:
                 att_qkquant = cuda_bmm_fA_qB_outer(self.group_size, query_states, key_states_quant_trans, 
@@ -122,7 +238,25 @@ class LlamaAttention_KIVI(nn.Module):
                 key_states_full = torch.cat([key_states_full, key_states], dim=2)
             else:
                 key_states_full = key_states
-            att_qkfull = torch.matmul(query_states, key_states_full.transpose(2, 3))
+            key_states_full_for_attention = repeat_kv_for_gqa(
+                key_states_full,
+                self.num_key_value_groups,
+                expected_heads=self.num_heads,
+                tensor_name="key_states_full",
+            )
+            self._debug_gqa_shapes(
+                phase="decode",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=key_states_quant_trans,
+                value_states_quant=value_states_quant,
+                key_states_full=key_states_full,
+                value_states_full=value_states_full,
+                key_for_attention=key_states_full_for_attention,
+                backend="torch+cuda_bmm_fA_qB_outer",
+            )
+            att_qkfull = torch.matmul(query_states, key_states_full_for_attention.transpose(2, 3))
             if att_qkquant is not None:
                 attn_weights = torch.cat([att_qkquant, att_qkfull], dim=-1) / math.sqrt(self.head_dim)
             else:
@@ -164,12 +298,31 @@ class LlamaAttention_KIVI(nn.Module):
 
             value_states_full = torch.cat([value_states_full, value_states], dim=2)
             value_full_length = value_states_full.shape[-2]
+            value_states_full_for_attention = repeat_kv_for_gqa(
+                value_states_full,
+                self.num_key_value_groups,
+                expected_heads=self.num_heads,
+                tensor_name="value_states_full",
+            )
+            self._debug_gqa_shapes(
+                phase="decode",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=key_states_quant_trans,
+                value_states_quant=value_states_quant,
+                key_states_full=key_states_full,
+                value_states_full=value_states_full,
+                key_for_attention=key_states_full_for_attention,
+                value_for_attention=value_states_full_for_attention,
+                backend="torch_av+cuda_bmm_fA_qB_outer",
+            )
             if value_states_quant is None:
-                attn_output = torch.matmul(attn_weights, value_states_full)
+                attn_output = torch.matmul(attn_weights, value_states_full_for_attention)
             else:
                 attn_output = cuda_bmm_fA_qB_outer(self.group_size, attn_weights[:, :, :, :-value_full_length], value_states_quant, 
                                                 value_scale, value_mn, self.v_bits)
-                attn_output += torch.matmul(attn_weights[:, :, :, -value_full_length:], value_states_full)
+                attn_output += torch.matmul(attn_weights[:, :, :, -value_full_length:], value_states_full_for_attention)
             
             if value_full_length > self.residual_length:
                 assert value_full_length == self.residual_length + 1
@@ -187,8 +340,50 @@ class LlamaAttention_KIVI(nn.Module):
                     value_mn = mn
 
         else:
+            key_states_for_attention = None
+            value_states_for_attention = None
+            if os.environ.get("KIVI_GQA_DEBUG") == "1":
+                key_states_for_attention = repeat_kv_for_gqa(
+                    key_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="key_states",
+                )
+                value_states_for_attention = repeat_kv_for_gqa(
+                    value_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="value_states",
+                )
+            if key_states_for_attention is None:
+                key_states_for_attention = repeat_kv_for_gqa(
+                    key_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="key_states",
+                )
+            if value_states_for_attention is None:
+                value_states_for_attention = repeat_kv_for_gqa(
+                    value_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="value_states",
+                )
+            self._debug_gqa_shapes(
+                phase="prefill",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=None,
+                value_states_quant=None,
+                key_states_full=key_states,
+                value_states_full=value_states,
+                key_for_attention=key_states_for_attention,
+                value_for_attention=value_states_for_attention,
+                backend="torch",
+            )
             attn_weights = torch.matmul(query_states, 
-                                        key_states.transpose(2, 3)) / math.sqrt(self.head_dim)
+                                        key_states_for_attention.transpose(2, 3)) / math.sqrt(self.head_dim)
             # quantize
             if key_states.shape[-2] % self.residual_length != 0:
                 if key_states.shape[-2] < self.residual_length:
@@ -240,7 +435,7 @@ class LlamaAttention_KIVI(nn.Module):
                 attn_weights, dim=-1, dtype=torch.float32
             ).to(query_states.dtype)
 
-            attn_output = torch.matmul(attn_weights, value_states) 
+            attn_output = torch.matmul(attn_weights, value_states_for_attention) 
         past_key_value = (key_states_quant_trans, key_states_full, key_scale_trans, key_mn_trans, value_states_quant, value_states_full, value_scale, value_mn, kv_seq_len) if use_cache else None
         if attn_output.size() != (bsz, self.num_heads, q_len, self.head_dim):
             raise ValueError(
@@ -320,6 +515,10 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
             value_states_full = past_key_value[5]
             value_scale = past_key_value[6]
             value_mn = past_key_value[7]
+            self._check_persistent_cache_heads(key_states_quant_trans, "key_states_quant_trans")
+            self._check_persistent_cache_heads(key_states_full, "key_states_full")
+            self._check_persistent_cache_heads(value_states_quant, "value_states_quant")
+            self._check_persistent_cache_heads(value_states_full, "value_states_full")
             if key_states_quant_trans is not None:
                 att_qkquant = cuda_bmm_fA_qB_outer(self.group_size, query_states, key_states_quant_trans, 
                                 key_scale_trans, key_mn_trans, self.k_bits)
@@ -334,7 +533,25 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
                 key_states_full = torch.cat([key_states_full, key_states], dim=2)
             else:
                 key_states_full = key_states
-            att_qkfull = torch.matmul(query_states, repeat_kv(key_states_full, self.num_key_value_groups).transpose(2, 3))
+            key_states_full_for_attention = repeat_kv_for_gqa(
+                key_states_full,
+                self.num_key_value_groups,
+                expected_heads=self.num_heads,
+                tensor_name="key_states_full",
+            )
+            self._debug_gqa_shapes(
+                phase="decode",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=key_states_quant_trans,
+                value_states_quant=value_states_quant,
+                key_states_full=key_states_full,
+                value_states_full=value_states_full,
+                key_for_attention=key_states_full_for_attention,
+                backend="torch+cuda_bmm_fA_qB_outer",
+            )
+            att_qkfull = torch.matmul(query_states, key_states_full_for_attention.transpose(2, 3))
             if att_qkquant is not None:
                 attn_weights = torch.cat([att_qkquant, att_qkfull], dim=-1) / math.sqrt(self.head_dim)
             else:
@@ -376,12 +593,31 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
 
             value_states_full = torch.cat([value_states_full, value_states], dim=2)
             value_full_length = value_states_full.shape[-2]
+            value_states_full_for_attention = repeat_kv_for_gqa(
+                value_states_full,
+                self.num_key_value_groups,
+                expected_heads=self.num_heads,
+                tensor_name="value_states_full",
+            )
+            self._debug_gqa_shapes(
+                phase="decode",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=key_states_quant_trans,
+                value_states_quant=value_states_quant,
+                key_states_full=key_states_full,
+                value_states_full=value_states_full,
+                key_for_attention=key_states_full_for_attention,
+                value_for_attention=value_states_full_for_attention,
+                backend="torch_av+cuda_bmm_fA_qB_outer",
+            )
             if value_states_quant is None:
-                attn_output = torch.matmul(attn_weights, value_states_full)
+                attn_output = torch.matmul(attn_weights, value_states_full_for_attention)
             else:
                 attn_output = cuda_bmm_fA_qB_outer(self.group_size, attn_weights[:, :, :, :-value_full_length], value_states_quant, 
                                                 value_scale, value_mn, self.v_bits)
-                attn_output += torch.matmul(attn_weights[:, :, :, -value_full_length:], repeat_kv(value_states_full, self.num_key_value_groups))
+                attn_output += torch.matmul(attn_weights[:, :, :, -value_full_length:], value_states_full_for_attention)
             attn_output = attn_output.transpose(1, 2).contiguous()
             if value_full_length > self.residual_length:
                 assert value_full_length == self.residual_length + 1
@@ -417,6 +653,34 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
                 query_states = query_states.to(target_dtype)
                 key_states = key_states.to(target_dtype)
                 value_states = value_states.to(target_dtype)
+            key_states_for_attention = None
+            value_states_for_attention = None
+            if os.environ.get("KIVI_GQA_DEBUG") == "1":
+                key_states_for_attention = repeat_kv_for_gqa(
+                    key_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="key_states",
+                )
+                value_states_for_attention = repeat_kv_for_gqa(
+                    value_states,
+                    self.num_key_value_groups,
+                    expected_heads=self.num_heads,
+                    tensor_name="value_states",
+                )
+            self._debug_gqa_shapes(
+                phase="prefill",
+                q_len=q_len,
+                kv_len=kv_seq_len,
+                query_states=query_states,
+                key_states_quant_trans=None,
+                value_states_quant=None,
+                key_states_full=key_states,
+                value_states_full=value_states,
+                key_for_attention=key_states_for_attention,
+                value_for_attention=value_states_for_attention,
+                backend="flash_attn",
+            )
             attn_output = self._flash_attention_forward(
                 query_states.transpose(1, 2), key_states.transpose(1, 2), 
                 value_states.transpose(1, 2), None, q_len, dropout=0.0
@@ -650,6 +914,8 @@ class LlamaModel_KIVI(LlamaPreTrainedModel):
 
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
         self.layers = nn.ModuleList([LlamaDecoderLayer_KIVI(config) for _ in range(config.num_hidden_layers)])
+        for layer_idx, layer in enumerate(self.layers):
+            layer.self_attn.layer_idx = layer_idx
         self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
         self.gradient_checkpointing = False
