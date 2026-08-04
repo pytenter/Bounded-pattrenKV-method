@@ -2,6 +2,21 @@
 
 Implementation of [PatternKV: Flattening KV Representation Expands Quantization Headroom](https://arxiv.org/abs/2510.05176)
 
+## Reproduction Baseline Guardrail
+
+For this reproduction repository, the standard paper-v2 baseline/method set is **only**:
+
+```text
+fp16
+kivi_paper_g128
+patternkv_paper
+```
+
+Do not use older or exploratory method names such as `kivi`, `kivi_official`,
+`kivi_original_g32`, or `patternkv` as the canonical baseline unless a new
+experiment explicitly says so. See [docs/STANDARD_BASELINES.md](docs/STANDARD_BASELINES.md)
+and [configs/standard_baselines.paper_v2.yaml](configs/standard_baselines.paper_v2.yaml).
+
 
 ## Setup
 
@@ -60,7 +75,6 @@ enc = AutoTokenizer.from_pretrained(
 
 
 ```
-
 
 
 

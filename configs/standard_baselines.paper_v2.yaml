@@ -1,0 +1,53 @@
+name: standard_baselines.paper_v2
+description: Canonical method names and configurations for PatternKV paper-v2 reproduction.
+canonical_methods:
+  - fp16
+  - kivi_paper_g128
+  - patternkv_paper
+methods:
+  fp16:
+    role: full_precision_reference_baseline
+    backend_method: fp16
+    k_bits: 16
+    v_bits: 16
+    group_size: 0
+    residual_length: 0
+    key_quant_axis: none
+    value_quant_axis: none
+    asym: false
+  kivi_paper_g128:
+    role: kivi_paper_aligned_int2_baseline
+    backend_method: kivi_official
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    key_quant_axis: per-channel
+    value_quant_axis: per-token
+    asym: true
+  patternkv_paper:
+    role: patternkv_paper_v2_int2_method
+    backend_method: patternkv
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    num_k_base: 32
+    num_v_base: 32
+    initial_pattern_count: 32
+    pattern_group: 128
+    pattern_selection_position: post-RoPE
+    key_quant_axis: per-channel
+    value_quant_axis: per-token
+    asym: true
+non_canonical_legacy_method_names:
+  - kivi
+  - kivi_official
+  - kivi_original_g32
+  - patternkv
+latest_checked_gsm8k_full:
+  results_dir: results/paper_repro_v2/gsm8k_full_2048
+  report: reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.md
+  expected_per_method: 1319
+  max_new_tokens: 2048
+  status: PASS
