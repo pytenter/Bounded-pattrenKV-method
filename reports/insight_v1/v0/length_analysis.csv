@@ -1,0 +1,7 @@
+dataset,method,paired_n,length_count,avg_output_tokens,p95_output_tokens
+longbench,fp16,1050,662,120.74571428571429,512.0
+longbench,kivi_paper_g128,1050,767,127.41333333333333,512.0
+longbench,patternkv_paper,1050,731,125.61333333333333,512.0
+gsm8k,fp16,1319,12,245.26535253980288,379.0
+gsm8k,kivi_paper_g128,1319,87,355.50416982562547,2048.0
+gsm8k,patternkv_paper,1319,38,283.40106141015923,446.0

@@ -1,0 +1,6 @@
+group,count
+both_correct,810
+both_wrong,247
+kivi_length_patternkv_eos,77
+patternkv_correct_kivi_wrong,163
+patternkv_wrong_kivi_correct,99

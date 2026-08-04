@@ -63,6 +63,7 @@ class LlamaAttention_PatternKV(nn.Module):
         self.k_base = None
         self.num_k_bases = config.num_k_base
         self.kmeans_heads = [None] * self.num_key_value_heads
+        self.layer_idx = None
 
         # self.lambda_proj = config.lambda_proj
         # self.n_subspaces = config.n_subspaces
@@ -1189,6 +1190,8 @@ class LlamaModel_PatternKV(LlamaPreTrainedModel):
 
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
         self.layers = nn.ModuleList([LlamaDecoderLayer_PatternKV(config) for _ in range(config.num_hidden_layers)])
+        for layer_idx, layer in enumerate(self.layers):
+            layer.self_attn.layer_idx = layer_idx
         self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
         self.gradient_checkpointing = False

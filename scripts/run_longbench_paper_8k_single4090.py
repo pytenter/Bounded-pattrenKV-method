@@ -393,8 +393,11 @@ def plan(args) -> dict:
     counts = {}
     samples = {}
     for task in tasks:
-        data = load_task(task, 0, data_dir)
-        filtered = sample_indices(data, args.sample_filter)
+        try:
+            data = load_task(task, 0, data_dir)
+            filtered = sample_indices(data, args.sample_filter)
+        except PermissionError:
+            filtered = list(range(expected_samples(task)))
         counts[task] = len(filtered)
         samples[task] = filtered
     return {

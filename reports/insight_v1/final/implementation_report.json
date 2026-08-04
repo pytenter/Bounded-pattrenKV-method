@@ -1,0 +1,28 @@
+{
+  "current_main_head_at_start": "c7324746d7447be532bd6bdbe0c8d58dd5e30c67",
+  "dynamic_pattern_status": "not_run",
+  "gsm8k_results_dir": "results/paper_repro_v2/gsm8k_full_2048",
+  "initial_branch": "repro/patternkv-paper-longbench-gsm8k-rerun",
+  "initial_head": "c7324746d7447be532bd6bdbe0c8d58dd5e30c67",
+  "longbench_results_dir": "results/paper_repro_v2/longbench_21x50_8k_4090",
+  "matching_oracle_gap_status": "not_run",
+  "observer_dependent_conclusions": "insufficient_data",
+  "parity_status": "not_run",
+  "pattern_gain_map_status": "not_run",
+  "pre_commit_head": "915c943b54ab2ec0529840c92df36bfc9a0f6c9e",
+  "recommended_next_step": "Run Wave A basic+oracle after implementing model observer hook parity.",
+  "results_dir": "results/insight_v1",
+  "schema_version": "insight_v1.implementation_report",
+  "selected_samples": 220,
+  "standard_baseline_methods": [
+    "fp16",
+    "kivi_paper_g128",
+    "patternkv_paper"
+  ],
+  "tests": "pytest -q",
+  "v0_dir": "reports/insight_v1/v0",
+  "v_gate_status": "not_run",
+  "wave_a_status": "not_run",
+  "wave_b_status": "not_run",
+  "working_branch": "insight/patternkv-diagnostics-v1"
+}

@@ -23,7 +23,11 @@ def test_shell_runner_requires_gpu0_and_8192():
 
 
 def test_runner_plans_full_local_panel_when_data_available():
-    if not Path(Args.data_dir).exists():
+    try:
+        exists = Path(Args.data_dir).exists()
+    except PermissionError:
+        exists = False
+    if not exists:
         return
     p = plan(Args())
     assert len(p["tasks"]) == 21
