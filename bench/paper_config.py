@@ -137,6 +137,11 @@ def method_config_dict(args) -> dict[str, Any]:
     out["kivi_quantized_region_theoretical_bits"] = kivi_quantized_region_bits(cfg.group_size, cfg.k_bits) if cfg.backend_method == "kivi_official" else None
     if out["kivi_quantized_region_theoretical_bits"] is not None:
         assert abs(out["kivi_quantized_region_theoretical_bits"] - (cfg.k_bits + 32 / cfg.group_size)) < 1e-9
+    out["quantized_region_affine_bits"] = (
+        kivi_quantized_region_bits(cfg.group_size, cfg.k_bits)
+        if cfg.backend_method in ("kivi_official", "patternkv")
+        else None
+    )
     out["compact_kernel_storage_note"] = "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes."
     return out
 

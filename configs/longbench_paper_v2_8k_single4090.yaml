@@ -1,0 +1,84 @@
+experiment_name: longbench_paper_v2_8k_single4090
+description: PatternKV paper-v2 configuration-aligned LongBench reproduction with an 8K input cap. This is not the paper's strict 31.5K reproduction.
+model_path: /root/autodl-tmp/models/meta-llama/Llama-3.1-8B-Instruct
+output_dir: results/paper_repro_v2/longbench_full_8k_4090
+log_dir: logs/paper_repro_v2/longbench_full_8k_4090
+status_dir: run/paper_repro_v2/longbench_full_8k_4090
+report_dir: reports/paper_repro_v2/longbench_full_8k_4090
+max_input_length: 8192
+seed: 0
+dtype: float16
+batch_size: 1
+num_return_sequences: 1
+decoding: greedy
+use_cache: true
+hardware:
+  gpu: NVIDIA GeForce RTX 4090 D
+  memory_gb: 24
+  cuda_visible_devices: "0"
+paper_alignment:
+  model: true
+  methods: true
+  quantization: true
+  tasks: true
+  prompt: true
+  max_gen: true
+  scorer: true
+  max_input_length: false
+methods:
+  - fp16
+  - kivi_paper_g128
+  - patternkv_paper
+method_configs:
+  fp16:
+    kv_quantization: disabled
+  kivi_paper_g128:
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    key_quant_axis: per-channel
+    value_quant_axis: per-token
+    asym: true
+    backend: kivi_official
+    quantized_region_affine_bits: 2.25
+  patternkv_paper:
+    k_bits: 2
+    v_bits: 2
+    group_size: 128
+    residual_length: 128
+    num_k_base: 32
+    num_v_base: 32
+    G_pattern: 128
+    key_quant_axis: per-channel
+    value_quant_axis: per-token
+    pattern_selection_position: post-RoPE
+    backend: patternkv
+    quantized_region_affine_bits: 2.25
+tasks:
+  - narrativeqa
+  - qasper
+  - multifieldqa_en
+  - multifieldqa_zh
+  - hotpotqa
+  - 2wikimqa
+  - musique
+  - dureader
+  - gov_report
+  - qmsum
+  - multi_news
+  - vcsum
+  - trec
+  - triviaqa
+  - samsum
+  - lsht
+  - passage_count
+  - passage_retrieval_en
+  - passage_retrieval_zh
+  - lcc
+  - repobench-p
+expected_samples:
+  default: 200
+  multifieldqa_en: 150
+  lcc: 500
+  repobench-p: 500

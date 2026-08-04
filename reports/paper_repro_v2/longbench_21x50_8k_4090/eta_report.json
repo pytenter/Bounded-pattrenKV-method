@@ -1,0 +1,24 @@
+{
+  "basis": "completed functional smoke plus edge smoke records",
+  "by_method": {
+    "fp16": {
+      "calibration_records": 4,
+      "max_peak_reserved_bytes": 24821891072,
+      "mean_generation_seconds": 2.167675
+    },
+    "kivi_paper_g128": {
+      "calibration_records": 4,
+      "max_peak_reserved_bytes": 24159191040,
+      "mean_generation_seconds": 3.3369
+    },
+    "patternkv_paper": {
+      "calibration_records": 4,
+      "max_peak_reserved_bytes": 24324866048,
+      "mean_generation_seconds": 2.9654249999999998
+    }
+  },
+  "note": "This is a lightweight preflight estimate; long summarization tasks may run slower than the smoke mix.",
+  "planned_total": 3150,
+  "rough_eta_hours": 2.4704166666666665,
+  "rough_eta_seconds": 8893.5
+}
