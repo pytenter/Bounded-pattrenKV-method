@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-08-04T12:58:07.730362+00:00",
+  "git_commit": "9d0afb7ef470253cb16fdb02c34d4685e44c65d2",
+  "reason": "bench/bench_pattern_insight.py real generation lifecycle is not connected yet",
+  "required_comparison": [
+    "input_token_ids",
+    "generated_token_ids",
+    "sha256",
+    "generated_text",
+    "score_or_is_correct",
+    "stop_reason",
+    "cache_length",
+    "last_token_id"
+  ],
+  "required_samples": [
+    {
+      "count": 1,
+      "dataset": "longbench",
+      "task": "hotpotqa"
+    },
+    {
+      "count": 1,
+      "dataset": "longbench",
+      "task": "samsum"
+    },
+    {
+      "count": 1,
+      "dataset": "gsm8k",
+      "task": "gsm8k"
+    }
+  ],
+  "schema_version": "insight_v2.parity_report",
+  "status": "blocked"
+}

@@ -23,8 +23,10 @@ class InsightRuntimeConfig:
     enabled: bool = False
     level: str = "basic"
     sample_tokens: int = 8
-    output: Path = Path("results/insight_v1")
+    output: Path = Path("results/insight_v2/observer")
     seed: int = 0
+    max_sample_records: int = 4096
+    oracle_layers: tuple[int, ...] = (0, 7, 15, 23, 31)
 
     @classmethod
     def from_env(cls) -> "InsightRuntimeConfig":
@@ -37,8 +39,14 @@ class InsightRuntimeConfig:
             enabled=enabled,
             level=level,
             sample_tokens=int(os.environ.get("PATTERNKV_INSIGHT_SAMPLE_TOKENS", "8")),
-            output=Path(os.environ.get("PATTERNKV_INSIGHT_OUTPUT", "results/insight_v1")),
+            output=Path(os.environ.get("PATTERNKV_INSIGHT_OUTPUT", "results/insight_v2/observer")),
             seed=int(os.environ.get("PATTERNKV_INSIGHT_SEED", "0")),
+            max_sample_records=int(os.environ.get("PATTERNKV_INSIGHT_MAX_SAMPLE_RECORDS", "4096")),
+            oracle_layers=tuple(
+                int(x)
+                for x in os.environ.get("PATTERNKV_INSIGHT_ORACLE_LAYERS", "0,7,15,23,31").split(",")
+                if x.strip()
+            ),
         )
 
 

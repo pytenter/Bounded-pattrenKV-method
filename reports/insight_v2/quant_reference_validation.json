@@ -1,0 +1,113 @@
+{
+  "bits": 2,
+  "generated_at": "2026-08-04T12:55:58.618059+00:00",
+  "group_size": 128,
+  "results": [
+    {
+      "kind": "k",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "random_k",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        256,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "random_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "positive_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "negative_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "symmetric_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "outlier_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "constant_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    },
+    {
+      "kind": "v",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "name": "tiny_range_v",
+      "passed": true,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    }
+  ],
+  "schema_version": "insight_v2.quant_reference_validation",
+  "status": "passed"
+}

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """PatternKV Insight runner entrypoint.
 
-The runner is deliberately conservative. It validates that the requested run is
-for `patternkv_paper`, loads the fixed V0 selected sample list, and prepares
-resume-safe per-sample output records. GPU generation hooks can be added on top
-of this entrypoint without changing sample selection or baseline semantics.
+This entrypoint owns manifest validation and resume-safe per-sample observer
+paths for `patternkv_paper`. Full generation integration is intentionally gated:
+dry-run writes only a manifest, while non-dry-run fails explicitly until the
+official LongBench/GSM8K per-sample lifecycle is connected.
 """
 
 from __future__ import annotations
@@ -57,8 +57,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tasks", nargs="*", default=[])
     parser.add_argument("--selected-samples-json", type=Path, default=Path("reports/insight_v1/v0/selected_samples.json"))
     parser.add_argument("--model-path", type=Path, required=True)
-    parser.add_argument("--output-dir", type=Path, default=Path("results/insight_v1"))
-    parser.add_argument("--insight-output-dir", type=Path, default=Path("reports/insight_v1"))
+    parser.add_argument("--output-dir", type=Path, default=Path("results/insight_v2/generation"))
+    parser.add_argument("--observer-output-root", type=Path, default=Path("results/insight_v2/observer"))
+    parser.add_argument("--insight-output-dir", type=Path, default=Path("reports/insight_v2"))
     parser.add_argument("--gpu-id", default="0")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--insight-level", choices=["basic", "oracle", "attention"], default="basic")
@@ -68,6 +69,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--method", default="patternkv_paper")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--sample-ids", nargs="*", default=[])
+    parser.add_argument("--problem-ids", nargs="*", type=int, default=[])
     return parser.parse_args()
 
 
@@ -83,18 +87,29 @@ def main() -> None:
     assert pattern_cfg["initial_pattern_count"] == 32 and pattern_cfg["pattern_group"] == 128
 
     samples = load_selected(args.selected_samples_json, args.dataset, args.tasks)
+    if args.sample_ids:
+        wanted = set(args.sample_ids)
+        samples = [s for s in samples if str(s.get("sample_id")) in wanted]
+    if args.problem_ids:
+        wanted_ids = set(args.problem_ids)
+        samples = [s for s in samples if s.get("problem_id") in wanted_ids]
+    if args.limit > 0:
+        samples = samples[: args.limit]
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    status_dir = Path("run/insight_v1") / args.dataset
+    args.observer_output_root.mkdir(parents=True, exist_ok=True)
+    status_dir = Path("run/insight_v2") / args.dataset
     status_dir.mkdir(parents=True, exist_ok=True)
+    manifest_rows = []
     completed = 0
     skipped = 0
     for sample in samples:
         out = result_path(args.output_dir, sample, args.insight_level, args.seed)
+        observer_out = result_path(args.observer_output_root, sample, args.insight_level, args.seed)
         if args.skip_existing and out.exists():
             skipped += 1
             continue
         record = {
-            "schema_version": "insight_v1.runner_stub",
+            "schema_version": "insight_v2.runner_manifest",
             "git_commit": git_commit(),
             "config_hash": baselines.config_hash,
             "dataset": args.dataset,
@@ -107,18 +122,24 @@ def main() -> None:
             "created_at": utc_now(),
             "gpu_id": args.gpu_id,
             "model_path": str(args.model_path),
+            "generation_output": str(out),
+            "observer_output": str(observer_out),
             "oracle_samples_per_head": args.oracle_samples_per_head,
             "layers": args.layers,
             "dry_run": args.dry_run,
             "selection_reason": sample.get("selection_reason"),
-            "status": "dry_run_prepared" if args.dry_run else "pending_generation_not_implemented",
+            "status": "dry_run_prepared" if args.dry_run else "generation_not_connected",
         }
-        atomic_write_json(out, record)
+        manifest_rows.append(record)
         completed += 1
+    manifest_path = args.insight_output_dir / "runner_manifest.json"
+    atomic_write_json(manifest_path, {"schema_version": "insight_v2.runner_manifest", "samples": manifest_rows})
+    if not args.dry_run:
+        raise SystemExit("bench_pattern_insight real generation is not connected yet; run with --dry-run or connect official runner lifecycle first")
     atomic_write_json(
         status_dir / f"{args.insight_level}_seed{args.seed}_status.json",
         {
-            "schema_version": "insight_v1.status",
+            "schema_version": "insight_v2.status",
             "git_commit": git_commit(),
             "config_hash": baselines.config_hash,
             "dataset": args.dataset,
@@ -131,6 +152,7 @@ def main() -> None:
             "written": completed,
             "skipped": skipped,
             "dry_run": args.dry_run,
+            "manifest_path": str(manifest_path),
         },
     )
     print(json.dumps({"selected": len(samples), "written": completed, "skipped": skipped, "dry_run": args.dry_run}, sort_keys=True))

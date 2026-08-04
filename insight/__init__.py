@@ -6,5 +6,14 @@ objects in :mod:`insight.config`.
 """
 
 from insight.config import InsightRuntimeConfig, StandardBaselines, load_standard_baselines
+from insight.runtime import abort_sample, begin_sample, end_sample, get_active_observer
 
-__all__ = ["InsightRuntimeConfig", "StandardBaselines", "load_standard_baselines"]
+__all__ = [
+    "InsightRuntimeConfig",
+    "StandardBaselines",
+    "abort_sample",
+    "begin_sample",
+    "end_sample",
+    "get_active_observer",
+    "load_standard_baselines",
+]
