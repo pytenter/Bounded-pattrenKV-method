@@ -40,36 +40,11 @@ for job in jobs:
 atomic_write_text(Path("reports/insight_v2/wave_a_manifest.md"), "\n".join(lines) + "\n")
 PY
 
-quant_status="$("$PYTHON_BIN" - <<'PY'
-import json
-from pathlib import Path
-p=Path("reports/insight_v2/quant_reference_validation.json")
-print(json.loads(p.read_text()).get("status") if p.exists() else "missing")
-PY
-)"
-parity_status="$("$PYTHON_BIN" - <<'PY'
-import json
-from pathlib import Path
-p=Path("reports/insight_v2/parity_report.json")
-print(json.loads(p.read_text()).get("status") if p.exists() else "missing")
-PY
-)"
-micro_status="$("$PYTHON_BIN" - <<'PY'
-import json
-from pathlib import Path
-p=Path("reports/insight_v2/micro_smoke_report.json")
-print(json.loads(p.read_text()).get("status") if p.exists() else "missing")
-PY
-)"
-
-if [[ "$quant_status" != "passed" || "$parity_status" != "passed" || "$micro_status" != "passed" ]]; then
+if ! "$PYTHON_BIN" scripts/check_insight_wave_a_gate.py; then
   cat > run/insight_v2/wave_a.blocked <<EOF
-Wave A not launched.
-quant_reference_validation=$quant_status
-parity_report=$parity_status
-micro_smoke_report=$micro_status
+Wave A not launched. See reports/insight_v2/wave_a_gate.json and .md.
 EOF
-  echo "Wave A blocked: quant=$quant_status parity=$parity_status micro=$micro_status"
+  echo "Wave A blocked by gate."
   exit 2
 fi
 

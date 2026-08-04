@@ -2,7 +2,7 @@
 
 Status: BLOCKED
 
-Reason: parity generation files were not provided
+Reason: longbench/hotpotqa: blocked_longbench_source_unreadable; longbench/samsum: blocked_longbench_source_unreadable
 
 | dataset | task | sample | token_equal | first_basic_divergence | first_oracle_divergence |
 |---|---|---|---:|---:|---:|

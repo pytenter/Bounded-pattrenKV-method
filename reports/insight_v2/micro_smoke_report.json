@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-04T13:34:07.228381+00:00",
-  "reason": "micro-smoke observer files were not provided",
+  "git_commit": "d948d1d4bf71c4eb8b8d6f6ea6994f87416fa003",
+  "reason": "parity status is blocked",
   "rows": [],
   "schema_version": "insight_v2.micro_smoke_report",
   "status": "blocked"

@@ -1,8 +1,5 @@
 {
-  "generated_at": "2026-08-04T14:08:24.345461+00:00",
-  "git_commit": "d948d1d4bf71c4eb8b8d6f6ea6994f87416fa003",
-  "manifest": "reports/insight_v2/parity_manifest.json",
-  "manifest_samples": [
+  "samples": [
     {
       "dataset": "longbench",
       "expected_identity_fields": {
@@ -54,25 +51,5 @@
       "task": "gsm8k"
     }
   ],
-  "reason": "longbench/hotpotqa: blocked_longbench_source_unreadable; longbench/samsum: blocked_longbench_source_unreadable",
-  "required_samples": [
-    {
-      "count": 1,
-      "dataset": "longbench",
-      "task": "hotpotqa"
-    },
-    {
-      "count": 1,
-      "dataset": "longbench",
-      "task": "samsum"
-    },
-    {
-      "count": 1,
-      "dataset": "gsm8k",
-      "task": "gsm8k"
-    }
-  ],
-  "rows": [],
-  "schema_version": "insight_v2.parity_report",
-  "status": "blocked"
+  "schema_version": "insight_v2.parity_manifest"
 }

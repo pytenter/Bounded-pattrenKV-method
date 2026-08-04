@@ -2,4 +2,4 @@
 
 Status: BLOCKED
 
-Reason: micro-smoke observer files were not provided
+Reason: parity has not passed.
