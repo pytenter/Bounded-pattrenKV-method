@@ -1,0 +1,19 @@
+{
+  "samples": [
+    {
+      "generation_output": "results/insight_v2/parity/generation/off/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_basic_seed0.json",
+      "observer_output": "results/insight_v2/parity/observer/off/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_basic_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 3138,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+        "sample_index": 28,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

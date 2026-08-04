@@ -1,0 +1,15 @@
+{
+  "schema_version": "insight_v2.wave_a_launch_status",
+  "generated_at": "2026-08-04T23:05:20+08:00",
+  "status": "not_launched",
+  "reason": "selected GPUs are occupied",
+  "gate_status": "passed",
+  "selected_gpu_ids": [0, 1, 2, 3, 4, 5],
+  "occupied_selected_gpus": [
+    {"gpu": 0, "memory_used_mib": 22883},
+    {"gpu": 1, "memory_used_mib": 22883},
+    {"gpu": 2, "memory_used_mib": 22883},
+    {"gpu": 3, "memory_used_mib": 22883}
+  ],
+  "safe_to_resume_command": "bash scripts/run_insight_wave_a_6gpu.sh"
+}

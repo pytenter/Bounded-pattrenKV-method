@@ -37,13 +37,15 @@ def _scalar_mse(a: torch.Tensor, b: torch.Tensor) -> float:
 def _gather_k_patterns(assignments: torch.Tensor, k_base: torch.Tensor, head: int) -> torch.Tensor:
     """Return per-position K patterns for one head: [B,T,D]."""
     base = k_base[head].unsqueeze(0).expand(assignments.shape[0], -1, -1)
-    return torch.gather(base, 1, assignments[:, head, :].unsqueeze(-1).expand(-1, -1, base.shape[-1]))
+    assign_head = assignments[:, 0, :] if assignments.shape[1] == 1 else assignments[:, head, :]
+    return torch.gather(base, 1, assign_head.unsqueeze(-1).expand(-1, -1, base.shape[-1]))
 
 
 def _gather_v_patterns(idx: torch.Tensor, centroids: torch.Tensor, head: int) -> torch.Tensor:
     """Return per-token V patterns for one head: [B,T,D]."""
     base = centroids[head].unsqueeze(0).expand(idx.shape[0], -1, -1)
-    return torch.gather(base, 1, idx[:, head, :].unsqueeze(-1).expand(-1, -1, base.shape[-1]))
+    idx_head = idx[:, 0, :] if idx.shape[1] == 1 else idx[:, head, :]
+    return torch.gather(base, 1, idx_head.unsqueeze(-1).expand(-1, -1, base.shape[-1]))
 
 
 def _minmax_assign_tokens(tokens: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:

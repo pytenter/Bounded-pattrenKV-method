@@ -1,0 +1,17 @@
+{
+  "download_finished_at": "2026-08-04T14:34:32.809364+00:00",
+  "download_started_at": null,
+  "download_status": "passed",
+  "download_tool": "curl",
+  "file_path": "datasets/LongBench/data.zip",
+  "file_size_bytes": 113932529,
+  "generated_at": "2026-08-04T14:36:14.391206+00:00",
+  "http_final_url": "https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data.zip",
+  "proxy_environment_summary": {
+    "HTTPS_PROXY": "set",
+    "HTTP_PROXY": "set"
+  },
+  "schema_version": "insight_v2.longbench_download_manifest",
+  "sha256": "cb45b11a4133c6bc1d6a44b0f8e701335ff1e543195db1103472e575857f7f64",
+  "source_url": "https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data.zip"
+}

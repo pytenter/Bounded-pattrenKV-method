@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-08-04T14:08:24.345461+00:00",
-  "git_commit": "d948d1d4bf71c4eb8b8d6f6ea6994f87416fa003",
+  "generated_at": "2026-08-04T14:58:09.340432+00:00",
+  "git_commit": "f1e074b8272aa80d062d6cd852ab1fe036ab2afb",
   "manifest": "reports/insight_v2/parity_manifest.json",
   "manifest_samples": [
     {
       "dataset": "longbench",
       "expected_identity_fields": {
-        "input_tokens": 3138,
+        "_id": "b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+        "answers_sha256": "b454828cdf858b5a63085945d4a344830600bd533dbabe9ca991c16b2296e8d9",
         "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
         "sample_index": 28
       },
-      "identity_status": "blocked_longbench_source_unreadable",
-      "input_tokens": 3138,
-      "pattern_minus_kivi": 0.0,
+      "identity_status": "strict_sample_id_match",
+      "input_tokens": null,
       "problem_id": "",
       "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
       "sample_index": 28,
@@ -22,13 +22,13 @@
     {
       "dataset": "longbench",
       "expected_identity_fields": {
-        "input_tokens": 4477,
+        "_id": "6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
+        "answers_sha256": "93aca6c549de931ccf29b98c9cca28d21a69d66749280e63c916f2d89d17334f",
         "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
         "sample_index": 16
       },
-      "identity_status": "blocked_longbench_source_unreadable",
-      "input_tokens": 4477,
-      "pattern_minus_kivi": -0.6000000000000014,
+      "identity_status": "strict_sample_id_match",
+      "input_tokens": null,
       "problem_id": "",
       "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
       "sample_index": 16,
@@ -43,9 +43,7 @@
         "reference_answer": "50",
         "reference_answer_sha256": "1a6562590ef19d1045d06c4055742d38288e9e6dcd71ccde5cee80f1d5a774eb"
       },
-      "identity_status": "strict_problem_id_question_reference_available",
-      "kivi_output_tokens": 173,
-      "pattern_minus_kivi": -1.0,
+      "identity_status": "strict_problem_id_question_reference_match",
       "patternkv_output_tokens": 2048,
       "problem_id": 809,
       "sample_id": "gsm8k:809",
@@ -54,7 +52,7 @@
       "task": "gsm8k"
     }
   ],
-  "reason": "longbench/hotpotqa: blocked_longbench_source_unreadable; longbench/samsum: blocked_longbench_source_unreadable",
+  "reason": null,
   "required_samples": [
     {
       "count": 1,
@@ -72,7 +70,92 @@
       "task": "gsm8k"
     }
   ],
-  "rows": [],
+  "rows": [
+    {
+      "basic_hash": "108565d335b6d67bef3ad2defeff3905a0acbd2895ac40bd22e40689e63d931c",
+      "dataset": "longbench",
+      "first_basic_divergence": null,
+      "first_oracle_divergence": null,
+      "generated_tokens_equal": true,
+      "observer_errors": [
+        null,
+        null
+      ],
+      "observer_files": [
+        "results/insight_v2/parity/observer/basic/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_basic_seed0.json",
+        "results/insight_v2/parity/observer/oracle/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_oracle_seed0.json"
+      ],
+      "off_hash": "108565d335b6d67bef3ad2defeff3905a0acbd2895ac40bd22e40689e63d931c",
+      "oracle_hash": "108565d335b6d67bef3ad2defeff3905a0acbd2895ac40bd22e40689e63d931c",
+      "peak_memory": {
+        "basic": 18593972224,
+        "off": 18593972224,
+        "oracle": 18593972224
+      },
+      "problem_id": null,
+      "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+      "score_equal": true,
+      "stop_reason_equal": true,
+      "task": "hotpotqa",
+      "token_equal": true
+    },
+    {
+      "basic_hash": "56594863412129e3b5f6234dc2b3ff3dd8b81a85af0bf51e64816907af2a9afd",
+      "dataset": "longbench",
+      "first_basic_divergence": null,
+      "first_oracle_divergence": null,
+      "generated_tokens_equal": true,
+      "observer_errors": [
+        null,
+        null
+      ],
+      "observer_files": [
+        "results/insight_v2/parity/observer/basic/longbench/samsum/samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620_basic_seed0.json",
+        "results/insight_v2/parity/observer/oracle/longbench/samsum/samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620_oracle_seed0.json"
+      ],
+      "off_hash": "56594863412129e3b5f6234dc2b3ff3dd8b81a85af0bf51e64816907af2a9afd",
+      "oracle_hash": "56594863412129e3b5f6234dc2b3ff3dd8b81a85af0bf51e64816907af2a9afd",
+      "peak_memory": {
+        "basic": 19690440192,
+        "off": 19690440192,
+        "oracle": 19690440192
+      },
+      "problem_id": null,
+      "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
+      "score_equal": true,
+      "stop_reason_equal": true,
+      "task": "samsum",
+      "token_equal": true
+    },
+    {
+      "basic_hash": "d97b1174b205177a",
+      "dataset": "gsm8k",
+      "first_basic_divergence": null,
+      "first_oracle_divergence": null,
+      "generated_tokens_equal": true,
+      "observer_errors": [
+        null,
+        null
+      ],
+      "observer_files": [
+        "results/insight_v2/parity/observer/basic/gsm8k/gsm8k/p0809_basic_seed0.json",
+        "results/insight_v2/parity/observer/oracle/gsm8k/gsm8k/p0809_oracle_seed0.json"
+      ],
+      "off_hash": "d97b1174b205177a",
+      "oracle_hash": "d97b1174b205177a",
+      "peak_memory": {
+        "basic": 16196686336,
+        "off": 16196686336,
+        "oracle": 16196686336
+      },
+      "problem_id": 809,
+      "sample_id": "gsm8k:809",
+      "score_equal": true,
+      "stop_reason_equal": true,
+      "task": "gsm8k",
+      "token_equal": true
+    }
+  ],
   "schema_version": "insight_v2.parity_report",
-  "status": "blocked"
+  "status": "passed"
 }

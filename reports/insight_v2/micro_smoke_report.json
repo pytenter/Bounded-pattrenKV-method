@@ -1,7 +1,254 @@
 {
-  "git_commit": "d948d1d4bf71c4eb8b8d6f6ea6994f87416fa003",
-  "reason": "parity status is blocked",
-  "rows": [],
+  "base_ok": true,
+  "coverage": {
+    "decode_candidate_assignment_fraction_present": true,
+    "decode_k_records_nonempty": true,
+    "decode_mse_not_placeholder": true,
+    "decode_v_candidate_gate_applied_fraction_present": true,
+    "decode_v_records_nonempty": true,
+    "k_assignment_histogram_nonempty": true,
+    "k_conditional_fields_present": true,
+    "k_conditional_oracle_nonempty": true,
+    "k_conditional_oracle_not_worse": true,
+    "k_harmful_nonempty": true,
+    "k_multiple_kv_heads": true,
+    "k_multiple_layers": true,
+    "k_pattern_mse_nonempty": true,
+    "k_raw_mse_nonempty": true,
+    "k_relative_benefit_nonempty": true,
+    "v_assignment_histogram_nonempty": true,
+    "v_gate_confusion_total_gt_zero": true,
+    "v_matching_fields_present": true,
+    "v_matching_oracle_nonempty": true,
+    "v_matching_oracle_not_worse": true,
+    "v_multiple_kv_heads": true,
+    "v_multiple_layers": true,
+    "v_pattern_candidate_mse_nonempty": true,
+    "v_raw_mse_nonempty": true
+  },
+  "generated_at": "2026-08-04T15:02:02.906765+00:00",
+  "reason": null,
+  "rows": [
+    {
+      "active_observer_leak": false,
+      "decode_candidate_assignment_fraction_present": false,
+      "decode_k": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "decode_k_records_nonempty": false,
+      "decode_mse_not_placeholder": false,
+      "decode_v": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "decode_v_candidate_gate_applied_fraction_present": false,
+      "decode_v_records_nonempty": false,
+      "dropped_record_count_present": true,
+      "error_empty": true,
+      "estimated_serialized_bytes_present": true,
+      "has_nan_or_inf": false,
+      "k_assignment_histogram_nonempty": true,
+      "k_conditional_fields_present": true,
+      "k_conditional_oracle": {
+        "kv_head_count": 8,
+        "layer_count": 2,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 128
+      },
+      "k_conditional_oracle_not_worse": true,
+      "k_harmful_nonempty": true,
+      "k_pattern_mse_nonempty": true,
+      "k_raw_mse_nonempty": true,
+      "k_relative_benefit_nonempty": true,
+      "non_empty": true,
+      "path": "results/insight_v2/parity/observer/oracle/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_oracle_seed0.json",
+      "prefill_k": {
+        "kv_head_count": 8,
+        "layer_count": 15,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 2880
+      },
+      "prefill_v": {
+        "kv_head_count": 8,
+        "layer_count": 15,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 960
+      },
+      "schema_ok": true,
+      "size_bytes": 4795618,
+      "status_completed": true,
+      "under_100mb": true,
+      "v_assignment_histogram_nonempty": true,
+      "v_gate_confusion_total": 2048,
+      "v_matching_fields_present": true,
+      "v_matching_oracle": {
+        "kv_head_count": 8,
+        "layer_count": 2,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 128
+      },
+      "v_matching_oracle_not_worse": true,
+      "v_pattern_candidate_mse_nonempty": true,
+      "v_raw_mse_nonempty": true
+    },
+    {
+      "active_observer_leak": false,
+      "decode_candidate_assignment_fraction_present": false,
+      "decode_k": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "decode_k_records_nonempty": false,
+      "decode_mse_not_placeholder": false,
+      "decode_v": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "decode_v_candidate_gate_applied_fraction_present": false,
+      "decode_v_records_nonempty": false,
+      "dropped_record_count_present": true,
+      "error_empty": true,
+      "estimated_serialized_bytes_present": true,
+      "has_nan_or_inf": false,
+      "k_assignment_histogram_nonempty": true,
+      "k_conditional_fields_present": true,
+      "k_conditional_oracle": {
+        "kv_head_count": 8,
+        "layer_count": 2,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 128
+      },
+      "k_conditional_oracle_not_worse": true,
+      "k_harmful_nonempty": true,
+      "k_pattern_mse_nonempty": true,
+      "k_raw_mse_nonempty": true,
+      "k_relative_benefit_nonempty": true,
+      "non_empty": true,
+      "path": "results/insight_v2/parity/observer/oracle/longbench/samsum/samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620_oracle_seed0.json",
+      "prefill_k": {
+        "kv_head_count": 8,
+        "layer_count": 12,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 3136
+      },
+      "prefill_v": {
+        "kv_head_count": 8,
+        "layer_count": 11,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 704
+      },
+      "schema_ok": true,
+      "size_bytes": 5474452,
+      "status_completed": true,
+      "under_100mb": true,
+      "v_assignment_histogram_nonempty": true,
+      "v_gate_confusion_total": 2048,
+      "v_matching_fields_present": true,
+      "v_matching_oracle": {
+        "kv_head_count": 8,
+        "layer_count": 2,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 128
+      },
+      "v_matching_oracle_not_worse": true,
+      "v_pattern_candidate_mse_nonempty": true,
+      "v_raw_mse_nonempty": true
+    },
+    {
+      "active_observer_leak": false,
+      "decode_candidate_assignment_fraction_present": true,
+      "decode_k": {
+        "kv_head_count": 8,
+        "layer_count": 32,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 2048
+      },
+      "decode_k_records_nonempty": true,
+      "decode_mse_not_placeholder": true,
+      "decode_v": {
+        "kv_head_count": 8,
+        "layer_count": 32,
+        "multiple_kv_heads": true,
+        "multiple_layers": true,
+        "record_count": 2048
+      },
+      "decode_v_candidate_gate_applied_fraction_present": true,
+      "decode_v_records_nonempty": true,
+      "dropped_record_count_present": true,
+      "error_empty": true,
+      "estimated_serialized_bytes_present": true,
+      "has_nan_or_inf": false,
+      "k_assignment_histogram_nonempty": false,
+      "k_conditional_fields_present": false,
+      "k_conditional_oracle": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "k_conditional_oracle_not_worse": false,
+      "k_harmful_nonempty": false,
+      "k_pattern_mse_nonempty": false,
+      "k_raw_mse_nonempty": false,
+      "k_relative_benefit_nonempty": false,
+      "non_empty": true,
+      "path": "results/insight_v2/parity/observer/oracle/gsm8k/gsm8k/p0809_oracle_seed0.json",
+      "prefill_k": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "prefill_v": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "schema_ok": true,
+      "size_bytes": 2472997,
+      "status_completed": true,
+      "under_100mb": true,
+      "v_assignment_histogram_nonempty": false,
+      "v_gate_confusion_total": 0,
+      "v_matching_fields_present": false,
+      "v_matching_oracle": {
+        "kv_head_count": 0,
+        "layer_count": 0,
+        "multiple_kv_heads": false,
+        "multiple_layers": false,
+        "record_count": 0
+      },
+      "v_matching_oracle_not_worse": false,
+      "v_pattern_candidate_mse_nonempty": false,
+      "v_raw_mse_nonempty": false
+    }
+  ],
   "schema_version": "insight_v2.micro_smoke_report",
-  "status": "blocked"
+  "status": "passed"
 }

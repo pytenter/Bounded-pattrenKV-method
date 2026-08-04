@@ -40,6 +40,19 @@ def test_decode_k_records_true_old_new_mse(tmp_path: Path):
     assert row["new_mse"] >= 0
 
 
+def test_decode_k_handles_multi_head_assignments(tmp_path: Path):
+    cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, max_sample_records=64)
+    begin_sample(_metadata(), cfg)
+    window = torch.randn(1, 2, 128, 8, dtype=torch.float16)
+    old_base = torch.zeros(2, 2, 8, dtype=torch.float16)
+    new_base = torch.cat([old_base, window.mean(dim=(0, 2)).unsqueeze(1)], dim=1)
+    record_decode_k_window_metrics(window_raw=window, old_k_base=old_base, new_k_base=new_base, layer_idx=0, window_idx=0, bits=2, group_size=128)
+    out = tmp_path / "k_multi.json"
+    end_sample(out)
+    rows = [r for r in json.loads(out.read_text())["records"] if r.get("hook") == "decode_k"]
+    assert {r["kv_head"] for r in rows} == {0, 1}
+
+
 def test_decode_v_separates_candidate_assignment_and_gate_application(tmp_path: Path):
     cfg = InsightRuntimeConfig(enabled=True, output=tmp_path, max_sample_records=64)
     begin_sample(_metadata(), cfg)

@@ -4,7 +4,7 @@
     "parity_report": "reports/insight_v2/parity_report.json",
     "quant_reference_validation": "reports/insight_v2/quant_reference_validation.json"
   },
-  "generated_at": "2026-08-04T14:07:32.350124+00:00",
+  "generated_at": "2026-08-04T15:04:02.548453+00:00",
   "jobs": [
     {
       "dataset": "longbench",

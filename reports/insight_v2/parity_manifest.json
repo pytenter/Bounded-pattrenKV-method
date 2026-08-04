@@ -1,15 +1,16 @@
 {
+  "longbench_data_dir": "/data/zypan/PatternKV-repro/datasets/LongBench",
   "samples": [
     {
       "dataset": "longbench",
       "expected_identity_fields": {
-        "input_tokens": 3138,
+        "_id": "b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+        "answers_sha256": "b454828cdf858b5a63085945d4a344830600bd533dbabe9ca991c16b2296e8d9",
         "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
         "sample_index": 28
       },
-      "identity_status": "blocked_longbench_source_unreadable",
-      "input_tokens": 3138,
-      "pattern_minus_kivi": 0.0,
+      "identity_status": "strict_sample_id_match",
+      "input_tokens": null,
       "problem_id": "",
       "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
       "sample_index": 28,
@@ -19,13 +20,13 @@
     {
       "dataset": "longbench",
       "expected_identity_fields": {
-        "input_tokens": 4477,
+        "_id": "6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
+        "answers_sha256": "93aca6c549de931ccf29b98c9cca28d21a69d66749280e63c916f2d89d17334f",
         "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
         "sample_index": 16
       },
-      "identity_status": "blocked_longbench_source_unreadable",
-      "input_tokens": 4477,
-      "pattern_minus_kivi": -0.6000000000000014,
+      "identity_status": "strict_sample_id_match",
+      "input_tokens": null,
       "problem_id": "",
       "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
       "sample_index": 16,
@@ -40,9 +41,7 @@
         "reference_answer": "50",
         "reference_answer_sha256": "1a6562590ef19d1045d06c4055742d38288e9e6dcd71ccde5cee80f1d5a774eb"
       },
-      "identity_status": "strict_problem_id_question_reference_available",
-      "kivi_output_tokens": 173,
-      "pattern_minus_kivi": -1.0,
+      "identity_status": "strict_problem_id_question_reference_match",
       "patternkv_output_tokens": 2048,
       "problem_id": 809,
       "sample_id": "gsm8k:809",
