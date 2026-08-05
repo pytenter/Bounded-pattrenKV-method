@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-08-05T00:00:00+00:00",
+  "git_commit": "91e48b2078fca1cc87b36f136c43491762087b7d",
+  "branch": "exp/patternkv-4090-range-aware-targeted",
+  "schema_version": "insight_v2.range_aware_targeted_manifest_v1",
+  "target_name": "range_aware_targeted_4090",
+  "selected_samples_path": "reports/insight_v2/range_aware_targeted_4090/selected_25_samples.json",
+  "selected_samples_sha256": "4f3474df02acfa53dd36fb519ad0cac374eca87da46f8fe66426125f17a0ae1a",
+  "reference_manifest_sha256": "a5e3444a9360f1fc662d08681f8378fb8787dd81594df85be91326e925f085f0",
+  "counts": {
+    "dureader": 3,
+    "gsm8k": 10,
+    "hotpotqa": 3,
+    "passage_retrieval_en": 3,
+    "passage_retrieval_zh": 3,
+    "samsum": 3,
+    "total": 25
+  },
+  "paths": {
+    "result_root": "results/insight_v2/range_aware_targeted_4090",
+    "report_root": "reports/insight_v2/range_aware_targeted_4090",
+    "log_root": "logs/insight_v2/range_aware_targeted_4090",
+    "run_root": "run/insight_v2/range_aware_targeted_4090"
+  }
+}

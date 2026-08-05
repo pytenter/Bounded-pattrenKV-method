@@ -27,6 +27,9 @@ class InsightRuntimeConfig:
     seed: int = 0
     max_sample_records: int = 4096
     oracle_layers: tuple[int, ...] = (0, 7, 15, 23, 31)
+    sample_records_enabled: bool = True
+    range_aware_aggregates: bool = False
+    schema_version: str = "insight_v2.observer"
 
     @classmethod
     def from_env(cls) -> "InsightRuntimeConfig":
@@ -47,6 +50,9 @@ class InsightRuntimeConfig:
                 for x in os.environ.get("PATTERNKV_INSIGHT_ORACLE_LAYERS", "0,7,15,23,31").split(",")
                 if x.strip()
             ),
+            sample_records_enabled=os.environ.get("PATTERNKV_INSIGHT_SAMPLE_RECORDS", "enabled").lower() != "disabled",
+            range_aware_aggregates=os.environ.get("PATTERNKV_INSIGHT_RANGE_AWARE_AGGREGATES", "0") == "1",
+            schema_version=os.environ.get("PATTERNKV_INSIGHT_SCHEMA_VERSION", "insight_v2.observer"),
         )
 
 

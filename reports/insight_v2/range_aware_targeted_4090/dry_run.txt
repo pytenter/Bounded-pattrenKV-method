@@ -1,0 +1,23 @@
+branch: exp/patternkv-4090-range-aware-targeted
+git commit: 91e48b2078fca1cc87b36f136c43491762087b7d
+target name: range_aware_targeted_4090
+selected manifest path: /root/Bounded-pattrenKV-method/reports/insight_v2/range_aware_targeted_4090/selected_25_samples.json
+selected manifest SHA256: 4f3474df02acfa53dd36fb519ad0cac374eca87da46f8fe66426125f17a0ae1a
+task counts: dureader=3, gsm8k=10, hotpotqa=3, passage_retrieval_en=3, passage_retrieval_zh=3, samsum=3
+total samples=25
+parity samples=3
+model path: missing
+LongBench data path: missing
+GSM8K data path: /root/Bounded-pattrenKV-method/datasets/gsm8k/gsm8k_test.jsonl
+result root: /root/Bounded-pattrenKV-method/results/insight_v2/range_aware_targeted_4090
+report root: /root/Bounded-pattrenKV-method/reports/insight_v2/range_aware_targeted_4090
+log root: /root/Bounded-pattrenKV-method/logs/insight_v2/range_aware_targeted_4090
+run root: /root/Bounded-pattrenKV-method/run/insight_v2/range_aware_targeted_4090
+observer schema: insight_v2.range_aware_aggregate_v1
+sample records disabled: true
+K axis description: [B,H,T,D] post-RoPE, transpose to [B,H,D,T], 128-token groups, per-channel range
+V axis description: [B,H,T,D] per-token over head_dim=128
+expected layers: 32
+expected KV heads: 8
+current parity status: not_run
+GPU will start: no

@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-08-05T00:00:00+00:00",
+  "git_commit": "91e48b2078fca1cc87b36f136c43491762087b7d",
+  "schema_version": "insight_v2.range_aware_implementation_audit_v1",
+  "items": [
+    {
+      "file": "models/llama_patternkv.py",
+      "line": 613,
+      "function_or_class": "LlamaFlashAttention_PatternKV._nearest_v_centroid",
+      "current_behavior": "V runtime prefill assignment uses min-max residual range over head_dim vectors.",
+      "required_change": "Keep runtime behavior unchanged; targeted observer computes separate L2-vs-min-max aggregate diagnostics only.",
+      "risk": "Low: observer-only addition."
+    },
+    {
+      "file": "models/llama_patternkv.py",
+      "line": 934,
+      "function_or_class": "LlamaFlashAttention_PatternKV.forward",
+      "current_behavior": "K prefill Pattern bank is mined with L2 KMeans and runtime token assignment uses batched L2 nearest-centroid assignment.",
+      "required_change": "Keep assignment path unchanged; project tokenwise assignments back to 128-token per-channel K quantization units for aggregate diagnostics.",
+      "risk": "Medium: K diagnostic unit is a projection from tokenwise assignment to quant units."
+    },
+    {
+      "file": "insight/hook_metrics.py",
+      "line": 84,
+      "function_or_class": "record_prefill_k_metrics / record_prefill_v_metrics",
+      "current_behavior": "Wave A writes scalar aggregates and bounded sample records; range-aware evidence mainly lived in sample records and could truncate.",
+      "required_change": "Add complete range-aware aggregate path independent of sample record capacity; keep Wave A sample-record behavior unchanged by default.",
+      "risk": "Low: guarded by config flag."
+    },
+    {
+      "file": "insight/collector.py",
+      "line": 45,
+      "function_or_class": "InsightCollector",
+      "current_behavior": "Collector stores scalar aggregates, confusion, histograms, and bounded sample records only.",
+      "required_change": "Add structured range-aware aggregate storage plus explicit sample-record disable switch.",
+      "risk": "Low."
+    },
+    {
+      "file": "insight/range_aware_metrics.py",
+      "line": 1,
+      "function_or_class": "compute_v_assignment_diagnostics / compute_k_group_assignment_diagnostics",
+      "current_behavior": "No pure helper existed for chunk-stable L2-vs-min-max diagnostics on real quantization units.",
+      "required_change": "Provide no-grad pure helpers with explicit K/V layout semantics and mergeable aggregate summaries.",
+      "risk": "Medium: K semantics must be interpreted carefully in analysis."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-08-05T00:00:00+00:00",
+  "targeted_status": "not_run",
+  "requirements": {
+    "single_gpu_only": "RTX 4090 D 24GB",
+    "parity_required": true,
+    "sample_records_disabled": true,
+    "prefill_only": true,
+    "tasks_complete": 6,
+    "layers_complete": 32,
+    "kv_heads_complete": 8
+  },
+  "gpu_started": false
+}

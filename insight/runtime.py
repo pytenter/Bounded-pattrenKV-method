@@ -55,9 +55,12 @@ class InsightObserver:
     def add_sample_record(self, record: dict[str, Any]) -> None:
         self.collector.add_sample_record(record)
 
+    def add_range_aware_aggregate(self, **payload: Any) -> None:
+        self.collector.add_range_aware_aggregate(**payload)
+
     def write(self, output_path: Path, *, status: str, error: str | None = None) -> None:
         payload = {
-            "schema_version": "insight_v2.observer",
+            "schema_version": self.config.schema_version,
             "status": status,
             "error": error,
             "metadata": self.metadata,
@@ -67,6 +70,8 @@ class InsightObserver:
             "histograms": self.collector._histograms_json(),
             "confusion": self.collector._confusion_json(),
             "records": self.collector.records,
+            "sample_records_enabled": self.config.sample_records_enabled,
+            "range_aware_aggregates": self.collector._range_aware_json(),
             "estimated_serialized_bytes": self.collector.estimated_serialized_bytes(),
             "dropped_record_count": self.collector.dropped_record_count,
             "max_sample_records": self.collector.config.max_sample_records,

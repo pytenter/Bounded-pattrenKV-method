@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-08-05T00:00:00+00:00",
+  "parity_status": "not_run",
+  "samples": [
+    "hotpotqa target set item 1",
+    "samsum target set item 1",
+    "gsm8k target set item 1"
+  ],
+  "required_checks": [
+    "input token ids exact match",
+    "generated token ids exact match",
+    "generated text SHA256 exact match",
+    "stop reason exact match",
+    "score exact match",
+    "range-aware aggregate non-empty for K and V",
+    "32 layers x 8 KV heads present",
+    "prefill only",
+    "dropped_record_count = 0",
+    "sample_records_enabled = false",
+    "hook_errors = 0"
+  ],
+  "gpu_started": false
+}

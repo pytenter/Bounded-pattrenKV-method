@@ -15,6 +15,7 @@ from insight.hook_metrics import (
     record_prefill_k_metrics,
     record_prefill_v_metrics,
 )
+from insight.range_aware_metrics import RANGE_EPSILON
 
 from transformers.models.llama.configuration_llama import *
 from transformers.models.llama.modeling_llama import *
@@ -555,7 +556,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
         """
         device, dtype_vec = x.device, x.dtype
         bz, n_kv, L, hd = x.shape
-        eps = 1e-12
+        eps = RANGE_EPSILON
 
         # R(x) 与 R(x-base)
         x_max = x.amax(dim=-1); x_min = x.amin(dim=-1)

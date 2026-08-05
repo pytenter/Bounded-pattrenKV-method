@@ -1,0 +1,8 @@
+{
+  "implementation_ready": true,
+  "cpu_tests_passed": true,
+  "dry_run_passed": true,
+  "parity_status": "not_run",
+  "targeted_status": "not_run",
+  "gpu_started": false
+}

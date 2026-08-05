@@ -12,6 +12,7 @@ import torch
 
 from insight.config import InsightRuntimeConfig
 from insight.io import atomic_write_json
+from insight.range_aware_metrics import AggregateStats
 
 
 @dataclass
@@ -57,6 +58,7 @@ class InsightCollector:
     histograms: dict[str, Counter[int]] = field(default_factory=dict)
     confusion: dict[str, Counter[str]] = field(default_factory=dict)
     records: list[dict[str, Any]] = field(default_factory=list)
+    range_aware_aggregates: dict[str, dict[str, Any]] = field(default_factory=dict)
     dropped_record_count: int = 0
     peak_record_count: int = 0
     truncated: bool = False
@@ -102,6 +104,8 @@ class InsightCollector:
     def add_sample_record(self, record: dict[str, Any]) -> None:
         """Record a small scalar-only sample record if enabled."""
         if not self.enabled:
+            return
+        if not self.config.sample_records_enabled:
             return
         if len(self.records) >= self.config.max_sample_records:
             self.dropped_record_count += 1
@@ -161,6 +165,58 @@ class InsightCollector:
             return value
         raise ValueError(f"sample record field {key!r} has unsupported value type {type(value).__name__}")
 
+    def add_range_aware_aggregate(
+        self,
+        *,
+        phase: str,
+        kv_type: str,
+        layer: int,
+        kv_head: int,
+        bucket: str,
+        assignment_total_count: int,
+        assignment_mismatch_count: int,
+        l2_residual_range: AggregateStats,
+        minmax_residual_range: AggregateStats,
+        range_gain_absolute: AggregateStats,
+        range_regret: AggregateStats,
+    ) -> None:
+        if not self.enabled:
+            return
+        key = f"{phase}:{kv_type}:layer{layer}:head{kv_head}:bucket{bucket}"
+        existing = self.range_aware_aggregates.get(key)
+        payload = {
+            "phase": phase,
+            "kv_type": kv_type,
+            "layer": int(layer),
+            "kv_head": int(kv_head),
+            "bucket": bucket,
+            "assignment_total_count": int(assignment_total_count),
+            "assignment_mismatch_count": int(assignment_mismatch_count),
+            "l2_residual_range": l2_residual_range.to_json(),
+            "minmax_residual_range": minmax_residual_range.to_json(),
+            "range_gain_absolute": range_gain_absolute.to_json(),
+            "range_regret": range_regret.to_json(),
+        }
+        if existing is None:
+            self.range_aware_aggregates[key] = payload
+            return
+        existing["assignment_total_count"] += int(assignment_total_count)
+        existing["assignment_mismatch_count"] += int(assignment_mismatch_count)
+        for metric_name, incoming in (
+            ("l2_residual_range", l2_residual_range),
+            ("minmax_residual_range", minmax_residual_range),
+            ("range_gain_absolute", range_gain_absolute),
+            ("range_regret", range_regret),
+        ):
+            current = AggregateStats(
+                count=int(existing[metric_name]["count"]),
+                total=float(existing[metric_name]["sum"]),
+                sum_sq=float(existing[metric_name]["sum_sq"]),
+                min_value=float(existing[metric_name]["min"]),
+                max_value=float(existing[metric_name]["max"]),
+            )
+            existing[metric_name] = current.merge(incoming).to_json()
+
     def estimated_serialized_bytes(self) -> int:
         """Return an approximate serialized payload size for boundedness checks."""
         payload = {
@@ -168,6 +224,7 @@ class InsightCollector:
             "histograms": self._histograms_json(),
             "confusion": self._confusion_json(),
             "records": self.records,
+            "range_aware_aggregates": self._range_aware_json(),
         }
         return len(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8"))
 
@@ -176,6 +233,9 @@ class InsightCollector:
 
     def _confusion_json(self) -> dict[str, dict[str, int]]:
         return {k: {name: int(count) for name, count in sorted(v.items())} for k, v in sorted(self.confusion.items())}
+
+    def _range_aware_json(self) -> list[dict[str, Any]]:
+        return [self.range_aware_aggregates[key] for key in sorted(self.range_aware_aggregates)]
 
     def flush(self, path: Path) -> None:
         """Write aggregate JSON if enabled."""
@@ -191,6 +251,8 @@ class InsightCollector:
                 "histograms": self._histograms_json(),
                 "confusion": self._confusion_json(),
                 "records": self.records,
+                "sample_records_enabled": self.config.sample_records_enabled,
+                "range_aware_aggregates": self._range_aware_json(),
                 "estimated_serialized_bytes": self.estimated_serialized_bytes(),
                 "dropped_record_count": self.dropped_record_count,
                 "max_sample_records": self.config.max_sample_records,
@@ -205,6 +267,7 @@ class InsightCollector:
         self.histograms.clear()
         self.confusion.clear()
         self.records.clear()
+        self.range_aware_aggregates.clear()
         self.dropped_record_count = 0
         self.peak_record_count = 0
         self.truncated = False

@@ -10,6 +10,11 @@ from insight.dynamic_metrics import relative_gain, selected_fraction
 from insight.errors import InsightHookError, tensor_shapes
 from insight.pattern_metrics import normalized_entropy, range_contraction, relative_benefit
 from insight.quant_reference import mse, quantize_dequant_k_token_groups, quantize_dequant_v_head_dim
+from insight.range_aware_metrics import (
+    RANGE_EPSILON,
+    compute_k_group_assignment_diagnostics,
+    compute_v_assignment_diagnostics,
+)
 from insight.runtime import get_active_observer
 from insight.sampling import sample_indices
 
@@ -146,6 +151,27 @@ def record_prefill_k_metrics(
                             "harmful": pattern_mse > raw_mse,
                         }
                     )
+                    if observer.config.range_aware_aggregates:
+                        diag = compute_k_group_assignment_diagnostics(
+                            raw_group[:, 0, :, :],
+                            k_base[head],
+                            epsilon=RANGE_EPSILON,
+                            chunk_size=min(32, int(k_base.shape[1])),
+                        )
+                        aggs = diag.aggregates()
+                        observer.add_range_aware_aggregate(
+                            phase="prefill",
+                            kv_type="k",
+                            layer=layer,
+                            kv_head=head,
+                            bucket=bucket,
+                            assignment_total_count=diag.total_count,
+                            assignment_mismatch_count=diag.mismatch_count,
+                            l2_residual_range=aggs["l2_residual_range"],
+                            minmax_residual_range=aggs["minmax_residual_range"],
+                            range_gain_absolute=aggs["range_gain_absolute"],
+                            range_regret=aggs["range_regret"],
+                        )
                 if observer.config.level == "oracle" and layer in observer.config.oracle_layers and full_groups:
                     _record_k_conditional_oracle(observer, raw, assignments, k_base, layer, head, bits=bits, group_size=group_size)
     except Exception as exc:
@@ -307,6 +333,30 @@ def record_prefill_v_metrics(
                             "false_negative_opportunity": float(torch.clamp(raw_mse_vec - pattern_mse_vec, min=0).mean().item()),
                             "centroid_idx": int(idx_q[0, head, token].item()),
                         }
+                    )
+                if observer.config.range_aware_aggregates:
+                    raw_tokens = raw_all[:, head, :, :].reshape(B * T, D)
+                    valid_mask = torch.ones(B * T, dtype=torch.bool, device=raw_tokens.device)
+                    diag = compute_v_assignment_diagnostics(
+                        raw_tokens,
+                        v_centroids[head],
+                        valid_mask=valid_mask,
+                        epsilon=RANGE_EPSILON,
+                        chunk_size=min(32, int(v_centroids.shape[1])),
+                    )
+                    aggs = diag.aggregates()
+                    observer.add_range_aware_aggregate(
+                        phase="prefill",
+                        kv_type="v",
+                        layer=layer,
+                        kv_head=head,
+                        bucket="all",
+                        assignment_total_count=diag.total_count,
+                        assignment_mismatch_count=diag.mismatch_count,
+                        l2_residual_range=aggs["l2_residual_range"],
+                        minmax_residual_range=aggs["minmax_residual_range"],
+                        range_gain_absolute=aggs["range_gain_absolute"],
+                        range_regret=aggs["range_regret"],
                     )
                 if observer.config.level == "oracle" and layer in observer.config.oracle_layers:
                     _record_v_matching_oracle(observer, raw_all, idx_q, v_centroids, layer, head, sampled, bits=bits, group_size=group_size)
