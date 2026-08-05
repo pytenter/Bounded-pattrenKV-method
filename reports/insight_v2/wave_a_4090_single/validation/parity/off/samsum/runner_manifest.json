@@ -1,0 +1,19 @@
+{
+  "samples": [
+    {
+      "generation_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/generation/off/longbench/samsum/samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620_basic_seed0.json",
+      "observer_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/observer/off/longbench/samsum/samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620_basic_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4477,
+        "pattern_minus_kivi": -0.6000000000000014,
+        "problem_id": "",
+        "sample_id": "samsum:6b2677b451034aef716068c91304f0ce5e33440ebf8b4620",
+        "sample_index": 16,
+        "selection_reason": "median_delta",
+        "task": "samsum"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

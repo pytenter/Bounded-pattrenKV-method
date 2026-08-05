@@ -1,0 +1,14 @@
+{
+  "cuda": "12.1",
+  "cuda_visible_devices": "0",
+  "device": "NVIDIA GeForce RTX 4090 D",
+  "git_commit": "6c88fb81f92934dbce22e2171501965723df9038",
+  "hostname": "autodl-container-c9174bac52-4972e32e",
+  "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+  "python_path": "/root/autodl-tmp/envs/patternkv/bin/python",
+  "torch": "2.5.1+cu121",
+  "torch_cuda_available": true,
+  "total_memory": 25386352640,
+  "triton": "3.1.0",
+  "visible_cuda_devices": 1
+}

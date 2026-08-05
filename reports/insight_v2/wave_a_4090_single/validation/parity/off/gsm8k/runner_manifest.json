@@ -1,0 +1,20 @@
+{
+  "samples": [
+    {
+      "generation_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/generation/off/gsm8k/gsm8k/p0809_basic_seed0.json",
+      "observer_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/observer/off/gsm8k/gsm8k/p0809_basic_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 173,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 809,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

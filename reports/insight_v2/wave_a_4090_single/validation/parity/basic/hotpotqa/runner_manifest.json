@@ -1,0 +1,19 @@
+{
+  "samples": [
+    {
+      "generation_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/generation/basic/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_basic_seed0.json",
+      "observer_output": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single/validation/parity/observer/basic/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_basic_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 3138,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+        "sample_index": 28,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

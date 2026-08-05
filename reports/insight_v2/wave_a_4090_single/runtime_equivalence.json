@@ -1,0 +1,16 @@
+{
+  "allowed_difference_categories": [
+    "single-4090 scheduling",
+    "status/stop scripts",
+    "validation scripts",
+    "reports and tests"
+  ],
+  "changed_runtime_sensitive_files": [],
+  "current_runtime_commit": "6c88fb81f92934dbce22e2171501965723df9038",
+  "decision": "run_allowed",
+  "generated_at": "2026-08-05T09:36:41.101006+00:00",
+  "note": "The actual run is executed from an exact-runtime worktree when this report is false on the c67 audit branch.",
+  "runtime_equivalent": true,
+  "schema_version": "insight_v2.wave_a_4090_runtime_equivalence",
+  "v100_runtime_commit": "6c88fb81f92934dbce22e2171501965723df9038"
+}
