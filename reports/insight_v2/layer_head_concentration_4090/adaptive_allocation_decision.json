@@ -1,0 +1,31 @@
+{
+  "decision": "data_insufficient",
+  "generated_at": "2026-08-05T15:02:03.705560+00:00",
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "k": {
+    "bottom25_mean": 0.0773715361597373,
+    "main_metric": "relative_benefit",
+    "stable_bottom25_fraction": 0.0,
+    "top25_micro": 0.4972379811070031,
+    "top25_task_macro": 0.34269460604682345
+  },
+  "reason": [
+    "K top25 micro=0.4972379811070031",
+    "K top25 macro=0.34269460604682345",
+    "K bottom25 stable=0.0",
+    "K bottom25 mean=0.0773715361597373",
+    "V proxy top25 micro=1.0",
+    "V proxy top25 macro=1.0",
+    "V proxy bottom25 stable=0.96875"
+  ],
+  "schema_version": "insight_v2.pattern_gain_concentration.adaptive_allocation_decision",
+  "v": {
+    "main_metric": "relative_benefit",
+    "main_metric_status": "not_collected",
+    "proxy_bottom25_mean": -13.636506315995291,
+    "proxy_metric": "relative_candidate_benefit",
+    "proxy_stable_bottom25_fraction": 0.96875,
+    "proxy_top25_micro": 1.0,
+    "proxy_top25_task_macro": 1.0
+  }
+}

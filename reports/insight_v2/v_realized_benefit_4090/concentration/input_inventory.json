@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-08-05T15:17:34.403194+00:00",
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "inputs": {
+    "completion.json": {
+      "exists": false,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/completion.json",
+      "sha256": null
+    },
+    "dynamic_pattern_utility.csv": {
+      "exists": false,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/dynamic_pattern_utility.csv",
+      "sha256": null
+    },
+    "matching_oracle_gap.csv": {
+      "exists": false,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/matching_oracle_gap.csv",
+      "sha256": null
+    },
+    "pattern_gain_map.csv": {
+      "exists": true,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/pattern_gain_map.csv",
+      "sha256": "40dfe7337a286689c3216d78de2e6302c08c36f3ebbd71217e9b88f5f68b1c04"
+    },
+    "reference_manifest.json": {
+      "exists": false,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/reference_manifest.json",
+      "sha256": null
+    },
+    "v_gate_confusion.csv": {
+      "exists": false,
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/v_gate_confusion.csv",
+      "sha256": null
+    }
+  },
+  "report_root": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090",
+  "result_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single",
+  "schema_version": "insight_v2.pattern_gain_concentration.input_inventory"
+}

@@ -1,0 +1,26 @@
+{
+  "completion_completed": 140,
+  "completion_status": "completed",
+  "generated_at": "2026-08-05T15:17:20.836641+00:00",
+  "generation_files": 140,
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "observer_files": 140,
+  "observer_v_prefill_rows": 60560,
+  "pattern_gain_has_v_relative_benefit": false,
+  "pattern_gain_v_relative_benefit_rows": 0,
+  "recoverable": true,
+  "recovered_metric_rows": 2325,
+  "report_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single",
+  "required_present": {
+    "actual_selected_path_mse": true,
+    "false_negative_opportunity": true,
+    "false_positive_penalty": true,
+    "gate_current": true,
+    "gate_oracle": true,
+    "pattern_candidate_mse": true,
+    "raw_mse": true,
+    "relative_candidate_benefit": true
+  },
+  "result_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/results/insight_v2/wave_a_4090_single",
+  "schema_version": "insight_v2.v_realized_benefit_recoverability"
+}

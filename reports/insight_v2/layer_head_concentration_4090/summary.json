@@ -1,0 +1,36 @@
+{
+  "analysis_metrics": [
+    "k:range_contraction",
+    "k:relative_benefit",
+    "v:relative_candidate_benefit"
+  ],
+  "decision": "data_insufficient",
+  "generated_at": "2026-08-05T15:02:03.823055+00:00",
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "input_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single",
+  "k_top25_micro": 0.4972379811070031,
+  "k_top25_task_macro": 0.34269460604682345,
+  "kv_head_count": 8,
+  "kv_types_present": [
+    "k",
+    "v"
+  ],
+  "layer_count": 32,
+  "output_root": "/root/Bounded-pattrenKV-method/reports/insight_v2/layer_head_concentration_4090",
+  "phase_set": [
+    "decode",
+    "prefill"
+  ],
+  "schema_version": "insight_v2.pattern_gain_concentration.summary",
+  "task_coverage_complete": true,
+  "tasks_present": [
+    "dureader",
+    "gsm8k",
+    "hotpotqa",
+    "passage_retrieval_en",
+    "passage_retrieval_zh",
+    "samsum"
+  ],
+  "v_proxy_top25_micro": 1.0,
+  "v_proxy_top25_task_macro": 1.0
+}

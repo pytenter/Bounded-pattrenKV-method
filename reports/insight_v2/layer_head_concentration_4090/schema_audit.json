@@ -1,0 +1,155 @@
+{
+  "blank_counts": {
+    "bucket": 0,
+    "count": 0,
+    "kv_head": 0,
+    "kv_type": 0,
+    "layer": 0,
+    "mean": 0,
+    "metric": 0,
+    "phase": 0,
+    "std": 0,
+    "task": 0
+  },
+  "columns": [
+    "task",
+    "phase",
+    "kv_type",
+    "layer",
+    "kv_head",
+    "bucket",
+    "metric",
+    "count",
+    "mean",
+    "std"
+  ],
+  "duplicate_primary_key_count": 0,
+  "duplicate_row_count": 0,
+  "expected_tasks": [
+    "dureader",
+    "gsm8k",
+    "hotpotqa",
+    "passage_retrieval_en",
+    "passage_retrieval_zh",
+    "samsum"
+  ],
+  "generated_at": "2026-08-05T15:02:00.778885+00:00",
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "has_decode": true,
+  "has_k": true,
+  "has_prefill": true,
+  "has_v": true,
+  "inf_string_count": 0,
+  "kv_head_count": 8,
+  "layer_count": 32,
+  "nan_string_count": 0,
+  "negative_count_rows": 0,
+  "not_collected": {
+    "min_max_fields": [
+      "min",
+      "max"
+    ],
+    "missing_if_any": [],
+    "missing_main_metric_v": "relative_benefit"
+  },
+  "primary_key_fields": [
+    "task",
+    "phase",
+    "kv_type",
+    "layer",
+    "kv_head",
+    "bucket",
+    "metric"
+  ],
+  "report_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single",
+  "required_columns": [
+    "task",
+    "phase",
+    "kv_type",
+    "layer",
+    "kv_head",
+    "bucket",
+    "metric",
+    "count",
+    "mean",
+    "std"
+  ],
+  "result_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/logs/insight_v2/wave_a_4090_single",
+  "row_count": 15872,
+  "schema_version": "insight_v2.pattern_gain_concentration.schema_audit",
+  "task_coverage_complete": true,
+  "unique_values": {
+    "bucket": [
+      "bucketfirst",
+      "bucketlast",
+      "bucketmiddle"
+    ],
+    "kv_head": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "kv_type": [
+      "k",
+      "v"
+    ],
+    "layer": [
+      "0",
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "3",
+      "30",
+      "31",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "metric": [
+      "range_contraction",
+      "relative_benefit",
+      "relative_candidate_benefit",
+      "relative_mse_gain",
+      "relative_range_gain"
+    ],
+    "phase": [
+      "decode",
+      "prefill"
+    ],
+    "task": [
+      "dureader",
+      "gsm8k",
+      "hotpotqa",
+      "passage_retrieval_en",
+      "passage_retrieval_zh",
+      "samsum"
+    ]
+  }
+}

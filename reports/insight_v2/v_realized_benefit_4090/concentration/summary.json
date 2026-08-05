@@ -1,0 +1,39 @@
+{
+  "analysis_metrics": [
+    "k:range_contraction",
+    "k:relative_benefit",
+    "v:relative_benefit",
+    "v:relative_candidate_benefit"
+  ],
+  "decision": "not_supported",
+  "generated_at": "2026-08-05T15:17:38.733399+00:00",
+  "git_commit": "995034340dc48c3068f141ca157a9f1c37c5b5df",
+  "input_root": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090",
+  "k_top25_micro": 0.4972379811070031,
+  "k_top25_task_macro": 0.34269460604682345,
+  "kv_head_count": 8,
+  "kv_types_present": [
+    "k",
+    "v"
+  ],
+  "layer_count": 32,
+  "output_root": "/root/Bounded-pattrenKV-method/reports/insight_v2/v_realized_benefit_4090/concentration",
+  "phase_set": [
+    "decode",
+    "prefill"
+  ],
+  "schema_version": "insight_v2.pattern_gain_concentration.summary",
+  "task_coverage_complete": true,
+  "tasks_present": [
+    "dureader",
+    "gsm8k",
+    "hotpotqa",
+    "passage_retrieval_en",
+    "passage_retrieval_zh",
+    "samsum"
+  ],
+  "v_main_top25_micro": 0.6006591543459051,
+  "v_main_top25_task_macro": 0.3338526027921793,
+  "v_proxy_top25_micro": 1.0,
+  "v_proxy_top25_task_macro": 1.0
+}
