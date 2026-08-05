@@ -119,10 +119,10 @@ PY
     --resume
   )
   if [[ "$dataset" == "longbench" ]]; then
-    mapfile -t ids < <("$PYTHON_BIN" -c 'import json,sys; print("\\n".join(str(x["sample_id"]) for x in json.load(open(sys.argv[1]))["pending"]))' "$pending_file")
+    mapfile -t ids < <("$PYTHON_BIN" -c 'import json,sys; print("\n".join(str(x["sample_id"]) for x in json.load(open(sys.argv[1]))["pending"]))' "$pending_file")
     args+=(--sample-ids "${ids[@]}")
   else
-    mapfile -t ids < <("$PYTHON_BIN" -c 'import json,sys; print("\\n".join(str(x["problem_id"]) for x in json.load(open(sys.argv[1]))["pending"]))' "$pending_file")
+    mapfile -t ids < <("$PYTHON_BIN" -c 'import json,sys; print("\n".join(str(x["problem_id"]) for x in json.load(open(sys.argv[1]))["pending"]))' "$pending_file")
     args+=(--problem-ids "${ids[@]}" --max-new-tokens 2048)
   fi
   local task_dir="$RUN_ROOT/${dataset}_${task}"
@@ -130,6 +130,12 @@ PY
   mkdir -p "$task_dir" "$LOG_ROOT" "$REPORT_ROOT/$task"
   echo "$(date --iso-8601=seconds)" > "$task_dir/started_at.txt"
   echo "$log" > "$task_dir/log.txt"
+  echo "pending_count=$count selected_id_count=${#ids[@]}" > "$task_dir/selection_check.txt"
+  if [[ "${#ids[@]}" != "$count" ]]; then
+    echo "$dataset/$task selection identity mismatch: pending=$count ids=${#ids[@]}" >&2
+    echo failed > "$RUN_ROOT/state"
+    return 6
+  fi
   env CUDA_VISIBLE_DEVICES="$PHYSICAL_4090_ID" \
     PATTERNKV_INSIGHT=1 PATTERNKV_INSIGHT_LEVEL=oracle \
     PATTERNKV_INSIGHT_ORACLE_LAYERS=0,7,15,23,31 \
