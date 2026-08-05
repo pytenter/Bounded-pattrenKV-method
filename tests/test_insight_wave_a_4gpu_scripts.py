@@ -46,3 +46,21 @@ def test_wave_a_4gpu_stop_script_only_uses_pid_files():
     assert "-name 'launcher.pid'" in text
     assert "-name 'gpu*.queue.pid'" in text
     assert "-name 'worker.pid'" in text
+
+
+def test_wave_a_idle_launcher_is_gpu4_to_gpu7_only_and_skip_existing():
+    text = read_script("run_insight_wave_a_idle.sh")
+    assert 'WAVE_A_ALLOWED_GPU_IDS="${WAVE_A_ALLOWED_GPU_IDS:-4 5 6 7}"' in text
+    assert "gpu < 4 || gpu > 7" in text
+    assert "--query-compute-apps=gpu_uuid,pid,process_name,used_memory" in text
+    assert "--skip-existing" in text
+    assert "--resume" in text
+    assert "dry_run=true; no model loaded and no result generated." in text
+
+
+def test_wave_a_idle_launcher_preserves_task_groups():
+    text = read_script("run_insight_wave_a_idle.sh")
+    assert "longbench:passage_retrieval_en:12,longbench:passage_retrieval_zh:12" in text
+    assert "longbench:hotpotqa:12,longbench:samsum:12" in text
+    assert "longbench:dureader:12" in text
+    assert "gsm8k:gsm8k:50" in text

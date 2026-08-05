@@ -28,6 +28,8 @@ nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=c
 
 echo
 echo "== Queue PIDs =="
+running_tasks_file="$(mktemp)"
+trap 'rm -f "$running_tasks_file"' EXIT
 for gpu in $WAVE_A_GPU_IDS; do
   pidfile="$RUN_ROOT/gpu${gpu}.queue.pid"
   current="$RUN_ROOT/gpu${gpu}.current_task"
@@ -39,6 +41,11 @@ for gpu in $WAVE_A_GPU_IDS; do
     fi
     task="idle"
     [[ -f "$current" ]] && task="$(cat "$current")"
+    if [[ "$state" == "running" && "$task" != "idle" ]]; then
+      echo "$task" >> "$running_tasks_file"
+    elif [[ "$state" != "running" && "$task" != "idle" ]]; then
+      task="stale:$task"
+    fi
     echo "gpu=$gpu queue_pid=$pid status=$state current_task=$task"
   else
     echo "gpu=$gpu queue_pid=missing current_task=unknown"
@@ -47,6 +54,7 @@ done
 
 echo
 echo "== Task Summary =="
+export RUNNING_TASKS_FILE="$running_tasks_file"
 "$PYTHON_BIN" - <<'PY'
 import json
 import math
@@ -56,6 +64,8 @@ from pathlib import Path
 
 result_root = Path(os.environ.get("RESULT_ROOT", "results/insight_v2/wave_a"))
 report_root = Path(os.environ.get("REPORT_ROOT", "reports/insight_v2/wave_a"))
+running_tasks_path = Path(os.environ["RUNNING_TASKS_FILE"])
+running_tasks = set(running_tasks_path.read_text(encoding="utf-8").splitlines()) if running_tasks_path.exists() else set()
 plan = [
     ("longbench", "hotpotqa", 12),
     ("longbench", "samsum", 12),
@@ -107,7 +117,7 @@ for dataset, task, selected in plan:
             continue
         obs_completed += int(obs.get("status") == "completed" and not bad_number(obs))
     missing = max(selected - len(gen_files), 0)
-    running = 1 if missing and mtimes and now - max(mtimes) < 3600 else 0
+    running = 1 if f"{dataset}/{task}" in running_tasks else 0
     last = time.strftime("%Y-%m-%dT%H:%M:%S%z", time.localtime(max(mtimes))) if mtimes else "never"
     print(
         f"{dataset}/{task}: selected={selected} completed={completed} failed={failed} running={running} "
