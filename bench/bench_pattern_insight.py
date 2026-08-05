@@ -169,6 +169,18 @@ def _error_generation_record(args: argparse.Namespace, sample: dict[str, Any], o
     }
 
 
+def _is_completed_generation(path: Path) -> bool:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    return (
+        not payload.get("error")
+        and payload.get("stop_reason") not in {"error", "oom"}
+        and payload.get("observer_status") == "completed"
+    )
+
+
 def build_longbench_context(args: argparse.Namespace) -> tuple[Any, Any, Namespace, dict[str, Any], str, dict[str, Any]]:
     lb_args = lb_runner.method_args("patternkv_paper", str(args.model_path), args.max_input_length, args.output_dir, Path("run/insight_v2/longbench_adapter"), args.data_dir)
     lb_args.gpu_id = str(args.gpu_id)
@@ -279,7 +291,7 @@ def main() -> None:
         for sample in samples:
             gen_path = result_path(args.output_dir, sample, args.insight_level, args.seed)
             obs_path = result_path(args.observer_output_root, sample, args.insight_level, args.seed)
-            if args.skip_existing and gen_path.exists() and obs_path.exists():
+            if args.skip_existing and gen_path.exists() and obs_path.exists() and _is_completed_generation(gen_path):
                 skipped += 1
                 continue
             metadata = _base_metadata(args, sample, baselines.config_hash)

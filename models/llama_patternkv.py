@@ -1085,7 +1085,31 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             softmax_scale (`float`, *optional*):
                 The scaling of QK^T before applying softmax. Default to 1 / sqrt(head_dim)
         """
-        from flash_attn import flash_attn_func, flash_attn_varlen_func
+        try:
+            from flash_attn import flash_attn_func, flash_attn_varlen_func
+        except ImportError:
+            query_layer = query_states.transpose(1, 2)
+            key_layer = key_states.transpose(1, 2)
+            value_layer = value_states.transpose(1, 2)
+            if key_layer.shape[1] != query_layer.shape[1]:
+                key_layer = repeat_kv(key_layer, self.num_key_value_groups)
+                value_layer = repeat_kv(value_layer, self.num_key_value_groups)
+            q_len = query_layer.shape[-2]
+            kv_len = key_layer.shape[-2]
+            sdpa_mask = None
+            if self.is_causal:
+                query_positions = torch.arange(q_len, device=query_layer.device) + max(kv_len - q_len, 0)
+                key_positions = torch.arange(kv_len, device=query_layer.device)
+                sdpa_mask = key_positions.unsqueeze(0) <= query_positions.unsqueeze(1)
+                sdpa_mask = sdpa_mask.view(1, 1, q_len, kv_len)
+            if attention_mask is not None:
+                key_padding_mask = attention_mask[:, None, None, :].bool()
+                sdpa_mask = key_padding_mask if sdpa_mask is None else sdpa_mask & key_padding_mask
+            kwargs = {"dropout_p": dropout if self.training else 0.0, "attn_mask": sdpa_mask}
+            if softmax_scale is not None:
+                kwargs["scale"] = softmax_scale
+            attn_output = F.scaled_dot_product_attention(query_layer, key_layer, value_layer, **kwargs)
+            return attn_output.transpose(1, 2).contiguous()
 
         # Contains at least one padding token in the sequence
         if attention_mask is not None:
