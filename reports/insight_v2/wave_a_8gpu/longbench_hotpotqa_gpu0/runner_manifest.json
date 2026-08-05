@@ -1,0 +1,173 @@
+{
+  "samples": [
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:74ae5bfc8bdac7b560ec92b71604e86654f87b8f7fcbb30a_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:74ae5bfc8bdac7b560ec92b71604e86654f87b8f7fcbb30a_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": 90.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:74ae5bfc8bdac7b560ec92b71604e86654f87b8f7fcbb30a",
+        "sample_index": 43,
+        "selection_reason": "largest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:d542fcd45bbf5112eee9127f04ae060a887c8ef2050aa160_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:d542fcd45bbf5112eee9127f04ae060a887c8ef2050aa160_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": 80.95,
+        "problem_id": "",
+        "sample_id": "hotpotqa:d542fcd45bbf5112eee9127f04ae060a887c8ef2050aa160",
+        "sample_index": 1,
+        "selection_reason": "largest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:ab016faac478c4acc6e9ed3ed87f9e29dbed47fd946be244_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:ab016faac478c4acc6e9ed3ed87f9e29dbed47fd946be244_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 6219,
+        "pattern_minus_kivi": 34.55,
+        "problem_id": "",
+        "sample_id": "hotpotqa:ab016faac478c4acc6e9ed3ed87f9e29dbed47fd946be244",
+        "sample_index": 16,
+        "selection_reason": "largest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:ed6c85899d2a29f6dc8e02ba62bc8f1b1043a8c135fdd132_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:ed6c85899d2a29f6dc8e02ba62bc8f1b1043a8c135fdd132_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": 29.92,
+        "problem_id": "",
+        "sample_id": "hotpotqa:ed6c85899d2a29f6dc8e02ba62bc8f1b1043a8c135fdd132",
+        "sample_index": 41,
+        "selection_reason": "largest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:220230ff5154e6f0ccad63965d06ce69a9226bd72cc32fa4_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:220230ff5154e6f0ccad63965d06ce69a9226bd72cc32fa4_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": -42.86,
+        "problem_id": "",
+        "sample_id": "hotpotqa:220230ff5154e6f0ccad63965d06ce69a9226bd72cc32fa4",
+        "sample_index": 35,
+        "selection_reason": "smallest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:ec3b5bcfa070b047c769413b99a2f32e4f5d2f803cf81a43_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:ec3b5bcfa070b047c769413b99a2f32e4f5d2f803cf81a43_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": -32.61,
+        "problem_id": "",
+        "sample_id": "hotpotqa:ec3b5bcfa070b047c769413b99a2f32e4f5d2f803cf81a43",
+        "sample_index": 40,
+        "selection_reason": "smallest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:a30caa5dafcc37835bfe4093f129017adf4c814e9016e10d_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:a30caa5dafcc37835bfe4093f129017adf4c814e9016e10d_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": -13.89,
+        "problem_id": "",
+        "sample_id": "hotpotqa:a30caa5dafcc37835bfe4093f129017adf4c814e9016e10d",
+        "sample_index": 9,
+        "selection_reason": "smallest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:f039fe9cc81a0a312f9899beca2fe26b710bf8c3aa23a4d9_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:f039fe9cc81a0a312f9899beca2fe26b710bf8c3aa23a4d9_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": -12.219999999999999,
+        "problem_id": "",
+        "sample_id": "hotpotqa:f039fe9cc81a0a312f9899beca2fe26b710bf8c3aa23a4d9",
+        "sample_index": 8,
+        "selection_reason": "smallest_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:3dd1ade26fd583844dd2af051d61eb20856ccc8e23abae59_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:3dd1ade26fd583844dd2af051d61eb20856ccc8e23abae59_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 2281,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:3dd1ade26fd583844dd2af051d61eb20856ccc8e23abae59",
+        "sample_index": 7,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 3138,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:b6352c61b4a748448ce38882861cd5ae5f7f2869a81e92a1",
+        "sample_index": 28,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:3a75aba6bc2496016339474aef28ffdc9dbebdc00ccc166b_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:3a75aba6bc2496016339474aef28ffdc9dbebdc00ccc166b_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 5170,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:3a75aba6bc2496016339474aef28ffdc9dbebdc00ccc166b",
+        "sample_index": 22,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/hotpotqa/hotpotqa:01aff89f9ce55470c12450b595c268a225a638582dac204f_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/hotpotqa/hotpotqa:01aff89f9ce55470c12450b595c268a225a638582dac204f_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 8192,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "hotpotqa:01aff89f9ce55470c12450b595c268a225a638582dac204f",
+        "sample_index": 36,
+        "selection_reason": "median_delta",
+        "task": "hotpotqa"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

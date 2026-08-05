@@ -1,0 +1,173 @@
+{
+  "samples": [
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:2387f3120c972a57d5a45118ddb95d1de25d098604720765_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:2387f3120c972a57d5a45118ddb95d1de25d098604720765_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 6599,
+        "pattern_minus_kivi": 100.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:2387f3120c972a57d5a45118ddb95d1de25d098604720765",
+        "sample_index": 23,
+        "selection_reason": "largest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:3317076f4a4d262e5932c1b82d1a50e838cba63950dcb90d_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:3317076f4a4d262e5932c1b82d1a50e838cba63950dcb90d_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4844,
+        "pattern_minus_kivi": 100.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:3317076f4a4d262e5932c1b82d1a50e838cba63950dcb90d",
+        "sample_index": 35,
+        "selection_reason": "largest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:55e72fe3ff225f1486f8c6f2d69b47670ea1983b5a858f50_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:55e72fe3ff225f1486f8c6f2d69b47670ea1983b5a858f50_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4840,
+        "pattern_minus_kivi": 83.33,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:55e72fe3ff225f1486f8c6f2d69b47670ea1983b5a858f50",
+        "sample_index": 22,
+        "selection_reason": "largest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:114315020a2a44a7503087b56a7040a457d2c96a3d9e540b_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:114315020a2a44a7503087b56a7040a457d2c96a3d9e540b_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 6334,
+        "pattern_minus_kivi": 75.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:114315020a2a44a7503087b56a7040a457d2c96a3d9e540b",
+        "sample_index": 36,
+        "selection_reason": "largest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:8f226ecb3869196fc82b2291e0ce45f9b3b4a42ea7eb0966_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:8f226ecb3869196fc82b2291e0ce45f9b3b4a42ea7eb0966_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 6042,
+        "pattern_minus_kivi": -100.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:8f226ecb3869196fc82b2291e0ce45f9b3b4a42ea7eb0966",
+        "sample_index": 26,
+        "selection_reason": "smallest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4986,
+        "pattern_minus_kivi": -75.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37",
+        "sample_index": 25,
+        "selection_reason": "smallest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:23e5fbf90931855dcb0e340f64de8a0a9b0d891b23b797cd_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:23e5fbf90931855dcb0e340f64de8a0a9b0d891b23b797cd_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4687,
+        "pattern_minus_kivi": -66.67,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:23e5fbf90931855dcb0e340f64de8a0a9b0d891b23b797cd",
+        "sample_index": 9,
+        "selection_reason": "smallest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:73c56375df099b59d8d399c9db244304e05ebf90d81b0ec4_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:73c56375df099b59d8d399c9db244304e05ebf90d81b0ec4_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 6061,
+        "pattern_minus_kivi": -66.67,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:73c56375df099b59d8d399c9db244304e05ebf90d81b0ec4",
+        "sample_index": 20,
+        "selection_reason": "smallest_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:abe474c9df9c801cf7ec3a5a66dc0551e23ed4ea83137550_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:abe474c9df9c801cf7ec3a5a66dc0551e23ed4ea83137550_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4572,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:abe474c9df9c801cf7ec3a5a66dc0551e23ed4ea83137550",
+        "sample_index": 48,
+        "selection_reason": "median_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:93f8a1d426e90ac53e9d4598145b6db4cc810edcda8da1f3_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:93f8a1d426e90ac53e9d4598145b6db4cc810edcda8da1f3_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4631,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:93f8a1d426e90ac53e9d4598145b6db4cc810edcda8da1f3",
+        "sample_index": 42,
+        "selection_reason": "median_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:b7c499d1d0cc76480991ff87a23ed8e356cb5cb93479426c_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:b7c499d1d0cc76480991ff87a23ed8e356cb5cb93479426c_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4646,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:b7c499d1d0cc76480991ff87a23ed8e356cb5cb93479426c",
+        "sample_index": 15,
+        "selection_reason": "median_delta",
+        "task": "passage_retrieval_zh"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/longbench/passage_retrieval_zh/passage_retrieval_zh:153beb8e45d7a30432f5ec9cf2748d9ad97c133075b4125f_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/longbench/passage_retrieval_zh/passage_retrieval_zh:153beb8e45d7a30432f5ec9cf2748d9ad97c133075b4125f_oracle_seed0.json",
+      "sample": {
+        "dataset": "longbench",
+        "input_tokens": 4778,
+        "pattern_minus_kivi": 0.0,
+        "problem_id": "",
+        "sample_id": "passage_retrieval_zh:153beb8e45d7a30432f5ec9cf2748d9ad97c133075b4125f",
+        "sample_index": 16,
+        "selection_reason": "median_delta",
+        "task": "passage_retrieval_zh"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}

@@ -1,0 +1,395 @@
+{
+  "samples": [
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1160_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1160_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 181,
+        "problem_id": 1160,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0818_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0818_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 196,
+        "problem_id": 818,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0933_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0933_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 206,
+        "problem_id": 933,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0352_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0352_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 223,
+        "problem_id": 352,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0954_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0954_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 231,
+        "problem_id": 954,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0731_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0731_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 1.0,
+        "patternkv_output_tokens": 251,
+        "problem_id": 731,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "A_patternkv_correct_kivi_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0809_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0809_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 173,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 809,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1180_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1180_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 226,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 1180,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0972_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0972_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 306,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 972,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0443_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0443_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 314,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 443,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0214_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0214_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 434,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 214,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0810_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0810_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 585,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 287,
+        "problem_id": 810,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0250_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0250_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 374,
+        "pattern_minus_kivi": -1.0,
+        "patternkv_output_tokens": 610,
+        "problem_id": 250,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "B_patternkv_wrong_kivi_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0509_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0509_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 226,
+        "problem_id": 509,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1026_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1026_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 306,
+        "problem_id": 1026,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1093_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1093_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 428,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 209,
+        "problem_id": 1093,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0124_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0124_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 204,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 387,
+        "problem_id": 124,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1090_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1090_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 191,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 364,
+        "problem_id": 1090,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1062_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1062_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 376,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 210,
+        "problem_id": 1062,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0304_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0304_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 374,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 221,
+        "problem_id": 304,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "C_both_correct",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0520_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0520_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 190,
+        "problem_id": 520,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0559_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0559_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 198,
+        "problem_id": 559,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0943_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0943_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 216,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 943,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0749_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0749_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 233,
+        "problem_id": 749,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p0368_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p0368_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 236,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 2048,
+        "problem_id": 368,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    },
+    {
+      "generation_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/generation/gsm8k/gsm8k/p1276_oracle_seed0.json",
+      "observer_output": "/home/qinch2023/Bounded-pattrenKV-method/results/insight_v2/wave_a_8gpu/observer/gsm8k/gsm8k/p1276_oracle_seed0.json",
+      "sample": {
+        "dataset": "gsm8k",
+        "kivi_output_tokens": 2048,
+        "pattern_minus_kivi": 0.0,
+        "patternkv_output_tokens": 252,
+        "problem_id": 1276,
+        "sample_id": "",
+        "sample_index": "",
+        "selection_reason": "D_both_wrong",
+        "task": "gsm8k"
+      }
+    }
+  ],
+  "schema_version": "insight_v2.runner_manifest"
+}
