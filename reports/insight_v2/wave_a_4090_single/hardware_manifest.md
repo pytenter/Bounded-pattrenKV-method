@@ -9,4 +9,4 @@
 - Visible CUDA devices: `1`
 - Process device: `cuda:0`
 - Idle guard: `True`
-- Runtime commit: `6c88fb81f92934dbce22e2171501965723df9038`
+- Runtime commit: `09a0cf0528caba6874c98dfbb49201f3f394ad17`

@@ -2,7 +2,7 @@
 
 - Runtime equivalent: `True`
 - V100 runtime commit: `6c88fb81f92934dbce22e2171501965723df9038`
-- Current runtime commit: `6c88fb81f92934dbce22e2171501965723df9038`
+- Current runtime commit: `09a0cf0528caba6874c98dfbb49201f3f394ad17`
 
 Changed runtime-sensitive files:
 - none
