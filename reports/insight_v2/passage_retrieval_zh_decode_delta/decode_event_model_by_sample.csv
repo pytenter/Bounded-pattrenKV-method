@@ -1,0 +1,13 @@
+sample_id,sample_index,input_tokens,generated_tokens,prefill_mod_residual,gpu4090_expected_event_count,gpu4090_expected_event_positions,gpu4090_expected_window_indices,gpu4090_expected_pattern_gain_rows,gpu4090_expected_dynamic_rows,v100_expected_event_count,event_count_delta
+passage_retrieval_zh:114315020a2a44a7503087b56a7040a457d2c96a3d9e540b,36,6334,4,62,0,,,0,0,,
+passage_retrieval_zh:153beb8e45d7a30432f5ec9cf2748d9ad97c133075b4125f,16,4778,5,42,0,,,0,0,,
+passage_retrieval_zh:2387f3120c972a57d5a45118ddb95d1de25d098604720765,23,6599,5,71,0,,,0,0,,
+passage_retrieval_zh:23e5fbf90931855dcb0e340f64de8a0a9b0d891b23b797cd,9,4687,32,79,0,,,0,0,,
+passage_retrieval_zh:3317076f4a4d262e5932c1b82d1a50e838cba63950dcb90d,35,4844,4,108,0,,,0,0,,
+passage_retrieval_zh:55e72fe3ff225f1486f8c6f2d69b47670ea1983b5a858f50,22,4840,5,104,0,,,0,0,,
+passage_retrieval_zh:73c56375df099b59d8d399c9db244304e05ebf90d81b0ec4,20,6061,32,45,0,,,0,0,,
+passage_retrieval_zh:8f226ecb3869196fc82b2291e0ce45f9b3b4a42ea7eb0966,26,6042,32,26,0,,,0,0,,
+passage_retrieval_zh:93f8a1d426e90ac53e9d4598145b6db4cc810edcda8da1f3,42,4631,5,23,0,,,0,0,,
+passage_retrieval_zh:abe474c9df9c801cf7ec3a5a66dc0551e23ed4ea83137550,48,4572,32,92,0,,,0,0,,
+passage_retrieval_zh:b7c499d1d0cc76480991ff87a23ed8e356cb5cb93479426c,15,4646,5,38,0,,,0,0,,
+passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37,25,4986,32,122,1,6,38,512,256,,

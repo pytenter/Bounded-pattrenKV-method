@@ -1,0 +1,2 @@
+sample_id,sample_index,window_idx,gpu4090_pattern_gain_extra_rows,gpu4090_dynamic_extra_rows,window_source
+passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37,25,38,512,256,code_model_from_gpu4090_generation

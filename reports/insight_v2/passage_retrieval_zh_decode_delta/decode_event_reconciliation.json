@@ -1,0 +1,18 @@
+{
+  "cross_hardware": {
+    "proof_status": "data_insufficient",
+    "v100_generation_available": false,
+    "v100_observer_available": false
+  },
+  "gpu4090_side": {
+    "alignment_status": true,
+    "gpu4090_expected_dynamic_rows": 256,
+    "gpu4090_expected_event_total": 1,
+    "gpu4090_expected_pattern_gain_rows": 512,
+    "observed_dynamic_extra_rows": 256,
+    "observed_pattern_gain_extra_rows": 512,
+    "pattern_group": 128,
+    "residual_length": 128
+  },
+  "schema_version": "insight_v2.decode_event_reconciliation"
+}

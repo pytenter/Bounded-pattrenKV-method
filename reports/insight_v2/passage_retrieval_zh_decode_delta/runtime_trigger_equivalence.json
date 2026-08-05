@@ -1,0 +1,43 @@
+{
+  "generation_config_equal": true,
+  "gpu4090_runtime_commits": [
+    "3c8efb43e813fa16d43b037b4ab046056395fb9c",
+    "6d6cdcb74d0e4611a9274660dfdc132161b5318b"
+  ],
+  "insight_config_equal": true,
+  "patternkv_config_equal": true,
+  "runtime_diffs": {
+    "3c8efb43e813fa16d43b037b4ab046056395fb9c": {
+      "changed_files": [
+        "scripts/check_insight_wave_a_4090_gate.py",
+        "scripts/insight_wave_a_4090_control.py",
+        "scripts/insight_wave_a_4090_utils.py",
+        "scripts/prepare_insight_wave_a_4090.py",
+        "scripts/run_insight_wave_a_4090_single.sh",
+        "scripts/run_insight_wave_a_4090_validation.py",
+        "scripts/status_insight_wave_a_4090_single.sh",
+        "scripts/stop_insight_wave_a_4090_single.sh",
+        "scripts/summarize_insight_wave_a_4090.py"
+      ],
+      "sensitive_changed_files": []
+    },
+    "6d6cdcb74d0e4611a9274660dfdc132161b5318b": {
+      "changed_files": [
+        "scripts/check_insight_wave_a_4090_gate.py",
+        "scripts/insight_wave_a_4090_control.py",
+        "scripts/insight_wave_a_4090_utils.py",
+        "scripts/prepare_insight_wave_a_4090.py",
+        "scripts/run_insight_wave_a_4090_single.sh",
+        "scripts/run_insight_wave_a_4090_validation.py",
+        "scripts/status_insight_wave_a_4090_single.sh",
+        "scripts/stop_insight_wave_a_4090_single.sh",
+        "scripts/summarize_insight_wave_a_4090.py"
+      ],
+      "sensitive_changed_files": []
+    }
+  },
+  "schema_version": "insight_v2.runtime_trigger_equivalence",
+  "sensitive_runtime_diff_detected": false,
+  "summary_schema_difference_present": true,
+  "v100_runtime_commit": "6c88fb81f92934dbce22e2171501965723df9038"
+}

@@ -1,0 +1,10 @@
+{
+  "dynamic_extra_rows": 256,
+  "dynamic_rows_per_layer_head": 1.0,
+  "hidden_layers": 32,
+  "kv_heads": 8,
+  "layer_head_product": 256,
+  "pattern_gain_extra_rows": 512,
+  "pattern_gain_rows_per_layer_head": 2.0,
+  "structural_consistency_status": "consistent_with_one_extra_full_layer_head_event"
+}

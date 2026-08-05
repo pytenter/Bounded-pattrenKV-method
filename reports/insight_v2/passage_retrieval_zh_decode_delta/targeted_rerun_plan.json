@@ -1,0 +1,34 @@
+{
+  "directories": {
+    "logs": "logs/insight_v2/passage_retrieval_zh_decode_delta_rerun/",
+    "reports": "reports/insight_v2/passage_retrieval_zh_decode_delta_rerun/",
+    "results": "results/insight_v2/passage_retrieval_zh_decode_delta_rerun/",
+    "run": "run/insight_v2/passage_retrieval_zh_decode_delta_rerun/"
+  },
+  "fallback_scope": "passage_retrieval_zh_12_samples",
+  "forbidden": "Do not auto-start this rerun plan.",
+  "preferred_hardware": "single RTX 4090",
+  "required_fields": [
+    "sample_id",
+    "sample_index",
+    "input_tokens",
+    "generated_token_ids",
+    "generated_token_ids_sha256",
+    "generated_text_sha256",
+    "stop_reason",
+    "max_new_tokens",
+    "decode window_idx",
+    "decode_k metrics",
+    "decode_v metrics"
+  ],
+  "runtime_commits_to_compare": [
+    "6c88fb81f92934dbce22e2171501965723df9038",
+    "3c8efb43e813fa16d43b037b4ab046056395fb9c",
+    "6d6cdcb74d0e4611a9274660dfdc132161b5318b"
+  ],
+  "schema_version": "insight_v2.passage_retrieval_zh_decode_delta_rerun_plan",
+  "status": "proposed_only",
+  "success_criteria": "Reproduce whether the target sample emits one decode boundary event under one runtime/configuration and zero under the comparison condition.",
+  "target_sample": "passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37",
+  "why_needed": "V100 raw generation and observer files are unavailable, so the cross-hardware sample-level cause cannot be proven from offline data alone."
+}

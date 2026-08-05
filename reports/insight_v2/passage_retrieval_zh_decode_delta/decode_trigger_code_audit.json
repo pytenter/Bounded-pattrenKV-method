@@ -1,0 +1,62 @@
+{
+  "findings": [
+    {
+      "condition": "if key_states_full.shape[-2] == self.residual_length",
+      "file": "models/llama_patternkv.py",
+      "function": "LlamaAttention forward decode K path",
+      "interpretation": "Decode K window metrics fire only when the residual decode buffer reaches exactly residual_length tokens.",
+      "line": 717
+    },
+    {
+      "condition": "window_idx=int(assignments.shape[-1] // self.residual_length) if assignments is not None else 0",
+      "file": "models/llama_patternkv.py",
+      "function": "LlamaAttention forward decode K path",
+      "interpretation": "The first decode event after prefill uses the number of already-quantized windows as the decode window index.",
+      "line": 737
+    },
+    {
+      "condition": "if value_full_length == self.residual_length",
+      "file": "models/llama_patternkv.py",
+      "function": "LlamaAttention forward decode V path",
+      "interpretation": "Decode V window metrics use the same exact-full-window trigger as decode K.",
+      "line": 845
+    },
+    {
+      "condition": "observer.add_scalar for old_mse/new_mse/relative_mse_gain/relative_range_gain/candidate_assignment_fraction",
+      "file": "insight/hook_metrics.py",
+      "function": "record_decode_k_window_metrics",
+      "interpretation": "Each decode K event emits five aggregate metrics per layer-head, but the published pattern_gain_map.csv keeps only relative_mse_gain and relative_range_gain.",
+      "line": 420
+    },
+    {
+      "condition": "observer.add_scalar for old/new assignment/actual MSE, candidate_assignment_fraction, candidate_gate_accepted_fraction",
+      "file": "insight/hook_metrics.py",
+      "function": "record_decode_v_window_metrics",
+      "interpretation": "Each decode V event emits six aggregate metrics per layer-head, but the published dynamic_pattern_utility.csv keeps only candidate_gate_accepted_fraction.",
+      "line": 489
+    },
+    {
+      "condition": "pattern_gain_rows metric filter",
+      "file": "scripts/summarize_insight_wave_a_8gpu.py",
+      "function": "main",
+      "interpretation": "The published pattern_gain_map.csv keeps relative_benefit, relative_mse_gain, relative_candidate_benefit, range_contraction, and relative_range_gain only.",
+      "line": 227
+    },
+    {
+      "condition": "dynamic_rows metric filter",
+      "file": "scripts/summarize_insight_wave_a_8gpu.py",
+      "function": "main",
+      "interpretation": "The published dynamic_pattern_utility.csv keeps candidate_gate_accepted_fraction and a small fixed metric allowlist only.",
+      "line": 229
+    },
+    {
+      "condition": "step % residual_length == 0",
+      "file": "bench/paper_config.py",
+      "function": "pattern_boundary_events",
+      "interpretation": "The helper encodes the same 1-based residual-length boundary rule used by the runtime audit model.",
+      "line": 162
+    }
+  ],
+  "generated_at": "2026-08-05T14:01:16.578368+00:00",
+  "schema_version": "insight_v2.decode_trigger_code_audit"
+}

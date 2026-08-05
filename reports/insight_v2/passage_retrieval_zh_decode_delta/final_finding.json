@@ -1,0 +1,32 @@
+{
+  "dynamic_extra_rows": 256,
+  "event_count_delta": null,
+  "expected_dynamic_delta": null,
+  "expected_pattern_gain_delta": null,
+  "generation_length_explanation": null,
+  "gpu4090_event_count": 1,
+  "gpu4090_side_explanation": {
+    "gpu4090_expected_dynamic_rows": 256,
+    "gpu4090_expected_event_count": 1,
+    "gpu4090_expected_pattern_gain_rows": 512,
+    "sample_id": "passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37"
+  },
+  "localized_phase": "decode",
+  "localized_task": "passage_retrieval_zh",
+  "pattern_gain_extra_rows": 512,
+  "raw_data_available": {
+    "gpu4090_generation": true,
+    "gpu4090_observer": true,
+    "v100_generation": false,
+    "v100_observer": false
+  },
+  "responsible_samples": [
+    "passage_retrieval_zh:def74c0a4002099b5713c50a5c9f3d497712f27458a59b37"
+  ],
+  "runtime_difference_explanation": null,
+  "status": "data_insufficient",
+  "summarizer_difference_explanation": null,
+  "targeted_rerun_required": true,
+  "token_divergence_explanation": null,
+  "v100_event_count": null
+}
