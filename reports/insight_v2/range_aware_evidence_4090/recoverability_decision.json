@@ -1,0 +1,21 @@
+{
+  "aggregate_supports_full_recovery": false,
+  "dropped_record_count": 789376,
+  "generated_at": "2026-08-05T15:34:17.722284+00:00",
+  "git_commit": "7b483730cc9aafa5dea37e49e8fb7e5b5b833ed5",
+  "k_sample_has_mismatch": true,
+  "k_sample_has_range_regret": false,
+  "matching_oracle_gap_metrics": [
+    "conditional_oracle_gap",
+    "current_oracle_gap",
+    "minmax_oracle_gap"
+  ],
+  "observer_files": 140,
+  "reason": "V mismatch/range_regret exist only in sample records, while K lacks direct range_regret fields and 68 observer files are truncated.",
+  "sample_record_supports_full_recovery": false,
+  "schema_version": "insight_v2.range_aware_recoverability_decision",
+  "status": "partially_recoverable",
+  "truncated_files": 68,
+  "v_sample_has_mismatch": true,
+  "v_sample_has_range_regret": true
+}

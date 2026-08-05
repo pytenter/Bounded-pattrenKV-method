@@ -1,0 +1,105 @@
+{
+  "answers": {
+    "diagnosed_scope": "runtime matching mismatch on a fixed pattern bank; not direct evidence that re-mining the bank with a new objective would improve inference.",
+    "epsilon": 1e-12,
+    "k_axis_verified": true,
+    "k_layout": "[B,H,T,D], quantized after transpose to [B,H,D,T] in 128-token groups",
+    "matching_oracle_gap_csv_core_metrics": [
+      "conditional_oracle_gap",
+      "current_oracle_gap",
+      "minmax_oracle_gap"
+    ],
+    "mining_assignment_equals_runtime_assignment": false,
+    "pattern_bank_l2_kmeans": true,
+    "range_regret_runtime_formula": "For V sample records only, stored value is minmax_mse - oracle_mse; it is not the frozen normalized range-regret formula.",
+    "residual_range_definition": "max(residual) - min(residual) over head_dim",
+    "runtime_l2_assignment": "batched_assign_compiled for mined K/V centroids during prefill initialization",
+    "runtime_minmax_assignment_k": "_assign_minmax_hnk on fixed K centroids",
+    "runtime_minmax_assignment_v": "_nearest_v_centroid on fixed V centroids",
+    "same_fixed_pattern_bank_for_comparison": true,
+    "v_axis_verified": true,
+    "v_layout": "[B,H,T,D], quantized per-token on last-dim head_dim=128"
+  },
+  "findings": [
+    {
+      "evidence": "d2 = ||x||^2 + ||c||^2 - 2 x·c; assign = d2.argmin(dim=-1).",
+      "file": "models/llama_patternkv.py",
+      "function_or_class": "batched_kmeans_fast",
+      "interpretation": "Pattern bank mining uses L2 KMeans updates on a fixed [H,N,D] token matrix.",
+      "line": 333
+    },
+    {
+      "evidence": "assign_k = batched_assign_compiled(Xk, k_centroids); assign = batched_assign_compiled(X, centroids).",
+      "file": "models/llama_patternkv.py",
+      "function_or_class": "LlamaFlashAttention_PatternKV.forward",
+      "interpretation": "Runtime prefill assignment for both K and V uses L2 nearest-centroid assignment on the mined bank.",
+      "line": 936
+    },
+    {
+      "evidence": "r = diff.amax(-1) - diff.amin(-1); idx = r.min(-1).",
+      "file": "models/llama_patternkv.py",
+      "function_or_class": "LlamaFlashAttention_PatternKV._assign_minmax_hnk",
+      "interpretation": "K min-max assignment is defined on residual dynamic range over the head_dim axis for each [H,N,D] token vector.",
+      "line": 495
+    },
+    {
+      "evidence": "r = diff.amax(-1) - diff.amin(-1); idx = r.argmin(dim=2).",
+      "file": "models/llama_patternkv.py",
+      "function_or_class": "LlamaFlashAttention_PatternKV._nearest_v_centroid",
+      "interpretation": "V runtime nearest-centroid matching uses min-max residual range over head_dim, not L2.",
+      "line": 613
+    },
+    {
+      "evidence": "K is transposed on [B,H,T,D] -> [B,H,D,T] and quantized along the last dimension in 128-token groups.",
+      "file": "insight/quant_reference.py",
+      "function_or_class": "quantize_dequant_k_token_groups",
+      "interpretation": "Real K quantization axis is per-channel over 128-token groups, so K range-aware evidence must respect token grouping after transpose.",
+      "line": 41
+    },
+    {
+      "evidence": "V stays [B,H,T,D] and is quantized along the last dimension.",
+      "file": "insight/quant_reference.py",
+      "function_or_class": "quantize_dequant_v_head_dim",
+      "interpretation": "Real V quantization axis is per-token over head_dim=128.",
+      "line": 59
+    },
+    {
+      "evidence": "l2_assignment and minmax_assignment are sampled per token within a 128-token K group.",
+      "file": "insight/hook_metrics.py",
+      "function_or_class": "_record_k_conditional_oracle",
+      "interpretation": "Existing K oracle records diagnose runtime matching mismatch on a fixed pattern bank, not a re-mined bank objective.",
+      "line": 190
+    },
+    {
+      "evidence": "raw_group_mse, current_group_mse, minmax_group_mse, conditional_oracle_group_mse are stored; no residual ranges are stored.",
+      "file": "insight/hook_metrics.py",
+      "function_or_class": "_record_k_conditional_oracle",
+      "interpretation": "K oracle records provide MSE-gap evidence but do not directly expose K range regret or per-assignment residual ranges.",
+      "line": 221
+    },
+    {
+      "evidence": "l2_assignment, minmax_assignment, l2_minmax_mismatch, range_regret, current_oracle_gap, minmax_oracle_gap are recorded.",
+      "file": "insight/hook_metrics.py",
+      "function_or_class": "_record_v_matching_oracle",
+      "interpretation": "V oracle records directly contain mismatch and a regret-like scalar, but only at sampled-token granularity.",
+      "line": 347
+    },
+    {
+      "evidence": "matching_oracle_gap.csv keeps only metrics whose names contain oracle_gap.",
+      "file": "scripts/summarize_insight_wave_a_8gpu.py",
+      "function_or_class": "main",
+      "interpretation": "Published matching_oracle_gap.csv does not export mismatch counts or range regret directly.",
+      "line": 227
+    },
+    {
+      "evidence": "When max_sample_records is reached, dropped_record_count increments and later records are discarded.",
+      "file": "insight/collector.py",
+      "function_or_class": "InsightCollector.add_sample_record",
+      "interpretation": "Any recoverability path that depends on sample records is invalid for fully recovered 140-sample conclusions when truncation is present.",
+      "line": 96
+    }
+  ],
+  "generated_at": "2026-08-05T15:34:17.718299+00:00",
+  "git_commit": "7b483730cc9aafa5dea37e49e8fb7e5b5b833ed5",
+  "schema_version": "insight_v2.range_aware_algorithm_semantics_audit"
+}

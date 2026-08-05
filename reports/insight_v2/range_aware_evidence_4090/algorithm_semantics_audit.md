@@ -1,0 +1,15 @@
+# Algorithm Semantics Audit
+
+| file | line | function/class | evidence | interpretation |
+| --- | ---: | --- | --- | --- |
+| models/llama_patternkv.py | 333 | batched_kmeans_fast | d2 = ||x||^2 + ||c||^2 - 2 x·c; assign = d2.argmin(dim=-1). | Pattern bank mining uses L2 KMeans updates on a fixed [H,N,D] token matrix. |
+| models/llama_patternkv.py | 936 | LlamaFlashAttention_PatternKV.forward | assign_k = batched_assign_compiled(Xk, k_centroids); assign = batched_assign_compiled(X, centroids). | Runtime prefill assignment for both K and V uses L2 nearest-centroid assignment on the mined bank. |
+| models/llama_patternkv.py | 495 | LlamaFlashAttention_PatternKV._assign_minmax_hnk | r = diff.amax(-1) - diff.amin(-1); idx = r.min(-1). | K min-max assignment is defined on residual dynamic range over the head_dim axis for each [H,N,D] token vector. |
+| models/llama_patternkv.py | 613 | LlamaFlashAttention_PatternKV._nearest_v_centroid | r = diff.amax(-1) - diff.amin(-1); idx = r.argmin(dim=2). | V runtime nearest-centroid matching uses min-max residual range over head_dim, not L2. |
+| insight/quant_reference.py | 41 | quantize_dequant_k_token_groups | K is transposed on [B,H,T,D] -> [B,H,D,T] and quantized along the last dimension in 128-token groups. | Real K quantization axis is per-channel over 128-token groups, so K range-aware evidence must respect token grouping after transpose. |
+| insight/quant_reference.py | 59 | quantize_dequant_v_head_dim | V stays [B,H,T,D] and is quantized along the last dimension. | Real V quantization axis is per-token over head_dim=128. |
+| insight/hook_metrics.py | 190 | _record_k_conditional_oracle | l2_assignment and minmax_assignment are sampled per token within a 128-token K group. | Existing K oracle records diagnose runtime matching mismatch on a fixed pattern bank, not a re-mined bank objective. |
+| insight/hook_metrics.py | 221 | _record_k_conditional_oracle | raw_group_mse, current_group_mse, minmax_group_mse, conditional_oracle_group_mse are stored; no residual ranges are stored. | K oracle records provide MSE-gap evidence but do not directly expose K range regret or per-assignment residual ranges. |
+| insight/hook_metrics.py | 347 | _record_v_matching_oracle | l2_assignment, minmax_assignment, l2_minmax_mismatch, range_regret, current_oracle_gap, minmax_oracle_gap are recorded. | V oracle records directly contain mismatch and a regret-like scalar, but only at sampled-token granularity. |
+| scripts/summarize_insight_wave_a_8gpu.py | 227 | main | matching_oracle_gap.csv keeps only metrics whose names contain oracle_gap. | Published matching_oracle_gap.csv does not export mismatch counts or range regret directly. |
+| insight/collector.py | 96 | InsightCollector.add_sample_record | When max_sample_records is reached, dropped_record_count increments and later records are discarded. | Any recoverability path that depends on sample records is invalid for fully recovered 140-sample conclusions when truncation is present. |

@@ -1,0 +1,7 @@
+task,files,truncated_files,dropped_record_count,record_count
+dureader,12,12,180992,49152
+gsm8k,80,8,28288,141952
+hotpotqa,12,12,148224,49152
+passage_retrieval_en,12,12,181248,49152
+passage_retrieval_zh,12,12,108032,49152
+samsum,12,12,142592,49152
