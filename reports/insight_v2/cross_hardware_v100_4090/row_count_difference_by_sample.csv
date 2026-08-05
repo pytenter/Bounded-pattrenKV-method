@@ -1,0 +1,2 @@
+dimension,status,reason,v100_rows,gpu4090_rows,common_rows
+sample,data_insufficient,"The summary CSVs do not include sample_id/problem_id fields, so per-sample attribution cannot be reconstructed without the raw observer results for both hardware runs.",15360,15872,15360

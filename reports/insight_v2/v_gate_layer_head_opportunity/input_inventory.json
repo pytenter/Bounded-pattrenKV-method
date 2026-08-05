@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-08-05T14:27:44.874604+00:00",
+  "git_commit": "415de8a4d376a8e099245714fee001fbb82c47ed",
+  "roots": {
+    "gpu4090": {
+      "cross_hardware_root": "reports/insight_v2/cross_hardware_v100_4090",
+      "csv_path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/v_gate_confusion.csv",
+      "csv_sha256": "83843121381512348c463f4130f8fdf65ca4583ee490ac688733008e03038997",
+      "report_root": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single"
+    },
+    "v100": {
+      "cross_hardware_root": "reports/insight_v2/cross_hardware_v100_4090",
+      "csv_path": "/root/Bounded-pattrenKV-method/reports/insight_v2/wave_a_8gpu/v_gate_confusion.csv",
+      "csv_sha256": "465e40d822486b6618638b40fad3de6789cc9291cda1e417e356bb1758ea1d2a",
+      "report_root": "/root/Bounded-pattrenKV-method/reports/insight_v2/wave_a_8gpu"
+    }
+  },
+  "schema_version": "insight_v2.v_gate_layer_head_opportunity_input_inventory"
+}

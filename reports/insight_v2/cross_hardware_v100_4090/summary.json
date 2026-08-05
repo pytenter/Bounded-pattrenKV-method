@@ -1,0 +1,2144 @@
+{
+  "collector_truncation_audit": {
+    "evidence": {
+      "bench_file": "/root/Bounded-pattrenKV-method/bench/bench_pattern_insight.py",
+      "collector_file": "/root/Bounded-pattrenKV-method/insight/collector.py",
+      "runtime_file": "/root/Bounded-pattrenKV-method/insight/runtime.py",
+      "summary_file": "/root/Bounded-pattrenKV-method/scripts/summarize_insight_wave_a_8gpu.py"
+    },
+    "findings": [
+      "InsightCollector accumulates aggregates, histograms, and confusion counters independently of sample-record retention.",
+      "dropped_record_count applies only to add_sample_record() when records exceed max_sample_records.",
+      "CSV summaries are emitted from aggregate counters and confusion counters, not from truncated records.",
+      "Therefore the dropped-record guard does not invalidate the core aggregate metrics in the published CSV reports."
+    ],
+    "schema_version": "insight_v2.cross_hardware_collector_audit",
+    "status": "core_aggregates_unaffected"
+  },
+  "dynamic_pattern_utility": {
+    "comparison": {
+      "common_ratio_4090": 0.8333333333333334,
+      "common_ratio_v100": 1.0,
+      "common_rows": 1280,
+      "gpu4090_rows": 1536,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "0",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "1",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "2",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "3",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "4",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "5",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "6",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "7",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "1",
+          "0",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "1",
+          "1",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ]
+      ],
+      "only_4090_rows": 256,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 1280
+    },
+    "gpu4090": {
+      "macro_mean": 0.09098468819049875,
+      "macro_median": 0.078125,
+      "max": 0.40244318181818184,
+      "min": 0.0,
+      "rows": 1536,
+      "total_count": 79616,
+      "weighted_mean": 0.14944301004195137
+    },
+    "paired_common_candidate_gate_accepted_fraction": {
+      "common_rows": 1280,
+      "mean_abs_delta": 0.005294874709013928,
+      "mean_count_delta": 4.8,
+      "mean_delta": 0.0022209476117796695,
+      "median_count_delta": 0.0,
+      "median_delta": 0.0008680555555555559
+    },
+    "v100": {
+      "macro_mean": 0.09173851024806881,
+      "macro_median": 0.078125,
+      "max": 0.4018301792828685,
+      "min": 0.0026041666666666665,
+      "rows": 1280,
+      "total_count": 73216,
+      "weighted_mean": 0.14019892765925482
+    }
+  },
+  "experiment_statuses": {
+    "dynamic_pattern_utility": "observation_completed_intervention_not_started",
+    "matching_oracle_gap": "core_completed_extension_not_started",
+    "pattern_gain_map": "completed",
+    "v_gate_confusion": "observational_diagnostics_completed"
+  },
+  "generated_at": "2026-08-05T13:01:52.869894+00:00",
+  "git_commit": "c67ba9a1feb39ac50f404db5fa6ff0a70fb50881",
+  "input_inventory": {
+    "generated_at": "2026-08-05T13:01:52.293879+00:00",
+    "git_commit": "c67ba9a1feb39ac50f404db5fa6ff0a70fb50881",
+    "roots": {
+      "gpu4090": {
+        "artifacts": {
+          "completion.json": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/completion.json",
+            "sha256": "14c555b8ae3b7a6bbee3424d6ee269157725b009156a3fb786eec56af5b960cc"
+          },
+          "completion.md": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/completion.md",
+            "sha256": "a3abdde07ed6ea674b0e25e8e13a5d50ca2fb9013ffee26ad0b9ea27c255b7b7"
+          },
+          "dynamic_pattern_utility.csv": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/dynamic_pattern_utility.csv",
+            "sha256": "6e92288a76273a3f3275a3af5382fb1d8ae90d1b27f8b017b86d54a899afd757"
+          },
+          "manifest.json": {
+            "exists": false,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/manifest.json",
+            "sha256": null
+          },
+          "matching_oracle_gap.csv": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/matching_oracle_gap.csv",
+            "sha256": "b81aeb21eddb6bdeb6f943f3fdf9fead517292baab44a5422ae49c8f1ef6f60d"
+          },
+          "observer_overhead.md": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/observer_overhead.md",
+            "sha256": "9d7fcc7e6c7be0a5eb3ee5b8a4c1d308d148f23be057fd25caed273408d01b7f"
+          },
+          "pattern_gain_map.csv": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/pattern_gain_map.csv",
+            "sha256": "aa9e7cb0ce711b7b64d7b86674bc0be57c8a3dedf5aa2de61ff793781a9bd941"
+          },
+          "reference_manifest.json": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/reference_manifest.json",
+            "sha256": "a5e3444a9360f1fc662d08681f8378fb8787dd81594df85be91326e925f085f0"
+          },
+          "v_gate_confusion.csv": {
+            "exists": true,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/v_gate_confusion.csv",
+            "sha256": "83843121381512348c463f4130f8fdf65ca4583ee490ac688733008e03038997"
+          }
+        },
+        "files": {
+          "dynamic_pattern_utility.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "candidate_gate_accepted_fraction"
+            ],
+            "non_finite_values": 0,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/dynamic_pattern_utility.csv",
+            "phase_values": [
+              "decode"
+            ],
+            "row_count": 1536,
+            "sha256": "6e92288a76273a3f3275a3af5382fb1d8ae90d1b27f8b017b86d54a899afd757",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          },
+          "matching_oracle_gap.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "k",
+              "v"
+            ],
+            "layer_values": [
+              0,
+              7,
+              15,
+              23,
+              31
+            ],
+            "metric_values": [
+              "conditional_oracle_gap",
+              "current_oracle_gap",
+              "minmax_oracle_gap"
+            ],
+            "non_finite_values": 0,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/matching_oracle_gap.csv",
+            "phase_values": [
+              "prefill"
+            ],
+            "row_count": 2160,
+            "sha256": "b81aeb21eddb6bdeb6f943f3fdf9fead517292baab44a5422ae49c8f1ef6f60d",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          },
+          "pattern_gain_map.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "k",
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "range_contraction",
+              "relative_benefit",
+              "relative_candidate_benefit",
+              "relative_mse_gain",
+              "relative_range_gain"
+            ],
+            "non_finite_values": 0,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/pattern_gain_map.csv",
+            "phase_values": [
+              "decode",
+              "prefill"
+            ],
+            "row_count": 15872,
+            "sha256": "aa9e7cb0ce711b7b64d7b86674bc0be57c8a3dedf5aa2de61ff793781a9bd941",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          },
+          "v_gate_confusion.csv": {
+            "blank_count_values": 4608,
+            "blank_max_values": 0,
+            "blank_mean_values": 4608,
+            "blank_min_values": 0,
+            "blank_std_values": 4608,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "true_positive",
+              "true_negative",
+              "false_positive",
+              "false_negative",
+              "total",
+              "false_positive_rate",
+              "false_negative_rate"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "gate_vs_mse_oracle"
+            ],
+            "non_finite_values": 0,
+            "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/v_gate_confusion.csv",
+            "phase_values": [
+              "prefill"
+            ],
+            "row_count": 4608,
+            "sha256": "83843121381512348c463f4130f8fdf65ca4583ee490ac688733008e03038997",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          }
+        },
+        "label": "gpu4090",
+        "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single"
+      },
+      "v100": {
+        "artifacts": {
+          "completion.json": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/completion.json",
+            "sha256": "f35f87f7c593f4299249e0be0676b84824bde5e4b89c5f35137b063f731243e2"
+          },
+          "completion.md": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/completion.md",
+            "sha256": "8df40ee2eca640b79fa01df34f79ff8c5f609e7a5ca8c77c1b4df492222b17fc"
+          },
+          "dynamic_pattern_utility.csv": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/dynamic_pattern_utility.csv",
+            "sha256": "785c9c3881da0d19c0bff0c4a475344c67e8a957d7f4c2eb6f92f3c78e2c98c6"
+          },
+          "manifest.json": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/manifest.json",
+            "sha256": "d40c5a63e70998d68280a722152cdf926609ee61568fefedf2d29296cd97a299"
+          },
+          "matching_oracle_gap.csv": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/matching_oracle_gap.csv",
+            "sha256": "10d07c77bc71d68d8808b7a0d29d3cdc75a24f8eb7dc2fd125a0fb5436d4e110"
+          },
+          "observer_overhead.md": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/observer_overhead.md",
+            "sha256": "b83c3e7db4f7319b22abe5739846ea5bb743cb9ffc75cca290cc21775c75949c"
+          },
+          "pattern_gain_map.csv": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/pattern_gain_map.csv",
+            "sha256": "dfe43d8ec77f391ef5b45b9b5019170dfb02a5ed2cb924c00139bc12e79378e3"
+          },
+          "v_gate_confusion.csv": {
+            "exists": true,
+            "path": "reports/insight_v2/wave_a_8gpu/v_gate_confusion.csv",
+            "sha256": "465e40d822486b6618638b40fad3de6789cc9291cda1e417e356bb1758ea1d2a"
+          }
+        },
+        "files": {
+          "dynamic_pattern_utility.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "min",
+              "max",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "candidate_gate_accepted_fraction"
+            ],
+            "non_finite_values": 0,
+            "path": "reports/insight_v2/wave_a_8gpu/dynamic_pattern_utility.csv",
+            "phase_values": [
+              "decode"
+            ],
+            "row_count": 1280,
+            "sha256": "785c9c3881da0d19c0bff0c4a475344c67e8a957d7f4c2eb6f92f3c78e2c98c6",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "samsum"
+            ]
+          },
+          "matching_oracle_gap.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "min",
+              "max",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "k",
+              "v"
+            ],
+            "layer_values": [
+              0,
+              7,
+              15,
+              23,
+              31
+            ],
+            "metric_values": [
+              "conditional_oracle_gap",
+              "current_oracle_gap",
+              "minmax_oracle_gap"
+            ],
+            "non_finite_values": 0,
+            "path": "reports/insight_v2/wave_a_8gpu/matching_oracle_gap.csv",
+            "phase_values": [
+              "prefill"
+            ],
+            "row_count": 2160,
+            "sha256": "10d07c77bc71d68d8808b7a0d29d3cdc75a24f8eb7dc2fd125a0fb5436d4e110",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          },
+          "pattern_gain_map.csv": {
+            "blank_count_values": 0,
+            "blank_max_values": 0,
+            "blank_mean_values": 0,
+            "blank_min_values": 0,
+            "blank_std_values": 0,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "count",
+              "mean",
+              "min",
+              "max",
+              "std"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "k",
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "range_contraction",
+              "relative_benefit",
+              "relative_candidate_benefit",
+              "relative_mse_gain",
+              "relative_range_gain"
+            ],
+            "non_finite_values": 0,
+            "path": "reports/insight_v2/wave_a_8gpu/pattern_gain_map.csv",
+            "phase_values": [
+              "decode",
+              "prefill"
+            ],
+            "row_count": 15360,
+            "sha256": "dfe43d8ec77f391ef5b45b9b5019170dfb02a5ed2cb924c00139bc12e79378e3",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          },
+          "v_gate_confusion.csv": {
+            "blank_count_values": 4608,
+            "blank_max_values": 0,
+            "blank_mean_values": 4608,
+            "blank_min_values": 0,
+            "blank_std_values": 4608,
+            "bucket_values": [
+              "bucketfirst",
+              "bucketlast",
+              "bucketmiddle"
+            ],
+            "duplicate_primary_keys": 0,
+            "exists": true,
+            "header": [
+              "task",
+              "phase",
+              "kv_type",
+              "layer",
+              "kv_head",
+              "bucket",
+              "metric",
+              "true_positive",
+              "true_negative",
+              "false_positive",
+              "false_negative",
+              "total",
+              "false_positive_rate",
+              "false_negative_rate"
+            ],
+            "kv_head_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "kv_type_values": [
+              "v"
+            ],
+            "layer_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "metric_values": [
+              "gate_vs_mse_oracle"
+            ],
+            "non_finite_values": 0,
+            "path": "reports/insight_v2/wave_a_8gpu/v_gate_confusion.csv",
+            "phase_values": [
+              "prefill"
+            ],
+            "row_count": 4608,
+            "sha256": "465e40d822486b6618638b40fad3de6789cc9291cda1e417e356bb1758ea1d2a",
+            "task_values": [
+              "dureader",
+              "gsm8k",
+              "hotpotqa",
+              "passage_retrieval_en",
+              "passage_retrieval_zh",
+              "samsum"
+            ]
+          }
+        },
+        "label": "v100",
+        "path": "reports/insight_v2/wave_a_8gpu"
+      }
+    },
+    "schema_version": "insight_v2.cross_hardware_input_inventory"
+  },
+  "matching_oracle_gap": {
+    "comparison": {
+      "common_ratio_4090": 1.0,
+      "common_ratio_v100": 1.0,
+      "common_rows": 2160,
+      "gpu4090_rows": 2160,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [],
+      "only_4090_rows": 0,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 2160
+    },
+    "gpu4090": {
+      "macro_mean": 0.0016879028101959204,
+      "macro_median": 0.0010602511795266066,
+      "max": 0.022369168565741608,
+      "min": 0.0,
+      "rows": 720,
+      "total_count": 22400,
+      "weighted_mean": 0.0017104650034462615
+    },
+    "paired_common_current_oracle_gap": {
+      "common_rows": 720,
+      "mean_abs_delta": 0.00047916432711624487,
+      "mean_count_delta": 0.0,
+      "mean_delta": 2.7308218539725626e-05,
+      "median_count_delta": 0.0,
+      "median_delta": 2.501121676529085e-06
+    },
+    "v100": {
+      "macro_mean": 0.0016605945916561946,
+      "macro_median": 0.0009632852924024236,
+      "max": 0.013705454653862751,
+      "min": 0.0,
+      "rows": 720,
+      "total_count": 22400,
+      "weighted_mean": 0.001681523730211489
+    }
+  },
+  "pattern_gain_map": {
+    "comparison": {
+      "common_ratio_4090": 0.967741935483871,
+      "common_ratio_v100": 1.0,
+      "common_rows": 15360,
+      "gpu4090_rows": 15872,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "0",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "0",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "1",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "1",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "2",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "2",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "3",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "3",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "4",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "4",
+          "bucketfirst",
+          "relative_range_gain"
+        ]
+      ],
+      "only_4090_rows": 512,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 15360
+    },
+    "gpu4090": {
+      "macro_mean": 0.06979361891594318,
+      "macro_median": 0.03788907825903798,
+      "max": 0.6042974614563695,
+      "min": -0.047782287672359314,
+      "rows": 4096,
+      "total_count": 829696,
+      "weighted_mean": 0.04490291447552628
+    },
+    "paired_common_relative_benefit": {
+      "common_rows": 4096,
+      "mean_abs_delta": 0.00047579944266531,
+      "mean_count_delta": 0.0,
+      "mean_delta": -5.49419789374901e-06,
+      "median_count_delta": 0.0,
+      "median_delta": 2.24771373648347e-06
+    },
+    "v100": {
+      "macro_mean": 0.06979911311383694,
+      "macro_median": 0.03783621996291918,
+      "max": 0.6042862380287366,
+      "min": -0.04651168263241872,
+      "rows": 4096,
+      "total_count": 829696,
+      "weighted_mean": 0.04490667547416372
+    }
+  },
+  "row_diffs": {
+    "dynamic_pattern_utility.csv": {
+      "common_ratio_4090": 0.8333333333333334,
+      "common_ratio_v100": 1.0,
+      "common_rows": 1280,
+      "gpu4090_rows": 1536,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "0",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "1",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "2",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "3",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "4",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "5",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "6",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "0",
+          "7",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "1",
+          "0",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "v",
+          "1",
+          "1",
+          "bucketfirst",
+          "candidate_gate_accepted_fraction"
+        ]
+      ],
+      "only_4090_rows": 256,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 1280
+    },
+    "matching_oracle_gap.csv": {
+      "common_ratio_4090": 1.0,
+      "common_ratio_v100": 1.0,
+      "common_rows": 2160,
+      "gpu4090_rows": 2160,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [],
+      "only_4090_rows": 0,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 2160
+    },
+    "pattern_gain_map.csv": {
+      "common_ratio_4090": 0.967741935483871,
+      "common_ratio_v100": 1.0,
+      "common_rows": 15360,
+      "gpu4090_rows": 15872,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "0",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "0",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "1",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "1",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "2",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "2",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "3",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "3",
+          "bucketfirst",
+          "relative_range_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "4",
+          "bucketfirst",
+          "relative_mse_gain"
+        ],
+        [
+          "passage_retrieval_zh",
+          "decode",
+          "k",
+          "0",
+          "4",
+          "bucketfirst",
+          "relative_range_gain"
+        ]
+      ],
+      "only_4090_rows": 512,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 15360
+    },
+    "v_gate_confusion.csv": {
+      "common_ratio_4090": 1.0,
+      "common_ratio_v100": 1.0,
+      "common_rows": 4608,
+      "gpu4090_rows": 4608,
+      "key_fields": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric"
+      ],
+      "only_4090_keys": [],
+      "only_4090_rows": 0,
+      "only_v100_keys": [],
+      "only_v100_rows": 0,
+      "v100_rows": 4608
+    }
+  },
+  "schema_audit": {
+    "roots": {
+      "gpu4090": {
+        "dynamic_pattern_utility.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "candidate_gate_accepted_fraction"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "decode"
+          ],
+          "row_count": 1536,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        },
+        "matching_oracle_gap.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "k",
+            "v"
+          ],
+          "layer_values": [
+            0,
+            7,
+            15,
+            23,
+            31
+          ],
+          "metric_values": [
+            "conditional_oracle_gap",
+            "current_oracle_gap",
+            "minmax_oracle_gap"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "prefill"
+          ],
+          "row_count": 2160,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        },
+        "pattern_gain_map.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "k",
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "range_contraction",
+            "relative_benefit",
+            "relative_candidate_benefit",
+            "relative_mse_gain",
+            "relative_range_gain"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "decode",
+            "prefill"
+          ],
+          "row_count": 15872,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        },
+        "v_gate_confusion.csv": {
+          "blank_count_values": 4608,
+          "blank_max_values": 0,
+          "blank_mean_values": 4608,
+          "blank_min_values": 0,
+          "blank_std_values": 4608,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "true_positive",
+            "true_negative",
+            "false_positive",
+            "false_negative",
+            "total",
+            "false_positive_rate",
+            "false_negative_rate"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "gate_vs_mse_oracle"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "prefill"
+          ],
+          "row_count": 4608,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        }
+      },
+      "v100": {
+        "dynamic_pattern_utility.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "min",
+            "max",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "candidate_gate_accepted_fraction"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "decode"
+          ],
+          "row_count": 1280,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "samsum"
+          ]
+        },
+        "matching_oracle_gap.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "min",
+            "max",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "k",
+            "v"
+          ],
+          "layer_values": [
+            0,
+            7,
+            15,
+            23,
+            31
+          ],
+          "metric_values": [
+            "conditional_oracle_gap",
+            "current_oracle_gap",
+            "minmax_oracle_gap"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "prefill"
+          ],
+          "row_count": 2160,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        },
+        "pattern_gain_map.csv": {
+          "blank_count_values": 0,
+          "blank_max_values": 0,
+          "blank_mean_values": 0,
+          "blank_min_values": 0,
+          "blank_std_values": 0,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "count",
+            "mean",
+            "min",
+            "max",
+            "std"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "k",
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "range_contraction",
+            "relative_benefit",
+            "relative_candidate_benefit",
+            "relative_mse_gain",
+            "relative_range_gain"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "decode",
+            "prefill"
+          ],
+          "row_count": 15360,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        },
+        "v_gate_confusion.csv": {
+          "blank_count_values": 4608,
+          "blank_max_values": 0,
+          "blank_mean_values": 4608,
+          "blank_min_values": 0,
+          "blank_std_values": 4608,
+          "bucket_values": [
+            "bucketfirst",
+            "bucketlast",
+            "bucketmiddle"
+          ],
+          "duplicate_primary_keys": 0,
+          "header": [
+            "task",
+            "phase",
+            "kv_type",
+            "layer",
+            "kv_head",
+            "bucket",
+            "metric",
+            "true_positive",
+            "true_negative",
+            "false_positive",
+            "false_negative",
+            "total",
+            "false_positive_rate",
+            "false_negative_rate"
+          ],
+          "kv_head_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "kv_type_values": [
+            "v"
+          ],
+          "layer_values": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "metric_values": [
+            "gate_vs_mse_oracle"
+          ],
+          "non_finite_values": 0,
+          "phase_values": [
+            "prefill"
+          ],
+          "row_count": 4608,
+          "task_values": [
+            "dureader",
+            "gsm8k",
+            "hotpotqa",
+            "passage_retrieval_en",
+            "passage_retrieval_zh",
+            "samsum"
+          ]
+        }
+      }
+    },
+    "schema_version": "insight_v2.cross_hardware_schema_audit"
+  },
+  "schema_version": "insight_v2.cross_hardware_summary",
+  "v_gate_confusion": {
+    "gpu4090": {
+      "accepted_fraction_mean": 0.6932958210304504,
+      "accepted_fraction_median": 0.6923076923076923,
+      "fn": 17047,
+      "fp": 404,
+      "macro_fnr_mean": 0.1542619097273344,
+      "macro_fnr_median": 0.11764705882352941,
+      "macro_fpr_mean": 0.019572375294907993,
+      "macro_fpr_median": 0.0,
+      "micro_fnr": 0.14716749831655646,
+      "micro_fpr": 0.014677032623701227,
+      "tn": 27122,
+      "total": 143360,
+      "tp": 98787
+    },
+    "v100": {
+      "accepted_fraction_mean": 0.6922703138480486,
+      "accepted_fraction_median": 0.6857142857142857,
+      "fn": 17026,
+      "fp": 423,
+      "macro_fnr_mean": 0.15416548187283804,
+      "macro_fnr_median": 0.11538461538461539,
+      "macro_fpr_mean": 0.021792058495447204,
+      "macro_fpr_median": 0.0,
+      "micro_fnr": 0.14719587789295316,
+      "micro_fpr": 0.01527572135350836,
+      "tn": 27268,
+      "total": 143360,
+      "tp": 98643
+    }
+  }
+}

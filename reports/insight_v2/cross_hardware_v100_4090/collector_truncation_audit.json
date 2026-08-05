@@ -1,0 +1,16 @@
+{
+  "evidence": {
+    "bench_file": "/root/Bounded-pattrenKV-method/bench/bench_pattern_insight.py",
+    "collector_file": "/root/Bounded-pattrenKV-method/insight/collector.py",
+    "runtime_file": "/root/Bounded-pattrenKV-method/insight/runtime.py",
+    "summary_file": "/root/Bounded-pattrenKV-method/scripts/summarize_insight_wave_a_8gpu.py"
+  },
+  "findings": [
+    "InsightCollector accumulates aggregates, histograms, and confusion counters independently of sample-record retention.",
+    "dropped_record_count applies only to add_sample_record() when records exceed max_sample_records.",
+    "CSV summaries are emitted from aggregate counters and confusion counters, not from truncated records.",
+    "Therefore the dropped-record guard does not invalidate the core aggregate metrics in the published CSV reports."
+  ],
+  "schema_version": "insight_v2.cross_hardware_collector_audit",
+  "status": "core_aggregates_unaffected"
+}

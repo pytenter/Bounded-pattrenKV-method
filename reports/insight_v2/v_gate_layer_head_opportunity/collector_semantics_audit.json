@@ -1,0 +1,68 @@
+{
+  "answers": {
+    "confusion_update_granularity": "sampled token, then aggregated into layer/head/bucket rows.",
+    "count_cross_token_aggregated": true,
+    "fn_opportunity_exact": false,
+    "fp_penalty_exact": false,
+    "gate_predicted_positive": "gate accepts the pattern path.",
+    "gate_score_exists": false,
+    "positive_class": "pattern better than raw (oracle true).",
+    "raw_pattern_mse_retention": "raw/pattern MSE retained as scalar summaries, not as per-candidate CSV columns.",
+    "rho_exists": false,
+    "row_candidate_count": "total = TP + TN + FP + FN.",
+    "tp_tn_fp_fn_definition": "token-level gate-vs-oracle confusion over sampled prefill tokens."
+  },
+  "findings": [
+    {
+      "evidence": "oracle = pattern_mse_vec < raw_mse_vec; gate is the current mask.",
+      "file": "insight/hook_metrics.py",
+      "function": "record_prefill_v_metrics",
+      "interpretation": "Positive class means pattern wins over raw; gate acceptance is predicted positive.",
+      "line": 275
+    },
+    {
+      "evidence": "tp = gate & oracle; tn = ~gate & ~oracle; fp = gate & ~oracle; fn = ~gate & oracle.",
+      "file": "insight/hook_metrics.py",
+      "function": "record_prefill_v_metrics",
+      "interpretation": "TP/TN/FP/FN are token-level confusion counts, not per-sample labels.",
+      "line": 277
+    },
+    {
+      "evidence": "observer.add_confusion(f\"{prefix}.gate_vs_mse_oracle\", ...).",
+      "file": "insight/hook_metrics.py",
+      "function": "record_prefill_v_metrics",
+      "interpretation": "Confusion counters are accumulated directly into the collector.",
+      "line": 282
+    },
+    {
+      "evidence": "raw_mse, pattern_candidate_mse, actual_selected_path_mse, relative_candidate_benefit are recorded as scalars.",
+      "file": "insight/hook_metrics.py",
+      "function": "record_prefill_v_metrics",
+      "interpretation": "The raw/pattern MSE signals exist in raw observer output, but not in the summary confusion CSV.",
+      "line": 283
+    },
+    {
+      "evidence": "sample record contains gate_current, gate_oracle, rho, false_positive_penalty, false_negative_opportunity.",
+      "file": "insight/hook_metrics.py",
+      "function": "record_prefill_v_metrics",
+      "interpretation": "Candidate-level sweep fields exist only in sample records, not in v_gate_confusion.csv.",
+      "line": 299
+    },
+    {
+      "evidence": "confusion_store accumulates counters from observer payloads.",
+      "file": "scripts/summarize_insight_wave_a_8gpu.py",
+      "function": "main",
+      "interpretation": "CSV rows are built from complete confusion counters, not from truncated sample records.",
+      "line": 209
+    },
+    {
+      "evidence": "v_gate_rows are generated from aggregated confusion_store totals.",
+      "file": "scripts/summarize_insight_wave_a_8gpu.py",
+      "function": "main",
+      "interpretation": "The published CSV reflects aggregate counts at task/layer/head/bucket granularity.",
+      "line": 230
+    }
+  ],
+  "schema_version": "insight_v2.v_gate_layer_head_collector_semantics",
+  "status": "aggregate_only"
+}

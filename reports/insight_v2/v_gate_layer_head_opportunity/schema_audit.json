@@ -1,0 +1,223 @@
+{
+  "hardware": {
+    "gpu4090": {
+      "blank_values": {
+        "bucket": 0,
+        "false_negative": 0,
+        "false_negative_rate": 0,
+        "false_positive": 0,
+        "false_positive_rate": 770,
+        "kv_head": 0,
+        "kv_type": 0,
+        "layer": 0,
+        "metric": 0,
+        "phase": 0,
+        "task": 0,
+        "total": 0,
+        "true_negative": 0,
+        "true_positive": 0
+      },
+      "bucket_values": [
+        "bucketfirst",
+        "bucketlast",
+        "bucketmiddle"
+      ],
+      "columns": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric",
+        "true_positive",
+        "true_negative",
+        "false_positive",
+        "false_negative",
+        "total",
+        "false_positive_rate",
+        "false_negative_rate"
+      ],
+      "dtype": {
+        "bucket": "str",
+        "false_negative": "int",
+        "false_negative_rate": "float",
+        "false_positive": "int",
+        "false_positive_rate": "float",
+        "kv_head": "int",
+        "kv_type": "str",
+        "layer": "int",
+        "metric": "str",
+        "phase": "str",
+        "task": "str",
+        "total": "int",
+        "true_negative": "int",
+        "true_positive": "int"
+      },
+      "duplicate_complete_rows": 0,
+      "duplicate_primary_keys": 0,
+      "field_presence": {
+        "FN_opportunity": false,
+        "FP_penalty": false,
+        "TP_TN_FP_FN": true,
+        "accepted_count": false,
+        "candidate_count": false,
+        "current_decision": false,
+        "gate_score": false,
+        "oracle_decision": false,
+        "pattern_mse": false,
+        "raw_mse": false,
+        "rho": false
+      },
+      "kv_head_max": 7,
+      "kv_head_min": 0,
+      "layer_max": 31,
+      "layer_min": 0,
+      "metric_values": [
+        "gate_vs_mse_oracle"
+      ],
+      "nan_inf_values": {
+        "bucket": 0,
+        "false_negative": 0,
+        "false_negative_rate": 0,
+        "false_positive": 0,
+        "false_positive_rate": 0,
+        "kv_head": 0,
+        "kv_type": 0,
+        "layer": 0,
+        "metric": 0,
+        "phase": 0,
+        "task": 0,
+        "total": 0,
+        "true_negative": 0,
+        "true_positive": 0
+      },
+      "path": "/tmp/patternkv-insight-wave-a-4090-runtime6c88/reports/insight_v2/wave_a_4090_single/v_gate_confusion.csv",
+      "phase_values": [
+        "prefill"
+      ],
+      "row_count": 4608,
+      "sha256": "83843121381512348c463f4130f8fdf65ca4583ee490ac688733008e03038997",
+      "task_values": [
+        "dureader",
+        "gsm8k",
+        "hotpotqa",
+        "passage_retrieval_en",
+        "passage_retrieval_zh",
+        "samsum"
+      ],
+      "zero_denominator_blank_false_negative_rate": 0,
+      "zero_denominator_blank_false_positive_rate": 770
+    },
+    "v100": {
+      "blank_values": {
+        "bucket": 0,
+        "false_negative": 0,
+        "false_negative_rate": 0,
+        "false_positive": 0,
+        "false_positive_rate": 753,
+        "kv_head": 0,
+        "kv_type": 0,
+        "layer": 0,
+        "metric": 0,
+        "phase": 0,
+        "task": 0,
+        "total": 0,
+        "true_negative": 0,
+        "true_positive": 0
+      },
+      "bucket_values": [
+        "bucketfirst",
+        "bucketlast",
+        "bucketmiddle"
+      ],
+      "columns": [
+        "task",
+        "phase",
+        "kv_type",
+        "layer",
+        "kv_head",
+        "bucket",
+        "metric",
+        "true_positive",
+        "true_negative",
+        "false_positive",
+        "false_negative",
+        "total",
+        "false_positive_rate",
+        "false_negative_rate"
+      ],
+      "dtype": {
+        "bucket": "str",
+        "false_negative": "int",
+        "false_negative_rate": "float",
+        "false_positive": "int",
+        "false_positive_rate": "float",
+        "kv_head": "int",
+        "kv_type": "str",
+        "layer": "int",
+        "metric": "str",
+        "phase": "str",
+        "task": "str",
+        "total": "int",
+        "true_negative": "int",
+        "true_positive": "int"
+      },
+      "duplicate_complete_rows": 0,
+      "duplicate_primary_keys": 0,
+      "field_presence": {
+        "FN_opportunity": false,
+        "FP_penalty": false,
+        "TP_TN_FP_FN": true,
+        "accepted_count": false,
+        "candidate_count": false,
+        "current_decision": false,
+        "gate_score": false,
+        "oracle_decision": false,
+        "pattern_mse": false,
+        "raw_mse": false,
+        "rho": false
+      },
+      "kv_head_max": 7,
+      "kv_head_min": 0,
+      "layer_max": 31,
+      "layer_min": 0,
+      "metric_values": [
+        "gate_vs_mse_oracle"
+      ],
+      "nan_inf_values": {
+        "bucket": 0,
+        "false_negative": 0,
+        "false_negative_rate": 0,
+        "false_positive": 0,
+        "false_positive_rate": 0,
+        "kv_head": 0,
+        "kv_type": 0,
+        "layer": 0,
+        "metric": 0,
+        "phase": 0,
+        "task": 0,
+        "total": 0,
+        "true_negative": 0,
+        "true_positive": 0
+      },
+      "path": "/root/Bounded-pattrenKV-method/reports/insight_v2/wave_a_8gpu/v_gate_confusion.csv",
+      "phase_values": [
+        "prefill"
+      ],
+      "row_count": 4608,
+      "sha256": "465e40d822486b6618638b40fad3de6789cc9291cda1e417e356bb1758ea1d2a",
+      "task_values": [
+        "dureader",
+        "gsm8k",
+        "hotpotqa",
+        "passage_retrieval_en",
+        "passage_retrieval_zh",
+        "samsum"
+      ],
+      "zero_denominator_blank_false_negative_rate": 0,
+      "zero_denominator_blank_false_positive_rate": 753
+    }
+  },
+  "schema_version": "insight_v2.v_gate_layer_head_opportunity_schema_audit"
+}

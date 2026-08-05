@@ -1,0 +1,6 @@
+csv_name,phase,v100_rows,gpu4090_rows,delta_4090_minus_v100
+pattern_gain_map.csv,decode,2560,3072,512
+pattern_gain_map.csv,prefill,12800,12800,0
+matching_oracle_gap.csv,prefill,2160,2160,0
+v_gate_confusion.csv,prefill,4608,4608,0
+dynamic_pattern_utility.csv,decode,1280,1536,256

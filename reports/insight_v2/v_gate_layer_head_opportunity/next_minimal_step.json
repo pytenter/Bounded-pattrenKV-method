@@ -1,0 +1,6 @@
+{
+  "recommendation": "Do not implement a new recall-aware gate yet; the current cross-hardware evidence does not support it.",
+  "schema_version": "insight_v2.v_gate_next_minimal_step",
+  "status": "not_supported",
+  "why": "No task/layer/head pair satisfies the stable high-FNR + low-FPR + sufficient-support rule on both hardware runs."
+}
