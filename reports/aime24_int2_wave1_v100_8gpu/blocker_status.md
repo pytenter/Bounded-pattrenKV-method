@@ -17,6 +17,9 @@ Date: 2026-08-06
 - Restored segmented PatternKV dynamic centroid pack-window updates, V gate metadata, sample reset, dynamic stats, and bitwidth accounting.
 - Added dynamic centroid, V gate, runtime reset, and synthetic legacy/segmented equivalence tests.
 - Ran isolated Wave 1A smoke and long-smoke validation for the restored dynamic centroid path without overwriting existing Wave 1A result files.
+- Added dual-path PatternKV cache switch and model-level legacy/segmented validation harness.
+- Fixed equivalence tasks to `aime24:p12:s0:seed12042` and `aime24:p14:s0:seed14042`.
+- Ran production Level 2 teacher-forcing through 4096 generated tokens for both fixed samples.
 
 ## Wave 1A Status
 
@@ -60,8 +63,9 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 
 ## Remaining
 
-- Complete teacher-forcing legacy-vs-segmented equivalence at token positions `128, 256, 512, 1024, 2048, 4096`.
-- Complete greedy 1024-token legacy-vs-segmented generation equivalence on two fixed AIME task keys.
+- Resolve or explicitly re-scope the Level 2 structural mismatch: at `aime24:p12:s0:seed12042`, checkpoint `128`, layer `0`, legacy has packed `128` tokens and one dynamic centroid update, while segmented has packed `0`, pending `64`, recent `128`, and no dynamic update.
+- Complete teacher-forcing legacy-vs-segmented reference backend only after the structural cadence mismatch is addressed or accepted as intentionally out-of-scope.
+- Complete greedy 1024-token legacy-vs-segmented generation equivalence only after Level 2 structure passes.
 - Keep `FULL_RUN_APPROVED=false` until strict Level 2/3 equivalence evidence exists.
 - Run six-config Wave 1A full only after `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
 - Generate Wave 1A summary artifacts under `reports/aime24_int2_wave1_v100_8gpu/wave1a/`.
