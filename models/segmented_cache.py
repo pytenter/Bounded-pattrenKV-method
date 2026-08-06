@@ -7,7 +7,7 @@ from typing import Any
 
 import torch
 
-from quant.new_pack import pack_tensor, unpack_tensor
+from quant.new_pack import pack_tensor, triton_quantize_and_pack_along_last_dim, unpack_tensor
 
 
 @dataclass
@@ -34,6 +34,8 @@ class QuantizedKVCache:
     v_bits: int = 2
     pack_count_k: int = 0
     pack_count_v: int = 0
+    cache_mode: str = "segmented_rolling"
+    chunk_length: int = 128
 
 
 @dataclass
@@ -46,6 +48,23 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     v_centroids: torch.Tensor | None = None
     centroid_updates_k: int = 0
     centroid_updates_v: int = 0
+
+
+CHUNKED_CACHE_MODE = "segmented_chunked"
+ROLLING_CACHE_MODE = "segmented_rolling"
+
+
+def normalize_cache_mode(cache_mode: str | None) -> str:
+    mode = str(cache_mode or ROLLING_CACHE_MODE).strip().lower()
+    aliases = {
+        "segmented": ROLLING_CACHE_MODE,
+        "rolling": ROLLING_CACHE_MODE,
+        "chunked": CHUNKED_CACHE_MODE,
+    }
+    mode = aliases.get(mode, mode)
+    if mode not in (CHUNKED_CACHE_MODE, ROLLING_CACHE_MODE):
+        raise ValueError(f"unsupported segmented cache mode: {cache_mode!r}")
+    return mode
 
 
 def cache_validate_enabled() -> bool:
@@ -175,6 +194,8 @@ def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[t
 def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     if k.shape[2] % group_size != 0:
         raise ValueError(f"K token length {k.shape[2]} must be divisible by group_size={group_size}")
+    if k.is_cuda:
+        return triton_quantize_and_pack_along_last_dim(k.transpose(2, 3).contiguous(), group_size, bits)
     feat_per_int = 32 // bits
     legal_multiple = lcm(group_size, feat_per_int)
     pad_tokens = (-k.shape[2]) % legal_multiple
@@ -196,6 +217,8 @@ def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tu
 def quantize_pack_v_reference(v: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     if v.shape[-1] % group_size != 0:
         raise ValueError(f"V head_dim {v.shape[-1]} must be divisible by group_size={group_size}")
+    if v.is_cuda:
+        return triton_quantize_and_pack_along_last_dim(v.contiguous(), group_size, bits)
     bsz, heads, tokens, dim = v.shape
     levels = float((1 << bits) - 1)
     grouped = v.reshape(bsz, heads, tokens, dim // group_size, group_size)
@@ -335,6 +358,39 @@ def flush_pending(
         _pack_pattern_window(cache, cache.group_size, dynamic_update=dynamic_update)
 
 
+def flush_chunked_buffer(
+    cache: QuantizedKVCache,
+    *,
+    k_assignments: torch.Tensor | None = None,
+    v_assignment_idx: torch.Tensor | None = None,
+    v_pattern_mask: torch.Tensor | None = None,
+    dynamic_update: bool = True,
+) -> None:
+    chunk_tokens = int(getattr(cache, "chunk_length", cache.group_size) or cache.group_size)
+    if chunk_tokens <= 0:
+        raise ValueError(f"chunk_length must be positive, got {chunk_tokens}")
+    if chunk_tokens % cache.group_size != 0:
+        raise ValueError(f"chunk_length={chunk_tokens} must be divisible by group_size={cache.group_size}")
+    while tensor_tokens(cache.pending_k) >= chunk_tokens:
+        if isinstance(cache, PatternQuantizedKVCache):
+            _pack_pattern_window(
+                cache,
+                chunk_tokens,
+                k_assignments=k_assignments,
+                v_assignment_idx=v_assignment_idx,
+                v_pattern_mask=v_pattern_mask,
+                dynamic_update=dynamic_update and k_assignments is None and v_assignment_idx is None and v_pattern_mask is None,
+            )
+            if k_assignments is not None:
+                k_assignments = k_assignments[:, :, chunk_tokens:].contiguous() if tensor_tokens(k_assignments) > chunk_tokens else None
+            if v_assignment_idx is not None:
+                v_assignment_idx = v_assignment_idx[:, :, chunk_tokens:].contiguous() if tensor_tokens(v_assignment_idx) > chunk_tokens else None
+            if v_pattern_mask is not None:
+                v_pattern_mask = v_pattern_mask[:, :, chunk_tokens:].contiguous() if tensor_tokens(v_pattern_mask) > chunk_tokens else None
+        else:
+            _pack_raw_pending(cache, chunk_tokens)
+
+
 def build_cache_from_prefill(
     key_states: torch.Tensor,
     value_states: torch.Tensor,
@@ -350,19 +406,24 @@ def build_cache_from_prefill(
     k_assignments: torch.Tensor | None = None,
     v_assignment_idx: torch.Tensor | None = None,
     v_pattern_mask: torch.Tensor | None = None,
+    cache_mode: str = ROLLING_CACHE_MODE,
+    chunk_length: int | None = None,
 ) -> QuantizedKVCache:
+    cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
     cache = cache_cls(
         total_tokens=int(key_states.shape[2]),
         sink_length=int(sink_length),
-        recent_length=int(recent_length),
+        recent_length=0 if cache_mode == CHUNKED_CACHE_MODE else int(recent_length),
         group_size=int(group_size),
         k_bits=int(k_bits),
         v_bits=int(v_bits),
+        cache_mode=cache_mode,
+        chunk_length=int(chunk_length if chunk_length is not None else group_size),
     )
     total = cache.total_tokens
-    sink_end = min(total, sink_length)
-    recent_start = max(sink_end, total - recent_length)
+    sink_end = 0 if cache_mode == CHUNKED_CACHE_MODE else min(total, sink_length)
+    recent_start = total if cache_mode == CHUNKED_CACHE_MODE else max(sink_end, total - recent_length)
     cache.sink_k = _empty_like_tokens(key_states, sink_end)
     cache.sink_v = _empty_like_tokens(value_states, sink_end)
     history_k = key_states[:, :, sink_end:recent_start, :].contiguous()
@@ -377,20 +438,32 @@ def build_cache_from_prefill(
         history_k_assignments = k_assignments[:, :, sink_end:recent_start].contiguous() if k_assignments is not None and recent_start > sink_end else None
         history_v_assignment_idx = v_assignment_idx[:, :, sink_end:recent_start].contiguous() if v_assignment_idx is not None and recent_start > sink_end else None
         history_v_pattern_mask = v_pattern_mask[:, :, sink_end:recent_start].contiguous() if v_pattern_mask is not None and recent_start > sink_end else None
-        flush_pending(
-            cache,
-            k_assignments=history_k_assignments,
-            v_assignment_idx=history_v_assignment_idx,
-            v_pattern_mask=history_v_pattern_mask,
-            dynamic_update=False,
-        )
+        if cache.cache_mode == CHUNKED_CACHE_MODE:
+            flush_chunked_buffer(
+                cache,
+                k_assignments=history_k_assignments,
+                v_assignment_idx=history_v_assignment_idx,
+                v_pattern_mask=history_v_pattern_mask,
+                dynamic_update=False,
+            )
+        else:
+            flush_pending(
+                cache,
+                k_assignments=history_k_assignments,
+                v_assignment_idx=history_v_assignment_idx,
+                v_pattern_mask=history_v_pattern_mask,
+                dynamic_update=False,
+            )
     else:
-        flush_pending(cache)
+        if cache.cache_mode == CHUNKED_CACHE_MODE:
+            flush_chunked_buffer(cache)
+        else:
+            flush_pending(cache)
     validate_cache(cache)
     return cache
 
 
-def append_decode(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
+def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
     cache.recent_k = _cat_token(cache.recent_k, key_states)
     cache.recent_v = _cat_token(cache.recent_v, value_states)
     cache.total_tokens += int(key_states.shape[2])
@@ -417,6 +490,29 @@ def append_decode(cache: QuantizedKVCache, key_states: torch.Tensor, value_state
                 cache.v_assignments = torch.zeros(bsz, heads, cache.packed_v_tokens, dtype=torch.uint8, device=device)
     validate_cache(cache)
     return cache
+
+
+def append_decode_chunked(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
+    append_decode_chunked_buffer_only(cache, key_states, value_states)
+    flush_chunked_buffer(cache)
+    validate_cache(cache)
+    return cache
+
+
+def append_decode_chunked_buffer_only(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
+    if tensor_tokens(cache.sink_k) or tensor_tokens(cache.recent_k):
+        raise ValueError("chunked cache must not contain sink or rolling recent tokens")
+    cache.pending_k = _cat_token(cache.pending_k, key_states)
+    cache.pending_v = _cat_token(cache.pending_v, value_states)
+    cache.total_tokens += int(key_states.shape[2])
+    return cache
+
+
+def append_decode(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
+    mode = normalize_cache_mode(getattr(cache, "cache_mode", ROLLING_CACHE_MODE))
+    if mode == CHUNKED_CACHE_MODE:
+        return append_decode_chunked(cache, key_states, value_states)
+    return append_decode_rolling(cache, key_states, value_states)
 
 
 def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
@@ -475,7 +571,10 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
         "packed_history_tokens": int(cache.packed_k_tokens),
         "pending_history_tokens": tensor_tokens(cache.pending_k),
         "recent_tokens": tensor_tokens(cache.recent_k),
+        "chunk_tokens": tensor_tokens(cache.pending_k) if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE else 0,
         "total_tokens": int(cache.total_tokens),
+        "cache_mode": getattr(cache, "cache_mode", ROLLING_CACHE_MODE),
+        "chunk_length": int(getattr(cache, "chunk_length", cache.group_size)),
         "k_assignment_tokens": tensor_tokens(k_assignments) if torch.is_tensor(k_assignments) else None,
         "v_assignment_tokens": tensor_tokens(v_assignment_idx) if torch.is_tensor(v_assignment_idx) else None,
         "v_pattern_mask_tokens": tensor_tokens(v_pattern_mask) if torch.is_tensor(v_pattern_mask) else None,
@@ -483,9 +582,21 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
 
 
 def validate_cache(cache: QuantizedKVCache) -> None:
+    cache.cache_mode = normalize_cache_mode(getattr(cache, "cache_mode", ROLLING_CACHE_MODE))
+    if not int(getattr(cache, "chunk_length", 0) or 0):
+        cache.chunk_length = int(cache.group_size)
     sink_tokens = tensor_tokens(cache.sink_k)
     recent_tokens = tensor_tokens(cache.recent_k)
     pending_tokens = tensor_tokens(cache.pending_k)
+    if cache.cache_mode == CHUNKED_CACHE_MODE:
+        if sink_tokens or recent_tokens or cache.sink_length or cache.recent_length:
+            raise ValueError("chunked cache requires empty sink/recent and zero sink/recent lengths")
+        if pending_tokens >= cache.chunk_length:
+            raise ValueError(f"chunked pending buffer not flushed: {pending_tokens} >= {cache.chunk_length}")
+        if cache.packed_k_tokens != (cache.total_tokens // cache.chunk_length) * cache.chunk_length:
+            raise ValueError("chunked packed token cadence mismatch")
+        if pending_tokens != cache.total_tokens % cache.chunk_length:
+            raise ValueError("chunked buffer token cadence mismatch")
     if sink_tokens > cache.sink_length:
         raise ValueError(f"sink exceeds configured length: {sink_tokens} > {cache.sink_length}")
     if recent_tokens > cache.recent_length:
@@ -501,13 +612,14 @@ def validate_cache(cache: QuantizedKVCache) -> None:
     counted = sink_tokens + cache.packed_k_tokens + pending_tokens + recent_tokens
     if counted != cache.total_tokens:
         raise ValueError(f"cache token conservation failed: counted={counted}, total={cache.total_tokens}")
-    expected = segment_lengths(cache.total_tokens, cache.sink_length, cache.recent_length)
-    if sink_tokens != expected["sink_tokens"]:
-        raise ValueError(f"sink token count mismatch: {sink_tokens} != {expected['sink_tokens']}")
-    if recent_tokens != expected["recent_tokens"]:
-        raise ValueError(f"recent token count mismatch: {recent_tokens} != {expected['recent_tokens']}")
-    if cache.packed_k_tokens + pending_tokens != expected["quantized_history_tokens"]:
-        raise ValueError("history token count mismatch")
+    if cache.cache_mode != CHUNKED_CACHE_MODE:
+        expected = segment_lengths(cache.total_tokens, cache.sink_length, cache.recent_length)
+        if sink_tokens != expected["sink_tokens"]:
+            raise ValueError(f"sink token count mismatch: {sink_tokens} != {expected['sink_tokens']}")
+        if recent_tokens != expected["recent_tokens"]:
+            raise ValueError(f"recent token count mismatch: {recent_tokens} != {expected['recent_tokens']}")
+        if cache.packed_k_tokens + pending_tokens != expected["quantized_history_tokens"]:
+            raise ValueError("history token count mismatch")
     if isinstance(cache, PatternQuantizedKVCache):
         if cache.v_pattern_mask is None and cache.v_assignments is not None:
             cache.v_pattern_mask = cache.v_assignments
@@ -574,8 +686,10 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             cache.v_centroids,
             int(cache.centroid_updates_k),
             int(cache.centroid_updates_v),
+            cache.cache_mode,
+            int(cache.chunk_length),
         )
-    return base
+    return base + (cache.cache_mode, int(cache.chunk_length))
 
 
 def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
@@ -610,23 +724,32 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
         v_bits=int(value[20]),
         pack_count_k=int(value[21]),
         pack_count_v=int(value[22]),
+        cache_mode=ROLLING_CACHE_MODE,
+        chunk_length=int(value[18]),
     )
-    if isinstance(cache, PatternQuantizedKVCache) and len(value) >= 30:
-        cache.k_assignments = value[23]
-        cache.v_assignments = value[24]
-        cache.v_assignment_idx = value[25]
-        if len(value) >= 31:
-            cache.v_pattern_mask = value[26]
-            cache.k_centroids = value[27]
-            cache.v_centroids = value[28]
-            cache.centroid_updates_k = int(value[29])
-            cache.centroid_updates_v = int(value[30])
+    if not isinstance(cache, PatternQuantizedKVCache) and len(value) >= 25 and isinstance(value[23], str):
+        cache.cache_mode = normalize_cache_mode(value[23])
+        cache.chunk_length = int(value[24])
+    pattern_offset = 23
+    if isinstance(cache, PatternQuantizedKVCache) and len(value) >= pattern_offset + 7:
+        cache.k_assignments = value[pattern_offset]
+        cache.v_assignments = value[pattern_offset + 1]
+        cache.v_assignment_idx = value[pattern_offset + 2]
+        if len(value) >= pattern_offset + 8:
+            cache.v_pattern_mask = value[pattern_offset + 3]
+            cache.k_centroids = value[pattern_offset + 4]
+            cache.v_centroids = value[pattern_offset + 5]
+            cache.centroid_updates_k = int(value[pattern_offset + 6])
+            cache.centroid_updates_v = int(value[pattern_offset + 7])
         else:
             cache.v_pattern_mask = cache.v_assignments
-            cache.k_centroids = value[26]
-            cache.v_centroids = value[27]
-            cache.centroid_updates_k = int(value[28])
-            cache.centroid_updates_v = int(value[29])
+            cache.k_centroids = value[pattern_offset + 3]
+            cache.v_centroids = value[pattern_offset + 4]
+            cache.centroid_updates_k = int(value[pattern_offset + 5])
+            cache.centroid_updates_v = int(value[pattern_offset + 6])
+        if len(value) >= pattern_offset + 10 and isinstance(value[pattern_offset + 8], str):
+            cache.cache_mode = normalize_cache_mode(value[pattern_offset + 8])
+            cache.chunk_length = int(value[pattern_offset + 9])
     validate_cache(cache)
     return cache
 

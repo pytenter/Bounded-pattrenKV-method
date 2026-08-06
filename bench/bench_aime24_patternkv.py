@@ -81,6 +81,7 @@ def load_model(args):
         config.recent_length = args.recent_length
         config.mixed_key_mask_path = str(args.mixed_key_mask_path or "")
         config.patternkv_cache_path = args.patternkv_cache_path
+        config.patternkv_cache_mode = args.patternkv_cache_mode
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base
@@ -221,6 +222,7 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
         "quantization_config": method_config_dict(args),
         "patternkv_config": method_config_dict(args) if args.method == "patternkv_paper" else {},
         "patternkv_cache_path": args.patternkv_cache_path if args.method in {"patternkv_paper", "patternkv"} else None,
+        "cache_mode": args.patternkv_cache_mode if args.method in {"patternkv_paper", "patternkv"} else None,
         "cache_bitwidth_stats": cache_stats,
         "patternkv_dynamic_stats": patternkv_dynamic_stats,
         "cache_segment_stats": cache_segment_stats,
@@ -277,6 +279,11 @@ def parse_args():
     p.add_argument("--mixed-key-int4-ratio", type=float, default=0.0)
     p.add_argument("--mixed-key-mask-hash", default="")
     p.add_argument("--patternkv-cache-path", choices=["legacy", "segmented"], default=os.environ.get("PATTERNKV_CACHE_PATH", "segmented"))
+    p.add_argument(
+        "--patternkv-cache-mode",
+        choices=["legacy_tuple_chunked", "segmented_chunked", "segmented_rolling"],
+        default=os.environ.get("PATTERNKV_CACHE_MODE", "segmented_rolling"),
+    )
     p.add_argument("--num-k-base", type=int, default=32)
     p.add_argument("--num-v-base", type=int, default=32)
     return p.parse_args()
@@ -308,6 +315,7 @@ def main() -> None:
             "mixed_key_int4_ratio": args.mixed_key_int4_ratio,
             "mixed_key_mask_hash": args.mixed_key_mask_hash,
             "patternkv_cache_path": args.patternkv_cache_path if args.method in {"patternkv_paper", "patternkv"} else None,
+            "patternkv_cache_mode": args.patternkv_cache_mode if args.method in {"patternkv_paper", "patternkv"} else None,
         }
     )
     cfg_hash = config_hash(cfg)

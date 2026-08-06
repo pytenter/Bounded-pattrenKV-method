@@ -170,6 +170,7 @@ def method_config_dict(args) -> dict[str, Any]:
     out["mixed_key_mask_path"] = str(getattr(args, "mixed_key_mask_path", "") or "")
     out["mixed_key_int4_ratio"] = float(getattr(args, "mixed_key_int4_ratio", 0.0) or 0.0)
     out["patternkv_cache_path"] = str(getattr(args, "patternkv_cache_path", "") or "") if str(getattr(args, "method", "")).startswith("pattern") else None
+    out["cache_mode"] = str(getattr(args, "patternkv_cache_mode", "") or "") if str(getattr(args, "method", "")).startswith("pattern") else None
     return out
 
 

@@ -11,11 +11,15 @@ from torch import nn
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
 from quant.matmul import cuda_bmm_fA_qB_outer, cuda_bmm_fA_qB_outer_with_base, cuda_attn_v_fused_with_base
 from models.segmented_cache import (
+    CHUNKED_CACHE_MODE,
     PatternQuantizedKVCache,
+    ROLLING_CACHE_MODE,
     append_decode,
+    append_decode_chunked_buffer_only,
     build_cache_from_prefill,
     cache_validate_enabled,
     deserialize_cache,
+    flush_chunked_buffer,
     maybe_validate_cache,
     serialize_cache,
 )
@@ -510,6 +514,24 @@ def patternkv_cache_path(config) -> str:
     return path
 
 
+def patternkv_cache_mode(config) -> str:
+    explicit = os.environ.get("PATTERNKV_CACHE_MODE") or getattr(config, "patternkv_cache_mode", None)
+    if explicit is not None:
+        mode = str(explicit).strip().lower()
+        aliases = {
+            "legacy": "legacy_tuple_chunked",
+            "legacy_tuple": "legacy_tuple_chunked",
+            "segmented": ROLLING_CACHE_MODE,
+            "rolling": ROLLING_CACHE_MODE,
+            "chunked": CHUNKED_CACHE_MODE,
+        }
+        mode = aliases.get(mode, mode)
+        if mode not in ("legacy_tuple_chunked", CHUNKED_CACHE_MODE, ROLLING_CACHE_MODE):
+            raise ValueError(f"Unsupported PatternKV cache mode: {explicit!r}")
+        return mode
+    return "legacy_tuple_chunked" if patternkv_cache_path(config) == "legacy" else ROLLING_CACHE_MODE
+
+
 def reset_patternkv_runtime_state(model: nn.Module) -> None:
     for layer in getattr(getattr(model, "model", None), "layers", []):
         attn = getattr(layer, "self_attn", None)
@@ -761,8 +783,11 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
         query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
         if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "patternkv_segmented_cache_v1":
             cache = deserialize_cache(past_key_value, pattern=True)
-            append_decode(cache, key_states, value_states)
-            maybe_validate_cache(cache)
+            if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                append_decode_chunked_buffer_only(cache, key_states, value_states)
+            else:
+                append_decode(cache, key_states, value_states)
+                maybe_validate_cache(cache)
 
             score_parts = []
             value_parts: list[tuple[str, int]] = []
@@ -844,6 +869,9 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
             else:
                 attn_output = self.o_proj(attn_output)
+            if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                flush_chunked_buffer(cache)
+                maybe_validate_cache(cache)
             return attn_output, None, serialize_cache(cache) if use_cache else None
         # assert self.num_key_value_groups == 1
         # [bsz, nh, t, hd]
@@ -1219,12 +1247,13 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_assignments_idx = idx_q                      # [bz, n_kv, qlen]
 
 
-        if use_cache and past_key_value is None and patternkv_cache_path(self.config) == "segmented":
+        cache_mode = patternkv_cache_mode(self.config)
+        if use_cache and past_key_value is None and cache_mode in (CHUNKED_CACHE_MODE, ROLLING_CACHE_MODE):
             cache = build_cache_from_prefill(
                 key_states,
                 value_states,
-                sink_length=int(getattr(self.config, "sink_length", 0)),
-                recent_length=int(getattr(self.config, "recent_length", self.residual_length)),
+                sink_length=0 if cache_mode == CHUNKED_CACHE_MODE else int(getattr(self.config, "sink_length", 0)),
+                recent_length=0 if cache_mode == CHUNKED_CACHE_MODE else int(getattr(self.config, "recent_length", self.residual_length)),
                 group_size=self.group_size,
                 k_bits=self.k_bits,
                 v_bits=self.v_bits,
@@ -1234,6 +1263,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 k_assignments=assignments,
                 v_assignment_idx=v_assignments_idx,
                 v_pattern_mask=v_assignments,
+                cache_mode=cache_mode,
+                chunk_length=self.residual_length,
             )
             past_key_value = serialize_cache(cache)
         else:
