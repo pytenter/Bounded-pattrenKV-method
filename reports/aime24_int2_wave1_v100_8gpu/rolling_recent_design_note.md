@@ -52,3 +52,12 @@ kivi_rolling_k2v2_s64_r256
 ```
 
 Do not use ambiguous names such as `pattern_k2v2_s0_r128` for future diagnostics.
+
+## Current Approval Status
+
+```text
+CHUNKED_CONTAINER_EQUIVALENT=false
+FULL_RUN_APPROVED=false
+```
+
+The next implementation step is not a Wave 1A full run. It is to resolve the remaining chunked production and greedy divergence, or to add an independently implemented reference backend that can isolate cache algorithm equivalence from fused-kernel execution order.
