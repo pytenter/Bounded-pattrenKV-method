@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
 from typing import Any
 
 import torch
@@ -217,6 +218,13 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             "mask_bytes": 0,
             "mask_dtype": None,
             "centroid_bytes": 0,
+            "k_centroid_bytes": 0,
+            "v_centroid_bytes": 0,
+            "k_assignment_theoretical_compact_bits": 0,
+            "v_assignment_theoretical_compact_bits": 0,
+            "v_gate_theoretical_compact_bits": 0,
+            "assignment_actual_python_tensor_bits": 0,
+            "v_gate_actual_python_tensor_bits": 0,
             "initial_pattern_count": None,
             "dynamic_pattern_count_k": None,
             "dynamic_pattern_count_v": None,
@@ -240,8 +248,29 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             out["fp16_residual_bytes"] += tensor_bytes(cache.sink_k) + tensor_bytes(cache.sink_v) + tensor_bytes(cache.pending_k) + tensor_bytes(cache.pending_v) + tensor_bytes(cache.recent_k) + tensor_bytes(cache.recent_v)
             out["persistent_key_heads"] = out["persistent_key_heads"] or (int(cache.sink_k.shape[1]) if torch.is_tensor(cache.sink_k) else None)
             out["persistent_value_heads"] = out["persistent_value_heads"] or (int(cache.sink_v.shape[1]) if torch.is_tensor(cache.sink_v) else None)
-            out["assignment_bytes"] += tensor_bytes(getattr(cache, "k_assignments", None)) + tensor_bytes(getattr(cache, "v_assignment_idx", None))
-            out["mask_bytes"] += tensor_bytes(getattr(cache, "v_assignments", None))
+            k_assignments = getattr(cache, "k_assignments", None)
+            v_assignment_idx = getattr(cache, "v_assignment_idx", None)
+            v_mask = getattr(cache, "v_pattern_mask", None) if getattr(cache, "v_pattern_mask", None) is not None else getattr(cache, "v_assignments", None)
+            k_centroids = getattr(cache, "k_centroids", None)
+            v_centroids = getattr(cache, "v_centroids", None)
+            k_assignment_bytes = tensor_bytes(k_assignments)
+            v_assignment_bytes = tensor_bytes(v_assignment_idx)
+            v_mask_bytes = tensor_bytes(v_mask)
+            out["assignment_bytes"] += k_assignment_bytes + v_assignment_bytes
+            out["assignment_actual_python_tensor_bits"] += 8 * (k_assignment_bytes + v_assignment_bytes)
+            out["assignment_dtype"] = out["assignment_dtype"] or dtype_name(k_assignments) or dtype_name(v_assignment_idx)
+            out["mask_bytes"] += v_mask_bytes
+            out["v_gate_actual_python_tensor_bits"] += 8 * v_mask_bytes
+            out["mask_dtype"] = out["mask_dtype"] or dtype_name(v_mask)
+            out["k_centroid_bytes"] += tensor_bytes(k_centroids)
+            out["v_centroid_bytes"] += tensor_bytes(v_centroids)
+            out["centroid_bytes"] += tensor_bytes(k_centroids) + tensor_bytes(v_centroids)
+            if torch.is_tensor(k_assignments) and torch.is_tensor(k_centroids):
+                out["k_assignment_theoretical_compact_bits"] += int(k_assignments.numel()) * max(1, math.ceil(math.log2(max(int(k_centroids.shape[1]), 2))))
+            if torch.is_tensor(v_assignment_idx) and torch.is_tensor(v_centroids):
+                out["v_assignment_theoretical_compact_bits"] += int(v_assignment_idx.numel()) * max(1, math.ceil(math.log2(max(int(v_centroids.shape[1]), 2))))
+            if torch.is_tensor(v_mask):
+                out["v_gate_theoretical_compact_bits"] += int(v_mask.numel())
             continue
         names = (
             "key_states_quant_trans",

@@ -119,6 +119,10 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
     problem_id = int(row["problem_id"])
     seed = effective_seed(args.base_seed, problem_id, sample_id)
     set_all_seeds(seed)
+    if args.method in {"patternkv_paper", "patternkv"}:
+        from models.llama_patternkv import reset_patternkv_runtime_state
+
+        reset_patternkv_runtime_state(model)
     rendered_prompt, user_prompt, chat_template_used = render_prompt(row["problem"], tokenizer, args.force_think_prefix)
     encoded = tokenizer(rendered_prompt, return_tensors="pt", add_special_tokens=False)
     input_ids = encoded.input_ids.to("cuda:0")
@@ -150,6 +154,11 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
     ref = normalize_aime_answer(row["answer"])
     total_tokens = int(seq.shape[1])
     cache_stats = cache_storage_summary(args.method, getattr(output, "past_key_values", None), model=model, total_cached_tokens=total_tokens, residual_length=args.residual_length)
+    patternkv_dynamic_stats = {}
+    if args.method in {"patternkv_paper", "patternkv"}:
+        from models.llama_patternkv import collect_patternkv_dynamic_stats
+
+        patternkv_dynamic_stats = collect_patternkv_dynamic_stats(model, getattr(output, "past_key_values", None))
     cache_segment_stats = cache_stats.get("cache_segment_stats") or {
         "sink_tokens": 0,
         "packed_history_tokens": 0,
@@ -211,6 +220,7 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
         "quantization_config": method_config_dict(args),
         "patternkv_config": method_config_dict(args) if args.method == "patternkv_paper" else {},
         "cache_bitwidth_stats": cache_stats,
+        "patternkv_dynamic_stats": patternkv_dynamic_stats,
         "cache_segment_stats": cache_segment_stats,
         "git_commit": git_commit,
         "timestamp": utc_now(),

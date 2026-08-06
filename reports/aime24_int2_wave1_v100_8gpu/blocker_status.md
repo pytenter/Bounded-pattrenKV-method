@@ -14,6 +14,9 @@ Date: 2026-08-06
 - Added segmented cache infrastructure with permanent FP16 sink, packed history, pending history, and rolling FP16 recent.
 - Added semantic tests for prefill partition, rolling decode, K2/K4/V2/V4 packed cache, assignment alignment, long rolling, and serialization.
 - Disabled mixed-Key placeholder configs for Wave 1A.
+- Restored segmented PatternKV dynamic centroid pack-window updates, V gate metadata, sample reset, dynamic stats, and bitwidth accounting.
+- Added dynamic centroid, V gate, runtime reset, and synthetic legacy/segmented equivalence tests.
+- Ran isolated Wave 1A smoke and long-smoke validation for the restored dynamic centroid path without overwriting existing Wave 1A result files.
 
 ## Wave 1A Status
 
@@ -57,9 +60,8 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 
 ## Remaining
 
-- Run `wave1a-smoke` with `PATTERNKV_CACHE_VALIDATE=1`.
-- Run `wave1a-long-smoke` with `max_new_tokens=4096`.
-- Generate `reports/aime24_int2_wave1_v100_8gpu/wave1a_long_smoke.md`.
-- Commit infrastructure after tests and long smoke pass.
-- Run six-config Wave 1A full only after long smoke passes.
+- Complete teacher-forcing legacy-vs-segmented equivalence at token positions `128, 256, 512, 1024, 2048, 4096`.
+- Complete greedy 1024-token legacy-vs-segmented generation equivalence on two fixed AIME task keys.
+- Keep `FULL_RUN_APPROVED=false` until strict Level 2/3 equivalence evidence exists.
+- Run six-config Wave 1A full only after `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
 - Generate Wave 1A summary artifacts under `reports/aime24_int2_wave1_v100_8gpu/wave1a/`.

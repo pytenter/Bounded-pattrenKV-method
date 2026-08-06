@@ -41,6 +41,7 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     k_assignments: torch.Tensor | None = None
     v_assignments: torch.Tensor | None = None
     v_assignment_idx: torch.Tensor | None = None
+    v_pattern_mask: torch.Tensor | None = None
     k_centroids: torch.Tensor | None = None
     v_centroids: torch.Tensor | None = None
     centroid_updates_k: int = 0
@@ -104,6 +105,73 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
     cache.pack_count_v += 1
 
 
+def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
+    return value if current is None else torch.cat([current, value], dim=2).contiguous()
+
+
+def _assign_minmax_hnk(x: torch.Tensor, centroids: torch.Tensor, block_k: int = 256) -> torch.Tensor:
+    heads, tokens, dim = x.shape
+    if centroids.shape[0] != heads or centroids.shape[-1] != dim:
+        raise ValueError(f"centroid shape mismatch: x={tuple(x.shape)} centroids={tuple(centroids.shape)}")
+    best_dist = torch.full((heads, tokens), float("inf"), device=x.device, dtype=x.dtype)
+    best_idx = torch.zeros((heads, tokens), device=x.device, dtype=torch.long)
+    for start in range(0, centroids.shape[1], block_k):
+        stop = min(start + block_k, centroids.shape[1])
+        diff = x.unsqueeze(2) - centroids[:, start:stop, :].unsqueeze(1)
+        distance = diff.amax(dim=-1) - diff.amin(dim=-1)
+        cand, idx = distance.min(dim=-1)
+        better = cand < best_dist
+        best_dist[better] = cand[better]
+        best_idx[better] = (start + idx)[better]
+    return best_idx
+
+
+def pattern_chebyshev_center_per_head(x: torch.Tensor) -> torch.Tensor:
+    if x.dim() != 3:
+        raise ValueError(f"expected [heads, tokens, dim], got {tuple(x.shape)}")
+    return (x.amin(dim=1, keepdim=True) + x.amax(dim=1, keepdim=True)) * 0.5
+
+
+def pattern_gather_centroids(idx: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
+    if idx.dim() != 3 or centroids.dim() != 3:
+        raise ValueError(f"expected idx [B,H,T] and centroids [H,M,D], got {tuple(idx.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens = idx.shape
+    if centroids.shape[0] != heads:
+        raise ValueError(f"centroid head mismatch: idx heads={heads}, centroids={centroids.shape[0]}")
+    dim = centroids.shape[-1]
+    expanded = centroids.unsqueeze(0).expand(bsz, -1, -1, -1)
+    return torch.gather(expanded, 2, idx.unsqueeze(-1).expand(-1, -1, -1, dim))
+
+
+def pattern_nearest_v_centroid(x: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
+    if x.dim() != 4 or centroids.dim() != 3:
+        raise ValueError(f"expected x [B,H,T,D] and centroids [H,M,D], got {tuple(x.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens, dim = x.shape
+    if centroids.shape[0] != heads or centroids.shape[-1] != dim:
+        raise ValueError(f"centroid shape mismatch: x={tuple(x.shape)} centroids={tuple(centroids.shape)}")
+    diff = x.unsqueeze(2) - centroids.unsqueeze(0).unsqueeze(3)
+    distance = diff.amax(dim=-1) - diff.amin(dim=-1)
+    return distance.argmin(dim=2).contiguous()
+
+
+def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    if x.shape != base.shape:
+        raise ValueError(f"V threshold tensors must match: {tuple(x.shape)} != {tuple(base.shape)}")
+    eps = 1e-12
+    range_x = (x.amax(dim=-1) - x.amin(dim=-1)).clamp_min(eps)
+    diff = x - base
+    range_residual = (diff.amax(dim=-1) - diff.amin(dim=-1)).clamp_min(eps)
+    rho = (range_residual / range_x).clamp_min(0.0)
+    rho4 = rho * rho
+    rho4 = rho4 * rho4
+    f32 = torch.float32
+    z = torch.sqrt(torch.tensor(2.0, dtype=f32, device=x.device)) * torch.erfinv(torch.tensor(0.9, dtype=f32, device=x.device))
+    z = z.to(x.dtype)
+    lhs = 1.0 - rho * rho
+    rhs = (2.0 * z / torch.sqrt(torch.tensor(5.0 * float(x.shape[-1]), dtype=x.dtype, device=x.device))) * torch.sqrt(1.0 + rho4)
+    return rho.unsqueeze(-1), lhs >= rhs
+
+
 def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     if k.shape[2] % group_size != 0:
         raise ValueError(f"K token length {k.shape[2]} must be divisible by group_size={group_size}")
@@ -163,20 +231,108 @@ def dequantize_v_reference(packed: torch.Tensor | None, scale: torch.Tensor | No
     return out.reshape(bsz, heads, tokens, dim).contiguous()
 
 
-def flush_pending(cache: QuantizedKVCache) -> None:
+def _pack_raw_pending(cache: QuantizedKVCache, tokens: int) -> None:
+    to_pack = cache.pending_k[:, :, :tokens, :].contiguous()
+    packed, scale, zero = quantize_pack_k_reference(to_pack, cache.group_size, cache.k_bits)
+    _cat_packed_k(cache, packed, scale, zero, tokens)
+    cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
+    if cache.pending_v is None or tensor_tokens(cache.pending_v) < tokens:
+        raise ValueError("V pending must cover the same prefix as K pending")
+    value_to_pack = cache.pending_v[:, :, :tokens, :].contiguous()
+    packed_v, scale_v, zero_v = quantize_pack_v_reference(value_to_pack, cache.group_size, cache.v_bits)
+    _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+    cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
+
+
+def _append_dynamic_centroids(cache: PatternQuantizedKVCache, k_window: torch.Tensor, v_window: torch.Tensor) -> None:
+    bsz, heads, tokens, dim = k_window.shape
+    xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+    xv = v_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+    k_centroid = pattern_chebyshev_center_per_head(xk).to(cache.k_centroids.dtype)
+    v_centroid = pattern_chebyshev_center_per_head(xv).to(cache.v_centroids.dtype)
+    cache.k_centroids = torch.cat([cache.k_centroids, k_centroid], dim=1).contiguous()
+    cache.v_centroids = torch.cat([cache.v_centroids, v_centroid], dim=1).contiguous()
+    cache.centroid_updates_k += 1
+    cache.centroid_updates_v += 1
+
+
+def _pack_pattern_window(
+    cache: PatternQuantizedKVCache,
+    tokens: int,
+    *,
+    k_assignments: torch.Tensor | None = None,
+    v_assignment_idx: torch.Tensor | None = None,
+    v_pattern_mask: torch.Tensor | None = None,
+    dynamic_update: bool,
+) -> None:
+    if cache.pending_k is None or cache.pending_v is None:
+        return
+    if cache.k_centroids is None or cache.v_centroids is None:
+        _pack_raw_pending(cache, tokens)
+        return
+    k_window = cache.pending_k[:, :, :tokens, :].contiguous()
+    v_window = cache.pending_v[:, :, :tokens, :].contiguous()
+    if dynamic_update:
+        _append_dynamic_centroids(cache, k_window, v_window)
+    bsz, heads, window_tokens, dim = k_window.shape
+    if k_assignments is None:
+        xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * window_tokens, dim).contiguous()
+        assign_hn = _assign_minmax_hnk(xk, cache.k_centroids)
+        k_assignments = assign_hn.view(heads, bsz, window_tokens).permute(1, 0, 2).contiguous().to(torch.long)
+    else:
+        k_assignments = k_assignments[:, :, :tokens].contiguous().to(torch.long)
+    if v_assignment_idx is None:
+        v_assignment_idx = pattern_nearest_v_centroid(v_window, cache.v_centroids).to(torch.long)
+    else:
+        v_assignment_idx = v_assignment_idx[:, :, :tokens].contiguous().to(torch.long)
+    k_centroid_per_token = pattern_gather_centroids(k_assignments, cache.k_centroids).to(k_window.dtype)
+    v_centroid_per_token = pattern_gather_centroids(v_assignment_idx, cache.v_centroids).to(v_window.dtype)
+    if v_pattern_mask is None:
+        _, v_pattern_mask = pattern_v_threshold_and_mask(v_window, v_centroid_per_token)
+    else:
+        v_pattern_mask = v_pattern_mask[:, :, :tokens].contiguous().bool()
+    k_residual = k_window - k_centroid_per_token
+    v_adjusted = v_window - v_pattern_mask.unsqueeze(-1).to(v_window.dtype) * v_centroid_per_token
+    packed_k, scale_k, zero_k = quantize_pack_k_reference(k_residual, cache.group_size, cache.k_bits)
+    packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
+    _cat_packed_k(cache, packed_k, scale_k, zero_k, tokens)
+    _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+    cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments)
+    cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx)
+    mask_u8 = v_pattern_mask.to(torch.uint8)
+    cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8)
+    cache.v_assignments = cache.v_pattern_mask
+    cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
+    cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
+
+
+def flush_pending(
+    cache: QuantizedKVCache,
+    *,
+    k_assignments: torch.Tensor | None = None,
+    v_assignment_idx: torch.Tensor | None = None,
+    v_pattern_mask: torch.Tensor | None = None,
+    dynamic_update: bool = True,
+) -> None:
     pending_k_tokens = tensor_tokens(cache.pending_k)
     k_pack_tokens = (pending_k_tokens // cache.group_size) * cache.group_size
-    if k_pack_tokens:
-        to_pack = cache.pending_k[:, :, :k_pack_tokens, :].contiguous()
-        packed, scale, zero = quantize_pack_k_reference(to_pack, cache.group_size, cache.k_bits)
-        _cat_packed_k(cache, packed, scale, zero, k_pack_tokens)
-        cache.pending_k = cache.pending_k[:, :, k_pack_tokens:, :].contiguous() if pending_k_tokens > k_pack_tokens else None
-        if cache.pending_v is None or tensor_tokens(cache.pending_v) < k_pack_tokens:
-            raise ValueError("V pending must cover the same prefix as K pending")
-        value_to_pack = cache.pending_v[:, :, :k_pack_tokens, :].contiguous()
-        packed_v, scale_v, zero_v = quantize_pack_v_reference(value_to_pack, cache.group_size, cache.v_bits)
-        _cat_packed_v(cache, packed_v, scale_v, zero_v, k_pack_tokens)
-        cache.pending_v = cache.pending_v[:, :, k_pack_tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > k_pack_tokens else None
+    if not k_pack_tokens:
+        return
+    if not isinstance(cache, PatternQuantizedKVCache):
+        _pack_raw_pending(cache, k_pack_tokens)
+        return
+    if k_assignments is not None or v_assignment_idx is not None or v_pattern_mask is not None:
+        _pack_pattern_window(
+            cache,
+            k_pack_tokens,
+            k_assignments=k_assignments,
+            v_assignment_idx=v_assignment_idx,
+            v_pattern_mask=v_pattern_mask,
+            dynamic_update=False,
+        )
+        return
+    while tensor_tokens(cache.pending_k) >= cache.group_size:
+        _pack_pattern_window(cache, cache.group_size, dynamic_update=dynamic_update)
 
 
 def build_cache_from_prefill(
@@ -189,6 +345,11 @@ def build_cache_from_prefill(
     k_bits: int,
     v_bits: int,
     pattern: bool = False,
+    k_centroids: torch.Tensor | None = None,
+    v_centroids: torch.Tensor | None = None,
+    k_assignments: torch.Tensor | None = None,
+    v_assignment_idx: torch.Tensor | None = None,
+    v_pattern_mask: torch.Tensor | None = None,
 ) -> QuantizedKVCache:
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
     cache = cache_cls(
@@ -210,7 +371,21 @@ def build_cache_from_prefill(
     cache.recent_v = value_states[:, :, recent_start:, :].contiguous() if recent_start < total else None
     cache.pending_k = history_k if history_k.shape[2] else None
     cache.pending_v = history_v if history_v.shape[2] else None
-    flush_pending(cache)
+    if isinstance(cache, PatternQuantizedKVCache):
+        cache.k_centroids = k_centroids
+        cache.v_centroids = v_centroids
+        history_k_assignments = k_assignments[:, :, sink_end:recent_start].contiguous() if k_assignments is not None and recent_start > sink_end else None
+        history_v_assignment_idx = v_assignment_idx[:, :, sink_end:recent_start].contiguous() if v_assignment_idx is not None and recent_start > sink_end else None
+        history_v_pattern_mask = v_pattern_mask[:, :, sink_end:recent_start].contiguous() if v_pattern_mask is not None and recent_start > sink_end else None
+        flush_pending(
+            cache,
+            k_assignments=history_k_assignments,
+            v_assignment_idx=history_v_assignment_idx,
+            v_pattern_mask=history_v_pattern_mask,
+            dynamic_update=False,
+        )
+    else:
+        flush_pending(cache)
     validate_cache(cache)
     return cache
 
@@ -248,6 +423,8 @@ def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
     packed_k = dequantize_k_reference(cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, cache.group_size, cache.k_bits)
     if packed_k is not None:
         packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
+        if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
+            packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
     parts = [
         cache.sink_k,
         packed_k,
@@ -262,6 +439,11 @@ def reconstruct_full_v(cache: QuantizedKVCache) -> torch.Tensor | None:
     packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
     if packed_v is not None:
         packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
+        if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
+            mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
+            if mask is not None:
+                centroids = pattern_gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids).to(packed_v.dtype)
+                packed_v = packed_v + mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * centroids
     parts = [
         cache.sink_v,
         packed_v,
@@ -285,6 +467,9 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
         }
     k_assignments = getattr(cache, "k_assignments", None)
     v_assignment_idx = getattr(cache, "v_assignment_idx", None)
+    v_pattern_mask = getattr(cache, "v_pattern_mask", None)
+    if v_pattern_mask is None:
+        v_pattern_mask = getattr(cache, "v_assignments", None)
     return {
         "sink_tokens": tensor_tokens(cache.sink_k),
         "packed_history_tokens": int(cache.packed_k_tokens),
@@ -293,6 +478,7 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
         "total_tokens": int(cache.total_tokens),
         "k_assignment_tokens": tensor_tokens(k_assignments) if torch.is_tensor(k_assignments) else None,
         "v_assignment_tokens": tensor_tokens(v_assignment_idx) if torch.is_tensor(v_assignment_idx) else None,
+        "v_pattern_mask_tokens": tensor_tokens(v_pattern_mask) if torch.is_tensor(v_pattern_mask) else None,
     }
 
 
@@ -323,12 +509,33 @@ def validate_cache(cache: QuantizedKVCache) -> None:
     if cache.packed_k_tokens + pending_tokens != expected["quantized_history_tokens"]:
         raise ValueError("history token count mismatch")
     if isinstance(cache, PatternQuantizedKVCache):
+        if cache.v_pattern_mask is None and cache.v_assignments is not None:
+            cache.v_pattern_mask = cache.v_assignments
+        if cache.v_assignments is None and cache.v_pattern_mask is not None:
+            cache.v_assignments = cache.v_pattern_mask
         assignment_tokens = tensor_tokens(cache.k_assignments)
         if assignment_tokens not in (0, cache.packed_k_tokens):
             raise ValueError(f"Pattern K assignment tokens must match packed history: {assignment_tokens} != {cache.packed_k_tokens}")
         v_assignment_tokens = tensor_tokens(cache.v_assignment_idx)
         if v_assignment_tokens not in (0, cache.packed_v_tokens):
             raise ValueError(f"Pattern V assignment tokens must match packed history: {v_assignment_tokens} != {cache.packed_v_tokens}")
+        v_mask_tokens = tensor_tokens(cache.v_pattern_mask)
+        if v_mask_tokens not in (0, cache.packed_v_tokens):
+            raise ValueError(f"Pattern V gate tokens must match packed history: {v_mask_tokens} != {cache.packed_v_tokens}")
+        if torch.is_tensor(cache.k_centroids):
+            if cache.k_centroids.dim() != 3:
+                raise ValueError(f"K centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.k_centroids.shape)}")
+            if cache.k_assignments is not None and cache.k_assignments.shape[1] != cache.k_centroids.shape[0]:
+                raise ValueError("K assignment KV heads must match K centroid heads")
+            if cache.k_assignments is not None and cache.k_assignments.numel() and int(cache.k_assignments.max().item()) >= cache.k_centroids.shape[1]:
+                raise ValueError("K assignment index exceeds K centroid bank")
+        if torch.is_tensor(cache.v_centroids):
+            if cache.v_centroids.dim() != 3:
+                raise ValueError(f"V centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.v_centroids.shape)}")
+            if cache.v_assignment_idx is not None and cache.v_assignment_idx.shape[1] != cache.v_centroids.shape[0]:
+                raise ValueError("V assignment KV heads must match V centroid heads")
+            if cache.v_assignment_idx is not None and cache.v_assignment_idx.numel() and int(cache.v_assignment_idx.max().item()) >= cache.v_centroids.shape[1]:
+                raise ValueError("V assignment index exceeds V centroid bank")
 
 
 def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
@@ -362,6 +569,7 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             cache.k_assignments,
             cache.v_assignments,
             cache.v_assignment_idx,
+            cache.v_pattern_mask,
             cache.k_centroids,
             cache.v_centroids,
             int(cache.centroid_updates_k),
@@ -407,10 +615,18 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
         cache.k_assignments = value[23]
         cache.v_assignments = value[24]
         cache.v_assignment_idx = value[25]
-        cache.k_centroids = value[26]
-        cache.v_centroids = value[27]
-        cache.centroid_updates_k = int(value[28])
-        cache.centroid_updates_v = int(value[29])
+        if len(value) >= 31:
+            cache.v_pattern_mask = value[26]
+            cache.k_centroids = value[27]
+            cache.v_centroids = value[28]
+            cache.centroid_updates_k = int(value[29])
+            cache.centroid_updates_v = int(value[30])
+        else:
+            cache.v_pattern_mask = cache.v_assignments
+            cache.k_centroids = value[26]
+            cache.v_centroids = value[27]
+            cache.centroid_updates_k = int(value[28])
+            cache.centroid_updates_v = int(value[29])
     validate_cache(cache)
     return cache
 

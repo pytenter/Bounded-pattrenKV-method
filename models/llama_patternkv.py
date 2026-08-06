@@ -501,6 +501,68 @@ def batched_assign(X: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
 
 batched_assign_compiled = _maybe_compile(batched_assign)
 
+
+def reset_patternkv_runtime_state(model: nn.Module) -> None:
+    for layer in getattr(getattr(model, "model", None), "layers", []):
+        attn = getattr(layer, "self_attn", None)
+        if attn is None:
+            continue
+        attn.k_base = None
+        attn.v_centroids = None
+
+
+def collect_patternkv_dynamic_stats(model: nn.Module, past_key_values=None) -> dict:
+    layers = list(getattr(getattr(model, "model", None), "layers", []))
+    stats = {
+        "initial_k_centroids_per_layer": [],
+        "final_k_centroids_per_layer": [],
+        "initial_v_centroids_per_layer": [],
+        "final_v_centroids_per_layer": [],
+        "k_centroid_updates_per_layer": [],
+        "v_centroid_updates_per_layer": [],
+        "k_assignment_tokens_per_layer": [],
+        "v_assignment_tokens_per_layer": [],
+        "v_pattern_selected_tokens_per_layer": [],
+        "v_pattern_rejected_tokens_per_layer": [],
+        "packed_k_tokens_per_layer": [],
+        "packed_v_tokens_per_layer": [],
+    }
+    for idx, layer in enumerate(layers):
+        attn = getattr(layer, "self_attn", None)
+        cache = None
+        if past_key_values is not None and idx < len(past_key_values):
+            layer_cache = past_key_values[idx]
+            if isinstance(layer_cache, tuple) and layer_cache and layer_cache[0] == "patternkv_segmented_cache_v1":
+                cache = deserialize_cache(layer_cache, pattern=True)
+        k_centroids = getattr(cache, "k_centroids", None) if cache is not None else getattr(attn, "k_base", None)
+        v_centroids = getattr(cache, "v_centroids", None) if cache is not None else getattr(attn, "v_centroids", None)
+        k_count = int(k_centroids.shape[1]) if torch.is_tensor(k_centroids) else 0
+        v_count = int(v_centroids.shape[1]) if torch.is_tensor(v_centroids) else 0
+        initial_k = int(getattr(attn, "num_k_bases", 0) or 0)
+        initial_v = int(getattr(attn, "num_v_bases", 0) or 0)
+        k_assign = getattr(cache, "k_assignments", None) if cache is not None else None
+        v_idx = getattr(cache, "v_assignment_idx", None) if cache is not None else None
+        v_mask = getattr(cache, "v_pattern_mask", None) if cache is not None else None
+        if v_mask is None and cache is not None:
+            v_mask = getattr(cache, "v_assignments", None)
+        packed_k_tokens = int(getattr(cache, "packed_k_tokens", 0) or 0) if cache is not None else 0
+        packed_v_tokens = int(getattr(cache, "packed_v_tokens", 0) or 0) if cache is not None else 0
+        v_selected = int(v_mask.sum().item()) if torch.is_tensor(v_mask) else 0
+        v_assignment_tokens = int(v_idx.shape[2]) if torch.is_tensor(v_idx) else 0
+        stats["initial_k_centroids_per_layer"].append(initial_k if k_count else 0)
+        stats["final_k_centroids_per_layer"].append(k_count)
+        stats["initial_v_centroids_per_layer"].append(initial_v if v_count else 0)
+        stats["final_v_centroids_per_layer"].append(v_count)
+        stats["k_centroid_updates_per_layer"].append(int(getattr(cache, "centroid_updates_k", 0) or max(k_count - initial_k, 0)) if cache is not None else 0)
+        stats["v_centroid_updates_per_layer"].append(int(getattr(cache, "centroid_updates_v", 0) or max(v_count - initial_v, 0)) if cache is not None else 0)
+        stats["k_assignment_tokens_per_layer"].append(int(k_assign.shape[2]) if torch.is_tensor(k_assign) else 0)
+        stats["v_assignment_tokens_per_layer"].append(v_assignment_tokens)
+        stats["v_pattern_selected_tokens_per_layer"].append(v_selected)
+        stats["v_pattern_rejected_tokens_per_layer"].append(int(v_mask.numel()) - v_selected if torch.is_tensor(v_mask) else 0)
+        stats["packed_k_tokens_per_layer"].append(packed_k_tokens)
+        stats["packed_v_tokens_per_layer"].append(packed_v_tokens)
+    return stats
+
 class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
 
 
@@ -692,12 +754,6 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
         if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "patternkv_segmented_cache_v1":
             cache = deserialize_cache(past_key_value, pattern=True)
             append_decode(cache, key_states, value_states)
-            if isinstance(cache, PatternQuantizedKVCache):
-                if cache.packed_k_tokens and (cache.k_assignments is None or cache.k_assignments.shape[2] != cache.packed_k_tokens):
-                    cache.k_assignments = torch.zeros(key_states.shape[0], self.num_key_value_heads, cache.packed_k_tokens, dtype=torch.long, device=key_states.device)
-                if cache.packed_v_tokens and (cache.v_assignment_idx is None or cache.v_assignment_idx.shape[2] != cache.packed_v_tokens):
-                    cache.v_assignment_idx = torch.zeros(value_states.shape[0], self.num_key_value_heads, cache.packed_v_tokens, dtype=torch.long, device=value_states.device)
-                    cache.v_assignments = torch.zeros(value_states.shape[0], self.num_key_value_heads, cache.packed_v_tokens, dtype=torch.uint8, device=value_states.device)
             maybe_validate_cache(cache)
 
             score_parts = []
@@ -707,9 +763,23 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
                 value_parts.append(("sink", cache.sink_k.shape[2]))
             if cache.packed_k is not None:
-                packed_scores = cuda_bmm_fA_qB_outer(
-                    self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
-                )
+                if cache.k_centroids is not None and cache.k_assignments is not None:
+                    packed_scores = cuda_bmm_fA_qB_outer_with_base(
+                        self.group_size,
+                        query_states,
+                        cache.packed_k,
+                        cache.packed_k_scale,
+                        cache.packed_k_zero,
+                        self.k_bits,
+                        cache.k_centroids,
+                        cache.k_assignments[:, :, : cache.packed_k_tokens],
+                        self.num_heads,
+                        self.num_key_value_heads,
+                    )
+                else:
+                    packed_scores = cuda_bmm_fA_qB_outer(
+                        self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
+                    )
                 score_parts.append(packed_scores[:, :, :, : cache.packed_k_tokens])
                 value_parts.append(("packed", cache.packed_k_tokens))
             if cache.pending_k is not None:
@@ -735,7 +805,23 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             for name, length in value_parts:
                 weights = attn_weights[:, :, :, offset : offset + length]
                 if name == "packed":
-                    part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                    v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
+                    if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                        part = cuda_attn_v_fused_with_base(
+                            self.group_size,
+                            weights,
+                            cache.packed_v,
+                            cache.packed_v_scale,
+                            cache.packed_v_zero,
+                            self.v_bits,
+                            cache.v_centroids,
+                            v_mask[:, :, : cache.packed_v_tokens],
+                            cache.v_assignment_idx[:, :, : cache.packed_v_tokens],
+                            nh=self.num_heads,
+                            nh_kv=self.num_key_value_heads,
+                        )
+                    else:
+                        part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
                 else:
                     source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
                     part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
@@ -1135,13 +1221,12 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 k_bits=self.k_bits,
                 v_bits=self.v_bits,
                 pattern=True,
+                k_centroids=self.k_base,
+                v_centroids=self.v_centroids,
+                k_assignments=assignments,
+                v_assignment_idx=v_assignments_idx,
+                v_pattern_mask=v_assignments,
             )
-            if isinstance(cache, PatternQuantizedKVCache):
-                if cache.packed_k_tokens:
-                    cache.k_assignments = torch.zeros(bsz, self.num_key_value_heads, cache.packed_k_tokens, dtype=torch.long, device=key_states.device)
-                if cache.packed_v_tokens:
-                    cache.v_assignment_idx = torch.zeros(bsz, self.num_key_value_heads, cache.packed_v_tokens, dtype=torch.long, device=value_states.device)
-                    cache.v_assignments = torch.zeros(bsz, self.num_key_value_heads, cache.packed_v_tokens, dtype=torch.uint8, device=value_states.device)
             past_key_value = serialize_cache(cache)
         else:
             past_key_value = (key_states_quant_trans, key_states_full, key_scale_trans, key_mn_trans, 
