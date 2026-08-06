@@ -17,6 +17,13 @@ Do not use older or exploratory method names such as `kivi`, `kivi_official`,
 experiment explicitly says so. See [docs/STANDARD_BASELINES.md](docs/STANDARD_BASELINES.md)
 and [configs/standard_baselines.paper_v2.yaml](configs/standard_baselines.paper_v2.yaml).
 
+## AIME24 Reproduction
+
+The completed resource-bounded AIME24 comparison is documented in
+[reports/paper_repro_v2/aime24/full_run_report.md](reports/paper_repro_v2/aime24/full_run_report.md).
+It includes the protocol, aggregate results, paired comparisons, stopping
+behavior, runtime statistics, and links to the per-sample JSON artifacts.
+
 
 ## Setup
 
@@ -75,6 +82,5 @@ enc = AutoTokenizer.from_pretrained(
 
 
 ```
-
 
 

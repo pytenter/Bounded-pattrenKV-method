@@ -2,7 +2,7 @@
 
 Generated: 2026-08-04
 
-Status: PARTIAL PASS.
+Status: COMPLETE for the resource-bounded AIME24 `num_samples=2` run.
 
 Implemented:
 
@@ -22,6 +22,15 @@ Dataset:
 - project SHA256: `07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f`
 - source original SHA256: `71ddb0950cc39f58767f7217f328cd759cfefcf70ca91cfcd5c777155a5f9b63`
 
-Blocking issue:
+Full run:
 
-- `MODEL_PATH` is not set and no local DeepSeek-R1-Distill-Llama-8B model was found. Therefore AIME smoke and ETA were not launched, and no full 180-task run was started.
+- Completed on August 5-6, 2026 (Beijing time) with 8 independent V100 workers.
+- Planned: `30 problems × 2 samples × 3 methods = 180`.
+- Completed: `180/180`.
+- Runtime errors: `0`.
+- CUDA OOM failures: `0`.
+- Aggregate report: `reports/paper_repro_v2/aime24/results_summary.md`.
+- Detailed report: `reports/paper_repro_v2/aime24/full_run_report.md`.
+
+The run is resource-bounded at `num_samples=2`; it is not the paper's
+`Avg@8`/`Maj@8` evaluation.
