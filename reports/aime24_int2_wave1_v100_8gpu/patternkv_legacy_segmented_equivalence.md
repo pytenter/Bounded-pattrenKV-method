@@ -1,101 +1,163 @@
 # PatternKV Legacy/Segmented Equivalence Report
 
-## 1. Environment
+## 1. Original Failed Assumption
 
-- Python: `/home/qinch2023/miniconda3/envs/patternkv-v100/bin/python`
-- Model: `/home/qinch2023/modelscope_models/DeepSeek-R1-Distill-Llama-8B`
-- Hardware: `8 x NVIDIA Tesla V100-SXM2 32GB`
-- Torch: `2.4.1+cu118`
-- CUDA runtime: `11.8`
+The previous validation compared:
 
-## 2. Git Commits
+```text
+legacy tuple residual_length=128
+vs
+segmented rolling recent_length=128
+```
 
-- Starting HEAD: `d9a608ca8dba40a3d48394f6810c31f58f1cb21f`
-- Parent implementation commit: `c8ee4c564d92341755369e5231fe5595322c5980`
-- This report records model-level validation after adding the dual-path harness.
+That comparison was invalid. At generated token `128` for `aime24:p12:s0:seed12042`, the observed state was:
 
-## 3. Selected Equivalence Tasks
+```text
+legacy packed=128
+rolling segmented packed=0, pending=64, recent=128
+```
 
-- `aime24:p12:s0:seed12042`: problem `12`, sample `0`, seed `12042`, reason `medium_stable_fp16_eos`, FP16 tokens `4299`, legacy PatternKV tokens `10991`.
-- `aime24:p14:s0:seed14042`: problem `14`, sample `0`, seed `14042`, reason `longer_quantization_sensitive_fp16_eos`, FP16 tokens `6906`, legacy PatternKV tokens `11347`.
+This is an expected semantic difference between chunked residual buffering and stable rolling-recent protection, not sufficient evidence of an implementation bug in the rolling variant.
 
-## 4. Teacher Token Provenance
+## 2. Legacy Chunked Semantics
 
-- problem `12`, sample `0`: `4096` tokens, hash `25100907c9fa8b210ffbc877fa24bd27`, source `fp16_greedy_generated`.
-- problem `14`, sample `0`: `4096` tokens, hash `97ac6947ed2a362d37ebc800c56052c3`, source `fp16_greedy_generated`.
+`legacy_tuple_chunked` uses:
 
-## 5. Level 1 Synthetic Result
+```text
+[packed history]
+[FP16 residual chunk buffer]
+```
 
-- Status: passed in unit tests from prior commit and rerun subset.
-- Covered Chebyshev center, min-max assignment, V gate, assignment alignment, serialization, and bitwidth accounting.
+The residual buffer accumulates until `residual_length`, then the full chunk is assigned, gated, quantized, packed, and cleared. For total token count `T`:
 
-## 6. Level 2 Reference Backend Result
+```text
+packed=floor(T/residual_length)*residual_length
+chunk=T%residual_length
+```
 
-- Status: not run.
-- Reason: production backend already found a structural mismatch at the first checkpoint; reference numeric comparison cannot override a structural failure.
-- `LEVEL2_REFERENCE_PASS=false`
+## 3. Rolling Recent Semantics
 
-## 7. Level 2 Production Backend Result
+`segmented_rolling` uses:
 
-- Checkpoint rows: `12`
-- Layer rows: `384`
-- First mismatch records: `1128`
-- `LEVEL2_PRODUCTION_PASS=false`
+```text
+[sink_fp16]
+[packed history]
+[pending_fp16]
+[rolling_recent_fp16]
+```
 
-## 8. Structural Equivalence
+It always protects the latest `recent_length` non-sink tokens in FP16. It is a CoT cache-cadence variant, not a legacy-equivalent baseline.
 
-- First structural mismatch: task `aime24:p12:s0:seed12042`, checkpoint `128`, layer `0`.
-- Legacy: packed K/V `128/128`, recent `64`, pending `0`, K/V centroid count `33/33`, updates `1/1`.
-- Segmented: packed K/V `0/0`, recent `128`, pending `64`, K/V centroid count `32/32`, updates `0/0`.
-- Interpretation: with an AIME prompt shorter than 128 tokens, legacy PatternKV packs after the prompt remainder plus generated tokens fill `residual_length`; segmented cache preserves the latest 128 non-sink tokens as recent, so the prompt remains pending at decode position 128. This is a real cache-layout cadence mismatch under the requested comparison.
-- `LEVEL2_STRUCTURE_PASS=false`
+## 4. Why They Are Not Equivalent
 
-## 9. Centroid Equivalence
+Chunked buffering periodically clears FP16 history. Rolling recent preserves a stable suffix. With short prompts, the first chunked flush can happen while rolling mode still protects the same tokens in recent.
 
-- Not passed because centroid banks are structurally offset at the first checkpoint: legacy has already appended dynamic centroid 33, segmented remains at initial 32.
+## 5. Segmented Chunked Implementation
 
-## 10. Assignment and V Gate Equivalence
+Added explicit cache modes:
 
-- Not passed because segmented has no packed assignment/gate tokens at the first checkpoint while legacy has 128 packed assignment/gate tokens.
+```text
+legacy_tuple_chunked
+segmented_chunked
+segmented_rolling
+```
 
-## 11. KV Reconstruction Equivalence
+`segmented_chunked` uses the segmented container while preserving legacy cadence:
 
-- Not evaluated as pass/fail after the structural mismatch. Comparing reconstructed KV after different packed/pending/recent partitioning would mix algorithmic cadence with numeric reconstruction.
+```text
+sink_fp16 = empty
+packed_history
+pending_fp16 = chunk buffer
+recent_fp16 = empty
+```
 
-## 12. Attention and Logits Equivalence
+Decode now follows legacy ordering: append current token to the FP16 chunk buffer, compute current attention using that FP16 buffer, then flush a full chunk before serializing cache for the next step.
 
-- Production logits were captured at 12 checkpoints. Top-1 agreement is not sufficient because the structural standard failed.
-- Example first checkpoint p12/s0 decode=128: logits cosine `0.98165363073349`, top-1 agreement true, top-5 overlap 3.
+## 6. Chunked Container Equivalence
 
-## 13. Level 3 Greedy Result
+Reports:
 
-- Status: skipped.
-- Reason: Level 2 structural failure prohibits full approval and makes greedy divergence analysis secondary.
-- `LEVEL3_PASS=false`
+```text
+reports/aime24_int2_wave1_v100_8gpu/equivalence_chunked_level1/summary.md
+reports/aime24_int2_wave1_v100_8gpu/equivalence_chunked_level2/production/teacher_forcing_summary.md
+reports/aime24_int2_wave1_v100_8gpu/chunked_container_equivalence.md
+```
 
-## 14. First-Divergence Analysis
+Level 1 synthetic:
 
-- Greedy first-divergence was not run because Level 3 was skipped.
-- Level 2 first mismatch is structural at checkpoint 128, layer 0 for task p12/s0.
+```text
+CHUNKED_LEVEL1_PASS=true
+```
 
-## 15. Level 4 Sampling Sanity
+Level 2 production structure:
 
-- Status: skipped because Level 2/3 did not pass.
-- `LEVEL4_SANITY_PASS=false`
+```text
+CHUNKED_LEVEL2_STRUCTURE_PASS=true
+```
 
-## 16. Remaining Differences
+The prior structural cadence mismatch is fixed for `legacy_tuple_chunked` vs `segmented_chunked`.
 
-- The segmented implementation honors the new `[sink][packed history][pending][recent]` invariant, but this layout is not cadence-equivalent to legacy PatternKV when prompt length is not already aligned to `residual_length`.
-- A future equivalence strategy must either compare after a normalized prefill/cache construction or explicitly account for the prompt-remainder offset. No threshold should be relaxed to hide this structural difference.
+## 7. Greedy Equivalence
 
-## 17. Full-Run Decision
+Level 3 greedy was run for the two fixed equivalence tasks:
 
-- Wave 1A full is not approved.
-- The method remains `PatternKV_paper_segmented_candidate`.
+```text
+aime24:p12:s0:seed12042 -> first divergence token 355
+aime24:p14:s0:seed14042 -> first divergence token 288
+```
 
-LEVEL2_STRUCTURE_PASS=false
-LEVEL2_REFERENCE_PASS=false
-LEVEL2_PRODUCTION_PASS=false
-LEVEL3_PASS=false
-LEVEL4_SANITY_PASS=false
+Result:
+
+```text
+CHUNKED_LEVEL3_GREEDY_PASS=false
+```
+
+## 8. Rolling Variant Status
+
+The rolling implementation remains present and semantically distinct:
+
+```text
+ROLLING_VARIANT_IMPLEMENTED=true
+```
+
+The previous isolated rolling smoke and long-smoke evidence remains historical, but this round did not rerun the revised three-mode smoke matrix.
+
+```text
+ROLLING_VARIANT_SMOKE_PASS=false
+ROLLING_VARIANT_LONG_SMOKE_PASS=false
+```
+
+## 9. Revised Wave 1A Design
+
+Revised manifest:
+
+```text
+reports/aime24_int2_wave1_v100_8gpu/revised_wave1a_manifest.md
+```
+
+Future diagnostic names must distinguish baseline and variant, for example:
+
+```text
+pattern_legacy_chunked_k2v2_r128
+pattern_rolling_k2v2_s0_r128
+pattern_rolling_k2v2_s64_r256
+pattern_rolling_k4v2_s0_r128
+pattern_rolling_k2v4_s0_r128
+```
+
+## 10. Full-Run Decision
+
+Full is not approved. Although chunked structural cadence is now equivalent, strict production assignment/gate equivalence and greedy equivalence did not pass.
+
+```text
+CHUNKED_LEVEL1_PASS=true
+CHUNKED_LEVEL2_STRUCTURE_PASS=true
+CHUNKED_LEVEL2_REFERENCE_PASS=false
+CHUNKED_LEVEL2_PRODUCTION_PASS=false
+CHUNKED_LEVEL3_GREEDY_PASS=false
+CHUNKED_CONTAINER_EQUIVALENT=false
+ROLLING_VARIANT_IMPLEMENTED=true
+ROLLING_VARIANT_SMOKE_PASS=false
+ROLLING_VARIANT_LONG_SMOKE_PASS=false
 FULL_RUN_APPROVED=false
+```

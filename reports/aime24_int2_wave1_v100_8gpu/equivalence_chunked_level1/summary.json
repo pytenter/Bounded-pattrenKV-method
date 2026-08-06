@@ -1,0 +1,10 @@
+{
+  "CHUNKED_LEVEL1_PASS": true,
+  "assignment_exact": true,
+  "cache_mode": "segmented_chunked",
+  "centroid_close": true,
+  "chunked_cadence_tests": "passed",
+  "legacy_formula": "packed=floor(T/residual_length)*residual_length; chunk=T%residual_length",
+  "rolling_difference_test": "passed",
+  "serialization_test": "passed"
+}

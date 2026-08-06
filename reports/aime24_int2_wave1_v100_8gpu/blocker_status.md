@@ -20,18 +20,26 @@ Date: 2026-08-06
 - Added dual-path PatternKV cache switch and model-level legacy/segmented validation harness.
 - Fixed equivalence tasks to `aime24:p12:s0:seed12042` and `aime24:p14:s0:seed14042`.
 - Ran production Level 2 teacher-forcing through 4096 generated tokens for both fixed samples.
+- Split PatternKV cache semantics into `legacy_tuple_chunked`, `segmented_chunked`, and `segmented_rolling`.
+- Implemented `segmented_chunked` with legacy residual chunk cadence in the segmented container.
+- Fixed chunked decode ordering so current attention uses the FP16 chunk before a full chunk is flushed for the next step.
+- Added chunked cadence, chunked/rolling difference, serialization, and cache-mode switch tests.
+- Verified `legacy_tuple_chunked` vs `segmented_chunked` Level 2 structural equivalence through 4096 generated tokens.
+- Ran Level 3 greedy for the two fixed equivalence samples.
 
 ## Wave 1A Status
 
-Wave 1A is now scoped to six real uniform-bitwidth configs:
+Wave 1A must be re-scoped to explicitly named chunked baselines and rolling variants before launch:
 
 ```text
-kivi_k2v2_s0_r128
-pattern_k2v2_s0_r128
-kivi_k2v2_s64_r256
-pattern_k2v2_s64_r256
-pattern_k4v2_s0_r128
-pattern_k2v4_s0_r128
+pattern_legacy_chunked_k2v2_r128
+pattern_rolling_k2v2_s0_r128
+pattern_rolling_k2v2_s64_r256
+pattern_rolling_k4v2_s0_r128
+pattern_rolling_k2v4_s0_r128
+kivi_legacy_chunked_k2v2_r128
+kivi_rolling_k2v2_s0_r128
+kivi_rolling_k2v2_s64_r256
 ```
 
 Runner modes:
@@ -63,9 +71,11 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 
 ## Remaining
 
-- Resolve or explicitly re-scope the Level 2 structural mismatch: at `aime24:p12:s0:seed12042`, checkpoint `128`, layer `0`, legacy has packed `128` tokens and one dynamic centroid update, while segmented has packed `0`, pending `64`, recent `128`, and no dynamic update.
-- Complete teacher-forcing legacy-vs-segmented reference backend only after the structural cadence mismatch is addressed or accepted as intentionally out-of-scope.
-- Complete greedy 1024-token legacy-vs-segmented generation equivalence only after Level 2 structure passes.
-- Keep `FULL_RUN_APPROVED=false` until strict Level 2/3 equivalence evidence exists.
-- Run six-config Wave 1A full only after `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
+- The original rolling-vs-legacy structural mismatch is now classified as an expected semantic difference, not a rolling implementation bug.
+- `legacy_tuple_chunked` vs `segmented_chunked` structure now passes, but strict production equivalence fails after checkpoint `256`.
+- First remaining chunked mismatch: `aime24:p12:s0:seed12042`, checkpoint `256`, layer `1`, `k_assignment_disagreement_rate=0.0009765625`.
+- Level 3 greedy diverges at token `355` for `aime24:p12:s0:seed12042` and token `288` for `aime24:p14:s0:seed14042`.
+- Reference backend is still not independently implemented; it must not be claimed as passed.
+- Keep `FULL_RUN_APPROVED=false` until `CHUNKED_CONTAINER_EQUIVALENT=true` and revised rolling smoke/long-smoke pass.
+- Do not run revised Wave 1A full until `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
 - Generate Wave 1A summary artifacts under `reports/aime24_int2_wave1_v100_8gpu/wave1a/`.

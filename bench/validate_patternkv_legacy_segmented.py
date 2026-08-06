@@ -143,7 +143,7 @@ def load_tokenizer(model_path: Path):
     return tokenizer
 
 
-def load_pattern_model(model_path: Path, *, cache_path: str, gpu_id: int, dtype: torch.dtype):
+def load_pattern_model(model_path: Path, *, cache_mode: str, gpu_id: int, dtype: torch.dtype):
     from models.llama_patternkv import LlamaForCausalLM_PatternKV
 
     config = LlamaConfig.from_pretrained(model_path, local_files_only=True)
@@ -156,7 +156,8 @@ def load_pattern_model(model_path: Path, *, cache_path: str, gpu_id: int, dtype:
     config.use_flash = True
     config.num_k_base = 32
     config.num_v_base = 32
-    config.patternkv_cache_path = cache_path
+    config.patternkv_cache_mode = cache_mode
+    config.patternkv_cache_path = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
     device = f"cuda:{gpu_id}"
     model = LlamaForCausalLM_PatternKV.from_pretrained(model_path, local_files_only=True, config=config, torch_dtype=dtype, low_cpu_mem_usage=True).to(device)
     model.eval()
@@ -258,18 +259,21 @@ def ensure_teacher_tokens(args, tokenizer, task: dict[str, Any], row: dict[str, 
 
 def cache_kind(layer_cache: Any) -> str:
     if isinstance(layer_cache, tuple) and layer_cache and layer_cache[0] == "patternkv_segmented_cache_v1":
-        return "segmented"
-    return "legacy"
+        cache = deserialize_cache(layer_cache, pattern=True)
+        return str(getattr(cache, "cache_mode", "segmented_rolling"))
+    return "legacy_tuple_chunked"
 
 
 def layer_cache_snapshot(layer_cache: Any, layer_idx: int, model_layer: Any) -> dict[str, Any]:
     attn = getattr(model_layer, "self_attn", None)
-    if cache_kind(layer_cache) == "segmented":
+    kind = cache_kind(layer_cache)
+    if kind in {"segmented_chunked", "segmented_rolling"}:
         cache = deserialize_cache(layer_cache, pattern=True)
         v_mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
         return {
             "layer": layer_idx,
-            "cache_kind": "segmented",
+            "cache_kind": kind,
+            "cache_mode": kind,
             "total_tokens": int(cache.total_tokens),
             "sink_tokens": tensor_tokens(cache.sink_k),
             "packed_k_tokens": int(cache.packed_k_tokens),
@@ -278,6 +282,8 @@ def layer_cache_snapshot(layer_cache: Any, layer_idx: int, model_layer: Any) -> 
             "pending_v_tokens": tensor_tokens(cache.pending_v),
             "recent_k_tokens": tensor_tokens(cache.recent_k),
             "recent_v_tokens": tensor_tokens(cache.recent_v),
+            "chunk_k_tokens": tensor_tokens(cache.pending_k) if kind == "segmented_chunked" else 0,
+            "chunk_v_tokens": tensor_tokens(cache.pending_v) if kind == "segmented_chunked" else 0,
             "k_assignment_tokens": tensor_tokens(cache.k_assignments),
             "v_assignment_tokens": tensor_tokens(cache.v_assignment_idx),
             "v_gate_tokens": tensor_tokens(v_mask),
@@ -299,19 +305,23 @@ def layer_cache_snapshot(layer_cache: Any, layer_idx: int, model_layer: Any) -> 
     total_tokens = int(layer_cache[8])
     full_k = layer_cache[1]
     full_v = layer_cache[5]
-    recent = tensor_tokens(full_k)
+    chunk_k = tensor_tokens(full_k)
+    chunk_v = tensor_tokens(full_v)
     packed = tensor_tokens(assignments)
     return {
         "layer": layer_idx,
-        "cache_kind": "legacy",
+        "cache_kind": "legacy_tuple_chunked",
+        "cache_mode": "legacy_tuple_chunked",
         "total_tokens": total_tokens,
         "sink_tokens": 0,
         "packed_k_tokens": packed,
         "packed_v_tokens": tensor_tokens(v_idx),
-        "pending_k_tokens": 0,
-        "pending_v_tokens": 0,
-        "recent_k_tokens": recent,
-        "recent_v_tokens": tensor_tokens(full_v),
+        "pending_k_tokens": chunk_k,
+        "pending_v_tokens": chunk_v,
+        "recent_k_tokens": 0,
+        "recent_v_tokens": 0,
+        "chunk_k_tokens": chunk_k,
+        "chunk_v_tokens": chunk_v,
         "k_assignment_tokens": tensor_tokens(assignments),
         "v_assignment_tokens": tensor_tokens(v_idx),
         "v_gate_tokens": tensor_tokens(v_mask),
@@ -332,13 +342,14 @@ def public_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
 
 
 @torch.no_grad()
-def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], teacher_tokens: torch.Tensor, cache_path: str) -> dict[str, Any]:
+def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], teacher_tokens: torch.Tensor, cache_mode: str) -> dict[str, Any]:
     from models.llama_patternkv import reset_patternkv_runtime_state
 
     set_all_seeds(int(task["seed"]))
-    os.environ["PATTERNKV_CACHE_PATH"] = cache_path
+    os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
+    os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
     os.environ["PATTERNKV_FORCE_REFERENCE_ATTENTION"] = "1" if args.force_reference_attention else "0"
-    model = load_pattern_model(args.model_path, cache_path=cache_path, gpu_id=args.gpu_id, dtype=torch.float16)
+    model = load_pattern_model(args.model_path, cache_mode=cache_mode, gpu_id=args.gpu_id, dtype=torch.float16)
     reset_patternkv_runtime_state(model)
     rendered, _, _ = render_prompt(row["problem"], tokenizer, args.force_think_prefix)
     encoded = tokenizer(rendered, return_tensors="pt", add_special_tokens=False)
@@ -364,7 +375,7 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
                 "target_token": int(teacher_tokens[pos].item()) if pos < teacher_tokens.numel() else None,
                 "layers": layer_snaps,
             }
-    result = {"cache_path": cache_path, "snapshots": snapshots}
+    result = {"cache_mode": cache_mode, "snapshots": snapshots}
     del outputs, past, model, input_ids, attention_mask, encoded
     gc.collect()
     torch.cuda.empty_cache()
@@ -423,6 +434,8 @@ def compare_teacher_runs(task: dict[str, Any], legacy: dict[str, Any], segmented
                 "pending_v_tokens",
                 "recent_k_tokens",
                 "recent_v_tokens",
+                "chunk_k_tokens",
+                "chunk_v_tokens",
                 "k_assignment_tokens",
                 "v_assignment_tokens",
                 "v_gate_tokens",
@@ -487,8 +500,8 @@ def run_teacher_forcing(args) -> dict[str, Any]:
         if int(teacher_tokens.numel()) < min(max(args.checkpoints), 4096):
             all_mismatches.append({"sample": task, "backend": backend, "decode_position": int(teacher_tokens.numel()), "layer": None, "kv_head": None, "global_token_index": None, "mismatch_type": "insufficient_teacher_tokens", "legacy_value": int(teacher_tokens.numel()), "segmented_value": max(args.checkpoints), "local_context": {}})
             continue
-        legacy = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "legacy")
-        segmented = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "segmented")
+        legacy = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "legacy_tuple_chunked")
+        segmented = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "segmented_chunked")
         checkpoint_rows, layer_rows, assignment_rows, mismatches = compare_teacher_runs(task, legacy, segmented, backend)
         all_checkpoint_rows.extend(checkpoint_rows)
         all_layer_rows.extend(layer_rows)
@@ -533,12 +546,13 @@ def run_teacher_forcing(args) -> dict[str, Any]:
 
 
 @torch.no_grad()
-def run_greedy_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], cache_path: str, do_sample: bool) -> dict[str, Any]:
+def run_greedy_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], cache_mode: str, do_sample: bool) -> dict[str, Any]:
     from models.llama_patternkv import collect_patternkv_dynamic_stats, reset_patternkv_runtime_state
 
     set_all_seeds(int(task["seed"]))
-    os.environ["PATTERNKV_CACHE_PATH"] = cache_path
-    model = load_pattern_model(args.model_path, cache_path=cache_path, gpu_id=args.gpu_id, dtype=torch.float16)
+    os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
+    os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
+    model = load_pattern_model(args.model_path, cache_mode=cache_mode, gpu_id=args.gpu_id, dtype=torch.float16)
     reset_patternkv_runtime_state(model)
     rendered, _, _ = render_prompt(row["problem"], tokenizer, args.force_think_prefix)
     encoded = tokenizer(rendered, return_tensors="pt", add_special_tokens=False)
@@ -567,7 +581,7 @@ def run_greedy_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], 
     parsed = parse_aime_answer(text)
     stop = compute_stop_state(generated, args.max_new_tokens, eos_ids(tokenizer, model))
     rec = {
-        "cache_path": cache_path,
+        "cache_mode": cache_mode,
         "task_key": task["task_key"],
         "problem_id": int(task["problem_id"]),
         "sample_id": int(task["sample_id"]),
@@ -600,8 +614,8 @@ def run_greedy(args, *, do_sample: bool = False) -> dict[str, Any]:
         write_json(output_dir / "run_manifest.json", {"mode": "greedy", "dry_run": True, "tasks": tasks})
         return {"dry_run": True}
     for task in tasks:
-        legacy = run_greedy_path(args, tokenizer, task, rows[int(task["problem_id"])], "legacy", do_sample)
-        segmented = run_greedy_path(args, tokenizer, task, rows[int(task["problem_id"])], "segmented", do_sample)
+        legacy = run_greedy_path(args, tokenizer, task, rows[int(task["problem_id"])], "legacy_tuple_chunked", do_sample)
+        segmented = run_greedy_path(args, tokenizer, task, rows[int(task["problem_id"])], "segmented_chunked", do_sample)
         div = first_divergence(legacy["generated_token_ids"], segmented["generated_token_ids"])
         exact = div is None
         divergence = {
