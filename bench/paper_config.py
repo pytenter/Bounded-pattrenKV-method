@@ -5,6 +5,8 @@ from typing import Any
 
 import torch
 
+from models.segmented_cache import cache_segment_stats, deserialize_cache
+
 
 PAPER_METHODS = {"kivi_paper_g128", "patternkv_paper"}
 
@@ -20,12 +22,19 @@ class MethodConfig:
     key_quant_axis: str
     value_quant_axis: str
     asym: bool
+    sink_length: int = 0
+    recent_length: int = 128
     initial_pattern_count: int | None = None
     pattern_group: int | None = None
     pattern_selection_position: str | None = None
 
 
 def apply_method_defaults(args) -> MethodConfig:
+    if not hasattr(args, "sink_length"):
+        args.sink_length = 0
+    if not hasattr(args, "recent_length") or args.recent_length is None:
+        args.recent_length = getattr(args, "residual_length", 128)
+    args.residual_length = args.recent_length
     if args.method == "kivi_paper_g128":
         args.k_bits = 2
         args.v_bits = 2
@@ -38,6 +47,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=2,
             group_size=128,
             residual_length=128,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="per-channel: quantize transposed K along token axis",
             value_quant_axis="per-token: quantize V along head_dim axis",
             asym=True,
@@ -54,6 +65,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=2,
             group_size=32,
             residual_length=128,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="per-channel: quantize transposed K along token axis",
             value_quant_axis="per-token: quantize V along head_dim axis",
             asym=True,
@@ -72,6 +85,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=2,
             group_size=128,
             residual_length=128,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="per-channel: quantize transposed K along token axis",
             value_quant_axis="per-token: quantize V residual/centroids along head_dim axis",
             asym=True,
@@ -87,6 +102,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=args.v_bits,
             group_size=args.group_size,
             residual_length=args.residual_length,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="per-channel: quantize transposed K along token axis",
             value_quant_axis="per-token: quantize V along head_dim axis",
             asym=True,
@@ -99,6 +116,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=args.v_bits,
             group_size=args.group_size,
             residual_length=args.residual_length,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="per-channel: quantize transposed K along token axis",
             value_quant_axis="per-token: quantize V residual/centroids along head_dim axis",
             asym=True,
@@ -114,6 +133,8 @@ def apply_method_defaults(args) -> MethodConfig:
             v_bits=args.v_bits,
             group_size=args.group_size,
             residual_length=args.residual_length,
+            sink_length=args.sink_length,
+            recent_length=args.recent_length,
             key_quant_axis="FlexibleQuantizedCache axis_key=1",
             value_quant_axis="FlexibleQuantizedCache axis_value=0",
             asym=True,
@@ -125,6 +146,8 @@ def apply_method_defaults(args) -> MethodConfig:
         v_bits=16,
         group_size=0,
         residual_length=0,
+        sink_length=0,
+        recent_length=0,
         key_quant_axis="none",
         value_quant_axis="none",
         asym=False,
@@ -143,6 +166,8 @@ def method_config_dict(args) -> dict[str, Any]:
         else None
     )
     out["compact_kernel_storage_note"] = "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes."
+    out["mixed_key_mask_path"] = str(getattr(args, "mixed_key_mask_path", "") or "")
+    out["mixed_key_int4_ratio"] = float(getattr(args, "mixed_key_int4_ratio", 0.0) or 0.0)
     return out
 
 
@@ -173,6 +198,15 @@ def dtype_name(value: Any) -> str | None:
 
 def cache_storage_summary(method: str, past_key_values, model=None, total_cached_tokens: int = 0, residual_length: int = 128) -> dict[str, Any]:
     out: dict[str, Any] = residual_split(total_cached_tokens, residual_length)
+    segment_totals = {
+        "sink_tokens": 0,
+        "packed_history_tokens": 0,
+        "pending_history_tokens": 0,
+        "recent_tokens": 0,
+        "total_tokens": max(total_cached_tokens, 0),
+        "k_assignment_tokens": None,
+        "v_assignment_tokens": None,
+    }
     out.update(
         {
             "packed_payload_bytes": 0,
@@ -188,9 +222,27 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             "dynamic_pattern_count_v": None,
             "persistent_key_heads": None,
             "persistent_value_heads": None,
+            "cache_segment_stats": segment_totals,
         }
     )
     for layer in past_key_values or []:
+        if isinstance(layer, tuple) and layer and layer[0] in ("quantized_segmented_cache_v1", "patternkv_segmented_cache_v1"):
+            cache = deserialize_cache(layer, pattern=layer[0] == "patternkv_segmented_cache_v1")
+            stats = cache_segment_stats(cache)
+            for key in ("sink_tokens", "packed_history_tokens", "pending_history_tokens", "recent_tokens"):
+                segment_totals[key] = max(int(segment_totals[key] or 0), int(stats[key] or 0))
+            segment_totals["total_tokens"] = int(stats["total_tokens"] or segment_totals["total_tokens"])
+            for key in ("k_assignment_tokens", "v_assignment_tokens"):
+                if stats[key] is not None:
+                    segment_totals[key] = int(stats[key] or 0) if segment_totals[key] is None else max(int(segment_totals[key]), int(stats[key] or 0))
+            out["packed_payload_bytes"] += tensor_bytes(cache.packed_k) + tensor_bytes(cache.packed_v)
+            out["scale_min_bytes"] += tensor_bytes(cache.packed_k_scale) + tensor_bytes(cache.packed_k_zero) + tensor_bytes(cache.packed_v_scale) + tensor_bytes(cache.packed_v_zero)
+            out["fp16_residual_bytes"] += tensor_bytes(cache.sink_k) + tensor_bytes(cache.sink_v) + tensor_bytes(cache.pending_k) + tensor_bytes(cache.pending_v) + tensor_bytes(cache.recent_k) + tensor_bytes(cache.recent_v)
+            out["persistent_key_heads"] = out["persistent_key_heads"] or (int(cache.sink_k.shape[1]) if torch.is_tensor(cache.sink_k) else None)
+            out["persistent_value_heads"] = out["persistent_value_heads"] or (int(cache.sink_v.shape[1]) if torch.is_tensor(cache.sink_v) else None)
+            out["assignment_bytes"] += tensor_bytes(getattr(cache, "k_assignments", None)) + tensor_bytes(getattr(cache, "v_assignment_idx", None))
+            out["mask_bytes"] += tensor_bytes(getattr(cache, "v_assignments", None))
+            continue
         names = (
             "key_states_quant_trans",
             "key_states_full",

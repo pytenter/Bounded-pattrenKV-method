@@ -1,0 +1,66 @@
+[
+  {
+    "fp16_generated_tokens": 2600,
+    "length_quartile": 0,
+    "problem_id": 9,
+    "sample_id": 0,
+    "seed": 9042,
+    "task_key": "aime24:p9:s0:seed9042"
+  },
+  {
+    "fp16_generated_tokens": 2713,
+    "length_quartile": 0,
+    "problem_id": 24,
+    "sample_id": 0,
+    "seed": 24042,
+    "task_key": "aime24:p24:s0:seed24042"
+  },
+  {
+    "fp16_generated_tokens": 8288,
+    "length_quartile": 1,
+    "problem_id": 23,
+    "sample_id": 0,
+    "seed": 23042,
+    "task_key": "aime24:p23:s0:seed23042"
+  },
+  {
+    "fp16_generated_tokens": 8607,
+    "length_quartile": 1,
+    "problem_id": 7,
+    "sample_id": 1,
+    "seed": 7043,
+    "task_key": "aime24:p7:s1:seed7043"
+  },
+  {
+    "fp16_generated_tokens": 12625,
+    "length_quartile": 2,
+    "problem_id": 9,
+    "sample_id": 1,
+    "seed": 9043,
+    "task_key": "aime24:p9:s1:seed9043"
+  },
+  {
+    "fp16_generated_tokens": 12715,
+    "length_quartile": 2,
+    "problem_id": 29,
+    "sample_id": 1,
+    "seed": 29043,
+    "task_key": "aime24:p29:s1:seed29043"
+  },
+  {
+    "fp16_generated_tokens": 19801,
+    "length_quartile": 3,
+    "problem_id": 2,
+    "sample_id": 0,
+    "seed": 2042,
+    "task_key": "aime24:p2:s0:seed2042"
+  },
+  {
+    "fp16_generated_tokens": 20771,
+    "length_quartile": 3,
+    "problem_id": 25,
+    "sample_id": 1,
+    "seed": 25043,
+    "task_key": "aime24:p25:s1:seed25043"
+  }
+]

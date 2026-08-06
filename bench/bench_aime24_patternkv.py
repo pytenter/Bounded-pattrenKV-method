@@ -36,6 +36,7 @@ from bench.aime_utils import (
     compute_stop_state,
     normalize_eos_token_ids,
 )
+from bench.aime24_int2_wave1 import stable_hash, task_key3
 from bench.paper_config import apply_method_defaults, cache_storage_summary, method_config_dict
 
 
@@ -64,6 +65,8 @@ def load_model(args):
         config.v_bits = args.v_bits
         config.group_size = args.group_size
         config.residual_length = args.residual_length
+        config.sink_length = args.sink_length
+        config.recent_length = args.recent_length
         config.use_flash = True
         model = LlamaForCausalLM_KIVI.from_pretrained(args.model_path, local_files_only=True, config=config, torch_dtype=dtype, low_cpu_mem_usage=True).to("cuda:0")
     elif backend == "patternkv":
@@ -74,6 +77,9 @@ def load_model(args):
         config.v_bits = args.v_bits
         config.group_size = args.group_size
         config.residual_length = args.residual_length
+        config.sink_length = args.sink_length
+        config.recent_length = args.recent_length
+        config.mixed_key_mask_path = str(args.mixed_key_mask_path or "")
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base
@@ -144,15 +150,28 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
     ref = normalize_aime_answer(row["answer"])
     total_tokens = int(seq.shape[1])
     cache_stats = cache_storage_summary(args.method, getattr(output, "past_key_values", None), model=model, total_cached_tokens=total_tokens, residual_length=args.residual_length)
+    cache_segment_stats = cache_stats.get("cache_segment_stats") or {
+        "sink_tokens": 0,
+        "packed_history_tokens": 0,
+        "pending_history_tokens": 0,
+        "recent_tokens": 0,
+        "total_tokens": total_tokens,
+        "k_assignment_tokens": None,
+        "v_assignment_tokens": None,
+    }
+    prompt_hash = stable_hash({"rendered_prompt": rendered_prompt}, 32)
+    input_token_hash = stable_hash({"input_ids": input_ids.detach().cpu().tolist()}, 32)
+    generated_token_hash = stable_hash({"generated_ids": generated_ids}, 32)
     rec = {
         "experiment_id": args.experiment_id,
         "dataset": "aime24",
         "model_path": str(args.model_path),
         "model_name": Path(args.model_path).name,
         "method": args.method,
+        "config_name": args.config_name or args.method,
         "problem_id": problem_id,
         "sample_id": sample_id,
-        "task_key": task_key(problem_id, sample_id),
+        "task_key": task_key3(problem_id, sample_id, seed),
         "seed": seed,
         "base_seed": args.base_seed,
         "config_hash": cfg_hash,
@@ -160,6 +179,8 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
         "raw_problem": row["problem"],
         "reference_answer": ref,
         "rendered_prompt": rendered_prompt,
+        "prompt_hash": prompt_hash,
+        "input_token_hash": input_token_hash,
         "prompt_protocol": "deepseek_r1_recommended",
         "chat_template_used": chat_template_used,
         "force_think_prefix": args.force_think_prefix,
@@ -170,6 +191,8 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
         "max_new_tokens": args.max_new_tokens,
         "repetition_penalty": args.repetition_penalty,
         "generated_text": generated_text,
+        "generated_token_ids": generated_ids,
+        "generated_token_hash": generated_token_hash,
         "generated_tokens": len(generated_ids),
         "total_sequence_tokens": total_tokens,
         "parsed_answer": parsed["parsed_answer"],
@@ -188,9 +211,17 @@ def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_ha
         "quantization_config": method_config_dict(args),
         "patternkv_config": method_config_dict(args) if args.method == "patternkv_paper" else {},
         "cache_bitwidth_stats": cache_stats,
+        "cache_segment_stats": cache_segment_stats,
         "git_commit": git_commit,
         "timestamp": utc_now(),
         "error": None,
+        "sink_length": args.sink_length,
+        "recent_length": args.recent_length,
+        "k_bits": args.k_bits,
+        "v_bits": args.v_bits,
+        "mixed_precision_ratio": args.mixed_key_int4_ratio,
+        "selected_mask_hash": args.mixed_key_mask_hash,
+        "effective_bitwidth_statistics": {},
     }
     rec.update(stop)
     del output, seq, input_ids, attention_mask, encoded
@@ -226,6 +257,13 @@ def parse_args():
     p.add_argument("--v-bits", type=int, default=2)
     p.add_argument("--group-size", type=int, default=128)
     p.add_argument("--residual-length", type=int, default=128)
+    p.add_argument("--sink-length", type=int, default=0)
+    p.add_argument("--recent-length", type=int, default=None)
+    p.add_argument("--selected-tasks", type=Path)
+    p.add_argument("--config-name")
+    p.add_argument("--mixed-key-mask-path", type=Path)
+    p.add_argument("--mixed-key-int4-ratio", type=float, default=0.0)
+    p.add_argument("--mixed-key-mask-hash", default="")
     p.add_argument("--num-k-base", type=int, default=32)
     p.add_argument("--num-v-base", type=int, default=32)
     return p.parse_args()
@@ -233,6 +271,9 @@ def parse_args():
 
 def main() -> None:
     args = parse_args()
+    if args.recent_length is None:
+        args.recent_length = args.residual_length
+    args.residual_length = args.recent_length
     args.paper_method_config = apply_method_defaults(args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     args.status_dir.mkdir(parents=True, exist_ok=True)
@@ -241,8 +282,32 @@ def main() -> None:
         rows = [r for r in rows if int(r["problem_id"]) in set(args.problem_ids)]
     args.manifest_methods = METHODS
     cfg = generation_config_dict(args)
+    cfg.update(
+        {
+            "config_name": args.config_name or args.method,
+            "method": args.method,
+            "k_bits": args.k_bits,
+            "v_bits": args.v_bits,
+            "group_size": args.group_size,
+            "sink_length": args.sink_length,
+            "recent_length": args.recent_length,
+            "mixed_key_mask_path": str(args.mixed_key_mask_path or ""),
+            "mixed_key_int4_ratio": args.mixed_key_int4_ratio,
+            "mixed_key_mask_hash": args.mixed_key_mask_hash,
+        }
+    )
     cfg_hash = config_hash(cfg)
-    manifest = build_manifest(load_aime24(args.dataset_path), METHODS, args.num_samples, args.base_seed, cfg_hash)
+    manifest_methods = [args.config_name or args.method]
+    if args.selected_tasks and args.selected_tasks.exists():
+        selected = json.loads(args.selected_tasks.read_text(encoding="utf-8"))
+        manifest = []
+        for item in selected:
+            pid = int(item["problem_id"])
+            sid = int(item["sample_id"])
+            seed = int(item.get("seed", effective_seed(args.base_seed, pid, sid)))
+            manifest.append({"dataset": "aime24", "method": args.method, "config_name": args.config_name or args.method, "problem_id": pid, "sample_id": sid, "task_key": task_key3(pid, sid, seed), "seed": seed, "config_hash": cfg_hash})
+    else:
+        manifest = build_manifest(load_aime24(args.dataset_path), manifest_methods, args.num_samples, args.base_seed, cfg_hash)
     manifest_path = args.output_dir / "task_manifest.jsonl"
     manifest_mismatch = False
     if manifest_path.exists():
@@ -253,7 +318,7 @@ def main() -> None:
             manifest_mismatch = True
     if not manifest_path.exists() or args.overwrite_invalid or manifest_mismatch:
         manifest_path.write_text("\n".join(json.dumps(x, sort_keys=True) for x in manifest) + "\n", encoding="utf-8")
-    tasks = [x for x in manifest if x["method"] == args.method and int(x["problem_id"]) in {int(r["problem_id"]) for r in rows}]
+    tasks = [x for x in manifest if int(x["problem_id"]) in {int(r["problem_id"]) for r in rows}]
     tasks = shard_tasks(tasks, args.worker_index, args.num_workers)
     git_commit = os.popen("git rev-parse HEAD").read().strip()
     header = {"pid": os.getpid(), "method": args.method, "gpu_id": args.gpu_id, "tasks": len(tasks), "config_hash": cfg_hash, "generation_config": cfg, "prompt_protocol": "deepseek_r1_recommended", "system_prompt": "none", "final_answer_instruction": "boxed"}
@@ -271,7 +336,7 @@ def main() -> None:
     row_by_id = {int(r["problem_id"]): r for r in load_aime24(args.dataset_path)}
     try:
         for task in tasks:
-            path = result_path(args.output_dir, args.method, int(task["problem_id"]), int(task["sample_id"]), cfg_hash)
+            path = result_path(args.output_dir, args.config_name or args.method, int(task["problem_id"]), int(task["sample_id"]), cfg_hash)
             if is_complete_result(path, cfg_hash, args.retry_failed, args.retry_oom):
                 print(f"[{utc_now()}] skip complete {path}", flush=True)
                 continue

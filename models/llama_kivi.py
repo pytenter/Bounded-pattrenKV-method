@@ -10,6 +10,14 @@ from torch import nn
 
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
 from quant.matmul import cuda_bmm_fA_qB_outer
+from models.segmented_cache import (
+    append_decode,
+    build_cache_from_prefill,
+    cache_validate_enabled,
+    deserialize_cache,
+    maybe_validate_cache,
+    serialize_cache,
+)
 
 from transformers.models.llama.configuration_llama import *
 from transformers.models.llama.modeling_llama import *
@@ -209,7 +217,10 @@ class LlamaAttention_KIVI(nn.Module):
 
         kv_seq_len = key_states.shape[-2]
         if past_key_value is not None:
-            kv_seq_len += past_key_value[-1]
+            if isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "quantized_segmented_cache_v1":
+                kv_seq_len += int(past_key_value[13])
+            else:
+                kv_seq_len += past_key_value[-1]
         cos, sin = self.rotary_emb(value_states, position_ids)
         query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
         assert self.num_key_value_groups == 1
@@ -501,9 +512,69 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
 
         kv_seq_len = key_states.shape[-2]
         if past_key_value is not None:
-            kv_seq_len += past_key_value[-1]
+            if isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "quantized_segmented_cache_v1":
+                kv_seq_len += int(past_key_value[13])
+            else:
+                kv_seq_len += past_key_value[-1]
         cos, sin = self.rotary_emb(value_states, position_ids)
         query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
+        if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "quantized_segmented_cache_v1":
+            cache = deserialize_cache(past_key_value)
+            append_decode(cache, key_states, value_states)
+            maybe_validate_cache(cache)
+
+            score_parts = []
+            value_parts: list[tuple[str, int]] = []
+            if cache.sink_k is not None:
+                sink_k = repeat_kv_for_gqa(cache.sink_k, self.num_key_value_groups, expected_heads=self.num_heads, tensor_name="sink_k")
+                score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
+                value_parts.append(("sink", cache.sink_k.shape[2]))
+            if cache.packed_k is not None:
+                packed_scores = cuda_bmm_fA_qB_outer(
+                    self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
+                )
+                score_parts.append(packed_scores[:, :, :, : cache.packed_k_tokens])
+                value_parts.append(("packed", cache.packed_k_tokens))
+            if cache.pending_k is not None:
+                pending_k = repeat_kv_for_gqa(cache.pending_k, self.num_key_value_groups, expected_heads=self.num_heads, tensor_name="pending_k")
+                score_parts.append(torch.matmul(query_states, pending_k.transpose(2, 3)))
+                value_parts.append(("pending", cache.pending_k.shape[2]))
+            if cache.recent_k is not None:
+                recent_k = repeat_kv_for_gqa(cache.recent_k, self.num_key_value_groups, expected_heads=self.num_heads, tensor_name="recent_k")
+                score_parts.append(torch.matmul(query_states, recent_k.transpose(2, 3)))
+                value_parts.append(("recent", cache.recent_k.shape[2]))
+            attn_weights = torch.cat(score_parts, dim=-1) / math.sqrt(self.head_dim)
+            if attn_weights.size() != (bsz, self.num_heads, q_len, cache.total_tokens):
+                raise ValueError(f"segmented attention weights shape mismatch: got {attn_weights.size()}, total={cache.total_tokens}")
+            if attention_mask is not None:
+                if attention_mask.size() != (bsz, 1, q_len, cache.total_tokens):
+                    raise ValueError(f"Attention mask should be of size {(bsz, 1, q_len, cache.total_tokens)}, but is {attention_mask.size()}")
+                attn_weights = attn_weights + attention_mask
+                attn_weights = torch.max(attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min))
+            attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+
+            offset = 0
+            attn_output = None
+            for name, length in value_parts:
+                weights = attn_weights[:, :, :, offset : offset + length]
+                if name == "packed":
+                    part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                else:
+                    source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
+                    value_for_attention = repeat_kv_for_gqa(source, self.num_key_value_groups, expected_heads=self.num_heads, tensor_name=f"{name}_v")
+                    part = torch.matmul(weights, value_for_attention)
+                attn_output = part if attn_output is None else attn_output + part
+                offset += length
+            if cache_validate_enabled() and offset != cache.total_tokens:
+                raise ValueError(f"segmented attention consumed {offset} tokens, expected {cache.total_tokens}")
+            attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+            if self.config.pretraining_tp > 1:
+                attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
+                o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
+                attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
+            else:
+                attn_output = self.o_proj(attn_output)
+            return attn_output, None, serialize_cache(cache) if use_cache else None
         # assert self.num_key_value_groups == 1
         # [bsz, nh, t, hd]
         if past_key_value is not None:
@@ -715,8 +786,20 @@ class LlamaFlashAttention_KIVI(LlamaAttention_KIVI):
                                                                                                 self.group_size, 
                                                                                                 self.v_bits)
 
-        past_key_value = (key_states_quant_trans, key_states_full, key_scale_trans, key_mn_trans, 
-                          value_states_quant, value_states_full, value_scale, value_mn, kv_seq_len) if use_cache else None
+        if use_cache and past_key_value is None:
+            cache = build_cache_from_prefill(
+                key_states,
+                value_states,
+                sink_length=int(getattr(self.config, "sink_length", 0)),
+                recent_length=int(getattr(self.config, "recent_length", self.residual_length)),
+                group_size=self.group_size,
+                k_bits=self.k_bits,
+                v_bits=self.v_bits,
+            )
+            past_key_value = serialize_cache(cache)
+        else:
+            past_key_value = (key_states_quant_trans, key_states_full, key_scale_trans, key_mn_trans, 
+                              value_states_quant, value_states_full, value_scale, value_mn, kv_seq_len) if use_cache else None
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
 
         if self.config.pretraining_tp > 1:
@@ -995,7 +1078,11 @@ class LlamaModel_KIVI(LlamaPreTrainedModel):
 
         past_key_values_length = 0
         if past_key_values is not None:
-            past_key_values_length = past_key_values[0][-1]
+            first_cache = past_key_values[0]
+            if isinstance(first_cache, tuple) and first_cache and first_cache[0] == "quantized_segmented_cache_v1":
+                past_key_values_length = int(first_cache[13])
+            else:
+                past_key_values_length = past_key_values[0][-1]
 
         if position_ids is None:
             device = input_ids.device if input_ids is not None else inputs_embeds.device
@@ -1213,7 +1300,11 @@ class LlamaForCausalLM_KIVI(LlamaPreTrainedModel):
             if len(past_key_values) == 0:
                 past_key_values = None
         if past_key_values is not None:
-            past_length = past_key_values[0][-1]
+            first_cache = past_key_values[0]
+            if isinstance(first_cache, tuple) and first_cache and first_cache[0] == "quantized_segmented_cache_v1":
+                past_length = int(first_cache[13])
+            else:
+                past_length = past_key_values[0][-1]
             # Some generation methods already pass only the last input ID
             if input_ids.shape[1] > past_length:
                 remove_prefix_length = past_length
