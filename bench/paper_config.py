@@ -169,6 +169,7 @@ def method_config_dict(args) -> dict[str, Any]:
     out["compact_kernel_storage_note"] = "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes."
     out["mixed_key_mask_path"] = str(getattr(args, "mixed_key_mask_path", "") or "")
     out["mixed_key_int4_ratio"] = float(getattr(args, "mixed_key_int4_ratio", 0.0) or 0.0)
+    out["patternkv_cache_path"] = str(getattr(args, "patternkv_cache_path", "") or "") if str(getattr(args, "method", "")).startswith("pattern") else None
     return out
 
 

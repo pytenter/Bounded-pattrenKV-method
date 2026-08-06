@@ -1,4 +1,5 @@
 import math
+import os
 import warnings
 warnings.filterwarnings("ignore")
 from typing import List, Optional, Tuple
@@ -500,6 +501,13 @@ def batched_assign(X: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
     return assign
 
 batched_assign_compiled = _maybe_compile(batched_assign)
+
+
+def patternkv_cache_path(config) -> str:
+    path = str(os.environ.get("PATTERNKV_CACHE_PATH") or getattr(config, "patternkv_cache_path", "segmented")).strip().lower()
+    if path not in ("legacy", "segmented"):
+        raise ValueError(f"Unsupported PatternKV cache path: {path!r}")
+    return path
 
 
 def reset_patternkv_runtime_state(model: nn.Module) -> None:
@@ -1211,7 +1219,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_assignments_idx = idx_q                      # [bz, n_kv, qlen]
 
 
-        if use_cache and past_key_value is None:
+        if use_cache and past_key_value is None and patternkv_cache_path(self.config) == "segmented":
             cache = build_cache_from_prefill(
                 key_states,
                 value_states,

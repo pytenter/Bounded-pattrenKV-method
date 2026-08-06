@@ -1,0 +1,12 @@
+{
+  "model_config_hash": "fd3ec9fedd5f001476f8d22d0b8c42a8",
+  "problem_id": 14,
+  "prompt_token_hash": "a816228b9ac467aa45de88656cb6ba61",
+  "sample_id": 0,
+  "seed": 14042,
+  "source_method": "fp16_greedy_generated",
+  "source_result_path": null,
+  "teacher_token_count": 4096,
+  "teacher_token_hash": "97ac6947ed2a362d37ebc800c56052c3",
+  "tokenizer_hash": "7d2b63060356caf476bc1584cacb2176"
+}
