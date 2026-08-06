@@ -316,6 +316,25 @@ def _pack_pattern_window(
         v_pattern_mask = v_pattern_mask[:, :, :tokens].contiguous().bool()
     k_residual = k_window - k_centroid_per_token
     v_adjusted = v_window - v_pattern_mask.unsqueeze(-1).to(v_window.dtype) * v_centroid_per_token
+    if getattr(cache, "trace_layer_idx", None) is not None:
+        try:
+            from bench.patternkv_equivalence_reference import save_assignment_trace
+
+            save_assignment_trace(
+                mode=str(getattr(cache, "cache_mode", "segmented")),
+                layer_idx=int(getattr(cache, "trace_layer_idx")),
+                decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
+                k_window=k_window,
+                v_window=v_window,
+                k_centroids=cache.k_centroids,
+                k_assignments=k_assignments,
+                v_centroids=cache.v_centroids,
+                v_assignment_idx=v_assignment_idx,
+                v_gate=v_pattern_mask,
+            )
+        except Exception:
+            if os.environ.get("PATTERNKV_EQUIV_TRACE_STRICT") == "1":
+                raise
     packed_k, scale_k, zero_k = quantize_pack_k_reference(k_residual, cache.group_size, cache.k_bits)
     packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
     _cat_packed_k(cache, packed_k, scale_k, zero_k, tokens)

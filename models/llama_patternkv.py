@@ -22,6 +22,7 @@ from models.segmented_cache import (
     flush_chunked_buffer,
     maybe_validate_cache,
     serialize_cache,
+    tensor_tokens,
 )
 from insight.hook_metrics import (
     record_decode_k_window_metrics,
@@ -835,31 +836,72 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
 
             offset = 0
             attn_output = None
-            for name, length in value_parts:
-                weights = attn_weights[:, :, :, offset : offset + length]
-                if name == "packed":
+            if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                full_tokens = tensor_tokens(cache.pending_v)
+                quant_tokens = int(cache.packed_v_tokens)
+                if quant_tokens and full_tokens:
                     v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
-                    if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                        part = cuda_attn_v_fused_with_base(
-                            self.group_size,
-                            weights,
-                            cache.packed_v,
-                            cache.packed_v_scale,
-                            cache.packed_v_zero,
-                            self.v_bits,
-                            cache.v_centroids,
-                            v_mask[:, :, : cache.packed_v_tokens],
-                            cache.v_assignment_idx[:, :, : cache.packed_v_tokens],
-                            nh=self.num_heads,
-                            nh_kv=self.num_key_value_heads,
-                        )
-                    else:
-                        part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                    attn_output = cuda_attn_v_fused_with_base(
+                        self.group_size,
+                        attn_weights[:, :, :, :quant_tokens],
+                        cache.packed_v,
+                        cache.packed_v_scale,
+                        cache.packed_v_zero,
+                        self.v_bits,
+                        cache.v_centroids,
+                        v_mask[:, :, :quant_tokens],
+                        cache.v_assignment_idx[:, :, :quant_tokens],
+                        nh=self.num_heads,
+                        nh_kv=self.num_key_value_heads,
+                        attn_f=attn_weights[:, :, :, quant_tokens:],
+                        v_full=cache.pending_v,
+                    )
+                    offset = quant_tokens + full_tokens
+                elif quant_tokens:
+                    v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
+                    attn_output = cuda_attn_v_fused_with_base(
+                        self.group_size,
+                        attn_weights,
+                        cache.packed_v,
+                        cache.packed_v_scale,
+                        cache.packed_v_zero,
+                        self.v_bits,
+                        cache.v_centroids,
+                        v_mask[:, :, :quant_tokens],
+                        cache.v_assignment_idx[:, :, :quant_tokens],
+                        nh=self.num_heads,
+                        nh_kv=self.num_key_value_heads,
+                    )
+                    offset = quant_tokens
                 else:
-                    source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
-                    part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
-                attn_output = part if attn_output is None else attn_output + part
-                offset += length
+                    attn_output = torch.matmul(attn_weights, repeat_kv(cache.pending_v, self.num_key_value_groups))
+                    offset = full_tokens
+            else:
+                for name, length in value_parts:
+                    weights = attn_weights[:, :, :, offset : offset + length]
+                    if name == "packed":
+                        v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
+                        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                            part = cuda_attn_v_fused_with_base(
+                                self.group_size,
+                                weights,
+                                cache.packed_v,
+                                cache.packed_v_scale,
+                                cache.packed_v_zero,
+                                self.v_bits,
+                                cache.v_centroids,
+                                v_mask[:, :, : cache.packed_v_tokens],
+                                cache.v_assignment_idx[:, :, : cache.packed_v_tokens],
+                                nh=self.num_heads,
+                                nh_kv=self.num_key_value_heads,
+                            )
+                        else:
+                            part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                    else:
+                        source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
+                        part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
+                    attn_output = part if attn_output is None else attn_output + part
+                    offset += length
             if cache_validate_enabled() and offset != cache.total_tokens:
                 raise ValueError(f"segmented PatternKV attention consumed {offset} tokens, expected {cache.total_tokens}")
             attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
@@ -870,6 +912,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             else:
                 attn_output = self.o_proj(attn_output)
             if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                cache.trace_layer_idx = int(self.layer_idx)
                 flush_chunked_buffer(cache)
                 maybe_validate_cache(cache)
             return attn_output, None, serialize_cache(cache) if use_cache else None
@@ -957,6 +1000,25 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     assignments = torch.cat([assignments, cur_assignments], dim=-1)        # [bz, H, ... + Lr]
                 else:
                     assignments = cur_assignments
+                if os.environ.get("PATTERNKV_EQUIV_TRACE") == "1" and int(os.environ.get("PATTERNKV_EQUIV_TRACE_LAYER", "-1")) == int(self.layer_idx):
+                    try:
+                        from bench.patternkv_equivalence_reference import save_assignment_trace
+
+                        save_assignment_trace(
+                            mode="legacy_tuple_chunked",
+                            layer_idx=int(self.layer_idx),
+                            decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
+                            k_window=key_states_full,
+                            v_window=value_states_full,
+                            k_centroids=self.k_base,
+                            k_assignments=cur_assignments,
+                            v_centroids=self.v_centroids,
+                            v_assignment_idx=None,
+                            v_gate=None,
+                        )
+                    except Exception:
+                        if os.environ.get("PATTERNKV_EQUIV_TRACE_STRICT") == "1":
+                            raise
 
                 # 残差化 + 量化 pack（沿最后一维）
                 key_states_full = key_states_full - k_base_per_pos

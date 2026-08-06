@@ -349,6 +349,13 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
     os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
     os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
     os.environ["PATTERNKV_FORCE_REFERENCE_ATTENTION"] = "1" if args.force_reference_attention else "0"
+    if args.trace_layer is not None:
+        os.environ["PATTERNKV_EQUIV_TRACE"] = "1"
+        os.environ["PATTERNKV_EQUIV_TRACE_SAMPLE"] = str(task["task_key"])
+        os.environ["PATTERNKV_EQUIV_TRACE_LAYER"] = str(args.trace_layer)
+        os.environ["PATTERNKV_EQUIV_TRACE_DIR"] = str(args.trace_output_dir or args.output_dir / "trace_artifacts")
+    else:
+        os.environ.pop("PATTERNKV_EQUIV_TRACE", None)
     model = load_pattern_model(args.model_path, cache_mode=cache_mode, gpu_id=args.gpu_id, dtype=torch.float16)
     reset_patternkv_runtime_state(model)
     rendered, _, _ = render_prompt(row["problem"], tokenizer, args.force_think_prefix)
@@ -362,6 +369,7 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
     checkpoints = sorted(set(int(x) for x in args.checkpoints if int(x) <= int(teacher_tokens.numel())))
     snapshots: dict[int, dict[str, Any]] = {}
     for pos, token in enumerate(teacher_tokens.tolist(), start=1):
+        os.environ["PATTERNKV_EQUIV_TRACE_DECODE_POS"] = str(pos)
         token_tensor = torch.tensor([[int(token)]], device=device, dtype=torch.long)
         pos_attention = torch.ones(1, input_ids.shape[1] + pos, device=device, dtype=attention_mask.dtype)
         outputs = model(input_ids=token_tensor, attention_mask=pos_attention, past_key_values=past, use_cache=True, return_dict=True)
@@ -379,6 +387,7 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
     del outputs, past, model, input_ids, attention_mask, encoded
     gc.collect()
     torch.cuda.empty_cache()
+    os.environ.pop("PATTERNKV_EQUIV_TRACE_DECODE_POS", None)
     return result
 
 
@@ -659,6 +668,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--force-reference-attention", action="store_true")
     parser.add_argument("--production-kernel", action="store_true")
+    parser.add_argument("--trace-layer", type=int)
+    parser.add_argument("--trace-output-dir", type=Path)
     parser.add_argument("--force-think-prefix", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--base-seed", type=int, default=42)
     return parser.parse_args()
