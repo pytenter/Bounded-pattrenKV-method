@@ -1,0 +1,21 @@
+{
+  "checkpoint": 256,
+  "mode": "production_repro",
+  "result": {
+    "compared_assignment_count": 2048,
+    "decode_checkpoint": 256,
+    "disagreement_count": 2,
+    "layer": 1,
+    "legacy_cache_kind": "legacy_tuple_chunked",
+    "legacy_chunk_k_tokens": 64,
+    "legacy_packed_k_tokens": 256,
+    "metric": "k_assignment_disagreement_rate",
+    "rate": 0.0009765625,
+    "sample_key": "aime24:p12:s0:seed12042",
+    "segmented_cache_kind": "segmented_chunked",
+    "segmented_chunk_k_tokens": 64,
+    "segmented_packed_k_tokens": 256
+  },
+  "source": "bench/validate_patternkv_legacy_segmented.py",
+  "target_layer": 1
+}

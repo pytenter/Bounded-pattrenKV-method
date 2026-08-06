@@ -1,0 +1,6 @@
+{
+  "ROLLING_VARIANT_LONG_SMOKE_PASS": false,
+  "ROLLING_VARIANT_SMOKE_PASS": false,
+  "reason": "current-HEAD segmented rolling smoke and long-smoke were not rerun in this round",
+  "status": "not_run"
+}

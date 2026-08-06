@@ -1,0 +1,6 @@
+{
+  "CHUNKED_REFERENCE_ALGORITHM_EQUIVALENT": false,
+  "LEVEL2_REFERENCE_PASS": false,
+  "reason": "standalone reference evaluator and unit tests were added, but full model-level reference backend was not completed in this round",
+  "status": "not_run"
+}

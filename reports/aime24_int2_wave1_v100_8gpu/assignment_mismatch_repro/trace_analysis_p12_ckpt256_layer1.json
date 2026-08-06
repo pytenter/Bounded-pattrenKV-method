@@ -1,0 +1,61 @@
+{
+  "chunk_assignment_denominator": 1024,
+  "chunk_assignment_diff_count": 2,
+  "first_difference": {
+    "batch_index": 0,
+    "centroid_count": 34,
+    "centroid_dtype": "torch.float16",
+    "global_token_index": 252,
+    "input_dtype": "torch.float16",
+    "kv_head": 6,
+    "legacy": {
+      "assignment": 33,
+      "top2_fp16_distances": [
+        7.203125,
+        7.20703125
+      ],
+      "top2_fp16_indices": [
+        33,
+        30
+      ],
+      "top2_fp16_margin": 0.00390625,
+      "top2_fp32_distances": [
+        7.205078125,
+        7.2099609375
+      ],
+      "top2_fp32_indices": [
+        33,
+        30
+      ],
+      "top2_fp32_margin": 0.0048828125
+    },
+    "local_chunk_token_index": 124,
+    "segmented": {
+      "assignment": 30,
+      "top2_fp16_distances": [
+        7.20703125,
+        7.2109375
+      ],
+      "top2_fp16_indices": [
+        30,
+        33
+      ],
+      "top2_fp16_margin": 0.00390625,
+      "top2_fp32_distances": [
+        7.208984375,
+        7.2099609375
+      ],
+      "top2_fp32_indices": [
+        33,
+        30
+      ],
+      "top2_fp32_margin": 0.0009765625
+    }
+  },
+  "k_centroid_exact_equal": false,
+  "k_centroid_max_abs_error": 0.00390625,
+  "k_centroid_relative_l2_error": 5.706316005671397e-05,
+  "k_window_exact_equal": false,
+  "k_window_max_abs_error": 0.0078125,
+  "k_window_relative_l2_error": 0.0002711507841013372
+}

@@ -1,0 +1,58 @@
+{
+  "LEVEL2_PRODUCTION_PASS": false,
+  "LEVEL2_REFERENCE_PASS": null,
+  "LEVEL2_STRUCTURE_PASS": true,
+  "backend": "production",
+  "checkpoint_rows": 2,
+  "first_mismatch_count": 162,
+  "layer_rows": 64,
+  "mode": "teacher-forcing",
+  "tasks": [
+    {
+      "fp16_generated_tokens": 4299,
+      "legacy_patternkv_generated_tokens": 10991,
+      "problem_id": 12,
+      "reference_result_path": "configs/aime24_wave1_selected_tasks.json",
+      "sample_id": 0,
+      "seed": 12042,
+      "selection_reason": "medium_stable_fp16_eos",
+      "task_key": "aime24:p12:s0:seed12042"
+    },
+    {
+      "fp16_generated_tokens": 6906,
+      "legacy_patternkv_generated_tokens": 11347,
+      "problem_id": 14,
+      "reference_result_path": "configs/aime24_wave1_selected_tasks.json",
+      "sample_id": 0,
+      "seed": 14042,
+      "selection_reason": "longer_quantization_sensitive_fp16_eos",
+      "task_key": "aime24:p14:s0:seed14042"
+    }
+  ],
+  "teacher_token_provenance": [
+    {
+      "model_config_hash": "fd3ec9fedd5f001476f8d22d0b8c42a8",
+      "problem_id": 12,
+      "prompt_token_hash": "5e94fb0b041a959629b54ef6341f5bbe",
+      "sample_id": 0,
+      "seed": 12042,
+      "source_method": "fp16_greedy_generated",
+      "source_result_path": null,
+      "teacher_token_count": 256,
+      "teacher_token_hash": "02ff822efdc8c09eedc58cc3602f1e9a",
+      "tokenizer_hash": "7d2b63060356caf476bc1584cacb2176"
+    },
+    {
+      "model_config_hash": "fd3ec9fedd5f001476f8d22d0b8c42a8",
+      "problem_id": 14,
+      "prompt_token_hash": "a816228b9ac467aa45de88656cb6ba61",
+      "sample_id": 0,
+      "seed": 14042,
+      "source_method": "fp16_greedy_generated",
+      "source_result_path": null,
+      "teacher_token_count": 256,
+      "teacher_token_hash": "2acd3fe18846ae9210fae3a3bea6b342",
+      "tokenizer_hash": "7d2b63060356caf476bc1584cacb2176"
+    }
+  ]
+}

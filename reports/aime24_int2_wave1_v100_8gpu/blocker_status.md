@@ -76,6 +76,10 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 - First remaining chunked mismatch: `aime24:p12:s0:seed12042`, checkpoint `256`, layer `1`, `k_assignment_disagreement_rate=0.0009765625`.
 - Level 3 greedy diverges at token `355` for `aime24:p12:s0:seed12042` and token `288` for `aime24:p14:s0:seed14042`.
 - Reference backend is still not independently implemented; it must not be claimed as passed.
-- Keep `FULL_RUN_APPROVED=false` until `CHUNKED_CONTAINER_EQUIVALENT=true` and revised rolling smoke/long-smoke pass.
+- Root cause for the first assignment mismatch was classified as `kernel_numeric_difference`: `segmented_chunked` used a split packed-plus-FP16 V attention path while legacy used one fused call with `attn_f` and `v_full`.
+- `segmented_chunked` now uses the legacy fused V attention call form in chunked mode.
+- Level 2 production v2 passes through 4096 generated tokens with `first_mismatch_count=0`.
+- Level 3 greedy v2 passes with exact 1024-token matches for p12 and p14.
+- Keep `FULL_RUN_APPROVED=false` until the full independent reference backend and revised rolling smoke/long-smoke pass.
 - Do not run revised Wave 1A full until `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
 - Generate Wave 1A summary artifacts under `reports/aime24_int2_wave1_v100_8gpu/wave1a/`.
