@@ -13,12 +13,14 @@ SELECTED_TASKS="${SELECTED_TASKS:-configs/aime24_wave1_selected_tasks.json}"
 EXPERIMENT_ID="${EXPERIMENT_ID:-aime24_int2_wave1_v100_8gpu}"
 
 CONFIGS=(
-  "0 kivi_k2v2_s0_r128 kivi_official 2 2 0 128 none"
-  "1 pattern_k2v2_s0_r128 patternkv 2 2 0 128 none"
-  "2 kivi_k2v2_s64_r256 kivi_official 2 2 64 256 none"
-  "3 pattern_k2v2_s64_r256 patternkv 2 2 64 256 none"
-  "4 pattern_k4v2_s0_r128 patternkv 4 2 0 128 none"
-  "5 pattern_k2v4_s0_r128 patternkv 2 4 0 128 none"
+  "0 pattern_legacy_chunked_k2v2_r128 patternkv 2 2 0 0 legacy legacy_tuple_chunked none"
+  "1 pattern_rolling_k2v2_s0_r128 patternkv 2 2 0 128 segmented segmented_rolling none"
+  "2 pattern_rolling_k2v2_s64_r256 patternkv 2 2 64 256 segmented segmented_rolling none"
+  "3 pattern_rolling_k4v2_s0_r128 patternkv 4 2 0 128 segmented segmented_rolling none"
+  "4 pattern_rolling_k2v4_s0_r128 patternkv 2 4 0 128 segmented segmented_rolling none"
+  "5 kivi_legacy_chunked_k2v2_r128 kivi_official 2 2 0 0 legacy legacy_tuple_chunked none"
+  "6 kivi_rolling_k2v2_s0_r128 kivi_official 2 2 0 128 segmented segmented_rolling none"
+  "7 kivi_rolling_k2v2_s64_r256 kivi_official 2 2 64 256 segmented segmented_rolling none"
 )
 
 BLOCKED_WAVE1B_CONFIGS=(
@@ -51,7 +53,7 @@ PY
 }
 
 launch_one() {
-  local gpu="$1" config_name="$2" method="$3" k_bits="$4" v_bits="$5" sink="$6" recent="$7" mask="$8" mode="$9"
+  local gpu="$1" config_name="$2" method="$3" k_bits="$4" v_bits="$5" sink="$6" recent="$7" cache_path="$8" cache_mode="$9" mask="${10}" mode="${11}"
   local max_new_tokens=32768
   local selected="$SELECTED_TASKS"
   local output_dir="$RESULT_DIR/wave1a"
@@ -120,6 +122,8 @@ PY
     --retry-failed
     --mixed-key-int4-ratio "$mixed_ratio"
     --mixed-key-mask-hash "$mask_hash"
+    --patternkv-cache-path "$cache_path"
+    --patternkv-cache-mode "$cache_mode"
   )
   if [[ "$mask" != "none" ]]; then
     cmd+=(--mixed-key-mask-path "$mask")
@@ -141,20 +145,22 @@ case "${1:-}" in
   dry-run)
     ensure_ready || exit $?
     for spec in "${CONFIGS[@]}"; do
-      read -r gpu config_name method k_bits v_bits sink recent mask <<<"$spec"
+      read -r gpu config_name method k_bits v_bits sink recent cache_path cache_mode mask <<<"$spec"
       config_hash_for "$config_name" "$method" "$k_bits" "$v_bits" "$sink" "$recent" "$mask" 32768
     done
     ;;
-  wave1a-smoke|wave1a-long-smoke|wave1a-full)
+  wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full)
     mode="$1"
-    if [[ "$mode" == "wave1a-full" ]]; then
+    if [[ "$mode" == "revised-wave1a-full" ]]; then
+      mode="wave1a-full"
+    elif [[ "$mode" == "wave1a-full" ]]; then
       mode="wave1a-full"
     fi
-    echo "Wave 1A uses 6 of 8 GPUs"
+    echo "Wave 1A uses 8 of 8 GPUs"
     ensure_ready || exit $?
     for spec in "${CONFIGS[@]}"; do
-      read -r gpu config_name method k_bits v_bits sink recent mask <<<"$spec"
-      launch_one "$gpu" "$config_name" "$method" "$k_bits" "$v_bits" "$sink" "$recent" "$mask" "$mode"
+      read -r gpu config_name method k_bits v_bits sink recent cache_path cache_mode mask <<<"$spec"
+      launch_one "$gpu" "$config_name" "$method" "$k_bits" "$v_bits" "$sink" "$recent" "$cache_path" "$cache_mode" "$mask" "$mode"
     done
     failures=0
     for spec in "${CONFIGS[@]}"; do
@@ -181,7 +187,7 @@ case "${1:-}" in
     "$PYTHON_BIN" scripts/summarize_aime24_int2_wave1.py --results-dir "$RESULT_DIR/wave1a" --report-dir "$REPORT_DIR/wave1a"
     ;;
   *)
-    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|status|summarize-wave1a}" >&2
+    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full|status|summarize-wave1a}" >&2
     exit 2
     ;;
 esac

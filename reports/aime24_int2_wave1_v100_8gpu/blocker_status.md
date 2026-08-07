@@ -83,3 +83,9 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 - Keep `FULL_RUN_APPROVED=false` until the full independent reference backend and revised rolling smoke/long-smoke pass.
 - Do not run revised Wave 1A full until `reports/aime24_int2_wave1_v100_8gpu/patternkv_legacy_segmented_equivalence.md` ends with `FULL_RUN_APPROVED=true`.
 - Generate Wave 1A summary artifacts under `reports/aime24_int2_wave1_v100_8gpu/wave1a/`.
+
+## 2026-08-07 Reference And Rolling Update
+
+- Full model-level reference backend ran for p12/p14 through 4096 checkpoints with `LEVEL2_REFERENCE_PASS=true` and `first_mismatch_count=0`.
+- Rolling smoke and long-smoke were rerun on current final code with 8 records each, 0 runtime errors, and packed/assignment/gate alignment preserved.
+- `FULL_RUN_APPROVED=false` remains conservative because reference_v3 did not collect raw KV reconstruction and attention tensor scalar diagnostics.

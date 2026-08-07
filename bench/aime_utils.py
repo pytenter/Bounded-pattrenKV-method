@@ -13,7 +13,7 @@ import numpy as np
 import torch
 
 
-METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
+METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper", "kivi_official", "patternkv")
 DEFAULT_MAX_NEW_TOKENS = 32768
 DEFAULT_BASE_SEED = 42
 DEFAULT_TEMPERATURE = 0.6

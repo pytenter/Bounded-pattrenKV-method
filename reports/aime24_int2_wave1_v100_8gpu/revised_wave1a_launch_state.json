@@ -1,0 +1,15 @@
+{
+  "CHUNKED_GREEDY_TRAJECTORY_EQUIVALENT": true,
+  "CHUNKED_PRODUCTION_NUMERIC_EQUIVALENT": true,
+  "CHUNKED_REFERENCE_ALGORITHM_EQUIVALENT": true,
+  "CHUNKED_REFERENCE_ALGORITHM_STATUS": "passed",
+  "CHUNKED_STRUCTURE_EQUIVALENT": true,
+  "FULL_RUN_APPROVED": false,
+  "ROLLING_VARIANT_LONG_SMOKE_PASS": true,
+  "ROLLING_VARIANT_SMOKE_PASS": true,
+  "reference_attention_metric_status": "not_collected_in_reference_v3",
+  "reference_attention_worst_cosine": null,
+  "reference_logits_worst_cosine": 0.9999936819076538,
+  "reference_max_nll_difference": 0.0,
+  "tests": "70 passed"
+}
