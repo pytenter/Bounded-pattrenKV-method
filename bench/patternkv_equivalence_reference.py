@@ -12,6 +12,50 @@ import torch.nn.functional as F
 
 from models.segmented_cache import pattern_gather_centroids
 
+_REFERENCE_METRIC_CAPTURES: dict[int, dict[int, dict[str, torch.Tensor]]] = {}
+
+
+def _parse_int_set(value: str | None) -> set[int]:
+    if not value:
+        return set()
+    return {int(item) for item in value.replace(",", " ").split() if item.strip()}
+
+
+def reference_metric_capture_enabled(layer_idx: int) -> bool:
+    if os.environ.get("PATTERNKV_REFERENCE_METRIC_CAPTURE") != "1":
+        return False
+    position = int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1"))
+    return position in _parse_int_set(os.environ.get("PATTERNKV_REFERENCE_METRIC_CHECKPOINTS")) and int(layer_idx) in _parse_int_set(
+        os.environ.get("PATTERNKV_REFERENCE_METRIC_LAYERS")
+    )
+
+
+def record_reference_metric_capture(
+    *,
+    decode_position: int,
+    layer_idx: int,
+    cache_mode: str,
+    details: dict[str, torch.Tensor],
+    post_o_proj: torch.Tensor,
+) -> None:
+    stored = {
+        "cache_mode": cache_mode,
+        "query": details["query"].detach().cpu(),
+        "reconstructed_k": details["reconstructed_k"].detach().cpu(),
+        "reconstructed_v": details["reconstructed_v"].detach().cpu(),
+        "attention_scores": details["attention_scores"].detach().cpu(),
+        "attention_probs": details["attention_probs"].detach().cpu(),
+        "attention_output": details["attention_output"].detach().cpu(),
+        "post_o_proj": post_o_proj.detach().cpu(),
+    }
+    _REFERENCE_METRIC_CAPTURES.setdefault(int(decode_position), {})[int(layer_idx)] = stored
+
+
+def pop_reference_metric_captures() -> dict[int, dict[int, dict[str, torch.Tensor]]]:
+    captures = dict(_REFERENCE_METRIC_CAPTURES)
+    _REFERENCE_METRIC_CAPTURES.clear()
+    return captures
+
 
 def tensor_hash(value: torch.Tensor) -> str:
     cpu = value.detach().contiguous().cpu()
@@ -93,6 +137,44 @@ def reference_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Ten
     scores = torch.matmul(query.float(), key.float().transpose(-1, -2)) / (query.shape[-1] ** 0.5)
     probs = torch.softmax(scores, dim=-1)
     return torch.matmul(probs, value.float()).to(query.dtype)
+
+
+def tensor_pair_metrics(a: torch.Tensor, b: torch.Tensor, *, finite_only: bool = False) -> dict[str, float | int | list[int]]:
+    af = a.detach().float().reshape(-1)
+    bf = b.detach().float().reshape(-1)
+    if finite_only:
+        mask = torch.isfinite(af) & torch.isfinite(bf)
+        af = af[mask]
+        bf = bf[mask]
+    if af.numel() == 0 and bf.numel() == 0:
+        return {"shape": list(a.shape), "count": 0, "cosine": 1.0, "relative_mse": 0.0, "relative_l2": 0.0, "max_abs_error": 0.0}
+    diff = af - bf
+    denom = af.norm().clamp_min(1e-12)
+    cosine_denom = (af.norm() * bf.norm()).clamp_min(1e-12)
+    return {
+        "shape": list(a.shape),
+        "count": int(af.numel()),
+        "cosine": float(torch.dot(af, bf).div(cosine_denom).item()),
+        "relative_mse": float((diff.pow(2).mean() / af.pow(2).mean().clamp_min(1e-12)).item()),
+        "relative_l2": float((torch.linalg.vector_norm(diff) / denom).item()),
+        "max_abs_error": float(diff.abs().max().item()),
+    }
+
+
+def attention_probability_metrics(legacy_probs: torch.Tensor, segmented_probs: torch.Tensor) -> dict[str, float | int | list[int]]:
+    metrics = tensor_pair_metrics(legacy_probs, segmented_probs)
+    p = legacy_probs.detach().float().clamp_min(1e-12)
+    q = segmented_probs.detach().float().clamp_min(1e-12)
+    kl_pq = (p * (p.log() - q.log())).sum(dim=-1).mean()
+    kl_qp = (q * (q.log() - p.log())).sum(dim=-1).mean()
+    metrics.update(
+        {
+            "kl_legacy_segmented": float(kl_pq.item()),
+            "kl_segmented_legacy": float(kl_qp.item()),
+            "symmetric_kl": float((0.5 * (kl_pq + kl_qp)).item()),
+        }
+    )
+    return metrics
 
 
 @dataclass(frozen=True)
@@ -272,7 +354,8 @@ def reference_patternkv_attention(
     *,
     attention_mask: torch.Tensor | None = None,
     softmax_dtype: torch.dtype = torch.float32,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    return_details: bool = False,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
     key_states = reference_reconstruct_k(view)
     value_states = reference_reconstruct_v(view)
     if key_states is None or value_states is None:
@@ -286,6 +369,15 @@ def reference_patternkv_attention(
         scores = torch.max(scores, torch.tensor(torch.finfo(scores.dtype).min, device=scores.device))
     probs = torch.softmax(scores, dim=-1, dtype=softmax_dtype).to(query_states.dtype)
     output = torch.matmul(probs.float(), value_for_attention.float()).to(query_states.dtype)
+    if return_details:
+        return output, probs, key_for_attention, value_for_attention, {
+            "query": query_states,
+            "reconstructed_k": key_states,
+            "reconstructed_v": value_states,
+            "attention_scores": scores,
+            "attention_probs": probs,
+            "attention_output": output,
+        }
     return output, probs, key_for_attention, value_for_attention
 
 

@@ -34,6 +34,12 @@ class MetricThresholds:
     logits_cosine_reference: float = 0.9999
     logits_cosine_production: float = 0.999
     nll_abs_diff_production: float = 0.05
+    reconstructed_cosine: float = 0.9999
+    attention_score_cosine: float = 0.9999
+    attention_output_cosine: float = 0.9999
+    post_o_proj_cosine: float = 0.9999
+    attention_symmetric_kl: float = 1e-4
+    nll_abs_diff_reference: float = 0.01
 
 
 def cosine_similarity(a: torch.Tensor, b: torch.Tensor) -> float:
@@ -65,6 +71,14 @@ def kl_divergence(p: torch.Tensor, q: torch.Tensor) -> float:
     pf = p.detach().float().clamp_min(1e-12)
     qf = q.detach().float().clamp_min(1e-12)
     return float((pf * (pf.log() - qf.log())).sum(dim=-1).mean().item())
+
+
+def relative_l2(a: torch.Tensor, b: torch.Tensor) -> float:
+    af = a.detach().float()
+    bf = b.detach().float()
+    if af.numel() == 0 and bf.numel() == 0:
+        return 0.0
+    return float(torch.linalg.vector_norm(af - bf).div(torch.linalg.vector_norm(af).clamp_min(1e-12)).item())
 
 
 def topk_overlap(a: torch.Tensor, b: torch.Tensor, k: int = 5) -> int:
@@ -123,6 +137,10 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
             writer.writerows(rows)
 
 
+def metric_layers(args) -> list[int]:
+    return sorted(set(int(layer) for layer in args.metric_layers))
+
+
 def eos_ids(tokenizer, model) -> list[int]:
     ids = normalize_eos_token_ids(
         getattr(tokenizer, "eos_token_id", None),
@@ -152,7 +170,7 @@ def load_pattern_model(model_path: Path, *, cache_mode: str, gpu_id: int, dtype:
     config.group_size = 128
     config.residual_length = 128
     config.sink_length = 0
-    config.recent_length = 128
+    config.recent_length = 0 if cache_mode in {"legacy_tuple_chunked", "segmented_chunked"} else 128
     config.use_flash = True
     config.num_k_base = 32
     config.num_v_base = 32
@@ -345,12 +363,17 @@ def public_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
 @torch.no_grad()
 def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], teacher_tokens: torch.Tensor, cache_mode: str) -> dict[str, Any]:
     from models.llama_patternkv import reset_patternkv_runtime_state
+    from bench.patternkv_equivalence_reference import pop_reference_metric_captures
 
     set_all_seeds(int(task["seed"]))
     os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
     os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
     os.environ["PATTERNKV_EQUIVALENCE_BACKEND"] = args.equivalence_backend
     os.environ["PATTERNKV_FORCE_REFERENCE_ATTENTION"] = "1" if args.equivalence_backend == "reference" or args.force_reference_attention else "0"
+    os.environ["PATTERNKV_REFERENCE_METRIC_CAPTURE"] = "1" if args.collect_reference_metrics else "0"
+    os.environ["PATTERNKV_REFERENCE_METRIC_CHECKPOINTS"] = ",".join(str(int(x)) for x in args.checkpoints)
+    os.environ["PATTERNKV_REFERENCE_METRIC_LAYERS"] = ",".join(str(int(x)) for x in metric_layers(args))
+    pop_reference_metric_captures()
     if args.trace_layer is not None:
         os.environ["PATTERNKV_EQUIV_TRACE"] = "1"
         os.environ["PATTERNKV_EQUIV_TRACE_SAMPLE"] = str(task["task_key"])
@@ -385,11 +408,15 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
                 "target_token": int(teacher_tokens[pos].item()) if pos < teacher_tokens.numel() else None,
                 "layers": layer_snaps,
             }
-    result = {"cache_mode": cache_mode, "equivalence_backend": args.equivalence_backend, "snapshots": snapshots}
+    metric_captures = pop_reference_metric_captures()
+    result = {"cache_mode": cache_mode, "equivalence_backend": args.equivalence_backend, "snapshots": snapshots, "metric_captures": metric_captures}
     del outputs, past, model, input_ids, attention_mask, encoded
     gc.collect()
     torch.cuda.empty_cache()
     os.environ.pop("PATTERNKV_EQUIV_TRACE_DECODE_POS", None)
+    os.environ.pop("PATTERNKV_REFERENCE_METRIC_CAPTURE", None)
+    os.environ.pop("PATTERNKV_REFERENCE_METRIC_CHECKPOINTS", None)
+    os.environ.pop("PATTERNKV_REFERENCE_METRIC_LAYERS", None)
     return result
 
 
@@ -491,6 +518,126 @@ def compare_teacher_runs(task: dict[str, Any], legacy: dict[str, Any], segmented
     return per_checkpoint, per_layer, assignment_rows, mismatches
 
 
+def prefixed_metric_row(
+    *,
+    metric_name: str,
+    task: dict[str, Any],
+    checkpoint: int,
+    layer: int,
+    metrics: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "task_key": task["task_key"],
+        "problem_id": int(task["problem_id"]),
+        "sample_id": int(task["sample_id"]),
+        "decode_position": int(checkpoint),
+        "checkpoint": int(checkpoint),
+        "layer": int(layer),
+        "metric_name": metric_name,
+        "shape": metrics.get("shape"),
+        "token_count": metrics.get("count"),
+        "cosine": metrics.get("cosine"),
+        "relative_mse": metrics.get("relative_mse"),
+        "relative_l2": metrics.get("relative_l2"),
+        "max_abs_error": metrics.get("max_abs_error"),
+    }
+
+
+def compare_reference_metric_captures(task: dict[str, Any], legacy: dict[str, Any], segmented: dict[str, Any]) -> tuple[
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+]:
+    from bench.patternkv_equivalence_reference import attention_probability_metrics, tensor_pair_metrics
+
+    kv_rows: list[dict[str, Any]] = []
+    score_rows: list[dict[str, Any]] = []
+    probability_rows: list[dict[str, Any]] = []
+    output_rows: list[dict[str, Any]] = []
+    post_rows: list[dict[str, Any]] = []
+    auxiliary_rows: list[dict[str, Any]] = []
+    failures: list[dict[str, Any]] = []
+    thresholds = MetricThresholds()
+    legacy_captures = legacy.get("metric_captures") or {}
+    segmented_captures = segmented.get("metric_captures") or {}
+    for checkpoint in sorted(set(legacy_captures) | set(segmented_captures)):
+        legacy_layers = legacy_captures.get(checkpoint, {})
+        segmented_layers = segmented_captures.get(checkpoint, {})
+        for layer in sorted(set(legacy_layers) | set(segmented_layers)):
+            legacy_item = legacy_layers.get(layer)
+            segmented_item = segmented_layers.get(layer)
+            if legacy_item is None or segmented_item is None:
+                failures.append(
+                    {
+                        "sample": task["task_key"],
+                        "checkpoint": int(checkpoint),
+                        "layer": int(layer),
+                        "metric": "missing_reference_metric_capture",
+                        "legacy_statistic": legacy_item is not None,
+                        "segmented_statistic": segmented_item is not None,
+                        "threshold": "both paths captured",
+                    }
+                )
+                continue
+            k_metrics = tensor_pair_metrics(legacy_item["reconstructed_k"], segmented_item["reconstructed_k"])
+            v_metrics = tensor_pair_metrics(legacy_item["reconstructed_v"], segmented_item["reconstructed_v"])
+            k_row = prefixed_metric_row(metric_name="reconstructed_k", task=task, checkpoint=checkpoint, layer=layer, metrics=k_metrics)
+            v_row = prefixed_metric_row(metric_name="reconstructed_v", task=task, checkpoint=checkpoint, layer=layer, metrics=v_metrics)
+            kv_rows.extend([k_row, v_row])
+            score_metrics = tensor_pair_metrics(legacy_item["attention_scores"], segmented_item["attention_scores"], finite_only=True)
+            score_row = prefixed_metric_row(metric_name="attention_score", task=task, checkpoint=checkpoint, layer=layer, metrics=score_metrics)
+            score_rows.append(score_row)
+            probability_metrics = attention_probability_metrics(legacy_item["attention_probs"], segmented_item["attention_probs"])
+            probability_row = prefixed_metric_row(metric_name="attention_probability", task=task, checkpoint=checkpoint, layer=layer, metrics=probability_metrics)
+            probability_row.update(
+                {
+                    "kl_legacy_segmented": probability_metrics["kl_legacy_segmented"],
+                    "kl_segmented_legacy": probability_metrics["kl_segmented_legacy"],
+                    "symmetric_kl": probability_metrics["symmetric_kl"],
+                }
+            )
+            probability_rows.append(probability_row)
+            output_metrics = tensor_pair_metrics(legacy_item["attention_output"], segmented_item["attention_output"])
+            output_row = prefixed_metric_row(metric_name="attention_output_before_o_proj", task=task, checkpoint=checkpoint, layer=layer, metrics=output_metrics)
+            output_rows.append(output_row)
+            post_metrics = tensor_pair_metrics(legacy_item["post_o_proj"], segmented_item["post_o_proj"])
+            post_row = prefixed_metric_row(metric_name="post_o_proj", task=task, checkpoint=checkpoint, layer=layer, metrics=post_metrics)
+            post_rows.append(post_row)
+            query_metrics = tensor_pair_metrics(legacy_item["query"], segmented_item["query"])
+            auxiliary_rows.append(prefixed_metric_row(metric_name="query", task=task, checkpoint=checkpoint, layer=layer, metrics=query_metrics))
+            checks = [
+                ("reconstructed_k_cosine", k_row["cosine"], thresholds.reconstructed_cosine, ">="),
+                ("reconstructed_v_cosine", v_row["cosine"], thresholds.reconstructed_cosine, ">="),
+                ("attention_score_cosine", score_row["cosine"], thresholds.attention_score_cosine, ">="),
+                ("attention_probability_symmetric_kl", probability_row["symmetric_kl"], thresholds.attention_symmetric_kl, "<="),
+                ("attention_output_cosine", output_row["cosine"], thresholds.attention_output_cosine, ">="),
+                ("post_o_proj_cosine", post_row["cosine"], thresholds.post_o_proj_cosine, ">="),
+            ]
+            for metric, value, threshold, op in checks:
+                failed = float(value) < threshold if op == ">=" else float(value) > threshold
+                if failed:
+                    failures.append(
+                        {
+                            "sample": task["task_key"],
+                            "checkpoint": int(checkpoint),
+                            "layer": int(layer),
+                            "metric": metric,
+                            "legacy_statistic": value,
+                            "segmented_statistic": value,
+                            "threshold": f"{op}{threshold}",
+                            "kv_head": 0 if metric.startswith("reconstructed") else None,
+                            "global_token_range": [0, min(4, int(k_metrics.get("count", 0)))],
+                            "attention_head": 0 if metric.startswith("attention") else None,
+                            "query_position": 0 if metric.startswith("attention") else None,
+                        }
+                    )
+    return kv_rows, score_rows, probability_rows, output_rows, post_rows, auxiliary_rows, failures
+
+
 def run_teacher_forcing(args) -> dict[str, Any]:
     tokenizer = load_tokenizer(args.model_path)
     tasks = json.loads(DEFAULT_TASKS_PATH.read_text(encoding="utf-8")) if DEFAULT_TASKS_PATH.exists() else select_tasks(args)
@@ -501,6 +648,13 @@ def run_teacher_forcing(args) -> dict[str, Any]:
     all_layer_rows: list[dict[str, Any]] = []
     all_assignment_rows: list[dict[str, Any]] = []
     all_mismatches: list[dict[str, Any]] = []
+    all_kv_rows: list[dict[str, Any]] = []
+    all_score_rows: list[dict[str, Any]] = []
+    all_probability_rows: list[dict[str, Any]] = []
+    all_output_rows: list[dict[str, Any]] = []
+    all_post_rows: list[dict[str, Any]] = []
+    all_auxiliary_rows: list[dict[str, Any]] = []
+    all_metric_failures: list[dict[str, Any]] = []
     teacher_meta = []
     if args.dry_run:
         write_json(output_dir / "run_manifest.json", {"mode": "teacher-forcing", "dry_run": True, "tasks": tasks, "backend": backend})
@@ -514,14 +668,31 @@ def run_teacher_forcing(args) -> dict[str, Any]:
         legacy = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "legacy_tuple_chunked")
         segmented = run_teacher_path(args, tokenizer, task, rows[int(task["problem_id"])], teacher_tokens, "segmented_chunked")
         checkpoint_rows, layer_rows, assignment_rows, mismatches = compare_teacher_runs(task, legacy, segmented, backend)
+        kv_rows, score_rows, probability_rows, output_rows, post_rows, auxiliary_rows, metric_failures = compare_reference_metric_captures(task, legacy, segmented)
         all_checkpoint_rows.extend(checkpoint_rows)
         all_layer_rows.extend(layer_rows)
         all_assignment_rows.extend(assignment_rows)
         all_mismatches.extend(mismatches)
+        all_kv_rows.extend(kv_rows)
+        all_score_rows.extend(score_rows)
+        all_probability_rows.extend(probability_rows)
+        all_output_rows.extend(output_rows)
+        all_post_rows.extend(post_rows)
+        all_auxiliary_rows.extend(auxiliary_rows)
+        all_metric_failures.extend(metric_failures)
     structure_pass = not any(m["mismatch_type"] == "structural_mismatch" for m in all_mismatches)
     top1_pass = all(row["top1_agreement"] for row in all_checkpoint_rows) if all_checkpoint_rows else False
     logits_pass = all(float(row["logits_cosine"]) >= (MetricThresholds().logits_cosine_reference if backend == "reference" else MetricThresholds().logits_cosine_production) for row in all_checkpoint_rows) if all_checkpoint_rows else False
+    nll_threshold = MetricThresholds().nll_abs_diff_reference if backend == "reference" else MetricThresholds().nll_abs_diff_production
+    nll_pass = all(row["absolute_nll_difference"] is None or float(row["absolute_nll_difference"]) <= nll_threshold for row in all_checkpoint_rows) if all_checkpoint_rows else False
     assign_pass = all((row["k_assignment_disagreement_rate"] in (None, 0.0) and row["v_assignment_disagreement_rate"] in (None, 0.0) and row["v_gate_disagreement_rate"] in (None, 0.0)) for row in all_assignment_rows) if all_assignment_rows else False
+    metric_rows_expected = len(tasks) * len(args.checkpoints) * len(metric_layers(args))
+    kv_pass = all(float(row["cosine"]) >= MetricThresholds().reconstructed_cosine for row in all_kv_rows) and len(all_kv_rows) == metric_rows_expected * 2
+    score_pass = all(float(row["cosine"]) >= MetricThresholds().attention_score_cosine for row in all_score_rows) and len(all_score_rows) == metric_rows_expected
+    prob_pass = all(float(row["symmetric_kl"]) <= MetricThresholds().attention_symmetric_kl for row in all_probability_rows) and len(all_probability_rows) == metric_rows_expected
+    output_pass = all(float(row["cosine"]) >= MetricThresholds().attention_output_cosine for row in all_output_rows) and len(all_output_rows) == metric_rows_expected
+    post_pass = all(float(row["cosine"]) >= MetricThresholds().post_o_proj_cosine for row in all_post_rows) and len(all_post_rows) == metric_rows_expected
+    metric_pass = kv_pass and score_pass and prob_pass and output_pass and post_pass and not all_metric_failures
     summary = {
         "mode": "teacher-forcing",
         "backend": backend,
@@ -530,15 +701,53 @@ def run_teacher_forcing(args) -> dict[str, Any]:
         "teacher_token_provenance": teacher_meta,
         "checkpoint_rows": len(all_checkpoint_rows),
         "layer_rows": len(all_layer_rows),
+        "metric_layers": metric_layers(args),
+        "kv_reconstruction_rows": len(all_kv_rows),
+        "attention_score_rows": len(all_score_rows),
+        "attention_probability_rows": len(all_probability_rows),
+        "attention_output_rows": len(all_output_rows),
+        "post_o_proj_rows": len(all_post_rows),
+        "metric_failure_count": len(all_metric_failures),
         "first_mismatch_count": len(all_mismatches),
         "LEVEL2_STRUCTURE_PASS": structure_pass,
-        "LEVEL2_REFERENCE_PASS": bool(structure_pass and top1_pass and logits_pass and assign_pass) if backend == "reference" else None,
-        "LEVEL2_PRODUCTION_PASS": bool(structure_pass and top1_pass and logits_pass and assign_pass) if backend == "production" else None,
+        "LEVEL2_REFERENCE_PASS": bool(structure_pass and top1_pass and logits_pass and nll_pass and assign_pass and metric_pass) if backend == "reference" else None,
+        "LEVEL2_PRODUCTION_PASS": bool(structure_pass and top1_pass and logits_pass and nll_pass and assign_pass) if backend == "production" else None,
+        "REFERENCE_METRIC_PASS": metric_pass if backend == "reference" else None,
     }
     write_csv(output_dir / "per_checkpoint.csv", all_checkpoint_rows)
     write_csv(output_dir / "per_layer.csv", all_layer_rows)
+    write_csv(output_dir / "per_checkpoint_summary.csv", all_checkpoint_rows)
+    write_csv(output_dir / "per_layer_summary.csv", all_layer_rows)
     write_csv(output_dir / "assignment_disagreement.csv", all_assignment_rows)
+    write_csv(output_dir / "assignment_metrics.csv", all_assignment_rows)
+    write_csv(output_dir / "v_gate_metrics.csv", [{k: row[k] for k in row if k in {"backend", "task_key", "decode_position", "layer", "v_gate_disagreement_rate"}} for row in all_assignment_rows])
+    write_csv(output_dir / "cache_structure.csv", [{k: row[k] for k in row if k.endswith("_tokens") or k.endswith("_count") or k.endswith("_match") or k in {"backend", "task_key", "decode_position", "layer", "legacy_cache_kind", "segmented_cache_kind"}} for row in all_layer_rows])
+    write_csv(
+        output_dir / "centroid_metrics.csv",
+        [
+            {
+                "backend": row["backend"],
+                "task_key": row["task_key"],
+                "decode_position": row["decode_position"],
+                "layer": row["layer"],
+                "k_centroid_max_abs_error": row.get("k_centroid_max_abs_error"),
+                "k_centroid_relative_l2_error": row.get("k_centroid_relative_l2"),
+                "v_centroid_max_abs_error": row.get("v_centroid_max_abs_error"),
+                "v_centroid_relative_l2_error": row.get("v_centroid_relative_l2"),
+            }
+            for row in all_layer_rows
+        ],
+    )
+    write_csv(output_dir / "logits_metrics.csv", all_checkpoint_rows)
+    write_csv(output_dir / "kv_reconstruction_metrics.csv", all_kv_rows)
+    write_csv(output_dir / "attention_score_metrics.csv", all_score_rows)
+    write_csv(output_dir / "attention_probability_metrics.csv", all_probability_rows)
+    write_csv(output_dir / "attention_output_metrics.csv", all_output_rows)
+    write_csv(output_dir / "post_o_proj_metrics.csv", all_post_rows)
+    write_csv(output_dir / "auxiliary_metrics.csv", all_auxiliary_rows)
     write_json(output_dir / "first_mismatches.json", all_mismatches[:50])
+    write_json(output_dir / "first_mismatch.json", all_mismatches[0] if all_mismatches else None)
+    write_json(output_dir / "first_metric_failure.json", all_metric_failures[0] if all_metric_failures else None)
     write_json(output_dir / "teacher_forcing_summary.json", summary)
     write_json(output_dir / "run_manifest.json", {"mode": "teacher-forcing", "backend": backend, "args": vars(args), "tasks": tasks})
     md = [
@@ -547,11 +756,16 @@ def run_teacher_forcing(args) -> dict[str, Any]:
         f"Backend: `{backend}`",
         f"Checkpoint rows: `{len(all_checkpoint_rows)}`",
         f"Layer rows: `{len(all_layer_rows)}`",
+        f"KV reconstruction rows: `{len(all_kv_rows)}`",
+        f"Attention score rows: `{len(all_score_rows)}`",
+        f"Attention output rows: `{len(all_output_rows)}`",
+        f"Metric failures: `{len(all_metric_failures)}`",
         f"First mismatches: `{len(all_mismatches)}`",
         "",
         f"LEVEL2_STRUCTURE_PASS={str(summary['LEVEL2_STRUCTURE_PASS']).lower()}",
         f"LEVEL2_REFERENCE_PASS={str(summary['LEVEL2_REFERENCE_PASS']).lower() if summary['LEVEL2_REFERENCE_PASS'] is not None else 'null'}",
         f"LEVEL2_PRODUCTION_PASS={str(summary['LEVEL2_PRODUCTION_PASS']).lower() if summary['LEVEL2_PRODUCTION_PASS'] is not None else 'null'}",
+        f"REFERENCE_METRIC_PASS={str(summary['REFERENCE_METRIC_PASS']).lower() if summary['REFERENCE_METRIC_PASS'] is not None else 'null'}",
     ]
     (output_dir / "teacher_forcing_summary.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     return summary
@@ -673,6 +887,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--force-reference-attention", action="store_true")
     parser.add_argument("--equivalence-backend", choices=["production", "reference"], default="production")
+    parser.add_argument("--collect-reference-metrics", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--metric-layers", nargs="*", type=int, default=[0, 7, 15, 23, 31])
     parser.add_argument("--production-kernel", action="store_true")
     parser.add_argument("--trace-layer", type=int)
     parser.add_argument("--trace-output-dir", type=Path)

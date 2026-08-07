@@ -800,10 +800,19 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 append_decode(cache, key_states, value_states)
                 maybe_validate_cache(cache)
             if patternkv_equivalence_backend(self.config) == "reference":
-                from bench.patternkv_equivalence_reference import reference_patternkv_attention, reference_view_from_segmented_cache
+                from bench.patternkv_equivalence_reference import (
+                    record_reference_metric_capture,
+                    reference_metric_capture_enabled,
+                    reference_patternkv_attention,
+                    reference_view_from_segmented_cache,
+                )
 
                 view = reference_view_from_segmented_cache(cache, num_attention_heads=self.num_heads, num_key_value_heads=self.num_key_value_heads, head_dim=self.head_dim)
-                attn_output, _, _, _ = reference_patternkv_attention(query_states, view, attention_mask=attention_mask)
+                capture_metrics = reference_metric_capture_enabled(int(self.layer_idx))
+                if capture_metrics:
+                    attn_output, _, _, _, metric_details = reference_patternkv_attention(query_states, view, attention_mask=attention_mask, return_details=True)
+                else:
+                    attn_output, _, _, _ = reference_patternkv_attention(query_states, view, attention_mask=attention_mask)
                 attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
                 if self.config.pretraining_tp > 1:
                     attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
@@ -811,6 +820,14 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
                 else:
                     attn_output = self.o_proj(attn_output)
+                if capture_metrics:
+                    record_reference_metric_capture(
+                        decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
+                        layer_idx=int(self.layer_idx),
+                        cache_mode="segmented_chunked",
+                        details=metric_details,
+                        post_o_proj=attn_output,
+                    )
                 if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
                     cache.trace_layer_idx = int(self.layer_idx)
                     flush_chunked_buffer(cache)
@@ -982,7 +999,12 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             else:
                 reference_value_states_full = value_states
             if patternkv_equivalence_backend(self.config) == "reference":
-                from bench.patternkv_equivalence_reference import reference_patternkv_attention, reference_view_from_legacy_tuple
+                from bench.patternkv_equivalence_reference import (
+                    record_reference_metric_capture,
+                    reference_metric_capture_enabled,
+                    reference_patternkv_attention,
+                    reference_view_from_legacy_tuple,
+                )
 
                 legacy_view = reference_view_from_legacy_tuple(
                     past_key_value,
@@ -995,7 +1017,11 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     num_key_value_heads=self.num_key_value_heads,
                     head_dim=self.head_dim,
                 )
-                attn_output, _, _, _ = reference_patternkv_attention(query_states, legacy_view, attention_mask=attention_mask)
+                capture_metrics = reference_metric_capture_enabled(int(self.layer_idx))
+                if capture_metrics:
+                    attn_output, _, _, _, metric_details = reference_patternkv_attention(query_states, legacy_view, attention_mask=attention_mask, return_details=True)
+                else:
+                    attn_output, _, _, _ = reference_patternkv_attention(query_states, legacy_view, attention_mask=attention_mask)
                 if reference_key_states_full.shape[-2] == self.residual_length:
                     assert self.residual_length % self.group_size == 0
                     Lr = self.residual_length
@@ -1103,6 +1129,14 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
                 else:
                     attn_output = self.o_proj(attn_output)
+                if capture_metrics:
+                    record_reference_metric_capture(
+                        decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
+                        layer_idx=int(self.layer_idx),
+                        cache_mode="legacy_tuple_chunked",
+                        details=metric_details,
+                        post_o_proj=attn_output,
+                    )
                 return attn_output, None, (key_states_quant_trans, reference_key_states_full, key_scale_trans, key_mn_trans, value_states_quant, reference_value_states_full, value_scale, value_mn, kv_seq_len, assignments, v_assignments, v_assignments_idx) if use_cache else None
             if key_states_full is not None:
                 key_states_full = torch.cat([key_states_full, key_states], dim=2)
