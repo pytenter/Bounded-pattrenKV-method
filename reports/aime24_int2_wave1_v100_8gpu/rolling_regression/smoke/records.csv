@@ -1,0 +1,9 @@
+assignment_tokens,config,error,generated_tokens,packed_tokens,path,pending_tokens,recent_tokens,sink_tokens,stop_reason,task,total_tokens,v_gate_tokens
+896,pattern_rolling_k2v2_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v2_s0_r128/p12_s0_609a123d20814818.json,63,128,0,length,aime24:p12:s0:seed12042,1087,896
+896,pattern_rolling_k2v2_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v2_s0_r128/p14_s0_609a123d20814818.json,103,128,0,length,aime24:p14:s0:seed14042,1127,896
+640,pattern_rolling_k2v2_s64_r256,,1024,640,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v2_s64_r256/p12_s0_af220b4fdca3c4ea.json,127,256,64,length,aime24:p12:s0:seed12042,1087,640
+768,pattern_rolling_k2v2_s64_r256,,1024,768,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v2_s64_r256/p14_s0_af220b4fdca3c4ea.json,39,256,64,length,aime24:p14:s0:seed14042,1127,768
+896,pattern_rolling_k2v4_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v4_s0_r128/p12_s0_7710cba7341af8a8.json,63,128,0,length,aime24:p12:s0:seed12042,1087,896
+896,pattern_rolling_k2v4_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k2v4_s0_r128/p14_s0_7710cba7341af8a8.json,103,128,0,length,aime24:p14:s0:seed14042,1127,896
+896,pattern_rolling_k4v2_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k4v2_s0_r128/p12_s0_ea74e8bc8b131f2b.json,63,128,0,length,aime24:p12:s0:seed12042,1087,896
+896,pattern_rolling_k4v2_s0_r128,,1024,896,results/aime24_int2_wave1_v100_8gpu_rolling_regression_smoke/pattern_rolling_k4v2_s0_r128/p14_s0_ea74e8bc8b131f2b.json,103,128,0,length,aime24:p14:s0:seed14042,1127,896

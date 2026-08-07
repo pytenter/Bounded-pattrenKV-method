@@ -1,0 +1,9 @@
+assignment_tokens,config,error,generated_tokens,packed_tokens,path,pending_tokens,recent_tokens,sink_tokens,stop_reason,task,total_tokens,v_gate_tokens
+3968,pattern_rolling_k2v2_s0_r128,,4096,3968,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v2_s0_r128/p12_s0_565e8030e954ab7b.json,63,128,0,length,aime24:p12:s0:seed12042,4159,3968
+3968,pattern_rolling_k2v2_s0_r128,,4096,3968,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v2_s0_r128/p14_s0_565e8030e954ab7b.json,103,128,0,length,aime24:p14:s0:seed14042,4199,3968
+3712,pattern_rolling_k2v2_s64_r256,,4096,3712,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v2_s64_r256/p12_s0_e3f86326b8f3dfab.json,127,256,64,length,aime24:p12:s0:seed12042,4159,3712
+3840,pattern_rolling_k2v2_s64_r256,,4096,3840,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v2_s64_r256/p14_s0_e3f86326b8f3dfab.json,39,256,64,length,aime24:p14:s0:seed14042,4199,3840
+3968,pattern_rolling_k2v4_s0_r128,,4096,3968,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v4_s0_r128/p12_s0_900e40e9be310e66.json,63,128,0,length,aime24:p12:s0:seed12042,4159,3968
+3968,pattern_rolling_k2v4_s0_r128,,4096,3968,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k2v4_s0_r128/p14_s0_900e40e9be310e66.json,103,128,0,length,aime24:p14:s0:seed14042,4199,3968
+3840,pattern_rolling_k4v2_s0_r128,,4030,3840,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k4v2_s0_r128/p12_s0_a730b4084b7ed2de.json,125,128,0,eos,aime24:p12:s0:seed12042,4093,3840
+3968,pattern_rolling_k4v2_s0_r128,,4096,3968,results/aime24_int2_wave1_v100_8gpu_rolling_regression_long/pattern_rolling_k4v2_s0_r128/p14_s0_a730b4084b7ed2de.json,103,128,0,length,aime24:p14:s0:seed14042,4199,3968
