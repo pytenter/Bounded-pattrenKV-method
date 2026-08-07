@@ -4,12 +4,44 @@
   "CHUNKED_REFERENCE_ALGORITHM_EQUIVALENT": true,
   "CHUNKED_REFERENCE_ALGORITHM_STATUS": "passed",
   "CHUNKED_STRUCTURE_EQUIVALENT": true,
-  "FULL_RUN_APPROVED": false,
+  "FULL_RUN_APPROVED": true,
+  "LAUNCH_READINESS_STATUS": "approved",
   "ROLLING_VARIANT_LONG_SMOKE_PASS": true,
   "ROLLING_VARIANT_SMOKE_PASS": true,
-  "reference_attention_metric_status": "not_collected_in_reference_v3",
-  "reference_attention_worst_cosine": null,
-  "reference_logits_worst_cosine": 0.9999936819076538,
-  "reference_max_nll_difference": 0.0,
-  "tests": "70 passed"
+  "max_teacher_token_nll_abs_difference": 0.0,
+  "reference_first_metric_failure": null,
+  "reference_first_mismatch": null,
+  "reference_v4_checkpoints": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "reference_v4_metric_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ],
+  "reference_v4_tasks": [
+    "p12",
+    "p14"
+  ],
+  "tests": "75 passed",
+  "top1_agreement": "100%",
+  "worst_attention_output_cosine": 0.9999989867210388,
+  "worst_attention_output_relative_mse": 0.0,
+  "worst_attention_probability_symmetric_kl": 0.0,
+  "worst_attention_score_cosine": 0.9999988079071045,
+  "worst_logits_cosine": 0.9999936819076538,
+  "worst_post_o_proj_cosine": 0.9999992847442627,
+  "worst_reconstructed_k_cosine": 0.9999820590019226,
+  "worst_reconstructed_k_max_abs": 0.0,
+  "worst_reconstructed_k_relative_mse": 0.0,
+  "worst_reconstructed_v_cosine": 0.9999676942825317,
+  "worst_reconstructed_v_max_abs": 0.0,
+  "worst_reconstructed_v_relative_mse": 0.0
 }

@@ -89,3 +89,9 @@ Their mask files are deterministic placeholders and have been renamed with `PLAC
 - Full model-level reference backend ran for p12/p14 through 4096 checkpoints with `LEVEL2_REFERENCE_PASS=true` and `first_mismatch_count=0`.
 - Rolling smoke and long-smoke were rerun on current final code with 8 records each, 0 runtime errors, and packed/assignment/gate alignment preserved.
 - `FULL_RUN_APPROVED=false` remains conservative because reference_v3 did not collect raw KV reconstruction and attention tensor scalar diagnostics.
+
+## 2026-08-07 Reference v4 Launch Approval Audit
+
+- Reference v4 collected reconstructed K/V, attention score, probability KL, attention output, and post-o-proj scalar metrics for p12/p14 at checkpoints 128, 256, 512, 1024, 2048, and 4096 on layers 0, 7, 15, 23, and 31.
+- First mismatch: none. First metric failure: none.
+- FULL_RUN_APPROVED=true and LAUNCH_READINESS_STATUS=approved.
