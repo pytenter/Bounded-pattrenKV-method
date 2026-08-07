@@ -4,10 +4,13 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from dataclasses import dataclass
 from typing import Any
 
 import torch
 import torch.nn.functional as F
+
+from models.segmented_cache import pattern_gather_centroids
 
 
 def tensor_hash(value: torch.Tensor) -> str:
@@ -90,6 +93,211 @@ def reference_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Ten
     scores = torch.matmul(query.float(), key.float().transpose(-1, -2)) / (query.shape[-1] ** 0.5)
     probs = torch.softmax(scores, dim=-1)
     return torch.matmul(probs, value.float()).to(query.dtype)
+
+
+@dataclass(frozen=True)
+class ReferencePatternKVView:
+    packed_k: torch.Tensor | None
+    packed_k_scale: torch.Tensor | None
+    packed_k_zero: torch.Tensor | None
+    packed_v: torch.Tensor | None
+    packed_v_scale: torch.Tensor | None
+    packed_v_zero: torch.Tensor | None
+    chunk_k: torch.Tensor | None
+    chunk_v: torch.Tensor | None
+    k_centroids: torch.Tensor | None
+    v_centroids: torch.Tensor | None
+    k_assignments: torch.Tensor | None
+    v_assignment_idx: torch.Tensor | None
+    v_pattern_mask: torch.Tensor | None
+    total_tokens: int
+    packed_k_tokens: int
+    packed_v_tokens: int
+    group_size: int
+    k_bits: int
+    v_bits: int
+    num_attention_heads: int
+    num_key_value_heads: int
+    head_dim: int
+    cache_mode: str
+
+
+def repeat_kv_for_gqa(hidden_states: torch.Tensor, num_key_value_groups: int, *, expected_heads: int | None = None, tensor_name: str = "kv") -> torch.Tensor:
+    if hidden_states is None:
+        return hidden_states
+    if hidden_states.dim() != 4:
+        raise ValueError(f"{tensor_name} must be 4D [B,H,L,D], got shape={tuple(hidden_states.shape)}")
+    repeated = hidden_states.repeat_interleave(num_key_value_groups, dim=1)
+    if expected_heads is not None and repeated.shape[1] != expected_heads:
+        raise ValueError(
+            f"{tensor_name} repeated heads mismatch: got shape={tuple(repeated.shape)}, expected_heads={expected_heads}, num_key_value_groups={num_key_value_groups}"
+        )
+    return repeated
+
+
+def reference_view_from_segmented_cache(cache: Any, *, num_attention_heads: int, num_key_value_heads: int, head_dim: int) -> ReferencePatternKVView:
+    from models.segmented_cache import CHUNKED_CACHE_MODE, cache_validate_enabled, deserialize_cache, maybe_validate_cache
+
+    if not isinstance(cache, tuple):
+        cache = deserialize_cache(cache, pattern=True)
+    if cache.cache_mode != CHUNKED_CACHE_MODE:
+        raise ValueError("reference equivalence only supports segmented_chunked cache mode")
+    if cache.sink_length != 0 or cache.recent_length != 0:
+        raise ValueError("reference chunked cache must have zero sink and recent lengths")
+    if cache_validate_enabled():
+        maybe_validate_cache(cache)
+    return ReferencePatternKVView(
+        packed_k=cache.packed_k,
+        packed_k_scale=cache.packed_k_scale,
+        packed_k_zero=cache.packed_k_zero,
+        packed_v=cache.packed_v,
+        packed_v_scale=cache.packed_v_scale,
+        packed_v_zero=cache.packed_v_zero,
+        chunk_k=cache.pending_k,
+        chunk_v=cache.pending_v,
+        k_centroids=cache.k_centroids,
+        v_centroids=cache.v_centroids,
+        k_assignments=cache.k_assignments,
+        v_assignment_idx=cache.v_assignment_idx,
+        v_pattern_mask=cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments,
+        total_tokens=int(cache.total_tokens),
+        packed_k_tokens=int(cache.packed_k_tokens),
+        packed_v_tokens=int(cache.packed_v_tokens),
+        group_size=int(cache.group_size),
+        k_bits=int(cache.k_bits),
+        v_bits=int(cache.v_bits),
+        num_attention_heads=int(num_attention_heads),
+        num_key_value_heads=int(num_key_value_heads),
+        head_dim=int(head_dim),
+        cache_mode=str(cache.cache_mode),
+    )
+
+
+def reference_view_from_legacy_tuple(
+    legacy_cache: tuple[Any, ...],
+    *,
+    chunk_k: torch.Tensor | None,
+    chunk_v: torch.Tensor | None,
+    k_centroids: torch.Tensor | None,
+    v_centroids: torch.Tensor | None,
+    total_tokens: int | None = None,
+    num_attention_heads: int,
+    num_key_value_heads: int,
+    head_dim: int,
+) -> ReferencePatternKVView:
+    if not isinstance(legacy_cache, tuple) or len(legacy_cache) < 12:
+        raise TypeError("legacy cache must be a PatternKV tuple")
+    packed_k = legacy_cache[0]
+    packed_v = legacy_cache[4]
+    k_assignments = legacy_cache[9]
+    v_pattern_mask = legacy_cache[10]
+    v_assignment_idx = legacy_cache[11]
+    total_tokens_value = int(total_tokens if total_tokens is not None else legacy_cache[8])
+    packed_k_tokens = int(k_assignments.shape[-1]) if torch.is_tensor(k_assignments) else int(total_tokens_value - (chunk_k.shape[2] if torch.is_tensor(chunk_k) else 0))
+    packed_v_tokens = int(v_assignment_idx.shape[-1]) if torch.is_tensor(v_assignment_idx) else int(total_tokens_value - (chunk_v.shape[2] if torch.is_tensor(chunk_v) else 0))
+    return ReferencePatternKVView(
+        packed_k=packed_k,
+        packed_k_scale=legacy_cache[2],
+        packed_k_zero=legacy_cache[3],
+        packed_v=packed_v,
+        packed_v_scale=legacy_cache[6],
+        packed_v_zero=legacy_cache[7],
+        chunk_k=chunk_k,
+        chunk_v=chunk_v,
+        k_centroids=k_centroids,
+        v_centroids=v_centroids,
+        k_assignments=k_assignments,
+        v_assignment_idx=v_assignment_idx,
+        v_pattern_mask=v_pattern_mask,
+        total_tokens=total_tokens_value,
+        packed_k_tokens=packed_k_tokens,
+        packed_v_tokens=packed_v_tokens,
+        group_size=128,
+        k_bits=2,
+        v_bits=2,
+        num_attention_heads=int(num_attention_heads),
+        num_key_value_heads=int(num_key_value_heads),
+        head_dim=int(head_dim),
+        cache_mode="legacy_tuple_chunked",
+    )
+
+
+def _validate_view(view: ReferencePatternKVView) -> None:
+    if view.total_tokens < 0 or view.packed_k_tokens < 0 or view.packed_v_tokens < 0:
+        raise ValueError("token counts must be non-negative")
+    chunk_k_tokens = int(view.chunk_k.shape[2]) if torch.is_tensor(view.chunk_k) else 0
+    chunk_v_tokens = int(view.chunk_v.shape[2]) if torch.is_tensor(view.chunk_v) else 0
+    if view.packed_k_tokens + chunk_k_tokens != view.total_tokens:
+        raise ValueError(
+            f"K token count mismatch: packed={view.packed_k_tokens}, chunk={chunk_k_tokens}, total={view.total_tokens}"
+        )
+    if view.packed_v_tokens + chunk_v_tokens != view.total_tokens:
+        raise ValueError(
+            f"V token count mismatch: packed={view.packed_v_tokens}, chunk={chunk_v_tokens}, total={view.total_tokens}"
+        )
+
+
+def reference_reconstruct_k(view: ReferencePatternKVView) -> torch.Tensor | None:
+    _validate_view(view)
+    if view.packed_k is None:
+        return view.chunk_k
+    packed = reference_dequant_k(view.packed_k, view.packed_k_scale, view.packed_k_zero, view.group_size, view.k_bits)
+    if packed is not None:
+        packed = packed[:, :, : view.packed_k_tokens, :].contiguous()
+        if view.k_centroids is None or view.k_assignments is None:
+            raise ValueError("reference K reconstruction requires centroids and assignments")
+        packed = packed + pattern_gather_centroids(view.k_assignments[:, :, : view.packed_k_tokens], view.k_centroids).to(packed.dtype)
+    parts = [part for part in (packed, view.chunk_k) if torch.is_tensor(part)]
+    return torch.cat(parts, dim=2).contiguous() if parts else None
+
+
+def reference_reconstruct_v(view: ReferencePatternKVView) -> torch.Tensor | None:
+    _validate_view(view)
+    if view.packed_v is None:
+        return view.chunk_v
+    packed = reference_dequant_v(view.packed_v, view.packed_v_scale, view.packed_v_zero, view.group_size, view.v_bits)
+    if packed is not None:
+        packed = packed[:, :, : view.packed_v_tokens, :].contiguous()
+        if view.v_centroids is None or view.v_assignment_idx is None or view.v_pattern_mask is None:
+            raise ValueError("reference V reconstruction requires centroids, assignments and gate")
+        centroids = pattern_gather_centroids(view.v_assignment_idx[:, :, : view.packed_v_tokens], view.v_centroids).to(packed.dtype)
+        packed = packed + view.v_pattern_mask[:, :, : view.packed_v_tokens].unsqueeze(-1).to(packed.dtype) * centroids
+    parts = [part for part in (packed, view.chunk_v) if torch.is_tensor(part)]
+    return torch.cat(parts, dim=2).contiguous() if parts else None
+
+
+def reference_patternkv_attention(
+    query_states: torch.Tensor,
+    view: ReferencePatternKVView,
+    *,
+    attention_mask: torch.Tensor | None = None,
+    softmax_dtype: torch.dtype = torch.float32,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    key_states = reference_reconstruct_k(view)
+    value_states = reference_reconstruct_v(view)
+    if key_states is None or value_states is None:
+        raise ValueError("reference PatternKV attention requires K and V states")
+    num_key_value_groups = view.num_attention_heads // view.num_key_value_heads
+    key_for_attention = repeat_kv_for_gqa(key_states, num_key_value_groups, expected_heads=view.num_attention_heads, tensor_name="key_states")
+    value_for_attention = repeat_kv_for_gqa(value_states, num_key_value_groups, expected_heads=view.num_attention_heads, tensor_name="value_states")
+    scores = torch.matmul(query_states.float(), key_for_attention.float().transpose(-2, -1)) / (query_states.shape[-1] ** 0.5)
+    if attention_mask is not None:
+        scores = scores + attention_mask
+        scores = torch.max(scores, torch.tensor(torch.finfo(scores.dtype).min, device=scores.device))
+    probs = torch.softmax(scores, dim=-1, dtype=softmax_dtype).to(query_states.dtype)
+    output = torch.matmul(probs.float(), value_for_attention.float()).to(query_states.dtype)
+    return output, probs, key_for_attention, value_for_attention
+
+
+def reference_assignment_disagreement(stored: torch.Tensor | None, reference: torch.Tensor | None) -> float | None:
+    if not torch.is_tensor(stored) or not torch.is_tensor(reference):
+        return None
+    tokens = min(stored.shape[-1], reference.shape[-1])
+    if tokens == 0:
+        return 0.0
+    stored = stored[..., :tokens].detach().cpu()
+    reference = reference[..., :tokens].detach().cpu()
+    return float((stored != reference).float().mean().item())
 
 
 def reference_logits_metrics(a: torch.Tensor, b: torch.Tensor) -> dict[str, float | int | bool]:

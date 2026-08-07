@@ -533,6 +533,16 @@ def patternkv_cache_mode(config) -> str:
     return "legacy_tuple_chunked" if patternkv_cache_path(config) == "legacy" else ROLLING_CACHE_MODE
 
 
+def patternkv_equivalence_backend(config) -> str:
+    explicit = os.environ.get("PATTERNKV_EQUIVALENCE_BACKEND") or getattr(config, "patternkv_equivalence_backend", None)
+    if os.environ.get("PATTERNKV_FORCE_REFERENCE_ATTENTION") == "1":
+        explicit = "reference"
+    backend = str(explicit or "production").strip().lower()
+    if backend not in ("production", "reference"):
+        raise ValueError(f"Unsupported PatternKV equivalence backend: {explicit!r}")
+    return backend
+
+
 def reset_patternkv_runtime_state(model: nn.Module) -> None:
     for layer in getattr(getattr(model, "model", None), "layers", []):
         attn = getattr(layer, "self_attn", None)
@@ -789,6 +799,23 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             else:
                 append_decode(cache, key_states, value_states)
                 maybe_validate_cache(cache)
+            if patternkv_equivalence_backend(self.config) == "reference":
+                from bench.patternkv_equivalence_reference import reference_patternkv_attention, reference_view_from_segmented_cache
+
+                view = reference_view_from_segmented_cache(cache, num_attention_heads=self.num_heads, num_key_value_heads=self.num_key_value_heads, head_dim=self.head_dim)
+                attn_output, _, _, _ = reference_patternkv_attention(query_states, view, attention_mask=attention_mask)
+                attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+                if self.config.pretraining_tp > 1:
+                    attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
+                    o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
+                    attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
+                else:
+                    attn_output = self.o_proj(attn_output)
+                if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                    cache.trace_layer_idx = int(self.layer_idx)
+                    flush_chunked_buffer(cache)
+                    maybe_validate_cache(cache)
+                return attn_output, None, serialize_cache(cache) if use_cache else None
 
             score_parts = []
             value_parts: list[tuple[str, int]] = []
@@ -946,6 +973,137 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
 
             else:
                 att_qkquant = None
+            if key_states_full is not None:
+                reference_key_states_full = torch.cat([key_states_full, key_states], dim=2)
+            else:
+                reference_key_states_full = key_states
+            if value_states_full is not None:
+                reference_value_states_full = torch.cat([value_states_full, value_states], dim=2)
+            else:
+                reference_value_states_full = value_states
+            if patternkv_equivalence_backend(self.config) == "reference":
+                from bench.patternkv_equivalence_reference import reference_patternkv_attention, reference_view_from_legacy_tuple
+
+                legacy_view = reference_view_from_legacy_tuple(
+                    past_key_value,
+                    chunk_k=reference_key_states_full,
+                    chunk_v=reference_value_states_full,
+                    k_centroids=self.k_base,
+                    v_centroids=self.v_centroids,
+                    total_tokens=kv_seq_len,
+                    num_attention_heads=self.num_heads,
+                    num_key_value_heads=self.num_key_value_heads,
+                    head_dim=self.head_dim,
+                )
+                attn_output, _, _, _ = reference_patternkv_attention(query_states, legacy_view, attention_mask=attention_mask)
+                if reference_key_states_full.shape[-2] == self.residual_length:
+                    assert self.residual_length % self.group_size == 0
+                    Lr = self.residual_length
+                    H = self.num_key_value_heads
+                    bz = reference_key_states_full.size(0)
+                    hd = self.head_dim
+                    Xw = reference_key_states_full.permute(1, 0, 2, 3).reshape(H, bz * Lr, hd).contiguous()
+                    cur_centroid = self._chebyshev_center_per_head(Xw).to(self.k_base.dtype)
+                    _insight_old_k_base = self.k_base
+                    _insight_new_k_base = torch.cat([_insight_old_k_base, cur_centroid], dim=1)
+                    record_decode_k_window_metrics(
+                        window_raw=reference_key_states_full,
+                        old_k_base=_insight_old_k_base,
+                        new_k_base=_insight_new_k_base,
+                        layer_idx=self.layer_idx,
+                        window_idx=int(assignments.shape[-1] // self.residual_length) if assignments is not None else 0,
+                        bits=self.k_bits,
+                        group_size=self.group_size,
+                    )
+                    self.k_base = torch.cat([self.k_base, cur_centroid], dim=1)
+                    assign_hn = self._assign_minmax_hnk(Xw, self.k_base, block_k=256)
+                    cur_assignments = assign_hn.view(H, bz, Lr).permute(1, 0, 2).contiguous().to(torch.long)
+                    k_base_per_pos = self.k_base.unsqueeze(0).expand(bz, -1, -1, -1)
+                    k_base_per_pos = torch.gather(k_base_per_pos, 2, cur_assignments.unsqueeze(-1).expand(-1, -1, -1, hd))
+                    if assignments is not None:
+                        assignments = torch.cat([assignments, cur_assignments], dim=-1)
+                    else:
+                        assignments = cur_assignments
+                    if os.environ.get("PATTERNKV_EQUIV_TRACE") == "1" and int(os.environ.get("PATTERNKV_EQUIV_TRACE_LAYER", "-1")) == int(self.layer_idx):
+                        try:
+                            from bench.patternkv_equivalence_reference import save_assignment_trace
+
+                            save_assignment_trace(
+                                mode="legacy_tuple_chunked",
+                                layer_idx=int(self.layer_idx),
+                                decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
+                                k_window=reference_key_states_full,
+                                v_window=reference_value_states_full,
+                                k_centroids=self.k_base,
+                                k_assignments=cur_assignments,
+                                v_centroids=self.v_centroids,
+                                v_assignment_idx=None,
+                                v_gate=None,
+                            )
+                        except Exception:
+                            if os.environ.get("PATTERNKV_EQUIV_TRACE_STRICT") == "1":
+                                raise
+                    reference_key_states_full = reference_key_states_full - k_base_per_pos
+                    key_states_quant_trans_new, key_scale_trans_new, key_mn_trans_new = triton_quantize_and_pack_along_last_dim(
+                        reference_key_states_full.transpose(2, 3).contiguous(), self.group_size, self.k_bits
+                    )
+                    reference_key_states_full = None
+                    if key_states_quant_trans is not None:
+                        key_states_quant_trans = torch.cat([key_states_quant_trans, key_states_quant_trans_new], dim=3)
+                        key_scale_trans = torch.cat([key_scale_trans, key_scale_trans_new], dim=3)
+                        key_mn_trans = torch.cat([key_mn_trans, key_mn_trans_new], dim=3)
+                    else:
+                        key_states_quant_trans = key_states_quant_trans_new
+                        key_scale_trans = key_scale_trans_new
+                        key_mn_trans = key_mn_trans_new
+                attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+                if reference_value_states_full.shape[-2] == self.residual_length:
+                    _insight_old_v_centroids = self.v_centroids
+                    self._append_v_centroid_from_window(reference_value_states_full)
+                    idx_w = self._nearest_v_centroid(reference_value_states_full, self.v_centroids)
+                    cent_w = self._gather_centroids(idx_w, self.v_centroids)
+                    _T, v_mask_w = self._v_threshold_and_mask(reference_value_states_full, base_override=cent_w)
+                    if _insight_old_v_centroids is not None:
+                        old_idx_w = self._nearest_v_centroid(reference_value_states_full, _insight_old_v_centroids)
+                        old_cent_w = self._gather_centroids(old_idx_w, _insight_old_v_centroids)
+                        _old_T, old_v_mask_w = self._v_threshold_and_mask(reference_value_states_full, base_override=old_cent_w)
+                        record_decode_v_window_metrics(
+                            window_raw=reference_value_states_full,
+                            old_v_centroids=_insight_old_v_centroids,
+                            new_v_centroids=self.v_centroids,
+                            old_idx=old_idx_w,
+                            new_idx=idx_w,
+                            old_mask=old_v_mask_w,
+                            new_mask=v_mask_w,
+                            layer_idx=self.layer_idx,
+                            window_idx=int(v_assignments.shape[-1] // self.residual_length) if v_assignments is not None else 0,
+                            bits=self.v_bits,
+                            group_size=self.group_size,
+                        )
+                    value_states_full_adj = reference_value_states_full - v_mask_w.unsqueeze(-1).to(reference_value_states_full.dtype) * cent_w
+                    value_states_quant_new, scale_new, mn_new = triton_quantize_and_pack_along_last_dim(
+                        value_states_full_adj, self.group_size, self.v_bits
+                    )
+                    if value_states_quant is not None:
+                        value_states_quant = torch.cat([value_states_quant, value_states_quant_new], dim=2)
+                        value_scale = torch.cat([value_scale, scale_new], dim=2)
+                        value_mn = torch.cat([value_mn, mn_new], dim=2)
+                        v_assignments = torch.cat([v_assignments, v_mask_w.to(torch.uint8)], dim=2)
+                        v_assignments_idx = torch.cat([v_assignments_idx, idx_w], dim=2)
+                    else:
+                        value_states_quant = value_states_quant_new
+                        value_scale = scale_new
+                        value_mn = mn_new
+                        v_assignments = v_mask_w.to(torch.uint8)
+                        v_assignments_idx = idx_w
+                    reference_value_states_full = None
+                if self.config.pretraining_tp > 1:
+                    attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
+                    o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
+                    attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
+                else:
+                    attn_output = self.o_proj(attn_output)
+                return attn_output, None, (key_states_quant_trans, reference_key_states_full, key_scale_trans, key_mn_trans, value_states_quant, reference_value_states_full, value_scale, value_mn, kv_seq_len, assignments, v_assignments, v_assignments_idx) if use_cache else None
             if key_states_full is not None:
                 key_states_full = torch.cat([key_states_full, key_states], dim=2)
             else:
@@ -1178,10 +1336,22 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 query_states = query_states.to(target_dtype)
                 key_states = key_states.to(target_dtype)
                 value_states = value_states.to(target_dtype)
-            attn_output = self._flash_attention_forward(
-                query_states.transpose(1, 2), key_states.transpose(1, 2), 
-                value_states.transpose(1, 2), None, q_len, dropout=0.0
-            )
+            if patternkv_equivalence_backend(self.config) == "reference":
+                key_for_attention = repeat_kv(key_states, self.num_key_value_groups)
+                value_for_attention = repeat_kv(value_states, self.num_key_value_groups)
+                attn_weights = torch.matmul(query_states, key_for_attention.transpose(2, 3)) / math.sqrt(self.head_dim)
+                if attention_mask is not None:
+                    if attention_mask.size() != (bsz, 1, q_len, q_len):
+                        raise ValueError(f"Attention mask should be of size {(bsz, 1, q_len, q_len)}, but is {attention_mask.size()}")
+                    attn_weights = attn_weights + attention_mask
+                    attn_weights = torch.max(attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device))
+                attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+                attn_output = torch.matmul(attn_weights, value_for_attention)
+            else:
+                attn_output = self._flash_attention_forward(
+                    query_states.transpose(1, 2), key_states.transpose(1, 2),
+                    value_states.transpose(1, 2), None, q_len, dropout=0.0
+                )
       
 
             bsz, n_kv, seq_len, hd = key_states.shape

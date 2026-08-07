@@ -158,6 +158,7 @@ def load_pattern_model(model_path: Path, *, cache_mode: str, gpu_id: int, dtype:
     config.num_v_base = 32
     config.patternkv_cache_mode = cache_mode
     config.patternkv_cache_path = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
+    config.patternkv_equivalence_backend = os.environ.get("PATTERNKV_EQUIVALENCE_BACKEND", "production")
     device = f"cuda:{gpu_id}"
     model = LlamaForCausalLM_PatternKV.from_pretrained(model_path, local_files_only=True, config=config, torch_dtype=dtype, low_cpu_mem_usage=True).to(device)
     model.eval()
@@ -348,7 +349,8 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
     set_all_seeds(int(task["seed"]))
     os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
     os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
-    os.environ["PATTERNKV_FORCE_REFERENCE_ATTENTION"] = "1" if args.force_reference_attention else "0"
+    os.environ["PATTERNKV_EQUIVALENCE_BACKEND"] = args.equivalence_backend
+    os.environ["PATTERNKV_FORCE_REFERENCE_ATTENTION"] = "1" if args.equivalence_backend == "reference" or args.force_reference_attention else "0"
     if args.trace_layer is not None:
         os.environ["PATTERNKV_EQUIV_TRACE"] = "1"
         os.environ["PATTERNKV_EQUIV_TRACE_SAMPLE"] = str(task["task_key"])
@@ -383,7 +385,7 @@ def run_teacher_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any],
                 "target_token": int(teacher_tokens[pos].item()) if pos < teacher_tokens.numel() else None,
                 "layers": layer_snaps,
             }
-    result = {"cache_mode": cache_mode, "snapshots": snapshots}
+    result = {"cache_mode": cache_mode, "equivalence_backend": args.equivalence_backend, "snapshots": snapshots}
     del outputs, past, model, input_ids, attention_mask, encoded
     gc.collect()
     torch.cuda.empty_cache()
@@ -494,7 +496,7 @@ def run_teacher_forcing(args) -> dict[str, Any]:
     tasks = json.loads(DEFAULT_TASKS_PATH.read_text(encoding="utf-8")) if DEFAULT_TASKS_PATH.exists() else select_tasks(args)
     rows = row_by_problem(args.dataset_path)
     output_dir = args.output_dir
-    backend = "reference" if args.force_reference_attention else "production"
+    backend = args.equivalence_backend
     all_checkpoint_rows: list[dict[str, Any]] = []
     all_layer_rows: list[dict[str, Any]] = []
     all_assignment_rows: list[dict[str, Any]] = []
@@ -523,6 +525,7 @@ def run_teacher_forcing(args) -> dict[str, Any]:
     summary = {
         "mode": "teacher-forcing",
         "backend": backend,
+        "cache_mode": "legacy_tuple_chunked vs segmented_chunked",
         "tasks": tasks,
         "teacher_token_provenance": teacher_meta,
         "checkpoint_rows": len(all_checkpoint_rows),
@@ -561,6 +564,7 @@ def run_greedy_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], 
     set_all_seeds(int(task["seed"]))
     os.environ["PATTERNKV_CACHE_MODE"] = cache_mode
     os.environ["PATTERNKV_CACHE_PATH"] = "legacy" if cache_mode == "legacy_tuple_chunked" else "segmented"
+    os.environ["PATTERNKV_EQUIVALENCE_BACKEND"] = args.equivalence_backend
     model = load_pattern_model(args.model_path, cache_mode=cache_mode, gpu_id=args.gpu_id, dtype=torch.float16)
     reset_patternkv_runtime_state(model)
     rendered, _, _ = render_prompt(row["problem"], tokenizer, args.force_think_prefix)
@@ -591,6 +595,7 @@ def run_greedy_path(args, tokenizer, task: dict[str, Any], row: dict[str, Any], 
     stop = compute_stop_state(generated, args.max_new_tokens, eos_ids(tokenizer, model))
     rec = {
         "cache_mode": cache_mode,
+        "equivalence_backend": args.equivalence_backend,
         "task_key": task["task_key"],
         "problem_id": int(task["problem_id"]),
         "sample_id": int(task["sample_id"]),
@@ -645,7 +650,7 @@ def run_greedy(args, *, do_sample: bool = False) -> dict[str, Any]:
     write_csv(output_dir / ("per_sample.csv"), per_sample)
     write_json(output_dir / ("first_divergence.json"), divergences)
     write_json(output_dir / ("greedy_summary.json" if not do_sample else "sampling_summary.json"), summary)
-    write_json(output_dir / "run_manifest.json", {"mode": "sampling" if do_sample else "greedy", "args": vars(args), "tasks": tasks})
+    write_json(output_dir / "run_manifest.json", {"mode": "sampling" if do_sample else "greedy", "backend": args.equivalence_backend, "args": vars(args), "tasks": tasks})
     md_name = "sampling_summary.md" if do_sample else "greedy_summary.md"
     (output_dir / md_name).write_text(f"# PatternKV {'Sampling' if do_sample else 'Greedy'} Equivalence\n\nPASS={pass_level if not do_sample else True}\n", encoding="utf-8")
     return summary
@@ -667,6 +672,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--force-reference-attention", action="store_true")
+    parser.add_argument("--equivalence-backend", choices=["production", "reference"], default="production")
     parser.add_argument("--production-kernel", action="store_true")
     parser.add_argument("--trace-layer", type=int)
     parser.add_argument("--trace-output-dir", type=Path)
