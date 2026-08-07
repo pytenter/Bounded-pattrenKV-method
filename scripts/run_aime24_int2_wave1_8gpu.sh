@@ -28,6 +28,15 @@ BLOCKED_WAVE1B_CONFIGS=(
   "7 pattern_queryaware_kmix_v2_s0_r128 patternkv 2 2 0 128 artifacts/aime24_wave1_masks/PLACEHOLDER_NOT_FOR_RESULTS_query_aware_key_int4_mask.pt blocked_wave1b"
 )
 
+SINK_SWEEP_NEW_CONFIGS=(
+  "0 pattern_rolling_k2v2_s16_r128 patternkv 2 2 16 128 segmented segmented_rolling none"
+  "1 pattern_rolling_k2v2_s32_r128 patternkv 2 2 32 128 segmented segmented_rolling none"
+  "2 pattern_rolling_k2v2_s128_r128 patternkv 2 2 128 128 segmented segmented_rolling none"
+  "3 kivi_rolling_k2v2_s16_r128 kivi_official 2 2 16 128 segmented segmented_rolling none"
+  "4 kivi_rolling_k2v2_s32_r128 kivi_official 2 2 32 128 segmented segmented_rolling none"
+  "5 kivi_rolling_k2v2_s128_r128 kivi_official 2 2 128 128 segmented segmented_rolling none"
+)
+
 mkdir -p "$RESULT_DIR" "$LOG_DIR" "$REPORT_DIR"
 
 ensure_ready() {
@@ -58,6 +67,9 @@ launch_one() {
   local selected="$SELECTED_TASKS"
   local output_dir="$RESULT_DIR/wave1a"
   local validate_cache=0
+  if [[ "$mode" == "sink-sweep-new-only" ]]; then
+    output_dir="$RESULT_DIR/wave1a3"
+  fi
   if [[ "$mode" == "wave1a-smoke" ]]; then
     max_new_tokens=1024
     validate_cache=1
@@ -172,6 +184,24 @@ case "${1:-}" in
     done
     exit "$failures"
     ;;
+  sink-sweep-new-only)
+    mode="$1"
+    echo "Wave 1A.3 Sink sweep uses 6 of 8 GPUs"
+    ensure_ready || exit $?
+    for spec in "${SINK_SWEEP_NEW_CONFIGS[@]}"; do
+      read -r gpu config_name method k_bits v_bits sink recent cache_path cache_mode mask <<<"$spec"
+      launch_one "$gpu" "$config_name" "$method" "$k_bits" "$v_bits" "$sink" "$recent" "$cache_path" "$cache_mode" "$mask" "$mode"
+    done
+    failures=0
+    for spec in "${SINK_SWEEP_NEW_CONFIGS[@]}"; do
+      read -r _ config_name _ <<<"$spec"
+      pid="$(cat "$LOG_DIR/${config_name}.${mode}.pid")"
+      if ! wait "$pid"; then
+        failures=$((failures + 1))
+      fi
+    done
+    exit "$failures"
+    ;;
   status)
     for pidfile in "$LOG_DIR"/*.pid; do
       [[ -e "$pidfile" ]] || continue
@@ -187,7 +217,7 @@ case "${1:-}" in
     "$PYTHON_BIN" scripts/summarize_aime24_int2_wave1.py --results-dir "$RESULT_DIR/wave1a" --report-dir "$REPORT_DIR/wave1a"
     ;;
   *)
-    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full|status|summarize-wave1a}" >&2
+    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full|sink-sweep-new-only|status|summarize-wave1a}" >&2
     exit 2
     ;;
 esac
