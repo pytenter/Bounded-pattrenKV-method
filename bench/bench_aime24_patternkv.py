@@ -293,7 +293,6 @@ def main() -> None:
     args = parse_args()
     if args.recent_length is None:
         args.recent_length = args.residual_length
-    args.residual_length = args.recent_length
     args.paper_method_config = apply_method_defaults(args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     args.status_dir.mkdir(parents=True, exist_ok=True)

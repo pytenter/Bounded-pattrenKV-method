@@ -35,7 +35,6 @@ def apply_method_defaults(args) -> MethodConfig:
         args.sink_length = 0
     if not hasattr(args, "recent_length") or args.recent_length is None:
         args.recent_length = getattr(args, "residual_length", 128)
-    args.residual_length = args.recent_length
     if args.method == "kivi_paper_g128":
         args.k_bits = 2
         args.v_bits = 2
