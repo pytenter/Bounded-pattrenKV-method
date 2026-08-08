@@ -61,14 +61,32 @@ configs=(
   kivi_rolling_k2v2_s16_r128
   kivi_rolling_k2v2_s128_r128
 )
-
-gpu="${WAVE1A4_TEACHER_GPU:-1}"
-for config in "${configs[@]}"; do
+gpus=(${WAVE1A4_TEACHER_GPUS:-1 2 3 4 5 6})
+pids=()
+for idx in "${!configs[@]}"; do
+  config="${configs[$idx]}"
+  gpu="${gpus[$idx]}"
+  log="$RUN_DIR/wave1a4_teacher_${config}_gpu${gpu}.log"
   echo "[$(date -Iseconds)] teacher-config $config on logical GPU $gpu"
-  CUDA_VISIBLE_DEVICES="$gpu" "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
-    --mode teacher-config \
-    --config-name "$config"
+  (
+    CUDA_VISIBLE_DEVICES="$gpu" "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
+      --mode teacher-config \
+      --config-name "$config"
+  ) > "$log" 2>&1 &
+  pids+=("$!")
+  echo "${pids[-1]}" > "$RUN_DIR/wave1a4_teacher_${config}.pid"
 done
+
+failed=0
+for pid in "${pids[@]}"; do
+  if ! wait "$pid"; then
+    failed=1
+  fi
+done
+if [[ "$failed" != "0" ]]; then
+  echo "At least one teacher-config worker failed; check $RUN_DIR/wave1a4_teacher_*.log" >&2
+  exit 1
+fi
 
 "$PYTHON_BIN" scripts/summarize_wave1a4_attention_mechanism.py
 echo "[$(date -Iseconds)] Wave1A4 formal offline driver complete"
