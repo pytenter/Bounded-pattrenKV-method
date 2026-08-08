@@ -1,0 +1,294 @@
+checkpoint,config,expected_relation,layer,metric_name,metric_value,mode,notes,pass,phase,task_key
+128,fp16,static ~= pseudo,final,next_token_KL,1.8878992705140263e-05,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,next_token_JS,4.795070708496496e-06,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,logit_max_abs_diff,0.015625,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,logit_mean_abs_diff,0.002453557448461652,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,top1_agreement,True,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,top1_disagreement,0.0,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,target_token_NLL_delta,0.0026763975620269775,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,hidden_relative_L2,0.00175051752012223,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,hidden_MAE,0.0027611679397523403,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,hidden_cosine,0.999998152256012,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,hidden_cosine_loss,1.8477439880371094e-06,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,attention_output_relative_L2,0.00175051752012223,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,attention_output_MAE,0.0027611679397523403,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+128,fp16,static ~= pseudo,final,post_WO_relative_L2,0.00175051752012223,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,next_token_KL,1.8352326947024267e-07,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,next_token_JS,7.62689111866166e-09,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,logit_max_abs_diff,0.01953125,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,logit_mean_abs_diff,0.0030189109966158867,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,top1_agreement,True,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,top1_disagreement,0.0,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,target_token_NLL_delta,2.383312676101923e-07,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,hidden_relative_L2,0.0024958793073892593,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,hidden_MAE,0.0032004450913518667,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,hidden_cosine,0.999996542930603,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,hidden_cosine_loss,3.4570693969726562e-06,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,attention_output_relative_L2,0.0024958793073892593,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,attention_output_MAE,0.0032004450913518667,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,fp16,static ~= pseudo,final,post_WO_relative_L2,0.0024958793073892593,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,next_token_KL,-7.11540906195296e-08,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,next_token_JS,2.141874233529961e-09,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,logit_max_abs_diff,0.021484375,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,logit_mean_abs_diff,0.003474369179457426,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,top1_agreement,True,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,top1_disagreement,0.0,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,target_token_NLL_delta,1.1920201359316707e-07,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,hidden_relative_L2,0.0023145321756601334,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,hidden_MAE,0.003628011792898178,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,hidden_cosine,0.9999971985816956,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,hidden_cosine_loss,2.8014183044433594e-06,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,attention_output_relative_L2,0.0023145321756601334,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,attention_output_MAE,0.003628011792898178,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+1024,fp16,static ~= pseudo,final,post_WO_relative_L2,0.0023145321756601334,static_vs_pseudo,,false,Z,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,next_token_KL,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,next_token_JS,1.536118610090398e-08,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,logit_max_abs_diff,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,logit_mean_abs_diff,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,top1_agreement,True,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,top1_disagreement,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,target_token_NLL_delta,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_MAE,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_cosine,0.9999996423721313,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_cosine_loss,3.5762786865234375e-07,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,attention_output_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,attention_output_MAE,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,post_WO_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,248,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,384,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,632,static_state,,true,S,aime24:p15:s1:seed15043
+1024,pattern_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+1024,pattern_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,896,static_state,,true,S,aime24:p15:s1:seed15043
+1024,pattern_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+1024,pattern_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+1024,pattern_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,1144,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,next_token_KL,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,next_token_JS,1.536118610090398e-08,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,logit_max_abs_diff,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,logit_mean_abs_diff,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,top1_agreement,True,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,top1_disagreement,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,target_token_NLL_delta,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_MAE,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_cosine,0.9999996423721313,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,hidden_cosine_loss,3.5762786865234375e-07,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,attention_output_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,attention_output_MAE,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,STATIC512 A ~= B,final,post_WO_relative_L2,0.0,static_repeat,,true,S,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,248,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,384,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,632,static_state,,true,S,aime24:p15:s1:seed15043
+1024,kivi_rolling_k2v2_s0_r128,finite cache structure,final,sink_tokens,0,static_state,,true,S,aime24:p15:s1:seed15043
+1024,kivi_rolling_k2v2_s0_r128,finite cache structure,final,packed_history_tokens,896,static_state,,true,S,aime24:p15:s1:seed15043
+1024,kivi_rolling_k2v2_s0_r128,finite cache structure,final,pending_history_tokens,120,static_state,,true,S,aime24:p15:s1:seed15043
+1024,kivi_rolling_k2v2_s0_r128,finite cache structure,final,recent_tokens,128,static_state,,true,S,aime24:p15:s1:seed15043
+1024,kivi_rolling_k2v2_s0_r128,finite cache structure,final,total_tokens,1144,static_state,,true,S,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production packed history affects state,final,packed_history_present,True,pseudo_feedback,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production packed history affects state,final,packed_history_consumed,True,pseudo_feedback,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production packed history affects state,final,clean_cache_rebuild_detected,False,pseudo_feedback,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production packed history affects state,final,feedback_logit_max_abs_diff_vs_static_clean,4.54248046875,pseudo_feedback,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production packed history affects state,final,feedback_hidden_relative_l2_vs_static_clean,0.5631284117698669,pseudo_feedback,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,sink_tokens,0,pseudo_feedback_cache,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,packed_history_tokens,384,pseudo_feedback_cache,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,pending_history_tokens,120,pseudo_feedback_cache,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,recent_tokens,128,pseudo_feedback_cache,,true,P,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,total_tokens,632,pseudo_feedback_cache,,true,P,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,248,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,376,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,632,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,248,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,376,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,pattern_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,632,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,pattern_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,248,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,376,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,production cache structure exact,final,total_tokens,632,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s0_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,248,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,376,pseudo_production,,true,E,aime24:p15:s1:seed15043
+256,kivi_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,sink_tokens,16,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,pending_history_tokens,104,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,production cache structure exact,final,total_tokens,632,pseudo_production,,true,E,aime24:p15:s1:seed15043
+512,kivi_rolling_k2v2_s16_r128,,final,logits_finite,True,pseudo_production,,true,E,aime24:p15:s1:seed15043
+128,patternkv_paper,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,patternkv_paper,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,patternkv_paper,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,patternkv_paper,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,patternkv_paper,production cache structure exact,final,total_tokens,248,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,patternkv_paper,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,production cache structure exact,final,total_tokens,376,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,patternkv_paper,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,production cache structure exact,final,total_tokens,632,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,patternkv_paper,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,production cache structure exact,final,packed_history_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,production cache structure exact,final,total_tokens,248,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,kivi_paper_g128,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,production cache structure exact,final,packed_history_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,production cache structure exact,final,total_tokens,376,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+256,kivi_paper_g128,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,production cache structure exact,final,sink_tokens,0,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,production cache structure exact,final,packed_history_tokens,384,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,production cache structure exact,final,pending_history_tokens,120,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,production cache structure exact,final,recent_tokens,128,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,production cache structure exact,final,total_tokens,632,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+512,kivi_paper_g128,,final,logits_finite,True,pseudo_production,,true,Paper,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,next_token_KL,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,next_token_JS,-2.2915083164321004e-08,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,logit_max_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,logit_mean_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,top1_agreement,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,top1_disagreement,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,target_token_NLL_delta,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,hidden_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,hidden_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,hidden_cosine,0.9999994039535522,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,hidden_cosine_loss,5.960464477539062e-07,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,attention_output_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,attention_output_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,observer no semantic change,final,post_WO_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,fp16,,final,cache_fingerprint_same,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,next_token_KL,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,next_token_JS,2.2973704716378052e-08,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,logit_max_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,logit_mean_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,top1_agreement,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,top1_disagreement,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,target_token_NLL_delta,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_cosine,0.9999995827674866,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_cosine_loss,4.172325134277344e-07,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,attention_output_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,attention_output_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,observer no semantic change,final,post_WO_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s0_r128,,final,cache_fingerprint_same,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,next_token_KL,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,next_token_JS,2.2914607100688045e-08,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,logit_max_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,logit_mean_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,top1_agreement,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,top1_disagreement,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,target_token_NLL_delta,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_cosine,1.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_cosine_loss,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,attention_output_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,attention_output_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,observer no semantic change,final,post_WO_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,pattern_rolling_k2v2_s16_r128,,final,cache_fingerprint_same,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,next_token_KL,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,next_token_JS,2.2973704716378052e-08,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,logit_max_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,logit_mean_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,top1_agreement,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,top1_disagreement,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,target_token_NLL_delta,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_cosine,0.9999995827674866,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,hidden_cosine_loss,4.172325134277344e-07,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,attention_output_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,attention_output_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,observer no semantic change,final,post_WO_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s0_r128,,final,cache_fingerprint_same,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,next_token_KL,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,next_token_JS,2.2914607100688045e-08,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,logit_max_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,logit_mean_abs_diff,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,top1_agreement,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,top1_disagreement,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,target_token_NLL_delta,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_cosine,1.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,hidden_cosine_loss,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,attention_output_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,attention_output_MAE,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,observer no semantic change,final,post_WO_relative_L2,0.0,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043
+128,kivi_rolling_k2v2_s16_r128,,final,cache_fingerprint_same,True,observer_off_vs_on,,true,O,aime24:p15:s1:seed15043

@@ -1,0 +1,1264 @@
+{
+  "details": {
+    "numerical_repeat_baseline": {
+      "attention_output_relative_diff": 0.0,
+      "checkpoint": 128,
+      "derived_kl_tolerance": 1e-07,
+      "derived_logit_tolerance": 1e-05,
+      "derived_relative_tolerance": 1e-05,
+      "hidden_relative_diff": 0.0,
+      "logit_max_abs_diff": 0.0
+    },
+    "observer": {
+      "fp16": {
+        "detail": {
+          "cache_fingerprint_same": true,
+          "metrics": {
+            "attention_output_MAE": 0.0,
+            "attention_output_relative_L2": 0.0,
+            "hidden_MAE": 0.0,
+            "hidden_cosine": 0.9999994039535522,
+            "hidden_cosine_loss": 5.960464477539062e-07,
+            "hidden_relative_L2": 0.0,
+            "logit_max_abs_diff": 0.0,
+            "logit_mean_abs_diff": 0.0,
+            "next_token_JS": -2.2915083164321004e-08,
+            "next_token_KL": 0.0,
+            "post_WO_relative_L2": 0.0,
+            "target_token_NLL_delta": 0.0,
+            "top1_agreement": true,
+            "top1_disagreement": 0.0
+          }
+        },
+        "pass": true
+      },
+      "kivi_s0": {
+        "detail": {
+          "cache_fingerprint_same": true,
+          "metrics": {
+            "attention_output_MAE": 0.0,
+            "attention_output_relative_L2": 0.0,
+            "hidden_MAE": 0.0,
+            "hidden_cosine": 0.9999995827674866,
+            "hidden_cosine_loss": 4.172325134277344e-07,
+            "hidden_relative_L2": 0.0,
+            "logit_max_abs_diff": 0.0,
+            "logit_mean_abs_diff": 0.0,
+            "next_token_JS": 2.2973704716378052e-08,
+            "next_token_KL": 0.0,
+            "post_WO_relative_L2": 0.0,
+            "target_token_NLL_delta": 0.0,
+            "top1_agreement": true,
+            "top1_disagreement": 0.0
+          }
+        },
+        "pass": true
+      },
+      "kivi_s16": {
+        "detail": {
+          "cache_fingerprint_same": true,
+          "metrics": {
+            "attention_output_MAE": 0.0,
+            "attention_output_relative_L2": 0.0,
+            "hidden_MAE": 0.0,
+            "hidden_cosine": 1.0,
+            "hidden_cosine_loss": 0.0,
+            "hidden_relative_L2": 0.0,
+            "logit_max_abs_diff": 0.0,
+            "logit_mean_abs_diff": 0.0,
+            "next_token_JS": 2.2914607100688045e-08,
+            "next_token_KL": 0.0,
+            "post_WO_relative_L2": 0.0,
+            "target_token_NLL_delta": 0.0,
+            "top1_agreement": true,
+            "top1_disagreement": 0.0
+          }
+        },
+        "pass": true
+      },
+      "pattern_s0": {
+        "detail": {
+          "cache_fingerprint_same": true,
+          "metrics": {
+            "attention_output_MAE": 0.0,
+            "attention_output_relative_L2": 0.0,
+            "hidden_MAE": 0.0,
+            "hidden_cosine": 0.9999995827674866,
+            "hidden_cosine_loss": 4.172325134277344e-07,
+            "hidden_relative_L2": 0.0,
+            "logit_max_abs_diff": 0.0,
+            "logit_mean_abs_diff": 0.0,
+            "next_token_JS": 2.2973704716378052e-08,
+            "next_token_KL": 0.0,
+            "post_WO_relative_L2": 0.0,
+            "target_token_NLL_delta": 0.0,
+            "top1_agreement": true,
+            "top1_disagreement": 0.0
+          }
+        },
+        "pass": true
+      },
+      "pattern_s16": {
+        "detail": {
+          "cache_fingerprint_same": true,
+          "metrics": {
+            "attention_output_MAE": 0.0,
+            "attention_output_relative_L2": 0.0,
+            "hidden_MAE": 0.0,
+            "hidden_cosine": 1.0,
+            "hidden_cosine_loss": 0.0,
+            "hidden_relative_L2": 0.0,
+            "logit_max_abs_diff": 0.0,
+            "logit_mean_abs_diff": 0.0,
+            "next_token_JS": 2.2914607100688045e-08,
+            "next_token_KL": 0.0,
+            "post_WO_relative_L2": 0.0,
+            "target_token_NLL_delta": 0.0,
+            "top1_agreement": true,
+            "top1_disagreement": 0.0
+          }
+        },
+        "pass": true
+      }
+    },
+    "paper_config_smoke": {
+      "kivi_paper_g128": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      },
+      "patternkv_paper": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      }
+    },
+    "production_parity": {
+      "kivi_s0": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      },
+      "kivi_s16": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      },
+      "pattern_s0": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 120,
+              "recent_tokens": 128,
+              "sink_tokens": 0,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      },
+      "pattern_s16": {
+        "detail": {
+          "128": {
+            "counts": {
+              "packed_history_tokens": 0,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 248
+            },
+            "pass": true
+          },
+          "256": {
+            "counts": {
+              "packed_history_tokens": 128,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 376
+            },
+            "pass": true
+          },
+          "512": {
+            "counts": {
+              "packed_history_tokens": 384,
+              "pending_history_tokens": 104,
+              "recent_tokens": 128,
+              "sink_tokens": 16,
+              "total_tokens": 632
+            },
+            "pass": true
+          }
+        },
+        "pass": true
+      }
+    },
+    "pseudo_feedback": {
+      "clean_cache_rebuild_detected": false,
+      "feedback_hidden_relative_l2_vs_static_clean": 0.5631284117698669,
+      "feedback_logit_max_abs_diff_vs_static_clean": 4.54248046875,
+      "packed_history_consumed": true,
+      "packed_history_present": true,
+      "segment_counts": {
+        "packed_history_tokens": 384,
+        "pending_history_tokens": 120,
+        "recent_tokens": 128,
+        "sink_tokens": 0,
+        "total_tokens": 632
+      }
+    },
+    "reference_manifest": {
+      "actual_reference_trajectories": 12,
+      "duplicates": 0,
+      "expected_reference_trajectories": 12,
+      "missing": [],
+      "portable_generation_hash": "86648d12304ce11890c1a8f64bf5a896",
+      "preflight_primary_task": "aime24:p15:s1:seed15043",
+      "reference_trajectories_valid": true,
+      "rows": [
+        {
+          "artifact_bytes": 9338,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p12_s0_seed12042.json.gz",
+          "full_trajectory_sha256": "7754635042ebef112c4b83e17b7500a20db8f14bba0fb44fd8575864e04baa05",
+          "generated_token_count": 12746,
+          "generated_token_sha256": "50f894262ea25734cf6ce174c1134a33f2900fde0051ff5aeeaff3074253e379",
+          "is_correct": true,
+          "max_checkpoint_available": 8192,
+          "problem_id": 12,
+          "prompt_token_count": 64,
+          "prompt_token_sha256": "55b26e1877b2d530e6f11f89bba8eb6b4462c2f2b27a1d9f65d04f890f1c1afb",
+          "sample_id": 0,
+          "seed": 12042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p12:s0:seed12042"
+        },
+        {
+          "artifact_bytes": 6086,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p14_s0_seed14042.json.gz",
+          "full_trajectory_sha256": "985f71725748f372cf08d2f249fcbd5c6d3dac5efa97289e418dbb154a727e3d",
+          "generated_token_count": 6624,
+          "generated_token_sha256": "643f2f6ad6cbd05a5467fd6121b66cbf08de48a768548a78592a93917eb2d6a9",
+          "is_correct": false,
+          "max_checkpoint_available": 4096,
+          "problem_id": 14,
+          "prompt_token_count": 104,
+          "prompt_token_sha256": "2130fa3ddf529edc83fc2823cc45875e9ca2f4cf3cad3e472db611d7874ef0d7",
+          "sample_id": 0,
+          "seed": 14042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p14:s0:seed14042"
+        },
+        {
+          "artifact_bytes": 15920,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p15_s1_seed15043.json.gz",
+          "full_trajectory_sha256": "b3071fe4e912d14e31a543908143a991dbe648bfe13ea6a3db80285f3da15dab",
+          "generated_token_count": 23097,
+          "generated_token_sha256": "941b8b3fc81c86e007f88e3fe0cbe36f685d8eb05c3c9dc50ff88e0c8277f302",
+          "is_correct": false,
+          "max_checkpoint_available": 16384,
+          "problem_id": 15,
+          "prompt_token_count": 120,
+          "prompt_token_sha256": "ec46d555ca8ce0458e8e9da0b914e749f8a07b46aff7c77c4f34f4b11f4958e5",
+          "sample_id": 1,
+          "seed": 15043,
+          "stop_reason": "eos",
+          "task_key": "aime24:p15:s1:seed15043"
+        },
+        {
+          "artifact_bytes": 11176,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p16_s0_seed16042.json.gz",
+          "full_trajectory_sha256": "13d42346d3a27cdf52c682506b670e839c9c66befad1065501f233b0a1d0cc02",
+          "generated_token_count": 13688,
+          "generated_token_sha256": "8168c2d16dd8a99bb2b323aad24e1a348e2876ff29a785e0c7243146bfcaded5",
+          "is_correct": true,
+          "max_checkpoint_available": 8192,
+          "problem_id": 16,
+          "prompt_token_count": 74,
+          "prompt_token_sha256": "c6d7bb77714050cba3377c35c6344ee7f8b6322aa5543fe189993f55528bc64d",
+          "sample_id": 0,
+          "seed": 16042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p16:s0:seed16042"
+        },
+        {
+          "artifact_bytes": 5790,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p11_s0_seed11042.json.gz",
+          "full_trajectory_sha256": "489c942f86b4d5ae23c611c59e5f243cac4e99bd6697b73b14def62ea82f3970",
+          "generated_token_count": 6445,
+          "generated_token_sha256": "666bec36b98a886580f571e137aa472dd4c091dfb30d7000a01ee731c7a89ec1",
+          "is_correct": true,
+          "max_checkpoint_available": 4096,
+          "problem_id": 11,
+          "prompt_token_count": 75,
+          "prompt_token_sha256": "24b533883bdf1078e3043aa848c03cefa766828ef93a5256ec992a2616306143",
+          "sample_id": 0,
+          "seed": 11042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p11:s0:seed11042"
+        },
+        {
+          "artifact_bytes": 6248,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p12_s1_seed12043.json.gz",
+          "full_trajectory_sha256": "ca87cac4db8eb8d9ae8695bf4f4fad1775a3bf9b28fe340c3d7c22f6212eb615",
+          "generated_token_count": 6613,
+          "generated_token_sha256": "e1c43b045fbde8299f365f0c0aa4c5447ae753b4e23d5e289abde97a8fdfafd9",
+          "is_correct": false,
+          "max_checkpoint_available": 4096,
+          "problem_id": 12,
+          "prompt_token_count": 64,
+          "prompt_token_sha256": "55b26e1877b2d530e6f11f89bba8eb6b4462c2f2b27a1d9f65d04f890f1c1afb",
+          "sample_id": 1,
+          "seed": 12043,
+          "stop_reason": "eos",
+          "task_key": "aime24:p12:s1:seed12043"
+        },
+        {
+          "artifact_bytes": 7444,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p6_s0_seed6042.json.gz",
+          "full_trajectory_sha256": "3aaa4d1b0009ba297434f6ce9cc3b021533afdacc47013de66093911d7d70ffe",
+          "generated_token_count": 7485,
+          "generated_token_sha256": "604d9def9f5745f3c358a0470847cb0398dc089c0fbdf9e97532add4d23ae215",
+          "is_correct": true,
+          "max_checkpoint_available": 4096,
+          "problem_id": 6,
+          "prompt_token_count": 117,
+          "prompt_token_sha256": "9e4b5bd5f09315f23a975eda372e1d6ca9edd25627cbdbd80f6311e15a436db9",
+          "sample_id": 0,
+          "seed": 6042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p6:s0:seed6042"
+        },
+        {
+          "artifact_bytes": 14657,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p6_s1_seed6043.json.gz",
+          "full_trajectory_sha256": "bdc5380c721a7d62393b67524bb3065580c4b13dffda573ae8f1238fbd86cb01",
+          "generated_token_count": 16357,
+          "generated_token_sha256": "9adcc02394d9c2c76dbdd6f7919dc426b956b25fbd351d77762fff2138a64a56",
+          "is_correct": true,
+          "max_checkpoint_available": 8192,
+          "problem_id": 6,
+          "prompt_token_count": 117,
+          "prompt_token_sha256": "9e4b5bd5f09315f23a975eda372e1d6ca9edd25627cbdbd80f6311e15a436db9",
+          "sample_id": 1,
+          "seed": 6043,
+          "stop_reason": "eos",
+          "task_key": "aime24:p6:s1:seed6043"
+        },
+        {
+          "artifact_bytes": 4119,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p0_s0_seed42.json.gz",
+          "full_trajectory_sha256": "7a50b9d97068ffc8a93d794fcdf6bac89e37ed85dd38b6abbdbbe8fb4c9a8f8a",
+          "generated_token_count": 4170,
+          "generated_token_sha256": "225a23601953e69222754b292ad93db8020aa98749e1d51acd8e63b49a0c7d76",
+          "is_correct": true,
+          "max_checkpoint_available": 4096,
+          "problem_id": 0,
+          "prompt_token_count": 154,
+          "prompt_token_sha256": "06cd24adf3fd1892fe2f054a82fc9606104f9dee07ad903e79674c5f2f09200f",
+          "sample_id": 0,
+          "seed": 42,
+          "stop_reason": "eos",
+          "task_key": "aime24:p0:s0:seed42"
+        },
+        {
+          "artifact_bytes": 4616,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p11_s1_seed11043.json.gz",
+          "full_trajectory_sha256": "437efafa63f236f96af74b80dfc1ee0897d780c1db5b68f052079544eea26327",
+          "generated_token_count": 4436,
+          "generated_token_sha256": "b9dadc53aa438aacc65f1be74e05c2435165a9f6550131abbdd10bd74b324bed",
+          "is_correct": true,
+          "max_checkpoint_available": 4096,
+          "problem_id": 11,
+          "prompt_token_count": 75,
+          "prompt_token_sha256": "24b533883bdf1078e3043aa848c03cefa766828ef93a5256ec992a2616306143",
+          "sample_id": 1,
+          "seed": 11043,
+          "stop_reason": "eos",
+          "task_key": "aime24:p11:s1:seed11043"
+        },
+        {
+          "artifact_bytes": 8087,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p15_s0_seed15042.json.gz",
+          "full_trajectory_sha256": "822cea1aaf72daad98cf9ddb629a4d3a79650451920bd62395ce83a00ac9a58b",
+          "generated_token_count": 12859,
+          "generated_token_sha256": "e00fe564cf24263ddb6054bffbb16e717a84424e034a133ad79c0a45b0ae580d",
+          "is_correct": false,
+          "max_checkpoint_available": 8192,
+          "problem_id": 15,
+          "prompt_token_count": 120,
+          "prompt_token_sha256": "ec46d555ca8ce0458e8e9da0b914e749f8a07b46aff7c77c4f34f4b11f4958e5",
+          "sample_id": 0,
+          "seed": 15042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p15:s0:seed15042"
+        },
+        {
+          "artifact_bytes": 9129,
+          "artifact_path": "artifacts/aime24_pseudodecode_3090/reference_tokens/aime24_p17_s0_seed17042.json.gz",
+          "full_trajectory_sha256": "69e6e42dc75e6e4dd872f1d902c29c4269171195229da34733e720e66cc0cbb3",
+          "generated_token_count": 11393,
+          "generated_token_sha256": "a0f2e2e01ac8b1b52a6cc5f65bdff020693c0fed1bab1e7b87e525e10ddece08",
+          "is_correct": false,
+          "max_checkpoint_available": 8192,
+          "problem_id": 17,
+          "prompt_token_count": 102,
+          "prompt_token_sha256": "5ff90765f6b3e6a66b114c590a32dd101288e3cb8b00c3972b4a196e6c14d48c",
+          "sample_id": 0,
+          "seed": 17042,
+          "stop_reason": "eos",
+          "task_key": "aime24:p17:s0:seed17042"
+        }
+      ],
+      "runtime_errors": 0,
+      "seed_mismatches": []
+    },
+    "static_independence": {
+      "kivi_s0": {
+        "pass": true,
+        "state": {
+          "after_128": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 0,
+                "packed_k_shape": null,
+                "packed_v_shape": null,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 0,
+                "packed_k_shape": null,
+                "packed_v_shape": null,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 0,
+              "assignment_bytes": 0,
+              "assignment_dtype": null,
+              "cache_segment_stats": {
+                "k_assignment_tokens": null,
+                "packed_history_tokens": 0,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "v_assignment_tokens": null
+              },
+              "centroid_bytes": 0,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 0,
+              "k_centroid_bytes": 0,
+              "mask_bytes": 0,
+              "mask_dtype": null,
+              "packed_payload_bytes": 0,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 32505856,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 0,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 0,
+              "v_centroid_bytes": 0,
+              "v_gate_actual_python_tensor_bits": 0,
+              "v_gate_theoretical_compact_bits": 0
+            }
+          },
+          "after_512_a": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 0,
+              "assignment_bytes": 0,
+              "assignment_dtype": null,
+              "cache_segment_stats": {
+                "k_assignment_tokens": null,
+                "packed_history_tokens": 384,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "v_assignment_tokens": null
+              },
+              "centroid_bytes": 0,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 0,
+              "k_centroid_bytes": 0,
+              "mask_bytes": 0,
+              "mask_dtype": null,
+              "packed_payload_bytes": 6291456,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 39583744,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 786432,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 0,
+              "v_centroid_bytes": 0,
+              "v_gate_actual_python_tensor_bits": 0,
+              "v_gate_theoretical_compact_bits": 0
+            }
+          },
+          "after_512_b": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": null,
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "quantized_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": null,
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 0,
+              "assignment_bytes": 0,
+              "assignment_dtype": null,
+              "cache_segment_stats": {
+                "k_assignment_tokens": null,
+                "packed_history_tokens": 384,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "v_assignment_tokens": null
+              },
+              "centroid_bytes": 0,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 0,
+              "k_centroid_bytes": 0,
+              "mask_bytes": 0,
+              "mask_dtype": null,
+              "packed_payload_bytes": 6291456,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 39583744,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 786432,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 0,
+              "v_centroid_bytes": 0,
+              "v_gate_actual_python_tensor_bits": 0,
+              "v_gate_theoretical_compact_bits": 0
+            }
+          },
+          "before": {
+            "pattern_reset": false
+          }
+        }
+      },
+      "pattern_s0": {
+        "pass": true,
+        "state": {
+          "after_128": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 0,
+                "packed_k_shape": null,
+                "packed_v_shape": null,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": null,
+                "k_assignments_shape": null,
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 0,
+                "packed_k_shape": null,
+                "packed_v_shape": null,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": null,
+                "v_assignment_tokens": null,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": null,
+                "v_pattern_mask_tokens": null
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 0,
+              "assignment_bytes": 0,
+              "assignment_dtype": null,
+              "cache_segment_stats": {
+                "k_assignment_tokens": null,
+                "packed_history_tokens": 0,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 248,
+                "v_assignment_tokens": null
+              },
+              "centroid_bytes": 4194304,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 0,
+              "k_centroid_bytes": 2097152,
+              "mask_bytes": 0,
+              "mask_dtype": null,
+              "packed_payload_bytes": 0,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 36700160,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 0,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 0,
+              "v_centroid_bytes": 2097152,
+              "v_gate_actual_python_tensor_bits": 0,
+              "v_gate_theoretical_compact_bits": 0
+            }
+          },
+          "after_512_a": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": 384,
+                "k_assignments_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_assignment_tokens": 384,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_pattern_mask_tokens": 384
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": 384,
+                "k_assignments_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_assignment_tokens": 384,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_pattern_mask_tokens": 384
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 12582912,
+              "assignment_bytes": 1572864,
+              "assignment_dtype": "torch.int64",
+              "cache_segment_stats": {
+                "k_assignment_tokens": 384,
+                "packed_history_tokens": 384,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "v_assignment_tokens": 384
+              },
+              "centroid_bytes": 4194304,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 491520,
+              "k_centroid_bytes": 2097152,
+              "mask_bytes": 98304,
+              "mask_dtype": "torch.uint8",
+              "packed_payload_bytes": 6291456,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 45449216,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 786432,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 491520,
+              "v_centroid_bytes": 2097152,
+              "v_gate_actual_python_tensor_bits": 786432,
+              "v_gate_theoretical_compact_bits": 98304
+            }
+          },
+          "after_512_b": {
+            "layer_count": 32,
+            "layers": [
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": 384,
+                "k_assignments_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_assignment_tokens": 384,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_pattern_mask_tokens": 384
+              },
+              {
+                "cache_mode": "segmented_rolling",
+                "chunk_length": 128,
+                "chunk_tokens": 0,
+                "k_assignment_tokens": 384,
+                "k_assignments_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "k_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "packed_history_tokens": 384,
+                "packed_k_shape": [
+                  1,
+                  8,
+                  128,
+                  24
+                ],
+                "packed_v_shape": [
+                  1,
+                  8,
+                  384,
+                  8
+                ],
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "type": "patternkv_segmented_cache_v1",
+                "v_assignment_idx_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_assignment_tokens": 384,
+                "v_centroids_shape": [
+                  8,
+                  32,
+                  128
+                ],
+                "v_pattern_mask_shape": [
+                  1,
+                  8,
+                  384
+                ],
+                "v_pattern_mask_tokens": 384
+              }
+            ],
+            "summary": {
+              "assignment_actual_python_tensor_bits": 12582912,
+              "assignment_bytes": 1572864,
+              "assignment_dtype": "torch.int64",
+              "cache_segment_stats": {
+                "k_assignment_tokens": 384,
+                "packed_history_tokens": 384,
+                "pending_history_tokens": 120,
+                "recent_tokens": 128,
+                "sink_tokens": 0,
+                "total_tokens": 632,
+                "v_assignment_tokens": 384
+              },
+              "centroid_bytes": 4194304,
+              "dynamic_pattern_count_k": null,
+              "dynamic_pattern_count_v": null,
+              "fp16_residual_bytes": 32505856,
+              "fp16_residual_tokens": 0,
+              "initial_pattern_count": null,
+              "k_assignment_theoretical_compact_bits": 491520,
+              "k_centroid_bytes": 2097152,
+              "mask_bytes": 98304,
+              "mask_dtype": "torch.uint8",
+              "packed_payload_bytes": 6291456,
+              "persistent_key_heads": null,
+              "persistent_value_heads": null,
+              "python_tensor_storage_bytes": 45449216,
+              "quantized_region_theoretical_bits_per_scalar": 2.25,
+              "quantized_tokens": 0,
+              "scale_min_bytes": 786432,
+              "total_cached_tokens": 0,
+              "v_assignment_theoretical_compact_bits": 491520,
+              "v_centroid_bytes": 2097152,
+              "v_gate_actual_python_tensor_bits": 786432,
+              "v_gate_theoretical_compact_bits": 98304
+            }
+          },
+          "before": {
+            "pattern_reset": true
+          }
+        }
+      }
+    }
+  },
+  "formal_run_approved": false,
+  "fp16_zero_accumulation_control_pass": false,
+  "generation_config_valid": true,
+  "model_identity_valid": true,
+  "observer_noninvasive": true,
+  "paper_config_preflight_pass": true,
+  "preflight_complete": false,
+  "pseudo_feedback_pass": true,
+  "pseudo_production_parity_pass": true,
+  "reference_trajectories_valid": true,
+  "source_commit_valid": true,
+  "static_independence_pass": true,
+  "task_manifest_valid": true,
+  "tokenizer_identity_valid": true
+}
