@@ -1,0 +1,27 @@
+{
+  "accumulation_metric_schema_version": "matched_path_accumulation_v1",
+  "completeness_rows": 804,
+  "configs": [
+    "patternkv_paper",
+    "pattern_rolling_k2v2_s0_r128",
+    "pattern_rolling_k2v2_s16_r128",
+    "kivi_paper_g128",
+    "kivi_rolling_k2v2_s0_r128",
+    "kivi_rolling_k2v2_s16_r128"
+  ],
+  "failed_completeness_rows": 42,
+  "formal_core_checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "formal_core_matched_checkpoints_complete": true,
+  "formal_failed_reason": "static_full_prefix_oom_at_8192_or_16384_on_24gb_rtx3090",
+  "formal_run_complete": false,
+  "gap_rows": 2880,
+  "matched_path_control_version": "v1",
+  "metric_rows": 6096,
+  "ok_completeness_rows": 762
+}

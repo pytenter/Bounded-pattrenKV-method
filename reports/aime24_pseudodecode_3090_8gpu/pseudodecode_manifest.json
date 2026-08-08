@@ -245,7 +245,39 @@
   "expected_static_checkpoint_runs": 576,
   "expected_task_count": 12,
   "experiment_config_set_hash": "721d12131e83f6fab91368169c86fce8",
+  "formal_completeness_rows": 804,
+  "formal_core_checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "formal_core_matched_checkpoints_complete": true,
+  "formal_failed_reason": "static_full_prefix_oom_at_8192_or_16384_on_24gb_rtx3090",
+  "formal_failed_rows": 42,
+  "formal_gap_rows": 2880,
+  "formal_kivi_sink_pair_auc": {
+    "left_config": "kivi_rolling_k2v2_s0_r128",
+    "median_delta": -1.0693700152332895,
+    "paired_n": 12,
+    "right_config": "kivi_rolling_k2v2_s16_r128",
+    "tasks_improved": 12,
+    "tasks_regressed": 0,
+    "ties": 0
+  },
+  "formal_metric_rows": 6096,
+  "formal_pattern_sink_pair_auc": {
+    "left_config": "pattern_rolling_k2v2_s0_r128",
+    "median_delta": -0.9615185058210045,
+    "paired_n": 12,
+    "right_config": "pattern_rolling_k2v2_s16_r128",
+    "tasks_improved": 12,
+    "tasks_regressed": 0,
+    "ties": 0
+  },
   "formal_run_approved": true,
+  "formal_run_complete": false,
   "formal_run_gate": {
     "CONTEXT_SEMANTICS_VALID": true,
     "EXECUTION_PATH_BEHAVIOR_ACCEPTABLE": true,
