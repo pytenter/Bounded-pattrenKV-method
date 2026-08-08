@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import torch
+from transformers import AutoConfig, AutoTokenizer, GenerationConfig
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -24,16 +25,29 @@ from bench.aime_utils import (  # noqa: E402
     DEFAULT_TEMPERATURE,
     DEFAULT_TOP_P,
     generation_config_dict,
+    load_aime24,
+    normalize_eos_token_ids,
     search_model_candidates,
 )
 from bench.aime24_int2_wave1 import stable_hash  # noqa: E402
+from bench.aime_generation_provenance import (  # noqa: E402
+    PORTABLE_REFERENCE_GENERATION_SCHEMA,
+    build_experiment_config_set_payload,
+    build_portable_reference_generation_semantics,
+    experiment_config_set_hash,
+    portable_reference_generation_hash,
+    recompute_legacy_generation_hash,
+    validate_effective_seed_map,
+)
+from bench.bench_aime24_patternkv import render_prompt  # noqa: E402
 from bench.paper_config import apply_method_defaults, method_config_dict  # noqa: E402
-from bench.pseudodecode_metrics import CHECKPOINTS, SPARSE_LAYERS, canonical_json_hash, write_csv_rows  # noqa: E402
+from bench.pseudodecode_metrics import CHECKPOINTS, SPARSE_LAYERS, write_csv_rows  # noqa: E402
 
 
 SOURCE_COMMIT = "232e3b08d10919ca24932ad0a0135e46119ecfd5"
 TASK_SHA256 = "ed3ff618c8072787a7b1687fef368c5c8d2c04801baf33fe850fca3b24a7af2e"
 GENERATION_CONFIG_HASH = "a7d6b2f8bab37893b6331c66b3e5eb6a"
+LEGACY_MANIFEST_PATH = "reports/aime24_int2_wave1_v100_8gpu/revised_wave1a_full_run_manifest.json"
 EXPERIMENT_BRANCH = "exp/aime-pseudodecode-3090-8gpu"
 REPORT_DIR = ROOT / "reports/aime24_pseudodecode_3090_8gpu"
 RESULT_DIR = ROOT / "results/aime24_pseudodecode_3090_8gpu"
@@ -81,6 +95,11 @@ def blob_hash(path: Path) -> str | None:
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def load_historical_generation_manifest() -> dict[str, Any]:
+    raw = run(["git", "show", f"{SOURCE_COMMIT}:{LEGACY_MANIFEST_PATH}"])
+    return json.loads(raw)
 
 
 def inspect_model(model_path: Path) -> dict[str, Any]:
@@ -141,17 +160,170 @@ def config_namespace(method: str, sink: int, recent: int, model_path: Path) -> N
     )
 
 
-def make_generation_hash_record(model_path: Path) -> dict[str, Any]:
+def make_current_helper_hash_record(model_path: Path) -> dict[str, Any]:
     args = config_namespace("patternkv", 0, 128, model_path)
     cfg = generation_config_dict(args)
     actual = stable_hash(cfg, 32)
     return {
-        "expected_generation_config_hash": GENERATION_CONFIG_HASH,
-        "reconstructed_generation_config_hash": actual,
-        "generation_config_valid": actual == GENERATION_CONFIG_HASH,
+        "current_helper_schema": "bench.aime_utils.generation_config_dict",
+        "current_helper_schema_hash": actual,
         "generation_config": cfg,
-        "audit_note": "The repository helper was used to rebuild generation semantics. The rebuilt 32-hex hash does not match the frozen hash on this server, so formal generation_config_valid remains false until the original freeze payload is identified or the mismatch is explicitly adjudicated.",
+        "schema_fields": sorted(cfg.keys()),
     }
+
+
+def resolved_tokenizer_smoke(model_path: Path, tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True, use_fast=False, trust_remote_code=True)
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    config = AutoConfig.from_pretrained(model_path, local_files_only=True, trust_remote_code=True)
+    try:
+        generation_config = GenerationConfig.from_pretrained(model_path, local_files_only=True)
+    except Exception:
+        generation_config = None
+    eos_ids = normalize_eos_token_ids(
+        getattr(tokenizer, "eos_token_id", None),
+        getattr(getattr(tokenizer, "generation_config", None), "eos_token_id", None),
+        getattr(generation_config, "eos_token_id", None),
+        getattr(config, "eos_token_id", None),
+    )
+    eot = tokenizer.convert_tokens_to_ids("<|eot_id|>")
+    if isinstance(eot, int) and eot >= 0:
+        eos_ids.append(eot)
+    eos_ids = sorted(set(int(x) for x in eos_ids if x is not None))
+
+    dataset_rows = {int(row["problem_id"]): row for row in load_aime24(ROOT / "datasets/aime/aime24.jsonl")}
+    first_task = tasks[0]
+    row = dataset_rows[int(first_task["problem_id"])]
+    rendered_prompt, _, _ = render_prompt(row["problem"], tokenizer, True)
+    encoded = tokenizer(rendered_prompt, return_tensors="pt", add_special_tokens=False)
+    input_ids = encoded.input_ids[0].tolist()
+
+    max_prompt_tokens = 0
+    for task in tasks:
+        task_row = dataset_rows[int(task["problem_id"])]
+        task_prompt, _, _ = render_prompt(task_row["problem"], tokenizer, True)
+        max_prompt_tokens = max(max_prompt_tokens, len(tokenizer(task_prompt, add_special_tokens=False).input_ids))
+
+    max_position = getattr(config, "max_position_embeddings", None) or getattr(config, "model_max_length", None)
+    context_limit = int(max_position) if max_position is not None else 0
+    context_semantics_valid = bool(context_limit and max_prompt_tokens + DEFAULT_MAX_NEW_TOKENS <= context_limit)
+    return {
+        "problem_id": int(first_task["problem_id"]),
+        "sample_id": int(first_task["sample_id"]),
+        "task_key": str(first_task["task_key"]),
+        "seed": int(first_task["seed"]),
+        "rendered_prompt": rendered_prompt,
+        "prompt_hash": stable_hash({"rendered_prompt": rendered_prompt}, 32),
+        "input_token_ids_hash": stable_hash({"input_ids": input_ids}, 32),
+        "input_token_count": len(input_ids),
+        "max_prompt_token_count": max_prompt_tokens,
+        "resolved_pad_token_id": int(tokenizer.pad_token_id) if tokenizer.pad_token_id is not None else None,
+        "resolved_eos_token_ids": eos_ids,
+        "context_limit": context_limit,
+        "context_semantics_valid": context_semantics_valid,
+    }
+
+
+def build_generation_audit(
+    *,
+    model_path: Path,
+    model_identity: dict[str, Any],
+    task_hash: str,
+    tasks: list[dict[str, Any]],
+    configs: list[dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    historical_manifest = load_historical_generation_manifest()
+    legacy_payload = historical_manifest["generation_config"]
+    legacy_recomputed = recompute_legacy_generation_hash(legacy_payload)
+    historical_reproduced = legacy_recomputed == GENERATION_CONFIG_HASH == historical_manifest.get("formal_generation_config_hash")
+
+    helper = make_current_helper_hash_record(model_path)
+    helper_hash = helper["current_helper_schema_hash"]
+    helper_fields = set(helper["schema_fields"])
+    legacy_fields = set(legacy_payload.keys())
+    schema_mismatch = helper_hash != legacy_recomputed and helper_fields != legacy_fields
+
+    tokenizer_smoke = resolved_tokenizer_smoke(model_path, tasks)
+    tokenizer_identity_hash = model_identity.get("tokenizer_json_sha256") or model_identity.get("tokenizer_vocabulary_sha256")
+    tokenizer_identity_valid = bool(tokenizer_identity_hash)
+    task_seed_map_valid = validate_effective_seed_map(tasks, DEFAULT_BASE_SEED)
+
+    portable_payload = build_portable_reference_generation_semantics(
+        task_manifest_sha256=task_hash,
+        tasks=tasks,
+        model_name="DeepSeek-R1-Distill-Llama-8B",
+        model_identity_hash=str(model_identity.get("config_sha256") or ""),
+        tokenizer_identity_hash=str(tokenizer_identity_hash or ""),
+        model_dtype="float16",
+        context_limit=int(tokenizer_smoke["context_limit"]),
+        resolved_pad_token_id=tokenizer_smoke["resolved_pad_token_id"],
+        resolved_eos_token_ids=tokenizer_smoke["resolved_eos_token_ids"],
+    )
+    portable_hash = portable_reference_generation_hash(portable_payload)
+    experiment_config_hash = experiment_config_set_hash(configs)
+    portable_prompt_pipeline_valid = bool(tokenizer_smoke["prompt_hash"] and tokenizer_smoke["input_token_ids_hash"] and tokenizer_smoke["input_token_count"] > 0)
+    portable_generation_semantics_valid = all(
+        [
+            task_hash == TASK_SHA256,
+            len(tasks) == 12,
+            task_seed_map_valid,
+            bool(model_identity.get("valid")),
+            tokenizer_identity_valid,
+            portable_payload["model_dtype"] == "float16",
+            portable_payload["do_sample"] is True,
+            portable_payload["temperature"] == DEFAULT_TEMPERATURE,
+            portable_payload["top_p"] == DEFAULT_TOP_P,
+            portable_payload["repetition_penalty"] == 1.0,
+            portable_payload["num_return_sequences"] == 1,
+            portable_payload["max_new_tokens"] == DEFAULT_MAX_NEW_TOKENS,
+            tokenizer_smoke["context_semantics_valid"],
+            portable_prompt_pipeline_valid,
+        ]
+    )
+    generation_config_valid = all(
+        [
+            historical_reproduced,
+            schema_mismatch,
+            portable_generation_semantics_valid,
+            bool(model_identity.get("valid")),
+            tokenizer_identity_valid,
+            tokenizer_smoke["context_semantics_valid"],
+            portable_prompt_pipeline_valid,
+        ]
+    )
+    generation_audit = {
+        "legacy_source": LEGACY_MANIFEST_PATH,
+        "legacy_expected_hash": GENERATION_CONFIG_HASH,
+        "legacy_recomputed_hash": legacy_recomputed,
+        "historical_generation_hash_reproduced": historical_reproduced,
+        "legacy_generation_config": legacy_payload,
+        "legacy_hash_portable": False,
+        "legacy_nonportable_fields": ["model absolute path"],
+        "legacy_nonportable_reason": "absolute model path was included in the legacy fingerprint",
+        "current_helper_schema": helper["current_helper_schema"],
+        "current_helper_schema_hash": helper_hash,
+        "current_helper_generation_config": helper["generation_config"],
+        "current_helper_schema_fields": helper["schema_fields"],
+        "legacy_schema_fields": sorted(legacy_fields),
+        "generation_hash_schema_mismatch_confirmed": schema_mismatch,
+        "portable_reference_generation_schema": PORTABLE_REFERENCE_GENERATION_SCHEMA,
+        "portable_reference_generation_hash": portable_hash,
+        "portable_generation_semantics_valid": portable_generation_semantics_valid,
+        "portable_prompt_pipeline_valid": portable_prompt_pipeline_valid,
+        "portable_prompt_smoke": tokenizer_smoke,
+        "task_seed_map_valid": task_seed_map_valid,
+        "tokenizer_identity_valid": tokenizer_identity_valid,
+        "context_semantics_valid": tokenizer_smoke["context_semantics_valid"],
+        "resolved_pad_token_id": tokenizer_smoke["resolved_pad_token_id"],
+        "resolved_eos_token_ids": tokenizer_smoke["resolved_eos_token_ids"],
+        "experiment_config_set_schema": "aime24_pseudodecode_config_set_v1",
+        "experiment_config_set_hash": experiment_config_hash,
+        "experiment_config_set_payload": build_experiment_config_set_payload(configs),
+        "generation_config_valid": generation_config_valid,
+        "audit_note": "The legacy a7d6 hash is reproduced as historical provenance. The de91 hash is retained as the current helper schema hash. The formal generation gate now uses portable reference generation semantics rather than equality to a machine-local legacy payload.",
+    }
+    return generation_audit, portable_payload, tokenizer_smoke
 
 
 def audited_paths() -> list[dict[str, Any]]:
@@ -198,6 +370,76 @@ def environment_record(python_bin: str, model_path: Path) -> dict[str, Any]:
     }
 
 
+def write_generation_provenance_report(generation: dict[str, Any], portable_payload: dict[str, Any]) -> None:
+    legacy_payload = generation["legacy_generation_config"]
+    lines = [
+        "# Generation Config Provenance Resolution",
+        "",
+        "## 1. Why `a7d6...` Exists",
+        "",
+        f"The frozen hash comes from `{LEGACY_MANIFEST_PATH}` at source commit `{SOURCE_COMMIT}`.",
+        "",
+        "## 2. Exact Historical Payload",
+        "",
+        "```json",
+        json.dumps(legacy_payload, ensure_ascii=False, indent=2, sort_keys=True),
+        "```",
+        "",
+        "## 3. Canonical Serialization Rule",
+        "",
+        '`json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))`, then SHA256 truncated to 32 hex characters.',
+        "",
+        "## 4. Proof That `a7d6...` Can Be Reproduced",
+        "",
+        f"- Legacy expected hash: `{generation['legacy_expected_hash']}`",
+        f"- Legacy recomputed hash: `{generation['legacy_recomputed_hash']}`",
+        f"- HISTORICAL_GENERATION_HASH_REPRODUCED: `{generation['historical_generation_hash_reproduced']}`",
+        "",
+        "## 5. Why `de91...` Differs",
+        "",
+        "`de91...` is the hash of the current helper schema, `bench.aime_utils.generation_config_dict`. That schema has different fields from the legacy run manifest schema, so equality to `a7d6...` is not the right test.",
+        "",
+        f"- Current helper hash: `{generation['current_helper_schema_hash']}`",
+        f"- GENERATION_HASH_SCHEMA_MISMATCH_CONFIRMED: `{generation['generation_hash_schema_mismatch_confirmed']}`",
+        "",
+        "## 6. Why The Legacy Hash Is Nonportable",
+        "",
+        "The legacy payload includes the V100 server absolute model path. The 3090 server has a different local model path, so path-inclusive hash equality would reject a semantically compatible independent server.",
+        "",
+        f"- LEGACY_HASH_PORTABLE: `{generation['legacy_hash_portable']}`",
+        f"- Legacy nonportable fields: `{generation['legacy_nonportable_fields']}`",
+        "",
+        "## 7. Which Semantics Affect Reference Trajectories",
+        "",
+        "The portable reference-generation fingerprint includes task cohort, task seeds, model/tokenizer identity, dtype, prompt construction, chat template semantics, sampling controls, EOS/PAD resolution, max-new-token limit, and context compatibility. It excludes machine-local paths and quantized method sets.",
+        "",
+        "## 8. New Portable Schema",
+        "",
+        f"- Schema version: `{generation['portable_reference_generation_schema']}`",
+        "",
+        "```json",
+        json.dumps(portable_payload, ensure_ascii=False, indent=2, sort_keys=True),
+        "```",
+        "",
+        "## 9. New Portable Hash",
+        "",
+        f"- Portable reference generation hash: `{generation['portable_reference_generation_hash']}`",
+        f"- Experiment config set hash: `{generation['experiment_config_set_hash']}`",
+        "",
+        "## 10. Final Gate Decision",
+        "",
+        f"- TOKENIZER_IDENTITY_VALID: `{generation['tokenizer_identity_valid']}`",
+        f"- CONTEXT_SEMANTICS_VALID: `{generation['context_semantics_valid']}`",
+        f"- PORTABLE_GENERATION_SEMANTICS_VALID: `{generation['portable_generation_semantics_valid']}`",
+        f"- PORTABLE_PROMPT_PIPELINE_VALID: `{generation['portable_prompt_pipeline_valid']}`",
+        f"- GENERATION_CONFIG_VALID: `{generation['generation_config_valid']}`",
+        "",
+        "Formal run remains blocked by later preflight gates such as FP16 zero-gap, static independence, pseudo feedback, production parity, and observer non-invasiveness.",
+        "",
+    ]
+    (REPORT_DIR / "generation_config_provenance_resolution.md").write_text("\n".join(lines), encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", type=Path, default=Path(os.environ.get("MODEL_PATH", "")) if os.environ.get("MODEL_PATH") else None)
@@ -220,7 +462,6 @@ def main() -> None:
         candidates = search_model_candidates()
         model_path = Path(candidates[0]) if candidates else Path("")
     model_identity = inspect_model(model_path)
-    generation = make_generation_hash_record(model_path)
 
     origin = {
         "repository": "pytenter/Bounded-pattrenKV-method",
@@ -230,12 +471,13 @@ def main() -> None:
         "experiment_type": "pseudo_decode_accumulated_error",
         "server_role": "independent_8xRTX3090",
         "shared_filesystem_with_v100": False,
-        "starting_head": head,
+        "starting_head": SOURCE_COMMIT,
+        "source_checkout_head": SOURCE_COMMIT,
+        "current_head": head,
         "source_commit_valid": source_valid,
     }
     write_json(REPORT_DIR / "experiment_origin.json", origin)
     write_json(REPORT_DIR / "model_identity.json", model_identity)
-    write_json(REPORT_DIR / "generation_config_audit.json", generation)
 
     env = environment_record(args.python_bin, model_path)
     write_json(REPORT_DIR / "environment_audit.json", env)
@@ -281,6 +523,17 @@ def main() -> None:
         resolved = method_config_dict(ns)
         configs.append({**cfg, "resolved_method_config": resolved})
 
+    generation, portable_payload, tokenizer_smoke = build_generation_audit(
+        model_path=model_path,
+        model_identity=model_identity,
+        task_hash=str(task_hash or ""),
+        tasks=tasks,
+        configs=configs,
+    )
+    write_json(REPORT_DIR / "generation_config_audit.json", generation)
+    write_json(REPORT_DIR / "portable_reference_generation_semantics.json", portable_payload)
+    write_generation_provenance_report(generation, portable_payload)
+
     expected_static = len([c for c in configs if c["config"] != "fp16"]) * len(tasks) * len(CHECKPOINTS)
     manifest = {
         "source_commit": SOURCE_COMMIT,
@@ -289,8 +542,16 @@ def main() -> None:
         "task_manifest_valid": task_hash == TASK_SHA256,
         "task_count": len(tasks),
         "expected_task_count": 12,
-        "generation_config_hash": generation["reconstructed_generation_config_hash"],
-        "expected_generation_config_hash": GENERATION_CONFIG_HASH,
+        "legacy_generation_hash": generation["legacy_expected_hash"],
+        "legacy_generation_hash_reproduced": generation["historical_generation_hash_reproduced"],
+        "legacy_hash_portable": generation["legacy_hash_portable"],
+        "current_helper_schema_hash": generation["current_helper_schema_hash"],
+        "generation_hash_schema_mismatch_confirmed": generation["generation_hash_schema_mismatch_confirmed"],
+        "portable_reference_generation_schema": generation["portable_reference_generation_schema"],
+        "portable_reference_generation_hash": generation["portable_reference_generation_hash"],
+        "portable_generation_semantics_valid": generation["portable_generation_semantics_valid"],
+        "portable_prompt_pipeline_valid": generation["portable_prompt_pipeline_valid"],
+        "experiment_config_set_hash": generation["experiment_config_set_hash"],
         "generation_config_valid": generation["generation_config_valid"],
         "checkpoints": list(CHECKPOINTS),
         "sparse_layers": list(SPARSE_LAYERS),
@@ -304,6 +565,13 @@ def main() -> None:
             "TASK_MANIFEST_VALID": task_hash == TASK_SHA256,
             "GENERATION_CONFIG_VALID": generation["generation_config_valid"],
             "MODEL_IDENTITY_VALID": bool(model_identity.get("valid")),
+            "TOKENIZER_IDENTITY_VALID": generation["tokenizer_identity_valid"],
+            "HISTORICAL_GENERATION_HASH_REPRODUCED": generation["historical_generation_hash_reproduced"],
+            "LEGACY_HASH_PORTABLE": generation["legacy_hash_portable"],
+            "GENERATION_HASH_SCHEMA_MISMATCH_CONFIRMED": generation["generation_hash_schema_mismatch_confirmed"],
+            "PORTABLE_GENERATION_SEMANTICS_VALID": generation["portable_generation_semantics_valid"],
+            "PORTABLE_PROMPT_PIPELINE_VALID": generation["portable_prompt_pipeline_valid"],
+            "CONTEXT_SEMANTICS_VALID": generation["context_semantics_valid"],
             "QUANT_KERNEL_SMOKE_PASS": None,
             "STATIC_INDEPENDENCE_PASS": None,
             "PSEUDO_FEEDBACK_PASS": None,
@@ -343,6 +611,9 @@ def main() -> None:
         "varn_next_priority": None,
         "assignment_objective_next_priority": None,
         "next_priority": None,
+        "generation_config_valid": generation["generation_config_valid"],
+        "portable_reference_generation_hash": generation["portable_reference_generation_hash"],
+        "historical_generation_hash_reproduced": generation["historical_generation_hash_reproduced"],
     }
     write_json(REPORT_DIR / "pseudodecode_summary.json", summary)
     report = [

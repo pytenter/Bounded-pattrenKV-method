@@ -1,10 +1,12 @@
 {
+  "current_head": "7dbc2241c1f923ab1f957394b81d53ca3ee725c0",
   "experiment_branch": "exp/aime-pseudodecode-3090-8gpu",
   "experiment_type": "pseudo_decode_accumulated_error",
   "repository": "pytenter/Bounded-pattrenKV-method",
   "server_role": "independent_8xRTX3090",
   "shared_filesystem_with_v100": false,
   "source_branch_reference": "exp/aime-int2-wave1-v100-8gpu",
+  "source_checkout_head": "232e3b08d10919ca24932ad0a0135e46119ecfd5",
   "source_commit": "232e3b08d10919ca24932ad0a0135e46119ecfd5",
   "source_commit_valid": true,
   "starting_head": "232e3b08d10919ca24932ad0a0135e46119ecfd5"
