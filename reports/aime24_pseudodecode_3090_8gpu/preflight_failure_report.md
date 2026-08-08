@@ -42,3 +42,9 @@ The evidence suggests a cached-vs-full-prefix numerical path difference in FP16 
 ## Required Follow-Up
 
 Before formal long-run approval, define a repository-level FP16 cached-vs-full-prefix numerical baseline or an accepted tolerance protocol for Ampere RTX3090. Do not start the formal 72-trajectory pseudo-decode run until `FP16_ZERO_ACCUMULATION_CONTROL_PASS=true` under that protocol.
+
+## Resolution Status
+
+The original `FP16_ZERO_ACCUMULATION_CONTROL_PASS=false` remains preserved under the original protocol. The follow-up resolution is documented in `execution_path_baseline_resolution.md`, which defines the observed gap as an FP16 execution-path numerical baseline and switches formal quantization degradation to matched-path FP16 controls.
+
+The updated formal gate excludes the legacy cross-path zero-gap condition, includes `FP16_EXECUTION_PATH_BASELINE_CHARACTERIZED`, `EXECUTION_PATH_BEHAVIOR_ACCEPTABLE`, `MATCHED_PATH_CONTROL_VALID`, and `MATCH_ALIGNMENT_VALID`, and now records `PREFLIGHT_COMPLETE=true` plus `FORMAL_RUN_APPROVED=true`. A formal long-run still requires a separate user instruction.

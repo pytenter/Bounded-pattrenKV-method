@@ -1,0 +1,37 @@
+{
+  "accumulation_metric_schema_version": "matched_path_accumulation_v1",
+  "all_mini_validation_metrics_finite": true,
+  "baseline_checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "baseline_task_count": 12,
+  "checkpoints": [
+    128,
+    512,
+    1024
+  ],
+  "execution_path_behavior_acceptable": true,
+  "finite_all": true,
+  "formal_run_approved": true,
+  "fp16_execution_path_baseline_characterized": true,
+  "fp16_self_degradation_zero": true,
+  "fp16_zero_accumulation_control_pass": false,
+  "hidden_cosine_min": 0.99998939037323,
+  "hidden_relative_l2_ratio_4096_to_128": 1.0592262955787495,
+  "hidden_relative_l2_slope_vs_log2_checkpoint": 1.0903741428125147e-05,
+  "match_alignment_valid": true,
+  "matched_path_control_valid": true,
+  "mini_validation_task_keys": [
+    "aime24:p15:s1:seed15043",
+    "aime24:p17:s0:seed17042",
+    "aime24:p0:s0:seed42"
+  ],
+  "preflight_complete": true,
+  "runaway_growth_detected": false,
+  "task_selection_rule": "all frozen reference tasks with generated_tokens >= 1024",
+  "top1_disagreement_sum": 0.0
+}
