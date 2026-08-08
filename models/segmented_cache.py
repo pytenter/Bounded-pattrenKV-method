@@ -483,8 +483,15 @@ def build_cache_from_prefill(
 
 
 def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
-    cache.recent_k = _cat_token(cache.recent_k, key_states)
-    cache.recent_v = _cat_token(cache.recent_v, value_states)
+    append_tokens = int(key_states.shape[2])
+    sink_capacity = max(int(cache.sink_length) - tensor_tokens(cache.sink_k), 0)
+    sink_fill = min(sink_capacity, append_tokens)
+    if sink_fill:
+        cache.sink_k = _cat_token(cache.sink_k, key_states[:, :, :sink_fill, :].contiguous())
+        cache.sink_v = _cat_token(cache.sink_v, value_states[:, :, :sink_fill, :].contiguous())
+    if sink_fill < append_tokens:
+        cache.recent_k = _cat_token(cache.recent_k, key_states[:, :, sink_fill:, :].contiguous())
+        cache.recent_v = _cat_token(cache.recent_v, value_states[:, :, sink_fill:, :].contiguous())
     cache.total_tokens += int(key_states.shape[2])
     overflow = max(tensor_tokens(cache.recent_k) - cache.recent_length, 0)
     if overflow:
