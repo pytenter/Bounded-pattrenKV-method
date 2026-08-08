@@ -21,7 +21,7 @@
   "free_running_supports_mechanism": true,
   "full_aime24_validation_recommended": true,
   "generation_config_hash": "a7d6b2f8bab37893b6331c66b3e5eb6a",
-  "head": "bc1ff8c483fc92ba0161c446398c427df0616607",
+  "head": "8c261b4fd66e61af2531aa5bb4da4c6872015dde",
   "kivi_rescue_mechanism_supported": true,
   "kivi_s0_attention_output_relative_l2_median": 0.5685262680053711,
   "kivi_s0_routing_only_relative_l2_median": 0.32632026076316833,

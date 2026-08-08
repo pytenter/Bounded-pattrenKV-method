@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-- Wave 1A.4 has started from local HEAD `bc1ff8c483fc92ba0161c446398c427df0616607`.
+- Wave 1A.4 has started from local HEAD `8c261b4fd66e61af2531aa5bb4da4c6872015dde`.
 - Pre-experiment push succeeded before this run; later push can be skipped if GitHub network is unavailable.
 - Observer unit tests and smoke are complete; teacher-forcing and free-running phases are complete.
 - FP16 reference trajectory generation status: `12/12` tasks available.
@@ -145,6 +145,6 @@ full AIME24 validation
 ## 23. Reproducibility
 
 - Branch: `exp/aime-int2-wave1-v100-8gpu`
-- HEAD: `bc1ff8c483fc92ba0161c446398c427df0616607`
+- HEAD: `8c261b4fd66e61af2531aa5bb4da4c6872015dde`
 - Task manifest hash: `ed3ff618c8072787a7b1687fef368c5c8d2c04801baf33fe850fca3b24a7af2e`
 - Generation config hash: `a7d6b2f8bab37893b6331c66b3e5eb6a`
