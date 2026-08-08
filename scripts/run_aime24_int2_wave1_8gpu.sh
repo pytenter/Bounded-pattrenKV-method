@@ -37,6 +37,11 @@ SINK_SWEEP_NEW_CONFIGS=(
   "5 kivi_rolling_k2v2_s128_r128 kivi_official 2 2 128 128 segmented segmented_rolling none"
 )
 
+S128_ONLY_CONFIGS=(
+  "0 pattern_rolling_k2v2_s128_r128 patternkv 2 2 128 128 segmented segmented_rolling none"
+  "1 kivi_rolling_k2v2_s128_r128 kivi_official 2 2 128 128 segmented segmented_rolling none"
+)
+
 mkdir -p "$RESULT_DIR" "$LOG_DIR" "$REPORT_DIR"
 
 ensure_ready() {
@@ -70,6 +75,10 @@ launch_one() {
   if [[ "$mode" == "sink-sweep-new-only" ]]; then
     output_dir="$RESULT_DIR/wave1a3"
   fi
+  if [[ "$mode" == "wave1a3b-s128-only" || "$mode" == "s128-smoke" || "$mode" == "s128-long-smoke" ]]; then
+    output_dir="$RESULT_DIR/wave1a3b"
+    validate_cache=1
+  fi
   if [[ "$mode" == "wave1a-smoke" ]]; then
     max_new_tokens=1024
     validate_cache=1
@@ -89,6 +98,28 @@ import json, sys
 src, dst = sys.argv[1:]
 rows = json.load(open(src, encoding="utf-8"))[:2]
 json.dump(rows, open(dst, "w", encoding="utf-8"), indent=2, sort_keys=True)
+PY
+  elif [[ "$mode" == "s128-smoke" ]]; then
+    max_new_tokens=1024
+    validate_cache=1
+    selected="$LOG_DIR/s128_smoke_selected_tasks.json"
+    "$PYTHON_BIN" - "$SELECTED_TASKS" "$selected" <<'PY'
+import json, sys
+src, dst = sys.argv[1:]
+rows = json.load(open(src, encoding="utf-8"))
+selected = [row for row in rows if int(row["problem_id"]) in {0, 6} and int(row["sample_id"]) == 0]
+json.dump(selected, open(dst, "w", encoding="utf-8"), indent=2, sort_keys=True)
+PY
+  elif [[ "$mode" == "s128-long-smoke" ]]; then
+    max_new_tokens=4096
+    validate_cache=1
+    selected="$LOG_DIR/s128_long_smoke_selected_tasks.json"
+    "$PYTHON_BIN" - "$SELECTED_TASKS" "$selected" <<'PY'
+import json, sys
+src, dst = sys.argv[1:]
+rows = json.load(open(src, encoding="utf-8"))
+selected = [row for row in rows if int(row["problem_id"]) == 6 and int(row["sample_id"]) == 0]
+json.dump(selected, open(dst, "w", encoding="utf-8"), indent=2, sort_keys=True)
 PY
   fi
   local mask_hash=""
@@ -202,6 +233,24 @@ case "${1:-}" in
     done
     exit "$failures"
     ;;
+  s128-smoke|s128-long-smoke|wave1a3b-s128-only)
+    mode="$1"
+    echo "Wave 1A.3b S128 rerun uses 2 of 8 GPUs"
+    ensure_ready || exit $?
+    for spec in "${S128_ONLY_CONFIGS[@]}"; do
+      read -r gpu config_name method k_bits v_bits sink recent cache_path cache_mode mask <<<"$spec"
+      launch_one "$gpu" "$config_name" "$method" "$k_bits" "$v_bits" "$sink" "$recent" "$cache_path" "$cache_mode" "$mask" "$mode"
+    done
+    failures=0
+    for spec in "${S128_ONLY_CONFIGS[@]}"; do
+      read -r _ config_name _ <<<"$spec"
+      pid="$(cat "$LOG_DIR/${config_name}.${mode}.pid")"
+      if ! wait "$pid"; then
+        failures=$((failures + 1))
+      fi
+    done
+    exit "$failures"
+    ;;
   status)
     for pidfile in "$LOG_DIR"/*.pid; do
       [[ -e "$pidfile" ]] || continue
@@ -217,7 +266,7 @@ case "${1:-}" in
     "$PYTHON_BIN" scripts/summarize_aime24_int2_wave1.py --results-dir "$RESULT_DIR/wave1a" --report-dir "$REPORT_DIR/wave1a"
     ;;
   *)
-    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full|sink-sweep-new-only|status|summarize-wave1a}" >&2
+    echo "usage: bash scripts/run_aime24_int2_wave1_8gpu.sh {dry-run|wave1a-smoke|wave1a-long-smoke|wave1a-full|revised-wave1a-full|sink-sweep-new-only|s128-smoke|s128-long-smoke|wave1a3b-s128-only|status|summarize-wave1a}" >&2
     exit 2
     ;;
 esac
