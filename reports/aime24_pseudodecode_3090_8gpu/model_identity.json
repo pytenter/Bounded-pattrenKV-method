@@ -1,0 +1,21 @@
+{
+  "architectures": [
+    "LlamaForCausalLM"
+  ],
+  "config_sha256": "54acfad3cffe057640904ca8a1e83525e6551c70c7a04c641f5a9eda0bbf64bd",
+  "head_dim": 128,
+  "hidden_size": 4096,
+  "max_position_embeddings": 131072,
+  "model_path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "model_type": "llama",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "special_tokens": null,
+  "tokenizer_config_sha256": "8ac8c85fb242563c2260baec0909debd69d718af6a0b3d90e6cab62b4d341cd5",
+  "tokenizer_json_sha256": "b9c9eb63a8e03059914880f918cd28a880dec8b6e15e4461e1ff677e3743dbb8",
+  "tokenizer_vocabulary_sha256": "b9c9eb63a8e03059914880f918cd28a880dec8b6e15e4461e1ff677e3743dbb8",
+  "torch_dtype": "bfloat16",
+  "valid": true,
+  "vocab_size": 128256
+}

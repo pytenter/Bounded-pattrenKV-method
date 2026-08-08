@@ -1,0 +1,19 @@
+{
+  "assignment_objective_next_priority": null,
+  "early_error_as_accumulation_seed_supported": null,
+  "formal_run_complete": null,
+  "fp16_zero_accumulation_control_pass": null,
+  "hardware": "8xRTX3090",
+  "kivi_sink_reduces_accumulation": null,
+  "next_priority": null,
+  "pattern_sink_reduces_accumulation": null,
+  "pseudo_feedback_valid": null,
+  "pseudodecode_accumulation_supported": null,
+  "remaining_error_accumulation_dominated": null,
+  "single_step_representation_error_dominant": null,
+  "source_commit": "232e3b08d10919ca24932ad0a0135e46119ecfd5",
+  "static_control_valid": null,
+  "task_count": 12,
+  "token_norm_accumulation_supported": null,
+  "varn_next_priority": null
+}

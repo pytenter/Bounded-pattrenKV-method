@@ -1,0 +1,39 @@
+{
+  "audit_note": "The repository helper was used to rebuild generation semantics. The rebuilt 32-hex hash does not match the frozen hash on this server, so formal generation_config_valid remains false until the original freeze payload is identified or the mismatch is explicitly adjudicated.",
+  "expected_generation_config_hash": "a7d6b2f8bab37893b6331c66b3e5eb6a",
+  "generation_config": {
+    "base_seed": 42,
+    "batch_size": 1,
+    "dataset": "aime24",
+    "do_sample": true,
+    "force_think_prefix": true,
+    "max_new_tokens": 32768,
+    "methods": [
+      "fp16",
+      "kivi_paper_g128",
+      "patternkv_paper",
+      "kivi_official",
+      "patternkv"
+    ],
+    "model_path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+    "num_return_sequences": 1,
+    "num_samples_per_problem": 2,
+    "patternkv": {
+      "initial_k_patterns": 32,
+      "initial_v_patterns": 32,
+      "pattern_group_size": 128
+    },
+    "prompt_protocol": "deepseek_r1_recommended",
+    "quantization": {
+      "group_size": 128,
+      "k_bits": 2,
+      "residual_length": 128,
+      "v_bits": 2
+    },
+    "repetition_penalty": 1.0,
+    "temperature": 0.6,
+    "top_p": 0.95
+  },
+  "generation_config_valid": false,
+  "reconstructed_generation_config_hash": "de91b2ba80450d53c10210854f265abd"
+}
