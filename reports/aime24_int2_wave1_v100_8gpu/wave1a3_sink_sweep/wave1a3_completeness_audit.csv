@@ -1,0 +1,11 @@
+config,expected_records,actual_records,valid_records,missing_task_keys,duplicate_task_keys,runtime_errors,parser_failures,length_truncations,valid_for_quality
+pattern_rolling_k2v2_s0_r128,12,12,12,,,0,1,1,True
+pattern_rolling_k2v2_s16_r128,12,12,12,,,0,0,0,True
+pattern_rolling_k2v2_s32_r128,12,12,12,,,0,0,0,True
+pattern_rolling_k2v2_s64_r128,12,12,12,,,0,0,0,True
+pattern_rolling_k2v2_s128_r128,12,12,1,,,11,0,0,False
+kivi_rolling_k2v2_s0_r128,12,12,12,,,0,0,1,True
+kivi_rolling_k2v2_s16_r128,12,12,12,,,0,0,0,True
+kivi_rolling_k2v2_s32_r128,12,12,12,,,0,0,0,True
+kivi_rolling_k2v2_s64_r128,12,12,12,,,0,0,0,True
+kivi_rolling_k2v2_s128_r128,12,12,1,,,11,0,0,False

@@ -1,0 +1,17 @@
+method_group,effect,left_config,right_config,paired_n,comparison_valid,rescues,regressions,ties,both_correct,both_wrong,net_paired_gain,rescue_task_keys,regression_task_keys
+PatternKV,S16 vs S0,pattern_rolling_k2v2_s0_r128,pattern_rolling_k2v2_s16_r128,12,True,4,2,6,5,1,2,aime24:p11:s1:seed11043;aime24:p14:s0:seed14042;aime24:p15:s1:seed15043;aime24:p17:s0:seed17042,aime24:p15:s0:seed15042;aime24:p16:s0:seed16042
+PatternKV,S32 vs S0,pattern_rolling_k2v2_s0_r128,pattern_rolling_k2v2_s32_r128,12,True,3,1,8,6,2,2,aime24:p11:s1:seed11043;aime24:p14:s0:seed14042;aime24:p6:s0:seed6042,aime24:p16:s0:seed16042
+PatternKV,S64 vs S0,pattern_rolling_k2v2_s0_r128,pattern_rolling_k2v2_s64_r128,12,True,2,1,9,6,3,1,aime24:p11:s1:seed11043;aime24:p6:s0:seed6042,aime24:p6:s1:seed6043
+PatternKV,S128 vs S0,pattern_rolling_k2v2_s0_r128,pattern_rolling_k2v2_s128_r128,1,False,0,0,1,1,0,0,,
+PatternKV,S0 -> S16,pattern_rolling_k2v2_s0_r128,pattern_rolling_k2v2_s16_r128,12,True,4,2,6,5,1,2,aime24:p11:s1:seed11043;aime24:p14:s0:seed14042;aime24:p15:s1:seed15043;aime24:p17:s0:seed17042,aime24:p15:s0:seed15042;aime24:p16:s0:seed16042
+PatternKV,S16 -> S32,pattern_rolling_k2v2_s16_r128,pattern_rolling_k2v2_s32_r128,12,True,2,2,8,7,1,0,aime24:p15:s0:seed15042;aime24:p6:s0:seed6042,aime24:p15:s1:seed15043;aime24:p17:s0:seed17042
+PatternKV,S32 -> S64,pattern_rolling_k2v2_s32_r128,pattern_rolling_k2v2_s64_r128,12,True,1,2,9,7,2,-1,aime24:p16:s0:seed16042,aime24:p14:s0:seed14042;aime24:p6:s1:seed6043
+PatternKV,S64 -> S128,pattern_rolling_k2v2_s64_r128,pattern_rolling_k2v2_s128_r128,1,False,0,0,1,1,0,0,,
+KIVI,S16 vs S0,kivi_rolling_k2v2_s0_r128,kivi_rolling_k2v2_s16_r128,12,True,4,0,8,2,6,4,aime24:p11:s0:seed11042;aime24:p12:s0:seed12042;aime24:p12:s1:seed12043;aime24:p6:s0:seed6042,
+KIVI,S32 vs S0,kivi_rolling_k2v2_s0_r128,kivi_rolling_k2v2_s32_r128,12,True,3,0,9,2,7,3,aime24:p12:s0:seed12042;aime24:p14:s0:seed14042;aime24:p15:s0:seed15042,
+KIVI,S64 vs S0,kivi_rolling_k2v2_s0_r128,kivi_rolling_k2v2_s64_r128,12,True,7,2,3,0,3,5,aime24:p11:s0:seed11042;aime24:p12:s0:seed12042;aime24:p12:s1:seed12043;aime24:p14:s0:seed14042;aime24:p16:s0:seed16042;aime24:p6:s0:seed6042;aime24:p6:s1:seed6043,aime24:p0:s0:seed42;aime24:p11:s1:seed11043
+KIVI,S128 vs S0,kivi_rolling_k2v2_s0_r128,kivi_rolling_k2v2_s128_r128,1,False,0,0,1,1,0,0,,
+KIVI,S0 -> S16,kivi_rolling_k2v2_s0_r128,kivi_rolling_k2v2_s16_r128,12,True,4,0,8,2,6,4,aime24:p11:s0:seed11042;aime24:p12:s0:seed12042;aime24:p12:s1:seed12043;aime24:p6:s0:seed6042,
+KIVI,S16 -> S32,kivi_rolling_k2v2_s16_r128,kivi_rolling_k2v2_s32_r128,12,True,2,3,7,3,4,-1,aime24:p14:s0:seed14042;aime24:p15:s0:seed15042,aime24:p11:s0:seed11042;aime24:p12:s1:seed12043;aime24:p6:s0:seed6042
+KIVI,S32 -> S64,kivi_rolling_k2v2_s32_r128,kivi_rolling_k2v2_s64_r128,12,True,5,3,4,2,2,2,aime24:p11:s0:seed11042;aime24:p12:s1:seed12043;aime24:p16:s0:seed16042;aime24:p6:s0:seed6042;aime24:p6:s1:seed6043,aime24:p0:s0:seed42;aime24:p11:s1:seed11043;aime24:p15:s0:seed15042
+KIVI,S64 -> S128,kivi_rolling_k2v2_s64_r128,kivi_rolling_k2v2_s128_r128,1,False,1,0,0,0,0,1,aime24:p0:s0:seed42,
