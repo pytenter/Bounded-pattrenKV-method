@@ -1,0 +1,92 @@
+[
+  {
+    "kivi_outcome_class": "RESCUE",
+    "pattern_outcome_class": "NOT_SELECTED",
+    "problem_id": 11,
+    "sample_id": 0,
+    "seed": 11042,
+    "selection_reason": "KIVI S0->S16 RESCUE",
+    "task_key": "aime24:p11:s0:seed11042"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "RESCUE",
+    "problem_id": 11,
+    "sample_id": 1,
+    "seed": 11043,
+    "selection_reason": "PatternKV S0->S16 RESCUE",
+    "task_key": "aime24:p11:s1:seed11043"
+  },
+  {
+    "kivi_outcome_class": "RESCUE",
+    "pattern_outcome_class": "NOT_SELECTED",
+    "problem_id": 12,
+    "sample_id": 0,
+    "seed": 12042,
+    "selection_reason": "KIVI S0->S16 RESCUE",
+    "task_key": "aime24:p12:s0:seed12042"
+  },
+  {
+    "kivi_outcome_class": "RESCUE",
+    "pattern_outcome_class": "NOT_SELECTED",
+    "problem_id": 12,
+    "sample_id": 1,
+    "seed": 12043,
+    "selection_reason": "KIVI S0->S16 RESCUE",
+    "task_key": "aime24:p12:s1:seed12043"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "RESCUE",
+    "problem_id": 14,
+    "sample_id": 0,
+    "seed": 14042,
+    "selection_reason": "PatternKV S0->S16 RESCUE",
+    "task_key": "aime24:p14:s0:seed14042"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "REGRESSION",
+    "problem_id": 15,
+    "sample_id": 0,
+    "seed": 15042,
+    "selection_reason": "PatternKV S0->S16 REGRESSION",
+    "task_key": "aime24:p15:s0:seed15042"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "RESCUE",
+    "problem_id": 15,
+    "sample_id": 1,
+    "seed": 15043,
+    "selection_reason": "PatternKV S0->S16 RESCUE",
+    "task_key": "aime24:p15:s1:seed15043"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "REGRESSION",
+    "problem_id": 16,
+    "sample_id": 0,
+    "seed": 16042,
+    "selection_reason": "PatternKV S0->S16 REGRESSION",
+    "task_key": "aime24:p16:s0:seed16042"
+  },
+  {
+    "kivi_outcome_class": "NOT_SELECTED",
+    "pattern_outcome_class": "RESCUE",
+    "problem_id": 17,
+    "sample_id": 0,
+    "seed": 17042,
+    "selection_reason": "PatternKV S0->S16 RESCUE",
+    "task_key": "aime24:p17:s0:seed17042"
+  },
+  {
+    "kivi_outcome_class": "RESCUE",
+    "pattern_outcome_class": "NOT_SELECTED",
+    "problem_id": 6,
+    "sample_id": 0,
+    "seed": 6042,
+    "selection_reason": "KIVI S0->S16 RESCUE",
+    "task_key": "aime24:p6:s0:seed6042"
+  }
+]

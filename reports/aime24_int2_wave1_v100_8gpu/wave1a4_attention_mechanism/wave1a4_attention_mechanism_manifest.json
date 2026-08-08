@@ -1,0 +1,35 @@
+{
+  "branch": "exp/aime-int2-wave1-v100-8gpu",
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384
+  ],
+  "generation_config_hash": "a7d6b2f8bab37893b6331c66b3e5eb6a",
+  "head": "bc1ff8c483fc92ba0161c446398c427df0616607",
+  "layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ],
+  "logical_paths": [
+    "fp16_reference",
+    "pattern_s0_r128",
+    "pattern_s16_r128",
+    "pattern_s128_r128",
+    "kivi_s0_r128",
+    "kivi_s16_r128",
+    "kivi_s128_r128"
+  ],
+  "observer_noninvasive": true,
+  "report_dir": "reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism",
+  "result_dir": "results/aime24_int2_wave1_v100_8gpu_wave1a4",
+  "task_manifest_hash": "ed3ff618c8072787a7b1687fef368c5c8d2c04801baf33fe850fca3b24a7af2e",
+  "task_manifest_path": "configs/aime24_wave1_selected_tasks.json"
+}

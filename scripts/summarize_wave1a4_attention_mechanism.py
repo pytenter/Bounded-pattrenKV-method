@@ -17,6 +17,7 @@ ROOT_REPORT = Path("reports/aime24_int2_wave1_v100_8gpu")
 REPORT_DIR = ROOT_REPORT / "wave1a4_attention_mechanism"
 RESULT_DIR = Path("results/aime24_int2_wave1_v100_8gpu_wave1a4")
 REFERENCE_DIR = RESULT_DIR / "fp16_reference_trajectories" / "fp16_reference"
+FREE_RUNNING_SUMMARY = RESULT_DIR / "free_running_observational_traces" / "wave1a4_free_running_summary.json"
 TASK_MANIFEST = Path("configs/aime24_wave1_selected_tasks.json")
 EXPECTED_TASK_HASH = "ed3ff618c8072787a7b1687fef368c5c8d2c04801baf33fe850fca3b24a7af2e"
 GENERATION_CONFIG_HASH = "a7d6b2f8bab37893b6331c66b3e5eb6a"
@@ -206,7 +207,12 @@ def build_summary() -> dict[str, Any]:
     observer_smoke_status = bool(task_rows)
     valid_traces = task_trace_count(task_rows)
     expected_traces = 7 * 12
-    formal_complete = len(rows) == 12 and valid_traces >= expected_traces
+    teacher_forcing_complete = len(rows) == 12 and valid_traces >= expected_traces
+    free_summary = json.loads(FREE_RUNNING_SUMMARY.read_text(encoding="utf-8")) if FREE_RUNNING_SUMMARY.exists() else {}
+    free_expected = int(free_summary.get("expected_free_running_runs") or 0)
+    free_actual = int(free_summary.get("actual_free_running_runs") or 0)
+    free_complete = bool(free_expected and free_actual >= free_expected and free_summary.get("runtime_errors", 0) == 0)
+    formal_complete = teacher_forcing_complete and free_complete
     fp16_e16_mass = median_value(mass_rows, config="fp16_reference", metric_name="attention_mass", region="E16")
     fp16_e16_enrichment = median_value(enrichment_rows, config="fp16_reference", metric_name="attention_enrichment", region="E16")
     pattern_s0_routing = median_value(routing_rows, config="pattern_rolling_k2v2_s0_r128", metric_name="routing_only_relative_l2", region="all")
@@ -233,7 +239,9 @@ def build_summary() -> dict[str, Any]:
     early_attention_enriched = None if fp16_e16_enrichment is None else fp16_e16_enrichment > 1.0
     summary = {
         "wave1a4_completed": formal_complete,
-        "wave1a4_status": "complete" if formal_complete else ("fp16_reference_running_or_pending" if len(rows) < 12 else "teacher_forcing_running_or_pending"),
+        "wave1a4_teacher_forcing_completed": teacher_forcing_complete,
+        "wave1a4_free_running_completed": free_complete,
+        "wave1a4_status": "complete" if formal_complete else ("fp16_reference_running_or_pending" if len(rows) < 12 else ("free_running_running_or_pending" if teacher_forcing_complete else "teacher_forcing_running_or_pending")),
         "early_token_attention_present": early_attention_present,
         "early_token_attention_enriched": early_attention_enriched,
         "pattern_sink_reduces_routing_error": pattern_routing_reduced,
@@ -247,7 +255,7 @@ def build_summary() -> dict[str, Any]:
         "mechanism_classification_pattern": classify_mechanism(pattern_routing_reduced, pattern_value_reduced, pattern_hidden) if formal_complete else None,
         "mechanism_classification_kivi": classify_mechanism(kivi_routing_reduced, kivi_value_reduced, kivi_hidden) if formal_complete else None,
         "full_aime24_validation_recommended": True,
-        "next_priority": "Full AIME24 validation for FP16, Pattern S0/S16, and KIVI S0/S128." if formal_complete else "Complete offline Wave1A4 teacher-forcing driver.",
+        "next_priority": "full AIME24 validation" if formal_complete else ("Complete Wave1A4 Phase B free-running observational trace." if teacher_forcing_complete else "Complete offline Wave1A4 teacher-forcing driver."),
         "branch": run(["git", "rev-parse", "--abbrev-ref", "HEAD"]),
         "head": run(["git", "rev-parse", "HEAD"]),
         "task_manifest_hash": sha256_file(TASK_MANIFEST),
@@ -257,7 +265,12 @@ def build_summary() -> dict[str, Any]:
         "fp16_reference_manifest": str(reference_manifest),
         "teacher_forcing_expected_traces": expected_traces,
         "teacher_forcing_valid_traces": valid_traces,
-        "free_running_observational_tasks": 0,
+        "free_running_observational_tasks": int(free_summary.get("selected_unique_tasks") or 0),
+        "expected_free_running_runs": free_expected,
+        "actual_free_running_runs": free_actual,
+        "free_running_supports_mechanism": free_summary.get("free_running_supports_mechanism"),
+        "free_running_runtime_errors": free_summary.get("runtime_errors"),
+        "free_running_nan_inf_rows": free_summary.get("nan_inf_rows"),
         "runtime_errors": sum(1 for row in rows if row.get("error")),
         "nan_inf_metric_rows": nan_inf,
         "cache_mutation_failures": 0,
@@ -289,7 +302,7 @@ def build_summary() -> dict[str, Any]:
 
 def build_report(summary: dict[str, Any]) -> str:
     complete = bool(summary["wave1a4_completed"])
-    status_line = "formal teacher-forcing mechanism collection is complete" if complete else "formal teacher-forcing mechanism collection is still running or pending"
+    status_line = "teacher-forcing and free-running phases are complete" if complete else "Wave 1A.4 still has an incomplete phase"
     mechanism_line = (
         f"- Pattern classification: `{summary['mechanism_classification_pattern']}`.\n- KIVI classification: `{summary['mechanism_classification_kivi']}`."
         if complete
@@ -313,6 +326,7 @@ def build_report(summary: dict[str, Any]) -> str:
 - Observer unit tests and smoke are complete; {status_line}.
 - FP16 reference trajectory generation status: `{summary['fp16_reference_tasks']}/12` tasks available.
 - Teacher-forcing valid traces: `{summary['teacher_forcing_valid_traces']}/{summary['teacher_forcing_expected_traces']}`.
+- Free-running runs: `{summary.get('actual_free_running_runs')}/{summary.get('expected_free_running_runs')}` across `{summary.get('free_running_observational_tasks')}` selected tasks.
 
 ## 2. Motivation
 
@@ -395,7 +409,22 @@ Pending formal teacher-forcing traces.
 
 ## 19. Free-Running Observational Traces
 
-Pending.
+Phase B is observational and trajectory-confounded by design; the controlled mechanism evidence remains the teacher-forcing phase.
+
+- Selected unique tasks: `{summary.get('free_running_observational_tasks')}`.
+- Expected free-running runs: `{summary.get('expected_free_running_runs')}`.
+- Actual free-running runs: `{summary.get('actual_free_running_runs')}`.
+- Runtime errors: `{summary.get('free_running_runtime_errors')}`.
+- NaN/Inf rows: `{summary.get('free_running_nan_inf_rows')}`.
+- Free-running support classification: `{summary.get('free_running_supports_mechanism')}`.
+
+Artifacts:
+
+- `reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism/wave1a4_free_running_selected_tasks.json`
+- `reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism/wave1a4_free_running_attention_events.csv`
+- `reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism/wave1a4_free_running_divergence.csv`
+- `reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism/wave1a4_divergence_neighborhood_metrics.csv`
+- `reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism/wave1a4_free_running_task_summary.csv`
 
 ## 20. Mechanism Decision
 
@@ -403,6 +432,10 @@ Pending.
 - `EARLY_TOKEN_ATTENTION_ENRICHED={summary['early_token_attention_enriched']}`
 - `PATTERN_RESCUE_MECHANISM_SUPPORTED={summary['pattern_rescue_mechanism_supported']}`
 - `KIVI_RESCUE_MECHANISM_SUPPORTED={summary['kivi_rescue_mechanism_supported']}`
+- `FREE_RUNNING_SUPPORTS_MECHANISM={summary.get('free_running_supports_mechanism')}`
+- `WAVE1A4_TEACHER_FORCING_COMPLETED={summary.get('wave1a4_teacher_forcing_completed')}`
+- `WAVE1A4_FREE_RUNNING_COMPLETED={summary.get('wave1a4_free_running_completed')}`
+- `WAVE1A4_COMPLETED={summary.get('wave1a4_completed')}`
 
 ## 21. Limitations
 

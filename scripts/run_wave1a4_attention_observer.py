@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 import os
+import statistics
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,7 +19,8 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from bench.aime24_int2_wave1 import task_key3
-from bench.aime_utils import effective_seed, load_aime24, set_all_seeds, sha256_file
+from bench.aime_answer_parser import normalize_aime_answer, parse_aime_answer
+from bench.aime_utils import compute_stop_state, effective_seed, load_aime24, set_all_seeds, sha256_file
 from bench.attention_observer import (
     absolute_regions,
     cache_segment_regions,
@@ -30,7 +32,7 @@ from bench.attention_observer import (
     shadow_attention,
     tensor_pair_metrics,
 )
-from bench.bench_aime24_patternkv import load_model, render_prompt
+from bench.bench_aime24_patternkv import eos_ids, load_model, render_prompt
 from bench.paper_config import apply_method_defaults
 from models.segmented_cache import cache_segment_stats, deserialize_cache, reconstruct_full_k, reconstruct_full_v
 
@@ -39,6 +41,7 @@ RESULT_DIR = Path("results/aime24_int2_wave1_v100_8gpu_wave1a4")
 REPORT_DIR = Path("reports/aime24_int2_wave1_v100_8gpu/wave1a4_attention_mechanism")
 REF_CAPTURE_DIR = RESULT_DIR / "teacher_forcing_reference_captures"
 CONFIG_CAPTURE_DIR = RESULT_DIR / "teacher_forcing_config_captures"
+FREE_RUNNING_DIR = RESULT_DIR / "free_running_observational_traces"
 CSV_NAMES = {
     "mass": "wave1a4_attention_mass_metrics.csv",
     "enrichment": "wave1a4_attention_enrichment_metrics.csv",
@@ -63,6 +66,14 @@ CONFIGS = {
     "kivi_rolling_k2v2_s16_r128": ("kivi_paper_g128", "KIVI", 16),
     "kivi_rolling_k2v2_s128_r128": ("kivi_paper_g128", "KIVI", 128),
 }
+FREE_RUNNING_CONFIGS = (
+    "pattern_rolling_k2v2_s0_r128",
+    "pattern_rolling_k2v2_s16_r128",
+    "kivi_rolling_k2v2_s0_r128",
+    "kivi_rolling_k2v2_s16_r128",
+    "kivi_rolling_k2v2_s128_r128",
+)
+FREE_RUNNING_CHECKPOINTS = (512, 1024, 2048, 4096, 8192, 16384)
 
 
 @dataclass
@@ -149,9 +160,109 @@ def write_csv(path: Path, rows: list[dict[str, Any]], append: bool = False) -> N
         writer.writerows(rows)
 
 
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def stable_token_hash(token_ids: list[int]) -> str:
     payload = json.dumps([int(x) for x in token_ids], separators=(",", ":")).encode()
     return hashlib.sha256(payload).hexdigest()
+
+
+def split_task_keys(value: str | None) -> list[str]:
+    if not value:
+        return []
+    return [item for item in str(value).split(";") if item]
+
+
+def load_phaseb_selected_tasks() -> list[dict[str, Any]]:
+    wave1a3 = json.loads(Path("reports/aime24_int2_wave1_v100_8gpu/wave1a3_sink_length_sweep_summary.json").read_text(encoding="utf-8"))
+    selected: dict[str, dict[str, Any]] = {}
+    for comparison in wave1a3.get("paired_comparisons", []):
+        method_group = comparison.get("method_group")
+        effect = comparison.get("effect")
+        if method_group == "PatternKV" and effect == "S16 vs S0":
+            for task_key in split_task_keys(comparison.get("rescue_task_keys")):
+                item = selected.setdefault(task_key, {"task_key": task_key, "selection_reasons": []})
+                item["pattern_outcome_class"] = "RESCUE"
+                item["selection_reasons"].append("PatternKV S0->S16 RESCUE")
+            for task_key in split_task_keys(comparison.get("regression_task_keys")):
+                item = selected.setdefault(task_key, {"task_key": task_key, "selection_reasons": []})
+                item["pattern_outcome_class"] = "REGRESSION"
+                item["selection_reasons"].append("PatternKV S0->S16 REGRESSION")
+        if method_group == "KIVI" and effect == "S16 vs S0":
+            for task_key in split_task_keys(comparison.get("rescue_task_keys")):
+                item = selected.setdefault(task_key, {"task_key": task_key, "selection_reasons": []})
+                item["kivi_outcome_class"] = "RESCUE"
+                item["selection_reasons"].append("KIVI S0->S16 RESCUE")
+    tasks = []
+    for task_key, item in sorted(selected.items()):
+        parts = task_key.split(":")
+        problem_id = int(parts[1][1:])
+        sample_id = int(parts[2][1:])
+        seed = int(parts[3].replace("seed", ""))
+        item["problem_id"] = problem_id
+        item["sample_id"] = sample_id
+        item["seed"] = seed
+        item.setdefault("pattern_outcome_class", "NOT_SELECTED")
+        item.setdefault("kivi_outcome_class", "NOT_SELECTED")
+        item["selection_reason"] = "; ".join(item.pop("selection_reasons"))
+        tasks.append(item)
+    return tasks
+
+
+def write_phaseb_selected_tasks() -> list[dict[str, Any]]:
+    tasks = load_phaseb_selected_tasks()
+    write_json(REPORT_DIR / "wave1a4_free_running_selected_tasks.json", tasks)
+    return tasks
+
+
+def first_divergence(left: list[int], right: list[int]) -> dict[str, int | None]:
+    common = 0
+    for left_token, right_token in zip(left, right):
+        if int(left_token) != int(right_token):
+            break
+        common += 1
+    if len(left) == len(right) == common:
+        divergence = None
+    else:
+        divergence = common + 1
+    return {"first_divergence_token": divergence, "common_prefix_length": common}
+
+
+def top_p_sample(logits: torch.Tensor, *, temperature: float, top_p: float) -> int:
+    logits = logits.float() / float(temperature)
+    sorted_logits, sorted_indices = torch.sort(logits, descending=True)
+    probs = torch.softmax(sorted_logits, dim=-1)
+    cumulative = torch.cumsum(probs, dim=-1)
+    remove = cumulative > float(top_p)
+    remove[..., 1:] = remove[..., :-1].clone()
+    remove[..., 0] = False
+    sorted_logits = sorted_logits.masked_fill(remove, torch.finfo(sorted_logits.dtype).min)
+    filtered_probs = torch.softmax(sorted_logits, dim=-1)
+    sampled = torch.multinomial(filtered_probs, num_samples=1)
+    return int(sorted_indices.gather(-1, sampled).item())
+
+
+def classify_time_series(points: list[tuple[int, float]]) -> str:
+    valid = [(int(cp), float(value)) for cp, value in points if value is not None]
+    if len(valid) < 2:
+        return "NO_CLEAR_PATTERN"
+    values = [value for _, value in valid]
+    first = values[0]
+    last = values[-1]
+    vmax = max(values)
+    max_idx = values.index(vmax)
+    if max_idx == len(values) - 1 and vmax > first * 1.5 and vmax - min(values) > 0.05:
+        return "EARLY_MASS_LATE_REBOUND"
+    if vmax > max(first, last) * 1.5 and vmax - min(values) > 0.05:
+        return "EARLY_MASS_SPIKE_NEAR_DIVERGENCE"
+    if last < first * 0.5 and first - last > 0.05:
+        return "EARLY_MASS_DECAY"
+    if min(values) >= 0.5 * max(values):
+        return "EARLY_MASS_PERSISTENT"
+    return "NO_CLEAR_PATTERN"
 
 
 def load_selected_tasks(path: Path, dataset_path: Path, base_seed: int) -> list[dict[str, Any]]:
@@ -661,9 +772,387 @@ def run_smoke() -> dict[str, Any]:
     return summary
 
 
+def free_observation_row(
+    *,
+    task: dict[str, Any],
+    config_name: str,
+    method_label: str,
+    sink_length: int,
+    outcome_class: str,
+    checkpoint: int,
+    layer: int,
+    generated_tokens: int,
+    context_tokens: int,
+    prompt_tokens: int,
+    stop_reason: str | None,
+    strict_correct: bool | None,
+    segment_stats: dict[str, Any],
+    masses: dict[str, float],
+    enrichments: dict[str, float],
+) -> dict[str, Any]:
+    return {
+        "task_key": task["task_key"],
+        "method": method_label,
+        "config": config_name,
+        "outcome_class": outcome_class,
+        "checkpoint": int(checkpoint),
+        "layer": int(layer),
+        "generated_tokens": int(generated_tokens),
+        "context_tokens": int(context_tokens),
+        "prompt_tokens": int(prompt_tokens),
+        "sink_length": int(sink_length),
+        "recent_length": 128,
+        "first_divergence_token": None,
+        "common_prefix_length": None,
+        "prefix_controlled": None,
+        "trajectory_confounded": None,
+        "E16_mass": masses.get("E16"),
+        "E16_enrichment": enrichments.get("E16"),
+        "E32_mass": masses.get("E32"),
+        "E32_enrichment": enrichments.get("E32"),
+        "E64_mass": masses.get("E64"),
+        "E64_enrichment": enrichments.get("E64"),
+        "E128_mass": masses.get("E128"),
+        "E128_enrichment": enrichments.get("E128"),
+        "mass_sink": masses.get("protected_sink"),
+        "mass_history": masses.get("packed_history"),
+        "mass_pending": masses.get("pending_history"),
+        "mass_recent": masses.get("recent"),
+        "sink_prompt_tokens": min(int(prompt_tokens), int(sink_length)),
+        "sink_decode_tokens": max(min(int(sink_length), int(context_tokens)) - min(int(prompt_tokens), int(sink_length)), 0),
+        "stop_reason": stop_reason,
+        "strict_correct": strict_correct,
+    }
+
+
+def capture_free_running_checkpoint(
+    *,
+    task: dict[str, Any],
+    config_name: str,
+    method_label: str,
+    sink_length: int,
+    outcome_class_value: str,
+    checkpoint: int,
+    prompt_tokens: int,
+    generated_tokens: int,
+    stop_reason: str | None,
+    strict_correct: bool | None,
+    model: torch.nn.Module,
+    observer: LayerObserver,
+    past: Any,
+) -> list[dict[str, Any]]:
+    rows = []
+    for layer_idx, cap in observer.captures.items():
+        layer_cache = past[layer_idx]
+        key, value, segment_stats = reconstruct_layer_kv(layer_cache, pattern=method_label == "PatternKV")
+        attn_module = model.model.layers[layer_idx].self_attn
+        query = rotated_query(attn_module, cap.attn_input, cap.position_ids).detach().float().cpu()
+        key = key.detach().float().cpu()
+        value = value.detach().float().cpu()
+        context_tokens = int(key.shape[2])
+        num_groups = query.shape[1] // key.shape[1]
+        shadow = shadow_attention(query, repeat_kv_for_gqa(key, num_groups), repeat_kv_for_gqa(value, num_groups))
+        abs_regions = absolute_regions(context_tokens)
+        seg_regions = cache_segment_regions(
+            sink_tokens=int(segment_stats.get("sink_tokens") or 0),
+            packed_history_tokens=int(segment_stats.get("packed_history_tokens") or 0),
+            pending_tokens=int(segment_stats.get("pending_history_tokens") or 0),
+            recent_tokens=int(segment_stats.get("recent_tokens") or 0),
+        )
+        masses = {name: float(value.mean().item()) for name, value in region_mass(shadow["probs"], abs_regions).items()}
+        for name, value in region_mass(shadow["probs"], seg_regions).items():
+            masses[name] = float(value.mean().item())
+        enrichments = {
+            name: float(enrichment(region_mass(shadow["probs"], {name: region})[name], region_tokens=region.tokens, context_tokens=context_tokens).mean().item())
+            for name, region in abs_regions.items()
+        }
+        rows.append(
+            free_observation_row(
+                task=task,
+                config_name=config_name,
+                method_label=method_label,
+                sink_length=sink_length,
+                outcome_class=outcome_class_value,
+                checkpoint=checkpoint,
+                layer=layer_idx,
+                generated_tokens=generated_tokens,
+                context_tokens=context_tokens,
+                prompt_tokens=prompt_tokens,
+                stop_reason=stop_reason,
+                strict_correct=strict_correct,
+                segment_stats=segment_stats,
+                masses=masses,
+                enrichments=enrichments,
+            )
+        )
+    return rows
+
+
+@torch.no_grad()
+def run_free_running_config(args: argparse.Namespace) -> dict[str, Any]:
+    config_name = args.config_name
+    method, method_label, sink = CONFIGS[config_name]
+    model_args = make_model_args(args, config_name)
+    model, tokenizer = load_model(model_args)
+    layers = set(parse_ints(args.layers))
+    checkpoints = set(parse_ints(args.checkpoints))
+    max_checkpoint = max(checkpoints) if checkpoints else 0
+    selected = write_phaseb_selected_tasks()
+    if getattr(args, "task_key", ""):
+        selected = [task for task in selected if task["task_key"] == args.task_key]
+    rows_by_problem = {int(row["problem_id"]): row for row in load_aime24(args.dataset_path)}
+    observer = LayerObserver(model, layers)
+    out_dir = FREE_RUNNING_DIR / config_name
+    valid_runs = 0
+    runtime_errors = 0
+    try:
+        for task in selected:
+            if args.max_tasks and valid_runs >= args.max_tasks:
+                break
+            problem_row = rows_by_problem[int(task["problem_id"])]
+            set_all_seeds(int(task["seed"]))
+            if method == "patternkv_paper":
+                from models.llama_patternkv import reset_patternkv_runtime_state
+
+                reset_patternkv_runtime_state(model)
+            generated_ids: list[int] = []
+            observation_rows: list[dict[str, Any]] = []
+            rendered, _, _ = render_prompt(problem_row["problem"], tokenizer, args.force_think_prefix)
+            encoded = tokenizer(rendered, return_tensors="pt", add_special_tokens=False)
+            input_ids = encoded.input_ids.to("cuda:0")
+            attention_mask = encoded.attention_mask.to("cuda:0")
+            prompt_tokens = int(input_ids.shape[1])
+            record: dict[str, Any] = {
+                **task_summary_base(task, config_name),
+                "method": method_label,
+                "pattern_outcome_class": task.get("pattern_outcome_class"),
+                "kivi_outcome_class": task.get("kivi_outcome_class"),
+                "selection_reason": task.get("selection_reason"),
+                "sink_length": sink,
+                "recent_length": 128,
+                "prompt_tokens": prompt_tokens,
+                "trace_valid": False,
+                "runtime_error": None,
+            }
+            try:
+                observer.clear()
+                outputs = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=True, return_dict=True)
+                past = outputs.past_key_values
+                logits = outputs.logits[:, -1, :]
+                eos_set = set(eos_ids(tokenizer, model))
+                stop_reason = None
+                strict_correct = None
+                for pos in range(1, int(args.max_new_tokens) + 1):
+                    token = top_p_sample(logits[0], temperature=args.temperature, top_p=args.top_p)
+                    generated_ids.append(token)
+                    token_tensor = torch.tensor([[token]], device="cuda:0", dtype=torch.long)
+                    pos_attention = torch.ones(1, prompt_tokens + pos, device="cuda:0", dtype=attention_mask.dtype)
+                    observer.clear()
+                    outputs = model(input_ids=token_tensor, attention_mask=pos_attention, past_key_values=past, use_cache=True, return_dict=True)
+                    past = outputs.past_key_values
+                    logits = outputs.logits[:, -1, :]
+                    if pos in checkpoints:
+                        observation_rows.extend(
+                            capture_free_running_checkpoint(
+                                task=task,
+                                config_name=config_name,
+                                method_label=method_label,
+                                sink_length=sink,
+                                outcome_class_value=task["pattern_outcome_class"] if method_label == "PatternKV" else task["kivi_outcome_class"],
+                                checkpoint=pos,
+                                prompt_tokens=prompt_tokens,
+                                generated_tokens=pos,
+                                stop_reason=None,
+                                strict_correct=None,
+                                model=model,
+                                observer=observer,
+                                past=past,
+                            )
+                        )
+                    if token in eos_set:
+                        break
+                    if max_checkpoint and pos >= max_checkpoint and args.stop_after_last_checkpoint:
+                        break
+                generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
+                parsed = parse_aime_answer(generated_text)
+                ref_answer = normalize_aime_answer(problem_row["answer"])
+                stop = compute_stop_state(generated_ids, int(args.max_new_tokens), eos_ids(tokenizer, model))
+                stop_reason = stop.get("stop_reason")
+                strict_correct = parsed["parsed_answer"] == ref_answer
+                for row in observation_rows:
+                    row["stop_reason"] = stop_reason
+                    row["strict_correct"] = strict_correct
+                record.update(
+                    {
+                        "trace_valid": True,
+                        "generated_token_ids": generated_ids,
+                        "generated_token_sha256": stable_token_hash(generated_ids),
+                        "generated_tokens": len(generated_ids),
+                        "generated_text": generated_text,
+                        "parsed_answer": parsed["parsed_answer"],
+                        "parser_error": parsed["parser_error"],
+                        "gold_answer": ref_answer,
+                        "strict_correct": strict_correct,
+                        "stop_reason": stop_reason,
+                        "observations": observation_rows,
+                        "checkpoint_rows": len(observation_rows),
+                    }
+                )
+                valid_runs += 1
+            except Exception as exc:
+                runtime_errors += 1
+                record.update({"trace_valid": False, "runtime_error": repr(exc), "generated_token_ids": generated_ids, "observations": observation_rows})
+            finally:
+                write_json(out_dir / f"{safe_key(task['task_key'])}.json", record)
+                del input_ids, attention_mask, encoded
+                torch.cuda.empty_cache()
+    finally:
+        observer.close()
+        del model
+        torch.cuda.empty_cache()
+    summary = {"config": config_name, "valid_runs": valid_runs, "runtime_errors": runtime_errors, "selected_tasks": len(selected)}
+    write_json(out_dir / f"{config_name}_free_running_summary.json", summary)
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return summary
+
+
+def load_free_records() -> list[dict[str, Any]]:
+    records = []
+    for config_name in FREE_RUNNING_CONFIGS:
+        for path in sorted((FREE_RUNNING_DIR / config_name).glob("aime24_*.json")):
+            try:
+                records.append(json.loads(path.read_text(encoding="utf-8")))
+            except Exception:
+                continue
+    return records
+
+
+def pair_divergence_rows(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_config_task = {(rec["config"], rec["task_key"]): rec for rec in records if rec.get("trace_valid")}
+    pairs = [
+        ("PatternKV", "pattern_rolling_k2v2_s0_r128", "pattern_rolling_k2v2_s16_r128", "S0_vs_S16"),
+        ("KIVI", "kivi_rolling_k2v2_s0_r128", "kivi_rolling_k2v2_s16_r128", "S0_vs_S16"),
+        ("KIVI", "kivi_rolling_k2v2_s0_r128", "kivi_rolling_k2v2_s128_r128", "S0_vs_S128"),
+        ("KIVI", "kivi_rolling_k2v2_s16_r128", "kivi_rolling_k2v2_s128_r128", "S16_vs_S128"),
+    ]
+    rows = []
+    task_keys = sorted({rec["task_key"] for rec in records})
+    for method, left_cfg, right_cfg, comparison in pairs:
+        for task_key in task_keys:
+            left = by_config_task.get((left_cfg, task_key))
+            right = by_config_task.get((right_cfg, task_key))
+            if not left or not right:
+                continue
+            div = first_divergence(left.get("generated_token_ids") or [], right.get("generated_token_ids") or [])
+            rows.append(
+                {
+                    "method": method,
+                    "comparison": comparison,
+                    "task_key": task_key,
+                    "left_config": left_cfg,
+                    "right_config": right_cfg,
+                    "first_divergence_token": div["first_divergence_token"],
+                    "common_prefix_length": div["common_prefix_length"],
+                    "left_generated_tokens": left.get("generated_tokens"),
+                    "right_generated_tokens": right.get("generated_tokens"),
+                    "left_stop_reason": left.get("stop_reason"),
+                    "right_stop_reason": right.get("stop_reason"),
+                    "left_strict_correct": left.get("strict_correct"),
+                    "right_strict_correct": right.get("strict_correct"),
+                }
+            )
+    return rows
+
+
+def aggregate_free_running() -> dict[str, Any]:
+    selected = write_phaseb_selected_tasks()
+    records = load_free_records()
+    divergence_rows = pair_divergence_rows(records)
+    divergence_by_key = {(row["left_config"], row["task_key"]): row for row in divergence_rows}
+    divergence_by_key.update({(row["right_config"], row["task_key"]): row for row in divergence_rows})
+    attention_rows = []
+    task_summary_rows = []
+    neighborhood_rows = []
+    nan_inf = 0
+    for rec in records:
+        obs = rec.get("observations") or []
+        div = divergence_by_key.get((rec.get("config"), rec.get("task_key")), {})
+        first_div = div.get("first_divergence_token")
+        common_prefix = div.get("common_prefix_length")
+        points = []
+        for row in obs:
+            out = dict(row)
+            out["first_divergence_token"] = first_div
+            out["common_prefix_length"] = common_prefix
+            checkpoint = int(out["checkpoint"])
+            out["prefix_controlled"] = first_div is None or checkpoint < int(first_div)
+            out["trajectory_confounded"] = first_div is not None and checkpoint >= int(first_div)
+            attention_rows.append(out)
+            points.append((checkpoint, out.get("E16_mass")))
+            for key, value in out.items():
+                if isinstance(value, float) and not math.isfinite(value):
+                    nan_inf += 1
+        trend = classify_time_series(points)
+        task_summary_rows.append(
+            {
+                "task_key": rec.get("task_key"),
+                "method": rec.get("method"),
+                "config": rec.get("config"),
+                "outcome_class": rec.get("pattern_outcome_class") if rec.get("method") == "PatternKV" else rec.get("kivi_outcome_class"),
+                "trace_valid": rec.get("trace_valid"),
+                "generated_tokens": rec.get("generated_tokens"),
+                "stop_reason": rec.get("stop_reason"),
+                "strict_correct": rec.get("strict_correct"),
+                "checkpoint_rows": len(obs),
+                "first_divergence_token": first_div,
+                "common_prefix_length": common_prefix,
+                "early_mass_trend": trend,
+                "runtime_error": rec.get("runtime_error"),
+            }
+        )
+    for div in divergence_rows:
+        related = [row for row in attention_rows if row["task_key"] == div["task_key"] and row["config"] in {div["left_config"], div["right_config"]}]
+        if not related:
+            continue
+        target = int(div["first_divergence_token"] or div["common_prefix_length"] or 0)
+        before = [row for row in related if int(row["checkpoint"]) <= target]
+        after = [row for row in related if int(row["checkpoint"]) >= target]
+        chosen = []
+        if before:
+            chosen.append(max(before, key=lambda row: int(row["checkpoint"])))
+        if after:
+            chosen.append(min(after, key=lambda row: int(row["checkpoint"])))
+        for row in chosen:
+            nrow = {k: row.get(k) for k in ("task_key", "method", "config", "outcome_class", "checkpoint", "E16_mass", "E16_enrichment", "E32_mass", "E32_enrichment")}
+            nrow.update({k: div.get(k) for k in ("comparison", "first_divergence_token", "common_prefix_length")})
+            neighborhood_rows.append(nrow)
+    write_csv(REPORT_DIR / "wave1a4_free_running_attention_events.csv", attention_rows)
+    write_csv(REPORT_DIR / "wave1a4_free_running_divergence.csv", divergence_rows)
+    write_csv(REPORT_DIR / "wave1a4_divergence_neighborhood_metrics.csv", neighborhood_rows)
+    write_csv(REPORT_DIR / "wave1a4_free_running_task_summary.csv", task_summary_rows)
+    expected_runs = len(selected) * len(FREE_RUNNING_CONFIGS)
+    actual_runs = sum(1 for rec in records if rec.get("trace_valid"))
+    support = "inconclusive"
+    rescue_values = [float(row["E16_enrichment"]) for row in attention_rows if row.get("outcome_class") == "RESCUE" and row.get("E16_enrichment") not in (None, "")]
+    if rescue_values and statistics.median(rescue_values) > 1.0:
+        support = True
+    summary = {
+        "selected_unique_tasks": len(selected),
+        "expected_free_running_runs": expected_runs,
+        "actual_free_running_runs": actual_runs,
+        "runtime_errors": sum(1 for rec in records if rec.get("runtime_error")),
+        "nan_inf_rows": nan_inf,
+        "free_running_supports_mechanism": support,
+        "median_first_divergence_token": statistics.median([int(row["first_divergence_token"]) for row in divergence_rows if row.get("first_divergence_token")]) if any(row.get("first_divergence_token") for row in divergence_rows) else None,
+    }
+    write_json(FREE_RUNNING_DIR / "wave1a4_free_running_summary.json", summary)
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return summary
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["smoke", "fp16-manifest", "capture-fp16", "teacher-config"], default="smoke")
+    parser.add_argument("--mode", choices=["smoke", "fp16-manifest", "capture-fp16", "teacher-config", "phaseb-select", "free-run-config", "aggregate-free-running"], default="smoke")
     parser.add_argument("--config-name", choices=sorted(CONFIGS), default="fp16_reference")
     parser.add_argument("--model-path", default="/home/qinch2023/modelscope_models/DeepSeek-R1-Distill-Llama-8B")
     parser.add_argument("--dataset-path", type=Path, default=Path("datasets/aime/aime24.jsonl"))
@@ -671,12 +1160,17 @@ def main() -> None:
     parser.add_argument("--reference-dir", type=Path, default=RESULT_DIR / "fp16_reference_trajectories")
     parser.add_argument("--ref-capture-dir", type=Path, default=REF_CAPTURE_DIR)
     parser.add_argument("--base-seed", type=int, default=42)
+    parser.add_argument("--max-new-tokens", type=int, default=32768)
+    parser.add_argument("--temperature", type=float, default=0.6)
+    parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--model-dtype", choices=["float16", "bfloat16"], default="float16")
     parser.add_argument("--force-think-prefix", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--layers", default=",".join(str(x) for x in DEFAULT_LAYERS))
     parser.add_argument("--checkpoints", default=",".join(str(x) for x in DEFAULT_CHECKPOINTS))
     parser.add_argument("--max-tasks", type=int, default=0)
+    parser.add_argument("--task-key", default="")
     parser.add_argument("--clear-csvs", action="store_true")
+    parser.add_argument("--stop-after-last-checkpoint", action="store_true")
     args = parser.parse_args()
     if args.clear_csvs:
         clear_csvs()
@@ -690,6 +1184,15 @@ def main() -> None:
         if args.config_name == "fp16_reference":
             raise SystemExit("teacher-config requires a quantized config")
         run_path(args, args.config_name, "teacher-config")
+    elif args.mode == "phaseb-select":
+        tasks = write_phaseb_selected_tasks()
+        print(json.dumps({"selected_unique_tasks": len(tasks), "tasks": tasks}, indent=2, ensure_ascii=False, sort_keys=True))
+    elif args.mode == "free-run-config":
+        if args.config_name not in FREE_RUNNING_CONFIGS:
+            raise SystemExit(f"free-run-config supports only {FREE_RUNNING_CONFIGS}")
+        run_free_running_config(args)
+    elif args.mode == "aggregate-free-running":
+        aggregate_free_running()
 
 
 if __name__ == "__main__":

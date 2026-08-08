@@ -1,0 +1,121 @@
+{
+  "actual_free_running_runs": 50,
+  "branch": "exp/aime-int2-wave1-v100-8gpu",
+  "cache_mutation_failures": 0,
+  "early_token_attention_enriched": true,
+  "early_token_attention_present": true,
+  "expected_free_running_runs": 50,
+  "fp16_median_E128_enrichment": 5.066664457321167,
+  "fp16_median_E128_mass": 0.5801813006401062,
+  "fp16_median_E16_enrichment": 39.53356170654297,
+  "fp16_median_E16_mass": 0.5611302256584167,
+  "fp16_median_E32_enrichment": 19.82754898071289,
+  "fp16_median_E32_mass": 0.5630920231342316,
+  "fp16_median_E64_enrichment": 9.989213943481445,
+  "fp16_median_E64_mass": 0.5650606155395508,
+  "fp16_reference_manifest": "results/aime24_int2_wave1_v100_8gpu_wave1a4/fp16_reference_manifest.json",
+  "fp16_reference_tasks": 12,
+  "free_running_nan_inf_rows": 0,
+  "free_running_observational_tasks": 10,
+  "free_running_runtime_errors": 0,
+  "free_running_supports_mechanism": true,
+  "full_aime24_validation_recommended": true,
+  "generation_config_hash": "a7d6b2f8bab37893b6331c66b3e5eb6a",
+  "head": "bc1ff8c483fc92ba0161c446398c427df0616607",
+  "kivi_rescue_mechanism_supported": true,
+  "kivi_s0_attention_output_relative_l2_median": 0.5685262680053711,
+  "kivi_s0_routing_only_relative_l2_median": 0.32632026076316833,
+  "kivi_s0_value_only_relative_l2_median": 0.4434923678636551,
+  "kivi_s128_attention_output_relative_l2_median": 0.13411666452884674,
+  "kivi_s128_routing_only_relative_l2_median": 0.0686911977827549,
+  "kivi_s128_value_only_relative_l2_median": 0.10385147854685783,
+  "kivi_sink_reduces_attention_output_error": true,
+  "kivi_sink_reduces_routing_error": true,
+  "kivi_sink_reduces_value_error": true,
+  "logits_change_failures": 0,
+  "mechanism_classification_kivi": "MIXED",
+  "mechanism_classification_pattern": "MIXED",
+  "nan_inf_metric_rows": 0,
+  "next_priority": "full AIME24 validation",
+  "observer_smoke_status": true,
+  "pattern_rescue_mechanism_supported": true,
+  "pattern_s0_attention_output_relative_l2_median": 0.5134918689727783,
+  "pattern_s0_routing_only_relative_l2_median": 0.29803861677646637,
+  "pattern_s0_value_only_relative_l2_median": 0.4004945755004883,
+  "pattern_s16_attention_output_relative_l2_median": 0.14039704948663712,
+  "pattern_s16_routing_only_relative_l2_median": 0.07333797588944435,
+  "pattern_s16_value_only_relative_l2_median": 0.09866815060377121,
+  "pattern_sink_reduces_attention_output_error": true,
+  "pattern_sink_reduces_routing_error": true,
+  "pattern_sink_reduces_value_error": true,
+  "runtime_errors": 0,
+  "task_manifest_hash": "ed3ff618c8072787a7b1687fef368c5c8d2c04801baf33fe850fca3b24a7af2e",
+  "teacher_forcing_expected_traces": 84,
+  "teacher_forcing_valid_traces": 84,
+  "top_layer_head_pairs_by_E16_mass": [
+    {
+      "config": "pattern_rolling_k2v2_s0_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9650468230247498
+    },
+    {
+      "config": "kivi_rolling_k2v2_s0_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9636394679546356
+    },
+    {
+      "config": "kivi_rolling_k2v2_s128_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9597033858299255
+    },
+    {
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9579642713069916
+    },
+    {
+      "config": "pattern_rolling_k2v2_s128_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9574682712554932
+    },
+    {
+      "config": "pattern_rolling_k2v2_s0_r128",
+      "head_id": 26,
+      "layer": 23,
+      "median_E16_mass": 0.9570569097995758
+    },
+    {
+      "config": "kivi_rolling_k2v2_s16_r128",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9558448493480682
+    },
+    {
+      "config": "kivi_rolling_k2v2_s0_r128",
+      "head_id": 26,
+      "layer": 23,
+      "median_E16_mass": 0.9557673335075378
+    },
+    {
+      "config": "fp16_reference",
+      "head_id": 10,
+      "layer": 23,
+      "median_E16_mass": 0.9557116329669952
+    },
+    {
+      "config": "fp16_reference",
+      "head_id": 26,
+      "layer": 23,
+      "median_E16_mass": 0.9525789022445679
+    }
+  ],
+  "wave1a4_completed": true,
+  "wave1a4_free_running_completed": true,
+  "wave1a4_status": "complete",
+  "wave1a4_teacher_forcing_completed": true
+}

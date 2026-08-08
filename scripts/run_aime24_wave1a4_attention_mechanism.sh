@@ -108,6 +108,83 @@ case "${1:-}" in
     echo "$!" > "$RUN_DIR/formal_offline.pid"
     echo "formal_offline_pid=$!"
     ;;
+  phaseb-select)
+    ensure_ready || exit $?
+    "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py --mode phaseb-select
+    ;;
+  phaseb-smoke)
+    ensure_ready || exit $?
+    "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
+      --mode phaseb-select
+    CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
+      --mode free-run-config \
+      --config-name pattern_rolling_k2v2_s0_r128 \
+      --task-key aime24:p11:s1:seed11043 \
+      --checkpoints 512 \
+      --layers 0,15,31 \
+      --stop-after-last-checkpoint
+    CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
+      --mode free-run-config \
+      --config-name pattern_rolling_k2v2_s16_r128 \
+      --task-key aime24:p11:s1:seed11043 \
+      --checkpoints 512 \
+      --layers 0,15,31 \
+      --stop-after-last-checkpoint
+    "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py --mode aggregate-free-running
+    ;;
+  phaseb-formal-offline)
+    ensure_ready || exit $?
+    nohup setsid bash -lc '
+      set -euo pipefail
+      cd /home/qinch2023/Bounded-pattrenKV-method
+      PYTHON_BIN="${PYTHON_BIN:-/home/qinch2023/miniconda3/envs/patternkv-v100/bin/python}"
+      RUN_DIR="${RUN_DIR:-run/aime24_int2_wave1_v100_8gpu_wave1a4}"
+      "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py --mode phaseb-select
+      configs=(
+        pattern_rolling_k2v2_s0_r128
+        pattern_rolling_k2v2_s16_r128
+        kivi_rolling_k2v2_s0_r128
+        kivi_rolling_k2v2_s16_r128
+        kivi_rolling_k2v2_s128_r128
+      )
+      gpus=(0 1 2 3 4)
+      pids=()
+      for idx in "${!configs[@]}"; do
+        config="${configs[$idx]}"
+        gpu="${gpus[$idx]}"
+        log="$RUN_DIR/wave1a4_phaseb_${config}_gpu${gpu}.log"
+        echo "[$(date -Iseconds)] phaseb free-run $config on GPU $gpu"
+        (
+          CUDA_VISIBLE_DEVICES="$gpu" "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py \
+            --mode free-run-config \
+            --config-name "$config" \
+            --checkpoints 512,1024,2048,4096,8192,16384 \
+            --layers 0,7,15,23,31
+        ) > "$log" 2>&1 &
+        pids+=("$!")
+        echo "${pids[-1]}" > "$RUN_DIR/wave1a4_phaseb_${config}.pid"
+      done
+      failed=0
+      for pid in "${pids[@]}"; do
+        if ! wait "$pid"; then failed=1; fi
+      done
+      if [[ "$failed" != "0" ]]; then
+        echo "At least one Phase B worker failed" >&2
+        exit 1
+      fi
+      "$PYTHON_BIN" scripts/run_wave1a4_attention_observer.py --mode aggregate-free-running
+      "$PYTHON_BIN" scripts/summarize_wave1a4_attention_mechanism.py
+      echo "[$(date -Iseconds)] Wave1A4 Phase B complete"
+    ' > "$RUN_DIR/phaseb_formal.log" 2>&1 < /dev/null &
+    echo "$!" > "$RUN_DIR/phaseb_formal.pid"
+    echo "phaseb_formal_pid=$!"
+    ;;
+  phaseb-queue-offline)
+    ensure_ready || exit $?
+    nohup setsid "$PYTHON_BIN" scripts/run_wave1a4_phaseb_queue.py > "$RUN_DIR/phaseb_queue.log" 2>&1 < /dev/null &
+    echo "$!" > "$RUN_DIR/phaseb_queue.pid"
+    echo "phaseb_queue_pid=$!"
+    ;;
   summarize)
     "$PYTHON_BIN" scripts/summarize_wave1a4_attention_mechanism.py
     ;;
@@ -123,7 +200,7 @@ case "${1:-}" in
     done
     ;;
   *)
-    echo "usage: bash scripts/run_aime24_wave1a4_attention_mechanism.sh {fp16-reference|fp16-reference-offline|fp16-manifest|observer-smoke|capture-fp16|capture-fp16-offline|teacher-config|teacher-config-offline|formal-offline|summarize|status}" >&2
+    echo "usage: bash scripts/run_aime24_wave1a4_attention_mechanism.sh {fp16-reference|fp16-reference-offline|fp16-manifest|observer-smoke|capture-fp16|capture-fp16-offline|teacher-config|teacher-config-offline|formal-offline|phaseb-select|phaseb-smoke|phaseb-formal-offline|phaseb-queue-offline|summarize|status}" >&2
     exit 2
     ;;
 esac
