@@ -3,9 +3,9 @@ pattern_rolling_k2v2_s0_r128,12,12,12,,,0,1,1,True
 pattern_rolling_k2v2_s16_r128,12,12,12,,,0,0,0,True
 pattern_rolling_k2v2_s32_r128,12,12,12,,,0,0,0,True
 pattern_rolling_k2v2_s64_r128,12,12,12,,,0,0,0,True
-pattern_rolling_k2v2_s128_r128,12,12,1,,,11,0,0,False
+pattern_rolling_k2v2_s128_r128,12,12,12,,,0,0,0,True
 kivi_rolling_k2v2_s0_r128,12,12,12,,,0,0,1,True
 kivi_rolling_k2v2_s16_r128,12,12,12,,,0,0,0,True
 kivi_rolling_k2v2_s32_r128,12,12,12,,,0,0,0,True
 kivi_rolling_k2v2_s64_r128,12,12,12,,,0,0,0,True
-kivi_rolling_k2v2_s128_r128,12,12,1,,,11,0,0,False
+kivi_rolling_k2v2_s128_r128,12,12,12,,,0,0,0,True

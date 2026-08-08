@@ -1,25 +1,25 @@
-method_group,task_key,S0_correct,S0_stop,S0_tokens,S0_answer,S0_error,S16_correct,S16_stop,S16_tokens,S16_answer,S16_error,S32_correct,S32_stop,S32_tokens,S32_answer,S32_error,S64_correct,S64_stop,S64_tokens,S64_answer,S64_error,S128_correct,S128_stop,S128_tokens,S128_answer,S128_error,first_sink_that_rescues,non_monotonic
-PatternKV,aime24:p12:s0:seed12042,True,eos,8781,540,,True,eos,5795,540,,True,eos,7095,540,,True,eos,6372,540,,,error,,,ValueError('sink token count mismatch: 64 != 65'),,False
-PatternKV,aime24:p14:s0:seed14042,False,eos,23163,240,,True,eos,13183,480,,True,eos,10925,480,,False,eos,15049,80,,,error,,,ValueError('sink token count mismatch: 104 != 105'),NON_MONOTONIC,True
-PatternKV,aime24:p15:s1:seed15043,False,eos,10492,0,,True,eos,6809,73,,False,eos,11423,681,,False,eos,17003,0,,,error,,,ValueError('sink token count mismatch: 120 != 121'),NON_MONOTONIC,True
-PatternKV,aime24:p16:s0:seed16042,True,eos,5574,468,,False,eos,23728,156,,False,eos,7204,156,,True,eos,4341,468,,,error,,,ValueError('sink token count mismatch: 74 != 75'),,True
-PatternKV,aime24:p11:s0:seed11042,True,eos,6059,294,,True,eos,4292,294,,True,eos,5389,294,,True,eos,3978,294,,,error,,,ValueError('sink token count mismatch: 75 != 76'),,False
-PatternKV,aime24:p12:s1:seed12043,True,eos,6798,540,,True,eos,5316,540,,True,eos,8872,540,,True,eos,7516,540,,,error,,,ValueError('sink token count mismatch: 64 != 65'),,False
-PatternKV,aime24:p6:s0:seed6042,False,eos,15674,281,,False,eos,28752,23,,True,eos,6540,721,,True,eos,4966,721,,,error,,,ValueError('sink token count mismatch: 117 != 118'),32,False
-PatternKV,aime24:p6:s1:seed6043,True,eos,9772,721,,True,eos,12073,721,,True,eos,11251,721,,False,eos,10369,723,,,error,,,ValueError('sink token count mismatch: 117 != 118'),,True
-PatternKV,aime24:p0:s0:seed42,True,eos,3248,204,,True,eos,3733,204,,True,eos,3769,204,,True,eos,3514,204,,True,eos,4580,204,,,False
-PatternKV,aime24:p11:s1:seed11043,False,length,32768,,,True,eos,5920,294,,True,eos,4006,294,,True,eos,11451,294,,,error,,,ValueError('sink token count mismatch: 75 != 76'),16,False
-PatternKV,aime24:p15:s0:seed15042,True,eos,7401,73,,False,eos,16403,106,,True,eos,7608,73,,True,eos,8608,73,,,error,,,ValueError('sink token count mismatch: 120 != 121'),,True
-PatternKV,aime24:p17:s0:seed17042,False,eos,15262,6,,True,eos,8674,601,,False,eos,10720,13,,False,eos,17468,201,,,error,,,ValueError('sink token count mismatch: 102 != 103'),NON_MONOTONIC,True
-KIVI,aime24:p12:s0:seed12042,False,eos,14719,343,,True,eos,5543,540,,True,eos,7254,540,,True,eos,17650,540,,,error,,,ValueError('sink token count mismatch: 64 != 65'),16,False
-KIVI,aime24:p14:s0:seed14042,False,eos,13032,80,,False,eos,13555,80,,True,eos,10945,480,,True,eos,11739,480,,,error,,,ValueError('sink token count mismatch: 104 != 105'),32,False
-KIVI,aime24:p15:s1:seed15043,False,length,32768,234,,False,eos,12535,34,,False,eos,4235,151,,False,eos,9915,229,,,error,,,ValueError('sink token count mismatch: 120 != 121'),,False
-KIVI,aime24:p16:s0:seed16042,False,eos,10397,156,,False,eos,11913,513,,False,eos,10526,156,,True,eos,16911,468,,,error,,,ValueError('sink token count mismatch: 74 != 75'),64,False
-KIVI,aime24:p11:s0:seed11042,False,eos,9903,441,,True,eos,5078,294,,False,eos,5022,882,,True,eos,6870,294,,,error,,,ValueError('sink token count mismatch: 75 != 76'),NON_MONOTONIC,True
-KIVI,aime24:p12:s1:seed12043,False,eos,30129,321,,True,eos,7733,540,,False,eos,7566,36,,True,eos,5824,540,,,error,,,ValueError('sink token count mismatch: 64 != 65'),NON_MONOTONIC,True
-KIVI,aime24:p6:s0:seed6042,False,eos,11669,137,,True,eos,11526,721,,False,eos,9472,673,,True,eos,6858,721,,,error,,,ValueError('sink token count mismatch: 117 != 118'),NON_MONOTONIC,True
-KIVI,aime24:p6:s1:seed6043,False,eos,11818,723,,False,eos,25032,98,,False,eos,7665,55,,True,eos,18667,721,,,error,,,ValueError('sink token count mismatch: 117 != 118'),64,False
-KIVI,aime24:p0:s0:seed42,True,eos,4108,204,,True,eos,2714,204,,True,eos,3493,204,,False,eos,11134,619,,True,eos,3218,204,,,True
-KIVI,aime24:p11:s1:seed11043,True,eos,6086,294,,True,eos,2581,294,,True,eos,5605,294,,False,eos,7335,147,,,error,,,ValueError('sink token count mismatch: 75 != 76'),,True
-KIVI,aime24:p15:s0:seed15042,False,eos,22999,234,,False,eos,23262,16,,True,eos,5036,73,,False,eos,15421,234,,,error,,,ValueError('sink token count mismatch: 120 != 121'),NON_MONOTONIC,True
-KIVI,aime24:p17:s0:seed17042,False,eos,17189,211,,False,eos,12320,401,,False,eos,14083,401,,False,eos,17545,403,,,error,,,ValueError('sink token count mismatch: 102 != 103'),,False
+method_group,task_key,S0_correct,S0_tokens,S0_stop,S0_answer,S16_correct,S16_tokens,S16_stop,S16_answer,S32_correct,S32_tokens,S32_stop,S32_answer,S64_correct,S64_tokens,S64_stop,S64_answer,S128_correct,S128_tokens,S128_stop,S128_answer,first_sink_that_rescues,non_monotonic
+PatternKV,aime24:p12:s0:seed12042,True,8781,eos,540,True,5795,eos,540,True,7095,eos,540,True,6372,eos,540,True,9342,eos,540,,False
+PatternKV,aime24:p14:s0:seed14042,False,23163,eos,240,True,13183,eos,480,True,10925,eos,480,False,15049,eos,80,False,12232,eos,960,16,True
+PatternKV,aime24:p15:s1:seed15043,False,10492,eos,0,True,6809,eos,73,False,11423,eos,681,False,17003,eos,0,False,18749,eos,68,16,True
+PatternKV,aime24:p16:s0:seed16042,True,5574,eos,468,False,23728,eos,156,False,7204,eos,156,True,4341,eos,468,True,5647,eos,468,,True
+PatternKV,aime24:p11:s0:seed11042,True,6059,eos,294,True,4292,eos,294,True,5389,eos,294,True,3978,eos,294,True,8903,eos,294,,False
+PatternKV,aime24:p12:s1:seed12043,True,6798,eos,540,True,5316,eos,540,True,8872,eos,540,True,7516,eos,540,True,5237,eos,540,,False
+PatternKV,aime24:p6:s0:seed6042,False,15674,eos,281,False,28752,eos,23,True,6540,eos,721,True,4966,eos,721,False,11826,eos,500,32,True
+PatternKV,aime24:p6:s1:seed6043,True,9772,eos,721,True,12073,eos,721,True,11251,eos,721,False,10369,eos,723,True,14543,eos,721,,True
+PatternKV,aime24:p0:s0:seed42,True,3248,eos,204,True,3733,eos,204,True,3769,eos,204,True,3514,eos,204,True,4580,eos,204,,False
+PatternKV,aime24:p11:s1:seed11043,False,32768,length,,True,5920,eos,294,True,4006,eos,294,True,11451,eos,294,True,3776,eos,294,16,False
+PatternKV,aime24:p15:s0:seed15042,True,7401,eos,73,False,16403,eos,106,True,7608,eos,73,True,8608,eos,73,False,11055,eos,219,,True
+PatternKV,aime24:p17:s0:seed17042,False,15262,eos,6,True,8674,eos,601,False,10720,eos,13,False,17468,eos,201,False,12519,eos,7,16,True
+KIVI,aime24:p12:s0:seed12042,False,14719,eos,343,True,5543,eos,540,True,7254,eos,540,True,17650,eos,540,True,3618,eos,540,16,False
+KIVI,aime24:p14:s0:seed14042,False,13032,eos,80,False,13555,eos,80,True,10945,eos,480,True,11739,eos,480,True,22007,eos,480,32,False
+KIVI,aime24:p15:s1:seed15043,False,32768,length,234,False,12535,eos,34,False,4235,eos,151,False,9915,eos,229,False,18795,eos,203,,False
+KIVI,aime24:p16:s0:seed16042,False,10397,eos,156,False,11913,eos,513,False,10526,eos,156,True,16911,eos,468,False,6309,eos,182,64,True
+KIVI,aime24:p11:s0:seed11042,False,9903,eos,441,True,5078,eos,294,False,5022,eos,882,True,6870,eos,294,True,5070,eos,294,16,True
+KIVI,aime24:p12:s1:seed12043,False,30129,eos,321,True,7733,eos,540,False,7566,eos,36,True,5824,eos,540,False,5787,eos,36,16,True
+KIVI,aime24:p6:s0:seed6042,False,11669,eos,137,True,11526,eos,721,False,9472,eos,673,True,6858,eos,721,True,12911,eos,721,16,True
+KIVI,aime24:p6:s1:seed6043,False,11818,eos,723,False,25032,eos,98,False,7665,eos,55,True,18667,eos,721,True,12077,eos,721,64,False
+KIVI,aime24:p0:s0:seed42,True,4108,eos,204,True,2714,eos,204,True,3493,eos,204,False,11134,eos,619,True,3218,eos,204,,True
+KIVI,aime24:p11:s1:seed11043,True,6086,eos,294,True,2581,eos,294,True,5605,eos,294,False,7335,eos,147,True,5989,eos,294,,True
+KIVI,aime24:p15:s0:seed15042,False,22999,eos,234,False,23262,eos,16,True,5036,eos,73,False,15421,eos,234,True,2045,eos,73,32,True
+KIVI,aime24:p17:s0:seed17042,False,17189,eos,211,False,12320,eos,401,False,14083,eos,401,False,17545,eos,403,False,13388,eos,7,,False

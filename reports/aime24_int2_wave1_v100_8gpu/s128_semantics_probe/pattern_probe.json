@@ -1,0 +1,197 @@
+{
+  "canonical_semantics": "absolute_sequence_prefix",
+  "configured_sink_length": 128,
+  "method": "PatternKV",
+  "original_error": "ValueError('sink token count mismatch: 117 != 118')",
+  "prefill": {
+    "actual_recent_tokens": 0,
+    "actual_sink_tokens": 117,
+    "packed_tokens": 0,
+    "pending_tokens": 0,
+    "total_tokens": 117
+  },
+  "problem_id": 6,
+  "prompt_tokens": 117,
+  "recent_length": 128,
+  "root_cause": "sink_semantics_inconsistent_between_initialization_append_and_validator",
+  "sample_id": 0,
+  "steps": [
+    {
+      "decode_step": 1,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 118,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 118,
+      "old_actual_recent_tokens": 1,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 118
+    },
+    {
+      "decode_step": 2,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 119,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 119,
+      "old_actual_recent_tokens": 2,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 119
+    },
+    {
+      "decode_step": 3,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 120,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 120,
+      "old_actual_recent_tokens": 3,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 120
+    },
+    {
+      "decode_step": 4,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 121,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 121,
+      "old_actual_recent_tokens": 4,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 121
+    },
+    {
+      "decode_step": 5,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 122,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 122,
+      "old_actual_recent_tokens": 5,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 122
+    },
+    {
+      "decode_step": 6,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 123,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 123,
+      "old_actual_recent_tokens": 6,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 123
+    },
+    {
+      "decode_step": 7,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 124,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 124,
+      "old_actual_recent_tokens": 7,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 124
+    },
+    {
+      "decode_step": 8,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 125,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 125,
+      "old_actual_recent_tokens": 8,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 125
+    },
+    {
+      "decode_step": 9,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 126,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 126,
+      "old_actual_recent_tokens": 9,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 126
+    },
+    {
+      "decode_step": 10,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 127,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 127,
+      "old_actual_recent_tokens": 10,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 127
+    },
+    {
+      "decode_step": 11,
+      "expected_recent_tokens": 0,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 0,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 11,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 128
+    },
+    {
+      "decode_step": 12,
+      "expected_recent_tokens": 1,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 1,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 12,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 129
+    },
+    {
+      "decode_step": 13,
+      "expected_recent_tokens": 2,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 2,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 13,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 130
+    },
+    {
+      "decode_step": 14,
+      "expected_recent_tokens": 3,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 3,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 14,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 131
+    },
+    {
+      "decode_step": 15,
+      "expected_recent_tokens": 4,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 4,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 15,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 132
+    },
+    {
+      "decode_step": 16,
+      "expected_recent_tokens": 5,
+      "expected_sink_tokens": 128,
+      "fixed_actual_recent_tokens": 5,
+      "fixed_actual_sink_tokens": 128,
+      "old_actual_recent_tokens": 16,
+      "old_actual_sink_tokens": 117,
+      "old_validator_mismatch": true,
+      "total_tokens": 133
+    }
+  ],
+  "task_key": "aime24:p6:s0:seed6042"
+}
