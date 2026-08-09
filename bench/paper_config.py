@@ -224,6 +224,9 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             "k_assignment_theoretical_compact_bits": 0,
             "v_assignment_theoretical_compact_bits": 0,
             "v_gate_theoretical_compact_bits": 0,
+            "varn_metadata_bytes": 0,
+            "varn_metadata_theoretical_bits": 0,
+            "varn_enabled": False,
             "assignment_actual_python_tensor_bits": 0,
             "v_gate_actual_python_tensor_bits": 0,
             "initial_pattern_count": None,
@@ -254,6 +257,16 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
             v_mask = getattr(cache, "v_pattern_mask", None) if getattr(cache, "v_pattern_mask", None) is not None else getattr(cache, "v_assignments", None)
             k_centroids = getattr(cache, "k_centroids", None)
             v_centroids = getattr(cache, "v_centroids", None)
+            varn_tensors = (
+                getattr(cache, "varn_k_s_col", None),
+                getattr(cache, "varn_k_s_row", None),
+                getattr(cache, "varn_v_s_col", None),
+                getattr(cache, "varn_v_s_row", None),
+            )
+            varn_bytes = sum(tensor_bytes(value) for value in varn_tensors)
+            out["varn_metadata_bytes"] += varn_bytes
+            out["varn_metadata_theoretical_bits"] += 8 * varn_bytes
+            out["varn_enabled"] = bool(out["varn_enabled"] or getattr(cache, "varn_enabled", False))
             k_assignment_bytes = tensor_bytes(k_assignments)
             v_assignment_bytes = tensor_bytes(v_assignment_idx)
             v_mask_bytes = tensor_bytes(v_mask)
@@ -331,5 +344,7 @@ def cache_storage_summary(method: str, past_key_values, model=None, total_cached
     payload_bits = 2 if method != "fp16" else 16
     group_size = 128 if method in PAPER_METHODS else residual_length
     out["quantized_region_theoretical_bits_per_scalar"] = payload_bits + (32.0 / group_size if method != "fp16" and group_size else 0.0)
-    out["python_tensor_storage_bytes"] = sum(out[k] for k in ("packed_payload_bytes", "scale_min_bytes", "fp16_residual_bytes", "assignment_bytes", "mask_bytes", "centroid_bytes"))
+    kv_heads = int(out.get("persistent_key_heads") or 0) + int(out.get("persistent_value_heads") or 0)
+    out["varn_metadata_bits_per_scalar"] = float(out["varn_metadata_theoretical_bits"]) / max(1, int(segment_totals.get("packed_history_tokens") or 0) * max(kv_heads, 1) * 128)
+    out["python_tensor_storage_bytes"] = sum(out[k] for k in ("packed_payload_bytes", "scale_min_bytes", "fp16_residual_bytes", "assignment_bytes", "mask_bytes", "centroid_bytes", "varn_metadata_bytes"))
     return out

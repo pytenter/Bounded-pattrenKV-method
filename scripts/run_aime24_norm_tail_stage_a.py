@@ -26,10 +26,9 @@ sys.path.insert(0, str(ROOT))
 from bench.pseudodecode_metrics import full_trajectory_sha256, trapezoid_auc_log2, write_csv_rows  # noqa: E402
 from models.segmented_cache import (  # noqa: E402
     PatternQuantizedKVCache,
-    dequantize_k_reference,
-    dequantize_v_reference,
     deserialize_cache,
-    pattern_gather_centroids,
+    reconstruct_packed_k,
+    reconstruct_packed_v,
     tensor_tokens,
 )
 from scripts.run_aime24_pseudodecode_preflight import (  # noqa: E402
@@ -358,19 +357,8 @@ def tensor_tokens_or_zero(tensor: torch.Tensor | None) -> int:
 
 def dequantized_regions(layer_cache: Any, *, pattern: bool) -> tuple[dict[str, dict[str, torch.Tensor | None]], dict[str, int | str]]:
     cache = deserialize_cache(layer_cache, pattern=pattern)
-    packed_k = dequantize_k_reference(cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, cache.group_size, cache.k_bits)
-    if packed_k is not None:
-        packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
-        if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
-            packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
-    packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
-    if packed_v is not None:
-        packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
-        if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
-            mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
-            if mask is not None:
-                centroids = pattern_gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids).to(packed_v.dtype)
-                packed_v = packed_v + mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * centroids
+    packed_k = reconstruct_packed_k(cache)
+    packed_v = reconstruct_packed_v(cache)
     regions = {
         "sink": {"k": cache.sink_k, "v": cache.sink_v},
         "packed_history": {"k": packed_k, "v": packed_v},

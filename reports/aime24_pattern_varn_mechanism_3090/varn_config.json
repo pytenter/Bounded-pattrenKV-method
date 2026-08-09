@@ -1,0 +1,40 @@
+{
+  "canonical_varn": {
+    "clip_std_max": 1000.0,
+    "clip_std_min": 0.001,
+    "dtype_behavior": "compute scales in fp32; store production metadata in input dtype",
+    "eps": 1e-08,
+    "iterations": 16,
+    "k_axis": {
+      "s_col": "[1, group] per token",
+      "s_row": "[D, 1] per channel",
+      "tile_shape": "[D, group]"
+    },
+    "log_s_max": 10.0,
+    "log_s_min": -0.3,
+    "v_axis": {
+      "s_col": "[1, D] per channel",
+      "s_row": "[group, 1] per token",
+      "tile_shape": "[group, D]"
+    }
+  },
+  "configs": {
+    "pattern_s16": {
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "method": "patternkv",
+      "method_group": "pattern",
+      "recent_length": 128,
+      "sink_length": 16,
+      "varn_enabled": false
+    },
+    "pattern_s16_varn": {
+      "config": "pattern_rolling_k2v2_s16_varn_k2v2_s16_r128",
+      "method": "patternkv",
+      "method_group": "pattern",
+      "recent_length": 128,
+      "sink_length": 16,
+      "varn_enabled": true
+    }
+  },
+  "hadamard_enabled": false
+}

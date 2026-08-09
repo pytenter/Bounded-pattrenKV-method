@@ -1,0 +1,11 @@
+{
+  "baseline_effective_bits_per_element": 2.25,
+  "delta_bits_per_element": 0.75,
+  "k_varn_metadata_bytes_per_tile": 768,
+  "observed_baseline_python_tensor_storage_bytes": 174080,
+  "observed_varn_metadata_bytes": 2048,
+  "observed_varn_python_tensor_storage_bytes": 176128,
+  "v_varn_metadata_bytes_per_tile": 768,
+  "varn_bits_per_element": 0.75,
+  "varn_effective_bits_per_element": 3.0
+}

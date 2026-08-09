@@ -20,6 +20,8 @@ from models.segmented_cache import (
     cache_validate_enabled,
     deserialize_cache,
     flush_chunked_buffer,
+    reconstruct_packed_k,
+    reconstruct_packed_v,
     maybe_validate_cache,
     serialize_cache,
     tensor_tokens,
@@ -841,7 +843,10 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
                 value_parts.append(("sink", cache.sink_k.shape[2]))
             if cache.packed_k is not None:
-                if cache.k_centroids is not None and cache.k_assignments is not None:
+                if bool(getattr(cache, "varn_enabled", False)):
+                    packed_k_full = reconstruct_packed_k(cache)
+                    packed_scores = torch.matmul(query_states, repeat_kv(packed_k_full, self.num_key_value_groups).transpose(2, 3))
+                elif cache.k_centroids is not None and cache.k_assignments is not None:
                     packed_scores = cuda_bmm_fA_qB_outer_with_base(
                         self.group_size,
                         query_states,
@@ -924,23 +929,27 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 for name, length in value_parts:
                     weights = attn_weights[:, :, :, offset : offset + length]
                     if name == "packed":
-                        v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
-                        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                            part = cuda_attn_v_fused_with_base(
-                                self.group_size,
-                                weights,
-                                cache.packed_v,
-                                cache.packed_v_scale,
-                                cache.packed_v_zero,
-                                self.v_bits,
-                                cache.v_centroids,
-                                v_mask[:, :, : cache.packed_v_tokens],
-                                cache.v_assignment_idx[:, :, : cache.packed_v_tokens],
-                                nh=self.num_heads,
-                                nh_kv=self.num_key_value_heads,
-                            )
+                        if bool(getattr(cache, "varn_enabled", False)):
+                            packed_v_full = reconstruct_packed_v(cache)
+                            part = torch.matmul(weights, repeat_kv(packed_v_full, self.num_key_value_groups))
                         else:
-                            part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                            v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
+                            if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                                part = cuda_attn_v_fused_with_base(
+                                    self.group_size,
+                                    weights,
+                                    cache.packed_v,
+                                    cache.packed_v_scale,
+                                    cache.packed_v_zero,
+                                    self.v_bits,
+                                    cache.v_centroids,
+                                    v_mask[:, :, : cache.packed_v_tokens],
+                                    cache.v_assignment_idx[:, :, : cache.packed_v_tokens],
+                                    nh=self.num_heads,
+                                    nh_kv=self.num_key_value_heads,
+                                )
+                            else:
+                                part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
                     else:
                         source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
                         part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
@@ -1531,6 +1540,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_pattern_mask=v_assignments,
                 cache_mode=cache_mode,
                 chunk_length=self.residual_length,
+                varn_enabled=bool(getattr(self.config, "patternkv_varn_enabled", False)),
             )
             past_key_value = serialize_cache(cache)
         else:

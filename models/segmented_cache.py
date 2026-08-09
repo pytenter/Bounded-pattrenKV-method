@@ -7,6 +7,7 @@ from typing import Any
 
 import torch
 
+from bench.varn_transform import VarNMetadata, varn_balance_k, varn_balance_v, varn_restore_k, varn_restore_v
 from quant.new_pack import pack_tensor, triton_quantize_and_pack_along_last_dim, unpack_tensor
 
 
@@ -36,6 +37,11 @@ class QuantizedKVCache:
     pack_count_v: int = 0
     cache_mode: str = "segmented_rolling"
     chunk_length: int = 128
+    varn_enabled: bool = False
+    varn_k_s_col: torch.Tensor | None = None
+    varn_k_s_row: torch.Tensor | None = None
+    varn_v_s_col: torch.Tensor | None = None
+    varn_v_s_row: torch.Tensor | None = None
 
 
 @dataclass
@@ -122,6 +128,15 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
     cache.packed_v_zero = zero if cache.packed_v_zero is None else torch.cat([cache.packed_v_zero, zero], dim=2)
     cache.packed_v_tokens += int(tokens)
     cache.pack_count_v += 1
+
+
+def _cat_varn_metadata(cache: QuantizedKVCache, k_meta: VarNMetadata | None, v_meta: VarNMetadata | None) -> None:
+    if k_meta is not None:
+        cache.varn_k_s_col = k_meta.s_col if cache.varn_k_s_col is None else torch.cat([cache.varn_k_s_col, k_meta.s_col], dim=2)
+        cache.varn_k_s_row = k_meta.s_row if cache.varn_k_s_row is None else torch.cat([cache.varn_k_s_row, k_meta.s_row], dim=2)
+    if v_meta is not None:
+        cache.varn_v_s_col = v_meta.s_col if cache.varn_v_s_col is None else torch.cat([cache.varn_v_s_col, v_meta.s_col], dim=2)
+        cache.varn_v_s_row = v_meta.s_row if cache.varn_v_s_row is None else torch.cat([cache.varn_v_s_row, v_meta.s_row], dim=2)
 
 
 def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
@@ -256,14 +271,21 @@ def dequantize_v_reference(packed: torch.Tensor | None, scale: torch.Tensor | No
 
 def _pack_raw_pending(cache: QuantizedKVCache, tokens: int) -> None:
     to_pack = cache.pending_k[:, :, :tokens, :].contiguous()
+    k_meta = None
+    if cache.varn_enabled:
+        to_pack, k_meta = varn_balance_k(to_pack, cache.group_size)
     packed, scale, zero = quantize_pack_k_reference(to_pack, cache.group_size, cache.k_bits)
     _cat_packed_k(cache, packed, scale, zero, tokens)
     cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
     if cache.pending_v is None or tensor_tokens(cache.pending_v) < tokens:
         raise ValueError("V pending must cover the same prefix as K pending")
     value_to_pack = cache.pending_v[:, :, :tokens, :].contiguous()
+    v_meta = None
+    if cache.varn_enabled:
+        value_to_pack, v_meta = varn_balance_v(value_to_pack, cache.group_size)
     packed_v, scale_v, zero_v = quantize_pack_v_reference(value_to_pack, cache.group_size, cache.v_bits)
     _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+    _cat_varn_metadata(cache, k_meta, v_meta)
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
 
 
@@ -316,6 +338,11 @@ def _pack_pattern_window(
         v_pattern_mask = v_pattern_mask[:, :, :tokens].contiguous().bool()
     k_residual = k_window - k_centroid_per_token
     v_adjusted = v_window - v_pattern_mask.unsqueeze(-1).to(v_window.dtype) * v_centroid_per_token
+    k_meta = None
+    v_meta = None
+    if cache.varn_enabled:
+        k_residual, k_meta = varn_balance_k(k_residual, cache.group_size)
+        v_adjusted, v_meta = varn_balance_v(v_adjusted, cache.group_size)
     if getattr(cache, "trace_layer_idx", None) is not None:
         try:
             from bench.patternkv_equivalence_reference import save_assignment_trace
@@ -339,6 +366,7 @@ def _pack_pattern_window(
     packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
     _cat_packed_k(cache, packed_k, scale_k, zero_k, tokens)
     _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+    _cat_varn_metadata(cache, k_meta, v_meta)
     cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments)
     cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx)
     mask_u8 = v_pattern_mask.to(torch.uint8)
@@ -427,6 +455,7 @@ def build_cache_from_prefill(
     v_pattern_mask: torch.Tensor | None = None,
     cache_mode: str = ROLLING_CACHE_MODE,
     chunk_length: int | None = None,
+    varn_enabled: bool = False,
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
@@ -439,6 +468,7 @@ def build_cache_from_prefill(
         v_bits=int(v_bits),
         cache_mode=cache_mode,
         chunk_length=int(chunk_length if chunk_length is not None else group_size),
+        varn_enabled=bool(varn_enabled),
     )
     total = cache.total_tokens
     sink_end = 0 if cache_mode == CHUNKED_CACHE_MODE else min(total, sink_length)
@@ -541,12 +571,45 @@ def append_decode(cache: QuantizedKVCache, key_states: torch.Tensor, value_state
     return append_decode_rolling(cache, key_states, value_states)
 
 
-def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
+def reconstruct_packed_k(cache: QuantizedKVCache) -> torch.Tensor | None:
     packed_k = dequantize_k_reference(cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, cache.group_size, cache.k_bits)
     if packed_k is not None:
         packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
+        if cache.varn_enabled:
+            meta = VarNMetadata(
+                s_col=cache.varn_k_s_col[:, :, : cache.packed_k_tokens].contiguous(),
+                s_row=cache.varn_k_s_row.contiguous(),
+                tile_tokens=cache.group_size,
+                axis="k",
+            )
+            packed_k = varn_restore_k(packed_k, meta)
         if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
             packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
+    return packed_k
+
+
+def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
+    packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
+    if packed_v is not None:
+        packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
+        if cache.varn_enabled:
+            meta = VarNMetadata(
+                s_col=cache.varn_v_s_col.contiguous(),
+                s_row=cache.varn_v_s_row[:, :, : cache.packed_v_tokens].contiguous(),
+                tile_tokens=cache.group_size,
+                axis="v",
+            )
+            packed_v = varn_restore_v(packed_v, meta)
+        if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
+            mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
+            if mask is not None:
+                centroids = pattern_gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids).to(packed_v.dtype)
+                packed_v = packed_v + mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * centroids
+    return packed_v
+
+
+def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
+    packed_k = reconstruct_packed_k(cache)
     parts = [
         cache.sink_k,
         packed_k,
@@ -558,14 +621,7 @@ def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
 
 
 def reconstruct_full_v(cache: QuantizedKVCache) -> torch.Tensor | None:
-    packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
-    if packed_v is not None:
-        packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
-        if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
-            mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
-            if mask is not None:
-                centroids = pattern_gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids).to(packed_v.dtype)
-                packed_v = packed_v + mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * centroids
+    packed_v = reconstruct_packed_v(cache)
     parts = [
         cache.sink_v,
         packed_v,
@@ -601,9 +657,14 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
         "total_tokens": int(cache.total_tokens),
         "cache_mode": getattr(cache, "cache_mode", ROLLING_CACHE_MODE),
         "chunk_length": int(getattr(cache, "chunk_length", cache.group_size)),
+        "varn_enabled": bool(getattr(cache, "varn_enabled", False)),
         "k_assignment_tokens": tensor_tokens(k_assignments) if torch.is_tensor(k_assignments) else None,
         "v_assignment_tokens": tensor_tokens(v_assignment_idx) if torch.is_tensor(v_assignment_idx) else None,
         "v_pattern_mask_tokens": tensor_tokens(v_pattern_mask) if torch.is_tensor(v_pattern_mask) else None,
+        "varn_k_s_col_tokens": tensor_tokens(getattr(cache, "varn_k_s_col", None)) if torch.is_tensor(getattr(cache, "varn_k_s_col", None)) else None,
+        "varn_k_s_row_tiles": int(cache.varn_k_s_row.shape[2]) if torch.is_tensor(getattr(cache, "varn_k_s_row", None)) else None,
+        "varn_v_s_col_tiles": int(cache.varn_v_s_col.shape[2]) if torch.is_tensor(getattr(cache, "varn_v_s_col", None)) else None,
+        "varn_v_s_row_tokens": tensor_tokens(getattr(cache, "varn_v_s_row", None)) if torch.is_tensor(getattr(cache, "varn_v_s_row", None)) else None,
     }
 
 
@@ -635,6 +696,31 @@ def validate_cache(cache: QuantizedKVCache) -> None:
         raise ValueError("recent K/V token mismatch")
     if cache.packed_k_tokens != cache.packed_v_tokens:
         raise ValueError(f"packed K/V token mismatch: {cache.packed_k_tokens} != {cache.packed_v_tokens}")
+    if getattr(cache, "varn_enabled", False):
+        tile_count = cache.packed_k_tokens // cache.group_size
+        bsz = cache.sink_k.shape[0] if torch.is_tensor(cache.sink_k) else cache.packed_k.shape[0] if torch.is_tensor(cache.packed_k) else None
+        heads = cache.sink_k.shape[1] if torch.is_tensor(cache.sink_k) else cache.packed_k.shape[1] if torch.is_tensor(cache.packed_k) else None
+        dim = cache.sink_k.shape[-1] if torch.is_tensor(cache.sink_k) else cache.varn_k_s_row.shape[-1] if torch.is_tensor(cache.varn_k_s_row) else cache.group_size
+        expected_shapes = {
+            "varn_k_s_col": (bsz, heads, cache.packed_k_tokens),
+            "varn_k_s_row": (bsz, heads, tile_count, dim),
+            "varn_v_s_col": (bsz, heads, tile_count, dim),
+            "varn_v_s_row": (bsz, heads, cache.packed_v_tokens),
+        }
+        for name, expected_shape in expected_shapes.items():
+            value = getattr(cache, name)
+            if not torch.is_tensor(value):
+                if cache.packed_k_tokens:
+                    raise ValueError(f"VarN metadata {name} missing for packed history")
+                continue
+            if tuple(value.shape) != expected_shape:
+                raise ValueError(f"VarN metadata {name} shape mismatch: {tuple(value.shape)} != {expected_shape}")
+            if not torch.isfinite(value).all():
+                raise ValueError(f"VarN metadata {name} contains NaN/Inf")
+    else:
+        for name in ("varn_k_s_col", "varn_k_s_row", "varn_v_s_col", "varn_v_s_row"):
+            if torch.is_tensor(getattr(cache, name, None)):
+                raise ValueError(f"{name} present while VarN is disabled")
     counted = sink_tokens + cache.packed_k_tokens + pending_tokens + recent_tokens
     if counted != cache.total_tokens:
         raise ValueError(f"cache token conservation failed: counted={counted}, total={cache.total_tokens}")
@@ -701,6 +787,11 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
         int(cache.v_bits),
         int(cache.pack_count_k),
         int(cache.pack_count_v),
+        bool(getattr(cache, "varn_enabled", False)),
+        cache.varn_k_s_col,
+        cache.varn_k_s_row,
+        cache.varn_v_s_col,
+        cache.varn_v_s_row,
     )
     if isinstance(cache, PatternQuantizedKVCache):
         return base + (
@@ -750,13 +841,18 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
         v_bits=int(value[20]),
         pack_count_k=int(value[21]),
         pack_count_v=int(value[22]),
+        varn_enabled=bool(value[23]) if len(value) > 23 and isinstance(value[23], bool) else False,
+        varn_k_s_col=value[24] if len(value) > 24 and isinstance(value[23], bool) else None,
+        varn_k_s_row=value[25] if len(value) > 25 and isinstance(value[23], bool) else None,
+        varn_v_s_col=value[26] if len(value) > 26 and isinstance(value[23], bool) else None,
+        varn_v_s_row=value[27] if len(value) > 27 and isinstance(value[23], bool) else None,
         cache_mode=ROLLING_CACHE_MODE,
         chunk_length=int(value[18]),
     )
-    if not isinstance(cache, PatternQuantizedKVCache) and len(value) >= 25 and isinstance(value[23], str):
-        cache.cache_mode = normalize_cache_mode(value[23])
-        cache.chunk_length = int(value[24])
-    pattern_offset = 23
+    pattern_offset = 28 if len(value) > 23 and isinstance(value[23], bool) else 23
+    if not isinstance(cache, PatternQuantizedKVCache) and len(value) >= pattern_offset + 2 and isinstance(value[pattern_offset], str):
+        cache.cache_mode = normalize_cache_mode(value[pattern_offset])
+        cache.chunk_length = int(value[pattern_offset + 1])
     if isinstance(cache, PatternQuantizedKVCache) and len(value) >= pattern_offset + 7:
         cache.k_assignments = value[pattern_offset]
         cache.v_assignments = value[pattern_offset + 1]

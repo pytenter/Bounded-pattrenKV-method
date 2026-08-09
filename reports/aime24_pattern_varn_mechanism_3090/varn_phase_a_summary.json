@@ -1,0 +1,13 @@
+{
+  "calibration_required": false,
+  "hadamard_absent": true,
+  "phase_a_pass": true,
+  "varn_k_axis_valid": true,
+  "varn_metadata_lifecycle_valid": true,
+  "varn_only_math_valid": true,
+  "varn_only_semantics_valid": true,
+  "varn_production_implemented": true,
+  "varn_production_reference_equivalence_pass": true,
+  "varn_roundtrip_valid": true,
+  "varn_v_axis_valid": true
+}

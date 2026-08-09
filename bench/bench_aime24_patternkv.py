@@ -82,6 +82,7 @@ def load_model(args):
         config.mixed_key_mask_path = str(args.mixed_key_mask_path or "")
         config.patternkv_cache_path = args.patternkv_cache_path
         config.patternkv_cache_mode = args.patternkv_cache_mode
+        config.patternkv_varn_enabled = bool(getattr(args, "patternkv_varn_enabled", False))
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base
@@ -284,6 +285,7 @@ def parse_args():
         choices=["legacy_tuple_chunked", "segmented_chunked", "segmented_rolling"],
         default=os.environ.get("PATTERNKV_CACHE_MODE", "segmented_rolling"),
     )
+    p.add_argument("--patternkv-varn-enabled", action="store_true", default=os.environ.get("PATTERNKV_VARN_ENABLED") == "1")
     p.add_argument("--num-k-base", type=int, default=32)
     p.add_argument("--num-v-base", type=int, default=32)
     return p.parse_args()

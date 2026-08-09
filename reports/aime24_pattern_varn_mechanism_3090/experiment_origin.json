@@ -1,0 +1,25 @@
+{
+  "baseline_track_a_branch": "exp/aime-pseudodecode-3090-8gpu",
+  "branch": "exp/aime-pattern-varn-mechanism-3090",
+  "dirty_files_at_prepare": [
+    "M .gitignore",
+    "M bench/bench_aime24_patternkv.py",
+    "M bench/paper_config.py",
+    "M models/llama_patternkv.py",
+    "M models/segmented_cache.py",
+    "M scripts/run_aime24_norm_tail_stage_a.py",
+    "M scripts/run_aime24_pseudodecode_preflight.py",
+    "?? bench/varn_transform.py",
+    "?? configs/aime24_varn_mechanism_6tasks.json",
+    "?? reports/aime24_pattern_hadamard_mechanism_3090/",
+    "?? reports/aime24_pattern_varn_mechanism_3090/",
+    "?? scripts/run_aime24_varn_mechanism.py",
+    "?? tests/test_varn_mechanism.py"
+  ],
+  "head": "f7f6ca9954daa76cb702941f1b018ae294c0e378",
+  "matched_path_protocol": "matched_path_accumulation_v1",
+  "parent": "f7f6ca9954daa76cb702941f1b018ae294c0e378",
+  "portable_generation_hash": "86648d12304ce11890c1a8f64bf5a896",
+  "source_commit": "232e3b08d10919ca24932ad0a0135e46119ecfd5",
+  "worktree_dirty_at_prepare": true
+}

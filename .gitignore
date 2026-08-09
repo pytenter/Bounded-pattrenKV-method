@@ -15,6 +15,10 @@ run/
 results/
 reports/aime24_norm_tail_3090/norm_tail_accumulation_gap.csv
 reports/aime24_norm_tail_3090/norm_tail_metrics.csv
+reports/aime24_pattern_varn_mechanism_3090/varn_accumulation_gap.csv
+reports/aime24_pattern_varn_mechanism_3090/varn_norm_accumulation_gap.csv
+reports/aime24_pattern_varn_mechanism_3090/varn_norm_tail_metrics.csv
+reports/aime24_pattern_varn_mechanism_3090/varn_static_vs_pseudo_metrics.csv
 tmp/
 archive/
 datasets/LongBench/
