@@ -1,0 +1,244 @@
+# VarN Symbol Dependency Map
+
+The full grep was restricted to `vllm/`; this file lists KVarN-relevant hits.
+
+- `vllm/model_executor/layers/quantization/kvarn/__init__.py:3` """KVarN: Variance-Normalized KV-cache quantization for vLLM.
+- `vllm/model_executor/layers/quantization/kvarn/__init__.py:5` Hadamard rotation along the channel dimension, then iterative log-domain
+- `vllm/model_executor/layers/quantization/kvarn/__init__.py:6` variance-normalization (Sinkhorn-like) over both axes of each 128-token
+- `vllm/model_executor/layers/quantization/kvarn/__init__.py:11` from vllm.model_executor.layers.quantization.kvarn.config import KVarNConfig
+- `vllm/model_executor/layers/quantization/kvarn/__init__.py:13` __all__ = ["KVarNConfig"]
+- `vllm/model_executor/layers/quantization/kvarn/config.py:3` """KVarN configuration."""
+- `vllm/model_executor/layers/quantization/kvarn/config.py:9` # Named KVarN presets: each maps to a frozen set of config parameters.
+- `vllm/model_executor/layers/quantization/kvarn/config.py:10` # The trailing g<N> encodes the variance-normalization tile size, which must
+- `vllm/model_executor/layers/quantization/kvarn/config.py:22` "kvarn_k4v2_g128": {"key_bits": 4, "value_bits": 2, "group": 128},
+- `vllm/model_executor/layers/quantization/kvarn/config.py:23` "kvarn_k4v4_g128": {"key_bits": 4, "value_bits": 4, "group": 128},
+- `vllm/model_executor/layers/quantization/kvarn/config.py:24` "kvarn_k4v2_g64": {"key_bits": 4, "value_bits": 2, "group": 64},
+- `vllm/model_executor/layers/quantization/kvarn/config.py:25` "kvarn_k4v4_g64": {"key_bits": 4, "value_bits": 4, "group": 64},
+- `vllm/model_executor/layers/quantization/kvarn/config.py:30` class KVarNConfig:
+- `vllm/model_executor/layers/quantization/kvarn/config.py:31` """Configuration for KVarN KV-cache quantization.
+- `vllm/model_executor/layers/quantization/kvarn/config.py:34` 1. Hadamard rotation along head_dim (orthonormal, applied via external GEMM).
+- `vllm/model_executor/layers/quantization/kvarn/config.py:35` 2. Iterative log-domain variance-normalization (Sinkhorn-like) over the
+- `vllm/model_executor/layers/quantization/kvarn/config.py:40` sinkhorn scale axis (K: into per-channel; V: into per-token-in-tile).
+- `vllm/model_executor/layers/quantization/kvarn/config.py:51` group: KVarN tile size in tokens. Must equal vLLM block_size so that
+- `vllm/model_executor/layers/quantization/kvarn/config.py:52` one vLLM block = one KVarN tile per head.
+- `vllm/model_executor/layers/quantization/kvarn/config.py:53` sinkhorn_iters: Iterations of the alternating column/row std-norm in
+- `vllm/model_executor/layers/quantization/kvarn/config.py:54` the variance-normalization loop (default 8; lossless vs 16).
+- `vllm/model_executor/layers/quantization/kvarn/config.py:56` to keep in fp16 (KVarN's sink/residual analogue). Default 2 mirrors
+- `vllm/model_executor/layers/quantization/kvarn/config.py:64` sinkhorn_iters: int = 8         # converges by ~4 iters; 8 lossless vs 16 (validated Qwen3-4B + Qwen3.6-27B AIME)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:80` def k_scale_bytes(self) -> int:
+- `vllm/model_executor/layers/quantization/kvarn/config.py:83` s_col_K' = rtn_scale ⊙ s_chan_sinkhorn  (per-channel absorbed scale)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:84` zp_K'    = rtn_zp    ⊙ s_chan_sinkhorn  (per-channel absorbed zero)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:85` s_row_K  = s_tok_sinkhorn               (per-token-in-tile)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:90` def v_scale_bytes(self) -> int:
+- `vllm/model_executor/layers/quantization/kvarn/config.py:93` s_col_V  = s_chan_sinkhorn              (per-channel, untouched)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:94` s_row_V' = rtn_scale ⊙ s_tok_sinkhorn   (per-token-in-tile absorbed scale)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:95` zp_V'    = rtn_zp    ⊙ s_tok_sinkhorn   (per-token-in-tile absorbed zero)
+- `vllm/model_executor/layers/quantization/kvarn/config.py:104` + self.k_scale_bytes
+- `vllm/model_executor/layers/quantization/kvarn/config.py:106` + self.v_scale_bytes
+- `vllm/model_executor/layers/quantization/kvarn/config.py:162` # KVarN keeps a fixed-size fp16 side buffer ("tail pool") because a tile
+- `vllm/model_executor/layers/quantization/kvarn/config.py:270` def num_kvarn_layers(model_config, parallel_config) -> int:
+- `vllm/model_executor/layers/quantization/kvarn/config.py:271` """Number of layers the KVarN fp16 tail pool actually spans = the
+- `vllm/model_executor/layers/quantization/kvarn/config.py:273` Mamba/linear-attention layers have no KVarN pool, so sizing the pool by
+- `vllm/model_executor/layers/quantization/kvarn/config.py:375` def from_cache_dtype(cache_dtype: str, head_dim: int) -> "KVarNConfig":
+- `vllm/model_executor/layers/quantization/kvarn/config.py:376` """Create a config from a preset string like ``"kvarn_k4v4"``."""
+- `vllm/model_executor/layers/quantization/kvarn/config.py:380` f"Unknown KVarN cache dtype: {cache_dtype!r}. Valid: {valid}"
+- `vllm/model_executor/layers/quantization/kvarn/config.py:383` # Optional env override for Sinkhorn iteration count (KVARN_SINKHORN_ITERS).
+- `vllm/model_executor/layers/quantization/kvarn/config.py:388` return KVarNConfig(
+- `vllm/model_executor/layers/quantization/kvarn/config.py:393` sinkhorn_iters=iters,
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:2` """LOCAL EXPERIMENT (not for upstream): KVarN quantization round-trip on the
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:3` MLA compressed latent, to measure the *accuracy* impact of applying KVarN's
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:4` recipe (Hadamard rotation -> log-domain Sinkhorn variance normalization ->
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:7` It does a full round trip (rotate -> sinkhorn -> RTN -> dequant -> inverse
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:8` sinkhorn -> un-rotate) on the [T, kv_lora_rank] latent and returns a lossy
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:20` from vllm.model_executor.layers.quantization.kvarn.sinkhorn import (
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:21` variance_normalize,
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:30` def _hadamard(n: int, device_str: str) -> torch.Tensor:
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:31` """Orthonormal Sylvester-Hadamard of size n (n must be a power of 2)."""
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:32` assert (n & (n - 1)) == 0, f"Hadamard size {n} must be a power of 2"
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:42` def kvarn_mla_roundtrip(latent: torch.Tensor, bits: int, group: int = 128) -> torch.Tensor:
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:45` Mirrors KVarN's K path: rotate channels, then for each block of `group`
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:51` if not getattr(kvarn_mla_roundtrip, "_logged", False):
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:52` kvarn_mla_roundtrip._logged = True
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:55` # one-shot dump of a REAL latent (skip the zero-variance profile-run dummy)
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:58` # token-variance (per-channel std across tokens): ~0 for vLLM's repeated
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:61` if (_dump and not getattr(kvarn_mla_roundtrip, "_dumped", False)
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:63` kvarn_mla_roundtrip._dumped = True
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:71` H = _hadamard(R, str(latent.device))
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:78` bal, s_col, s_row = variance_normalize(t)  # bal = t / s_col / s_row
+- `vllm/model_executor/layers/quantization/kvarn/mla_probe.py:84` rec = deq * s_col * s_row                # invert sinkhorn -> ~[R, g]
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:2` """LOCAL EXPERIMENT: per-token KVarN quantization of the MLA latent.
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:5` by a fixed Hadamard, asymmetric-RTN'd over its channels (one scale+zp per
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:11` This trades Sinkhorn's variance balancing for streaming simplicity; Hadamard +
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:13` KVarN-MLA backend and a real burst number; Sinkhorn is a later refinement.
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:21` def hadamard(n: int, device_str: str) -> torch.Tensor:
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:36` H = hadamard(R, str(latent.device))
+- `vllm/model_executor/layers/quantization/kvarn/mla_quant.py:75` H = hadamard(R, str(rec.device))
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:3` """Log-domain iterative variance-normalization for KVarN.
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:10` ``vllm/v1/attention/ops/triton_kvarn_sinkhorn.py``.
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:44` std max equals its std min). The Sinkhorn loop tracks the lowest value
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:55` def variance_normalize(
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:59` """Single-tile log-domain Sinkhorn balancing.
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:66` balanced [R, C] fp32 — variance-normalised tile.
+- `vllm/model_executor/layers/quantization/kvarn/sinkhorn.py:102` def variance_normalize_batched(
+- `vllm/v1/attention/backends/kvarn_attn.py:3` """KVarN attention backend.
+- `vllm/v1/attention/backends/kvarn_attn.py:5` KV-cache compression by Hadamard rotation + iterative variance-normalization
+- `vllm/v1/attention/backends/kvarn_attn.py:6` (Sinkhorn-like) + asymmetric RTN. K is quantized per-channel, V per-token —
+- `vllm/v1/attention/backends/kvarn_attn.py:7` KIVI orientation. The variance-normalization tile equals the vLLM
+- `vllm/v1/attention/backends/kvarn_attn.py:16` meaning — KVarN treats each ``kv_cache[block, :, head, :].view(-1)`` as one
+- `vllm/v1/attention/backends/kvarn_attn.py:24` Hadamard, calls `kvarn_store_tile_{k,v}` (Stage-3a validated), and writes
+- `vllm/v1/attention/backends/kvarn_attn.py:61` from vllm.v1.attention.ops.kvarn_decode import (
+- `vllm/v1/attention/backends/kvarn_attn.py:62` kvarn_dequant_tile_k,
+- `vllm/v1/attention/backends/kvarn_attn.py:63` kvarn_dequant_tile_v,
+- `vllm/v1/attention/backends/kvarn_attn.py:65` from vllm.v1.attention.ops.kvarn_store import (
+- `vllm/v1/attention/backends/kvarn_attn.py:66` kvarn_store_tile_k,
+- `vllm/v1/attention/backends/kvarn_attn.py:67` kvarn_store_tile_k_batch_from_sinkhorn,
+- `vllm/v1/attention/backends/kvarn_attn.py:68` kvarn_store_tile_v,
+- `vllm/v1/attention/backends/kvarn_attn.py:69` kvarn_store_tile_v_batch_from_sinkhorn,
+- `vllm/v1/attention/backends/kvarn_attn.py:71` from vllm.v1.attention.ops.triton_kvarn_decode import kvarn_decode_attention
+- `vllm/v1/attention/backends/kvarn_attn.py:72` from vllm.v1.attention.ops.triton_kvarn_sinkhorn import kvarn_sinkhorn_triton
+- `vllm/v1/attention/backends/kvarn_attn.py:80` # Hadamard cache (one D×D matrix per (head_dim, device))
+- `vllm/v1/attention/backends/kvarn_attn.py:85` def _hadamard_cached(d: int, device_str: str) -> torch.Tensor:
+- `vllm/v1/attention/backends/kvarn_attn.py:86` """Sylvester Hadamard, normalised, cached per (d, device)."""
+- `vllm/v1/attention/backends/kvarn_attn.py:93` def _build_hadamard(d: int, device: torch.device) -> torch.Tensor:
+- `vllm/v1/attention/backends/kvarn_attn.py:94` return _hadamard_cached(d, str(torch.device(device)))
+- `vllm/v1/attention/backends/kvarn_attn.py:97` def _sinkhorn_pack_kv(K_tiles, V_tiles, cfg):
+- `vllm/v1/attention/backends/kvarn_attn.py:98` """Sinkhorn-balance + pack a batch of K and V tiles into int4 stores.
+- `vllm/v1/attention/backends/kvarn_attn.py:102` [R, C] shape, so we fuse them into ONE Triton Sinkhorn launch. When D != group
+- `vllm/v1/attention/backends/kvarn_attn.py:104` [R, C] — kvarn_sinkhorn_triton takes R, C as per-launch constexpr — so K and V
+- `vllm/v1/attention/backends/kvarn_attn.py:109` bal, sc, sr = kvarn_sinkhorn_triton(
+- `vllm/v1/attention/backends/kvarn_attn.py:110` torch.cat([K_tiles, V_tiles], dim=0), iterations=cfg.sinkhorn_iters,
+- `vllm/v1/attention/backends/kvarn_attn.py:112` K_out = kvarn_store_tile_k_batch_from_sinkhorn(
+- `vllm/v1/attention/backends/kvarn_attn.py:114` V_out = kvarn_store_tile_v_batch_from_sinkhorn(
+- `vllm/v1/attention/backends/kvarn_attn.py:117` kbal, ksc, ksr = kvarn_sinkhorn_triton(K_tiles, iterations=cfg.sinkhorn_iters)
+- `vllm/v1/attention/backends/kvarn_attn.py:118` vbal, vsc, vsr = kvarn_sinkhorn_triton(V_tiles, iterations=cfg.sinkhorn_iters)
+- `vllm/v1/attention/backends/kvarn_attn.py:119` K_out = kvarn_store_tile_k_batch_from_sinkhorn(
+- `vllm/v1/attention/backends/kvarn_attn.py:121` V_out = kvarn_store_tile_v_batch_from_sinkhorn(
+- `vllm/v1/attention/backends/kvarn_attn.py:131` class KVarNAttentionBackend(AttentionBackend):
+- `vllm/v1/attention/backends/kvarn_attn.py:132` """Attention backend using KVarN KV-cache compression."""
+- `vllm/v1/attention/backends/kvarn_attn.py:142` "kvarn_k4v4_g128",
+- `vllm/v1/attention/backends/kvarn_attn.py:143` "kvarn_k4v2_g128",
+- `vllm/v1/attention/backends/kvarn_attn.py:144` "kvarn_k4v4_g64",
+- `vllm/v1/attention/backends/kvarn_attn.py:145` "kvarn_k4v2_g64",
+- `vllm/v1/attention/backends/kvarn_attn.py:154` # One vLLM block == one KVarN tile (cfg.group). Supported tile sizes are
+- `vllm/v1/attention/backends/kvarn_attn.py:156` from vllm.model_executor.layers.quantization.kvarn.config import (
+- `vllm/v1/attention/backends/kvarn_attn.py:171` from vllm.model_executor.layers.quantization.kvarn.config import (
+- `vllm/v1/attention/backends/kvarn_attn.py:199` def get_impl_cls() -> type["KVarNAttentionImpl"]:
+- `vllm/v1/attention/backends/kvarn_attn.py:200` return KVarNAttentionImpl
+- `vllm/v1/attention/backends/kvarn_attn.py:203` def get_builder_cls() -> type["KVarNMetadataBuilder"]:
+- `vllm/v1/attention/backends/kvarn_attn.py:204` return KVarNMetadataBuilder
+- `vllm/v1/attention/backends/kvarn_attn.py:212` cache_dtype_str: str = "kvarn_k4v4_g128",
+- `vllm/v1/attention/backends/kvarn_attn.py:216` Unlike TurboQuant's per-token slot, KVarN's scales are tile-shared,
+- `vllm/v1/attention/backends/kvarn_attn.py:226` from vllm.model_executor.layers.quantization.kvarn.config import (
+- `vllm/v1/attention/backends/kvarn_attn.py:227` KVarNConfig,
+- `vllm/v1/attention/backends/kvarn_attn.py:230` cfg = KVarNConfig.from_cache_dtype(cache_dtype_str, head_size)
+- `vllm/v1/attention/backends/kvarn_attn.py:232` f"KVarN requires block_size ({block_size}) == group ({cfg.group})."
+- `vllm/v1/attention/backends/kvarn_attn.py:240` return kv_cache_dtype.startswith("kvarn_") and not kv_cache_dtype.startswith("kvarn_mla")
+- `vllm/v1/attention/backends/kvarn_attn.py:249` # never materializes mm tokens so KVarN decode is unaffected. (Image/audio
+- `vllm/v1/attention/backends/kvarn_attn.py:255` class KVarNMetadata(AttentionMetadata):
+- `vllm/v1/attention/backends/kvarn_attn.py:256` """Metadata for KVarN attention (mirrors ``TurboQuantMetadata``)."""
+- `vllm/v1/attention/backends/kvarn_attn.py:301` class KVarNMetadataBuilder(AttentionMetadataBuilder[KVarNMetadata]):
+- `vllm/v1/attention/backends/kvarn_attn.py:302` """Builds ``KVarNMetadata`` from scheduler output."""
+- `vllm/v1/attention/backends/kvarn_attn.py:311` # the vq verify plan) happens in KVarNMetadataBuilder.build() between
+- `vllm/v1/attention/backends/kvarn_attn.py:331` # KV-cache-group key, must match KVarNAttentionImpl._group_key for this
+- `vllm/v1/attention/backends/kvarn_attn.py:356` # byte-identical — preserving KVarN's fp16-sink accuracy on multi-turn
+- `vllm/v1/attention/backends/kvarn_attn.py:369` # KVarN tile / group size (= vLLM block size). Sourced from the configured
+- `vllm/v1/attention/backends/kvarn_attn.py:376` from vllm.model_executor.layers.quantization.kvarn.config import (
+- `vllm/v1/attention/backends/kvarn_attn.py:377` KVarNConfig,
+- `vllm/v1/attention/backends/kvarn_attn.py:381` self._group = KVarNConfig.from_cache_dtype(_cd, _hd).group
+- `vllm/v1/attention/backends/kvarn_attn.py:398` ) -> KVarNMetadata:
+- `vllm/v1/attention/backends/kvarn_attn.py:444` GROUP = self._group                            # KVarN tile size (= block size); 64 or 128
+- `vllm/v1/attention/backends/kvarn_attn.py:450` # step. The allocator state is class-level on KVarNAttentionImpl
+- `vllm/v1/attention/backends/kvarn_attn.py:453` from vllm.v1.attention.backends.kvarn_attn import KVarNAttentionImpl  # local import
+- `vllm/v1/attention/backends/kvarn_attn.py:500` group_impls = [i for i in KVarNAttentionImpl._all_impls
+- `vllm/v1/attention/backends/kvarn_attn.py:510` b2s_t = KVarNAttentionImpl._block_to_slot_t_per_device[mkey]
+- `vllm/v1/attention/backends/kvarn_attn.py:511` is_sink_t = KVarNAttentionImpl._is_sink_t_per_device[mkey]
+- `vllm/v1/attention/backends/kvarn_attn.py:512` dict_map = KVarNAttentionImpl._block_to_slot_dict[gk]
+- `vllm/v1/attention/backends/kvarn_attn.py:513` free_slots = KVarNAttentionImpl._free_slots[gk]
+- `vllm/v1/attention/backends/kvarn_attn.py:514` sinks = KVarNAttentionImpl._global_sink_blocks[gk]
+- `vllm/v1/attention/backends/kvarn_attn.py:643` # One batched Sinkhorn + RTN over ALL (layer, block) flush tiles
+- `vllm/v1/attention/backends/kvarn_attn.py:653` KVarNAttentionImpl._batched_flush(flush_pairs)
+- `vllm/v1/attention/backends/kvarn_attn.py:686` KVarNAttentionImpl._batched_flush(evict_pairs)
+- `vllm/v1/attention/backends/kvarn_attn.py:698` f"KVarN pool exhausted "
+- `vllm/v1/attention/backends/kvarn_attn.py:699` f"({KVarNAttentionImpl._allocator_pool_size.get(gk)} slots)"
+- `vllm/v1/attention/backends/kvarn_attn.py:705` KVarNAttentionImpl._max_known_block_id[gk] = max(
+- `vllm/v1/attention/backends/kvarn_attn.py:706` KVarNAttentionImpl._max_known_block_id.get(gk, 0), bid
+- `vllm/v1/attention/backends/kvarn_attn.py:791` return KVarNMetadata(
+- `vllm/v1/attention/backends/kvarn_attn.py:842` class KVarNAttentionImpl(AttentionImpl["KVarNMetadata"]):
+- `vllm/v1/attention/backends/kvarn_attn.py:843` """KVarN attention implementation.
+- `vllm/v1/attention/backends/kvarn_attn.py:851` # `kvarn_decode_attention`. Sharing across all impl instances (one set
+- `vllm/v1/attention/backends/kvarn_attn.py:866` # Single source of truth across all 28 KVarNAttentionImpl instances:
+- `vllm/v1/attention/backends/kvarn_attn.py:870` # All allocator mutations happen in KVarNMetadataBuilder.build(), which
+- `vllm/v1/attention/backends/kvarn_attn.py:883` # Keys (device, D, group, k_bits, v_bits) whose flush kernels (Sinkhorn +
+- `vllm/v1/attention/backends/kvarn_attn.py:889` _all_impls: ClassVar[list["KVarNAttentionImpl"]] = []
+- `vllm/v1/attention/backends/kvarn_attn.py:892` def _impls_for_group(cls, group_key: tuple) -> list["KVarNAttentionImpl"]:
+- `vllm/v1/attention/backends/kvarn_attn.py:921` # KV-cache-group key. KVarN's slot allocator + GPU mirrors are keyed by
+- `vllm/v1/attention/backends/kvarn_attn.py:923` # space. Heterogeneous models put KVarN layers in >1 group (e.g. Gemma-4:
+- `vllm/v1/attention/backends/kvarn_attn.py:935` from vllm.model_executor.layers.quantization.kvarn.config import (
+- `vllm/v1/attention/backends/kvarn_attn.py:936` KVarNConfig,
+- `vllm/v1/attention/backends/kvarn_attn.py:939` self.kvarn_config = KVarNConfig.from_cache_dtype(kv_cache_dtype, head_size)
+- `vllm/v1/attention/backends/kvarn_attn.py:968` # Cached fp16 Hadamard for the rotate-on-store matmul in
+- `vllm/v1/attention/backends/kvarn_attn.py:1039` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1102` # Cached fp16 Hadamard for the rotate-on-store matmul.
+- `vllm/v1/attention/backends/kvarn_attn.py:1104` self._H_fp16 = self._hadamard(device).to(torch.float16).contiguous()
+- `vllm/v1/attention/backends/kvarn_attn.py:1106` # One-time flush-kernel warmup (issue #15). The Sinkhorn + int4-store
+- `vllm/v1/attention/backends/kvarn_attn.py:1122` _sinkhorn_pack_kv(k_dummy, v_dummy, cfg)
+- `vllm/v1/attention/backends/kvarn_attn.py:1192` from vllm.v1.attention.ops.triton_kvarn_decode import adaptive_num_kv_splits
+- `vllm/v1/attention/backends/kvarn_attn.py:1238` from vllm.v1.attention.ops.triton_kvarn_decode import (
+- `vllm/v1/attention/backends/kvarn_attn.py:1239` _kvarn_build_packed_kv_kernel,
+- `vllm/v1/attention/backends/kvarn_attn.py:1240` _kvarn_fused_decode_kernel,
+- `vllm/v1/attention/backends/kvarn_attn.py:1241` _kvarn_fused_decode_stage1,
+- `vllm/v1/attention/backends/kvarn_attn.py:1242` _kvarn_fused_decode_stage2,
+- `vllm/v1/attention/backends/kvarn_attn.py:1246` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1278` _kvarn_fused_decode_kernel[(B, Hk)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1291` _kvarn_fused_decode_stage1[(B, Hk, splits)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1299` _kvarn_fused_decode_stage2[(B * Hq,)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1309` _kvarn_fused_decode_kernel[(B, Hk)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1315` _kvarn_fused_decode_stage1[(B, Hk, splits)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1333` from vllm.v1.attention.ops.triton_kvarn_decode import (
+- `vllm/v1/attention/backends/kvarn_attn.py:1334` _kvarn_fused_verify_stage1,
+- `vllm/v1/attention/backends/kvarn_attn.py:1344` _kvarn_fused_verify_stage1[(B, Hk, splits)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1357` _kvarn_build_packed_kv_kernel[(B * n_blocks, Hk)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1387` if isinstance(m, KVarNMetadata):
+- `vllm/v1/attention/backends/kvarn_attn.py:1394` if isinstance(m, KVarNMetadata):
+- `vllm/v1/attention/backends/kvarn_attn.py:1399` def _hadamard(self, device: torch.device) -> torch.Tensor:
+- `vllm/v1/attention/backends/kvarn_attn.py:1400` return _build_hadamard(self.head_size, device)
+- `vllm/v1/attention/backends/kvarn_attn.py:1415` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1454` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1462` H = self._hadamard(device)  # [D, D] fp32
+- `vllm/v1/attention/backends/kvarn_attn.py:1476` K_rot_DG = kvarn_dequant_tile_k(
+- `vllm/v1/attention/backends/kvarn_attn.py:1493` V_rot_GD = kvarn_dequant_tile_v(
+- `vllm/v1/attention/backends/kvarn_attn.py:1507` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1522` # Sinkhorn + pack (fused launch when square head_dim==group, else
+- `vllm/v1/attention/backends/kvarn_attn.py:1523` # separate K/V launches — see _sinkhorn_pack_kv).
+- `vllm/v1/attention/backends/kvarn_attn.py:1524` K_out, V_out = _sinkhorn_pack_kv(K_tiles, V_tiles, cfg)
+- `vllm/v1/attention/backends/kvarn_attn.py:1551` Numerically identical: same Sinkhorn, same RTN/pack math, same byte
+- `vllm/v1/attention/backends/kvarn_attn.py:1558` cfg = flush_pairs[0][0].kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1585` # Block-chunk so one Sinkhorn launch stays bounded (~2k [R,C] tiles).
+- `vllm/v1/attention/backends/kvarn_attn.py:1606` K_out, V_out = _sinkhorn_pack_kv(K_tiles, V_tiles, cfg)
+- `vllm/v1/attention/backends/kvarn_attn.py:1629` """Flush many (impl, block_id, kv_cache) tiles via batched Sinkhorn + RTN.
+- `vllm/v1/attention/backends/kvarn_attn.py:1633` kernel-launch + Python-iter overhead dominated; Sinkhorn and the RTN-
+- `vllm/v1/attention/backends/kvarn_attn.py:1644` cfg = flush_pairs[0][0].kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1666` # Optional: dump first chunk's raw (pre-Sinkhorn) tiles for outlier
+- `vllm/v1/attention/backends/kvarn_attn.py:1688` "sinkhorn_iters": cfg.sinkhorn_iters},
+- `vllm/v1/attention/backends/kvarn_attn.py:1690` print(f"[KVARN] dumped {N} (layer,block) pre-Sinkhorn tiles → {dump_path}",
+- `vllm/v1/attention/backends/kvarn_attn.py:1694` # K tile per Sinkhorn batch row: [D, G] (absorb = channel).
+- `vllm/v1/attention/backends/kvarn_attn.py:1698` # Sinkhorn + pack (fused when square head_dim==group, else separate
+- `vllm/v1/attention/backends/kvarn_attn.py:1699` # K/V launches for non-square head_dim=256 — see _sinkhorn_pack_kv).
+- `vllm/v1/attention/backends/kvarn_attn.py:1700` K_out, V_out = _sinkhorn_pack_kv(K_tiles, V_tiles, cfg)
+- `vllm/v1/attention/backends/kvarn_attn.py:1732` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1740` # bf16 boundary-cast (see forward): KVarN store/rotation is fp16.
+- `vllm/v1/attention/backends/kvarn_attn.py:1753` # Rotate via cached fp16 Hadamard. torch.matmul `out=` is
+- `vllm/v1/attention/backends/kvarn_attn.py:1763` from vllm.v1.attention.ops.triton_kvarn_decode import (
+- `vllm/v1/attention/backends/kvarn_attn.py:1764` _kvarn_scatter_store_kernel,
+- `vllm/v1/attention/backends/kvarn_attn.py:1766` _kvarn_scatter_store_kernel[(N, Hk)](
+- `vllm/v1/attention/backends/kvarn_attn.py:1779` # KVarNMetadataBuilder.build() (outside the captured region). This
+- `vllm/v1/attention/backends/kvarn_attn.py:1791` attn_metadata: "KVarNMetadata",
+- `vllm/v1/attention/backends/kvarn_attn.py:1794` output_block_scale: torch.Tensor | None = None,
+- `vllm/v1/attention/backends/kvarn_attn.py:1817` # Flush is now triggered from KVarNMetadataBuilder.build() between
+- `vllm/v1/attention/backends/kvarn_attn.py:1820` # bf16 boundary-cast: KVarN's compute (rotation matmul, scratch buffers,
+- `vllm/v1/attention/backends/kvarn_attn.py:1823` # untouched (byte-identical), and the cast is lossless for KVarN (fp16
+- `vllm/v1/attention/backends/kvarn_attn.py:1881` self, q, k, v, attn_metadata: KVarNMetadata, kv_cache: torch.Tensor,
+- `vllm/v1/attention/backends/kvarn_attn.py:1923` cfg = self.kvarn_config
+- `vllm/v1/attention/backends/kvarn_attn.py:1933` H = self._hadamard(device)                                # [D, D] fp32
+- `vllm/v1/attention/backends/kvarn_attn.py:1978` attn_metadata: KVarNMetadata,
+- `vllm/v1/attention/backends/kvarn_attn.py:1998` return kvarn_decode_attention(

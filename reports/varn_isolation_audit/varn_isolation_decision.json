@@ -1,0 +1,62 @@
+{
+  "calibration_required": false,
+  "canonical_equivalence": {
+    "checks": {
+      "balanced_max_abs": 0.0,
+      "roundtrip_max_abs": 4.76837158203125e-07,
+      "s_col_max_abs": 0.0,
+      "s_row_max_abs": 0.0
+    },
+    "executable": true,
+    "pass": true
+  },
+  "canonical_equivalence_executable": true,
+  "canonical_equivalence_test_pass": true,
+  "decode_restore_path_known": true,
+  "decode_restore_point": "dequantize rotated/normalized tile scales first; rotate Q for QK in decode and un-rotate output, or equivalently un-rotate dequantized K/V before attention",
+  "hadamard_order": "K/V source -> Hadamard rotation along head_dim -> VarN/Sinkhorn scaling -> low-bit quantization",
+  "hadamard_order_known": true,
+  "isolation_case": "CASE_B_MATHEMATICALLY_ISOLATABLE_BUT_KERNEL_FUSED",
+  "local_dirty_files": [
+    "M vllm/config/cache.py",
+    "M vllm/model_executor/layers/quantization/kvarn/config.py",
+    "M vllm/model_executor/layers/quantization/kvarn/debug.py",
+    "M vllm/utils/torch_utils.py",
+    "M vllm/v1/attention/backends/kvarn_attn.py",
+    "M vllm/v1/attention/ops/triton_kvarn_decode.py"
+  ],
+  "local_dirty_worktree": true,
+  "local_head": "e6dbd0fc930d3cead936150ea5b1873dd9799d1b",
+  "metadata": {
+    "fp16_metadata_bits_per_element_kv": 0.75,
+    "fp16_metadata_bytes_per_tile_k": 768,
+    "fp16_metadata_bytes_per_tile_v": 768,
+    "k": "s_col [1, group] per token-in-tile, s_row [D, 1] per channel; RTN scale/zero are absorbed into the per-channel axis.",
+    "v": "s_col [1, D] per channel, s_row [group, 1] per token-in-tile; RTN scale/zero are absorbed into the per-token axis."
+  },
+  "next_action": "Use the CPU reference only as an equivalence harness; do not port Pattern+VarN until a canonical VarN-only implementation path is frozen.",
+  "offline_online": {
+    "decode_time": "Stored scales restore dequantized K/V; Hadamard inverse/rotated-Q semantics are applied in attention.",
+    "offline": "Hadamard matrix construction may be cached; no calibration dataset is used.",
+    "prefill_or_flush_time": "VarN scales are computed from the current tile at cache flush time."
+  },
+  "quantization_order": "VarN/Sinkhorn output is quantized after scaling; asymmetric RTN scale/zero-point are absorbed into one VarN scale axis.",
+  "quantization_order_known": true,
+  "rope_order": "K projection -> RoPE -> Hadamard -> VarN/Sinkhorn -> quantization; V has no RoPE and enters Hadamard directly after V projection",
+  "rope_order_known": true,
+  "source_branch": "origin/main",
+  "source_commit": "7586257f1c632e63187bfacbbe21ccb51540f7b3",
+  "source_remote": "https://github.com/huawei-csl/KVarN.git",
+  "source_repo": "/data/zypan/kvarn-repro/repos/KVarN",
+  "varn_applies_to_k": true,
+  "varn_applies_to_v": true,
+  "varn_component_found": true,
+  "varn_fused_with_hadamard_implementation": true,
+  "varn_math_reconstructed": true,
+  "varn_only_implementation_path_valid": false,
+  "varn_only_math_valid": true,
+  "varn_only_reference_implemented": true,
+  "varn_only_semantics_valid": true,
+  "varn_requires_hadamard_mathematically": false,
+  "varn_requires_hadamard_mathematically_reason": "The audited formula is invertible as X = balanced * s_col * s_row for any finite tile. It is defined on the tile it receives; canonical KVarN feeds it Hadamard-rotated K/V, but the scaling algebra itself does not require H."
+}
