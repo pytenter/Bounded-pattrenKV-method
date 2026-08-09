@@ -1,7 +1,11 @@
 {
   "accumulation_metric_schema_version": "matched_path_accumulation_v1",
-  "assignment_objective_next_priority": null,
-  "early_error_as_accumulation_seed_supported": null,
+  "assignment_objective_next_priority": false,
+  "core_matched_experiment_complete": true,
+  "cross_method_sink_reduces_accumulation": true,
+  "early_error_as_accumulation_seed_supported": true,
+  "extended_failure_reason": "static_full_prefix_oom_24gb",
+  "extended_long_matched_experiment_complete": false,
   "formal_completeness_rows": 804,
   "formal_core_checkpoints": [
     128,
@@ -48,6 +52,7 @@
   "generation_config_valid": true,
   "hardware": "8xRTX3090",
   "historical_generation_hash_reproduced": true,
+  "kivi_paper_s0_runtime_equivalence": true,
   "kivi_sink_pair_auc": {
     "left_config": "kivi_rolling_k2v2_s0_r128",
     "median_delta": -1.0693700152332895,
@@ -59,8 +64,11 @@
   },
   "kivi_sink_reduces_accumulation": true,
   "matched_path_control_version": "v1",
-  "next_priority": null,
+  "next_priority": "norm-tail instrumentation plus small VarN diagnostic before assignment-objective work",
   "observer_noninvasive": true,
+  "paper_s0_audit_status": "runtime_equivalent_alias",
+  "paper_vs_s0_comparison_informative": false,
+  "pattern_paper_s0_runtime_equivalence": true,
   "pattern_sink_pair_auc": {
     "left_config": "pattern_rolling_k2v2_s0_r128",
     "median_delta": -0.9615185058210045,
@@ -74,13 +82,15 @@
   "portable_reference_generation_hash": "86648d12304ce11890c1a8f64bf5a896",
   "preflight_complete": true,
   "pseudo_feedback_valid": true,
-  "pseudodecode_accumulation_supported": null,
+  "pseudodecode_accumulation_supported": true,
   "reference_trajectories_valid": true,
-  "remaining_error_accumulation_dominated": null,
-  "single_step_representation_error_dominant": null,
+  "remaining_error_accumulation_dominated": true,
+  "remaining_error_classification": "ACCUMULATION_DOMINATED",
+  "single_step_representation_error_dominant": false,
+  "sink_pair_result_provenance_valid": true,
   "source_commit": "232e3b08d10919ca24932ad0a0135e46119ecfd5",
   "static_control_valid": true,
   "task_count": 12,
-  "token_norm_accumulation_supported": null,
-  "varn_next_priority": null
+  "token_norm_accumulation_supported": "insufficient_data",
+  "varn_next_priority": "not_yet_justified"
 }

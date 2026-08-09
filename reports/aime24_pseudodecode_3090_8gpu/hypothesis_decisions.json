@@ -1,0 +1,14 @@
+{
+  "assignment_objective_next_priority": false,
+  "cross_method_sink_reduces_accumulation": true,
+  "early_error_as_accumulation_seed_supported": true,
+  "kivi_sink_reduces_accumulation": true,
+  "next_priority": "norm-tail instrumentation plus small VarN diagnostic before assignment-objective work",
+  "pattern_sink_reduces_accumulation": true,
+  "pseudodecode_accumulation_supported": true,
+  "remaining_error_accumulation_dominated": true,
+  "remaining_error_classification": "ACCUMULATION_DOMINATED",
+  "single_step_representation_error_dominant": false,
+  "token_norm_accumulation_supported": "insufficient_data",
+  "varn_next_priority": "not_yet_justified"
+}

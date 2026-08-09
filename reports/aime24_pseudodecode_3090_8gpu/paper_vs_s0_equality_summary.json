@@ -1,0 +1,20 @@
+{
+  "kivi": {
+    "different": 0,
+    "exact_equal": 1592,
+    "exact_equal_fraction": 1.0,
+    "missing": 0,
+    "near_equal": 0,
+    "numerically_equal_fraction": 1.0,
+    "total_compared": 1592
+  },
+  "pattern": {
+    "different": 0,
+    "exact_equal": 1592,
+    "exact_equal_fraction": 1.0,
+    "missing": 0,
+    "near_equal": 0,
+    "numerically_equal_fraction": 1.0,
+    "total_compared": 1592
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "completeness_rows": 804,
+  "core_auc_definition_valid": true,
+  "core_matched_experiment_complete": true,
+  "extended_failure_reason": "static_full_prefix_oom_24gb",
+  "extended_long_matched_experiment_complete": false,
+  "extended_pseudo_only_diagnostic": {
+    "matched_static_extended_rows": 0,
+    "pseudo_only_extended_rows": 42,
+    "used_for_matched_accumulation_decision": false
+  },
+  "failed_rows": 42,
+  "failed_rows_verified_as_hardware_limited_static": true,
+  "formal_gap_rows": 2880,
+  "formal_metric_rows": 6096,
+  "formal_sink_conclusion_valid": true,
+  "kivi_paper_s0_equality_fraction": 1.0,
+  "kivi_paper_s0_runtime_equivalence": true,
+  "kivi_paper_s0_same_result_artifact_detected": false,
+  "paper_vs_s0_comparison_informative": false,
+  "pattern_paper_s0_equality_fraction": 1.0,
+  "pattern_paper_s0_runtime_equivalence": true,
+  "pattern_paper_s0_same_result_artifact_detected": false,
+  "sink_pair_details": {
+    "kivi": {
+      "distinct_configs": true,
+      "distinct_result_provenance": true,
+      "distinct_sink": true,
+      "s0_sink_length": 0,
+      "s16_sink_length": 16
+    },
+    "pattern": {
+      "distinct_configs": true,
+      "distinct_result_provenance": true,
+      "distinct_sink": true,
+      "s0_sink_length": 0,
+      "s16_sink_length": 16
+    }
+  },
+  "sink_pair_result_provenance_valid": true
+}
