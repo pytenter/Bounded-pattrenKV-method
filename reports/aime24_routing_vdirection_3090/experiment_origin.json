@@ -1,0 +1,17 @@
+{
+  "branch": "exp/aime-qk-routing-vdirection-3090",
+  "dirty_files_at_prepare": [
+    "M .gitignore",
+    "?? bench/routing_vdirection_observer.py",
+    "?? configs/aime24_routing_vdirection_6tasks.json",
+    "?? reports/aime24_routing_vdirection_3090/",
+    "?? scripts/run_aime24_routing_vdirection.py",
+    "?? tests/test_routing_vdirection.py"
+  ],
+  "head": "f7f6ca9954daa76cb702941f1b018ae294c0e378",
+  "parent_commit": "f7f6ca9954daa76cb702941f1b018ae294c0e378",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "source_varn_result_commit": "2f63bddef151df0f32a40d51c73f125a8089800e",
+  "source_varn_subset_sha256": "218b65375f551fb13ff9903b3fd8931f422215e0f3b86200c0d8f45130a43082",
+  "worktree_dirty_at_prepare": true
+}

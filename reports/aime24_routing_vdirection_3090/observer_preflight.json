@@ -1,0 +1,62 @@
+{
+  "attention_semantics_valid": true,
+  "checkpoints": [
+    128,
+    512
+  ],
+  "no_nan_inf": true,
+  "oracle_diagnostic_noninvasive": true,
+  "position_alignment_valid": true,
+  "preflight_pass": true,
+  "prepare": {
+    "prepared": true,
+    "reference_hashes_valid": true,
+    "same_varn_formal_6task_subset": true,
+    "source_varn_subset_sha256": "218b65375f551fb13ff9903b3fd8931f422215e0f3b86200c0d8f45130a43082",
+    "task_count": 6
+  },
+  "qk_gqa_mapping_valid": true,
+  "reference_alignment_valid": true,
+  "routing_observer_noninvasive": true,
+  "rows": [
+    {
+      "attention_output_relative_L2": 0.0,
+      "cache_fingerprint_equal": true,
+      "checkpoint": 128,
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "method": "fp16",
+      "ok": true
+    },
+    {
+      "attention_output_relative_L2": 0.0,
+      "cache_fingerprint_equal": true,
+      "checkpoint": 512,
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "method": "fp16",
+      "ok": true
+    },
+    {
+      "attention_output_relative_L2": 0.0,
+      "cache_fingerprint_equal": true,
+      "checkpoint": 128,
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "method": "patternkv",
+      "ok": true
+    },
+    {
+      "attention_output_relative_L2": 0.0,
+      "cache_fingerprint_equal": true,
+      "checkpoint": 512,
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "method": "patternkv",
+      "ok": true
+    }
+  ],
+  "tasks": [
+    "aime24:p0:s0:seed42"
+  ]
+}

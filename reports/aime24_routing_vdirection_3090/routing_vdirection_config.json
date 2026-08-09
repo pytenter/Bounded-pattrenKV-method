@@ -1,0 +1,42 @@
+{
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "config": {
+    "config": "pattern_rolling_k2v2_s16_r128",
+    "group_size": 128,
+    "k_bits": 2,
+    "method": "patternkv",
+    "recent_length": 128,
+    "sink_length": 16,
+    "v_bits": 2
+  },
+  "forbidden": [
+    "VarN",
+    "Hadamard",
+    "new Sink",
+    "new Recent",
+    "Pattern-MSE",
+    "query-aware assignment",
+    "attention-aware assignment"
+  ],
+  "matched_path": true,
+  "mode": [
+    "static",
+    "pseudo"
+  ],
+  "no_new_algorithm": true,
+  "observer_only": true,
+  "observer_schema_version": "routing_vdirection_observer_v1",
+  "selected_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ]
+}

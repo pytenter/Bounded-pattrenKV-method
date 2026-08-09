@@ -15,6 +15,12 @@ run/
 results/
 reports/aime24_norm_tail_3090/norm_tail_accumulation_gap.csv
 reports/aime24_norm_tail_3090/norm_tail_metrics.csv
+reports/aime24_routing_vdirection_3090/direction_metrics.csv
+reports/aime24_routing_vdirection_3090/qk_logit_metrics.csv
+reports/aime24_routing_vdirection_3090/attention_routing_metrics.csv
+reports/aime24_routing_vdirection_3090/v_direction_metrics.csv
+reports/aime24_routing_vdirection_3090/oracle_output_metrics.csv
+reports/aime24_routing_vdirection_3090/recursive_channel_gap.csv
 tmp/
 archive/
 datasets/LongBench/
