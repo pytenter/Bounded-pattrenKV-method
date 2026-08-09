@@ -1,0 +1,19 @@
+{
+  "audit_branch": "exp/aime-value-objective-screen-3090",
+  "audit_head": "fd6748b9f93c8b357c5643e07d8e482438bdcd45",
+  "branch": "exp/aime-value-direction-screen-3090",
+  "dirty_files_at_prepare": [
+    "M .gitignore",
+    " M bench/bench_aime24_patternkv.py",
+    " M models/llama_patternkv.py",
+    " M models/segmented_cache.py",
+    " M scripts/run_aime24_pseudodecode_preflight.py",
+    "?? reports/aime24_value_direction_screen_3090/",
+    "?? scripts/run_aime24_value_direction_screen.py",
+    "?? tests/test_value_direction_screen.py"
+  ],
+  "head": "fd6748b9f93c8b357c5643e07d8e482438bdcd45",
+  "parent_commit": "fd6748b9f93c8b357c5643e07d8e482438bdcd45",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "worktree_dirty_at_prepare": true
+}

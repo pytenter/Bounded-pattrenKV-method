@@ -48,6 +48,7 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     v_centroids: torch.Tensor | None = None
     centroid_updates_k: int = 0
     centroid_updates_v: int = 0
+    value_objective: str = "base"
 
 
 CHUNKED_CACHE_MODE = "segmented_chunked"
@@ -173,6 +174,22 @@ def pattern_nearest_v_centroid(x: torch.Tensor, centroids: torch.Tensor) -> torc
     return distance.argmin(dim=2).contiguous()
 
 
+def normalize_value_objective(value_objective: str | None) -> str:
+    value = str(value_objective or "base").strip().lower().replace("-", "_")
+    aliases = {
+        "baseline": "base",
+        "minmax": "base",
+        "range": "base",
+        "dir": "v_dir",
+        "direction": "v_dir",
+        "hybrid": "v_hybrid",
+    }
+    value = aliases.get(value, value)
+    if value not in {"base", "v_dir", "v_hybrid"}:
+        raise ValueError(f"unsupported PatternKV Value objective: {value_objective!r}")
+    return value
+
+
 def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     if x.shape != base.shape:
         raise ValueError(f"V threshold tensors must match: {tuple(x.shape)} != {tuple(base.shape)}")
@@ -189,6 +206,104 @@ def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[t
     lhs = 1.0 - rho * rho
     rhs = (2.0 * z / torch.sqrt(torch.tensor(5.0 * float(x.shape[-1]), dtype=x.dtype, device=x.device))) * torch.sqrt(1.0 + rho4)
     return rho.unsqueeze(-1), lhs >= rhs
+
+
+def affine_dequantize_last_dim_reference(x: torch.Tensor, group_size: int, bits: int) -> torch.Tensor:
+    if x.shape[-1] % group_size != 0:
+        raise ValueError(f"last dim {x.shape[-1]} must be divisible by group_size={group_size}")
+    levels = float((1 << bits) - 1)
+    grouped = x.reshape(*x.shape[:-1], x.shape[-1] // group_size, group_size)
+    zero = grouped.amin(dim=-1)
+    mx = grouped.amax(dim=-1)
+    scale = ((mx - zero) / levels).clamp_min(torch.finfo(x.dtype).eps)
+    q = torch.round((grouped - zero.unsqueeze(-1)) / scale.unsqueeze(-1)).clamp_(0, levels)
+    out = q.to(x.dtype) * scale.unsqueeze(-1) + zero.unsqueeze(-1)
+    return out.reshape_as(x).contiguous()
+
+
+def pattern_v_candidate_reconstructions(
+    x: torch.Tensor,
+    centroids: torch.Tensor,
+    *,
+    group_size: int,
+    bits: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    if x.dim() != 4 or centroids.dim() != 3:
+        raise ValueError(f"expected x [B,H,T,D] and centroids [H,M,D], got {tuple(x.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens, dim = x.shape
+    if centroids.shape[0] != heads or centroids.shape[-1] != dim:
+        raise ValueError(f"centroid shape mismatch: x={tuple(x.shape)} centroids={tuple(centroids.shape)}")
+    expanded_x = x.unsqueeze(2)
+    expanded_c = centroids.unsqueeze(0).unsqueeze(3)
+    _, mask = pattern_v_threshold_and_mask(expanded_x.expand(-1, -1, centroids.shape[1], -1, -1), expanded_c.expand(bsz, -1, -1, tokens, -1))
+    adjusted = expanded_x - mask.unsqueeze(-1).to(x.dtype) * expanded_c
+    dequant = affine_dequantize_last_dim_reference(adjusted.contiguous(), group_size, bits)
+    restored = dequant + mask.unsqueeze(-1).to(x.dtype) * expanded_c
+    base_score = (expanded_x - expanded_c).amax(dim=-1) - (expanded_x - expanded_c).amin(dim=-1)
+    return restored, mask, base_score
+
+
+def _vector_direction_error(x: torch.Tensor, y: torch.Tensor, *, eps: float = 1e-8) -> torch.Tensor:
+    xf = x.float()
+    yf = y.float()
+    x_norm = xf.norm(dim=-1)
+    y_norm = yf.norm(dim=-1)
+    nre = (xf - yf).pow(2).sum(dim=-1) / xf.pow(2).sum(dim=-1).clamp_min(eps)
+    valid = (x_norm >= eps) & (y_norm >= eps)
+    cosine = (xf * yf).sum(dim=-1) / (x_norm.clamp_min(eps) * y_norm.clamp_min(eps))
+    return torch.where(valid, 1.0 - cosine.clamp(-1.0, 1.0), nre)
+
+
+def _vector_nre(x: torch.Tensor, y: torch.Tensor, *, eps: float = 1e-8) -> torch.Tensor:
+    xf = x.float()
+    yf = y.float()
+    return (xf - yf).pow(2).sum(dim=-1) / xf.pow(2).sum(dim=-1).clamp_min(eps)
+
+
+def pattern_select_v_candidate(
+    x: torch.Tensor,
+    centroids: torch.Tensor,
+    *,
+    value_objective: str,
+    group_size: int,
+    bits: int,
+    tie_atol: float = 1e-7,
+    block_tokens: int = 128,
+) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
+    objective = normalize_value_objective(value_objective)
+    if objective == "base":
+        idx = pattern_nearest_v_centroid(x, centroids).to(torch.long)
+        selected = pattern_gather_centroids(idx, centroids).to(x.dtype)
+        _, mask = pattern_v_threshold_and_mask(x, selected)
+        return idx, mask, {"base_score": torch.empty(0, device=x.device, dtype=x.dtype)}
+    if x.shape[2] > block_tokens:
+        idx_parts = []
+        mask_parts = []
+        for start in range(0, x.shape[2], block_tokens):
+            stop = min(start + block_tokens, x.shape[2])
+            idx_part, mask_part, _ = pattern_select_v_candidate(
+                x[:, :, start:stop, :].contiguous(),
+                centroids,
+                value_objective=objective,
+                group_size=group_size,
+                bits=bits,
+                tie_atol=tie_atol,
+                block_tokens=block_tokens,
+            )
+            idx_parts.append(idx_part)
+            mask_parts.append(mask_part)
+        return torch.cat(idx_parts, dim=2), torch.cat(mask_parts, dim=2), {"score": torch.empty(0, device=x.device, dtype=torch.float32)}
+    restored, masks, base_score = pattern_v_candidate_reconstructions(x, centroids, group_size=group_size, bits=bits)
+    expanded_x = x.unsqueeze(2).expand_as(restored)
+    direction = _vector_direction_error(expanded_x, restored)
+    nre = _vector_nre(expanded_x, restored)
+    score = direction if objective == "v_dir" else direction + nre
+    best = score.min(dim=2).values
+    eligible = score <= best.unsqueeze(2) + float(tie_atol)
+    masked_base = torch.where(eligible, base_score.float(), torch.full_like(base_score.float(), float("inf")))
+    idx = masked_base.argmin(dim=2).contiguous().to(torch.long)
+    mask = torch.gather(masks, 2, idx.unsqueeze(2)).squeeze(2).contiguous()
+    return idx, mask, {"score": score, "direction": direction, "nre": nre, "base_score": base_score}
 
 
 def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -305,7 +420,15 @@ def _pack_pattern_window(
     else:
         k_assignments = k_assignments[:, :, :tokens].contiguous().to(torch.long)
     if v_assignment_idx is None:
-        v_assignment_idx = pattern_nearest_v_centroid(v_window, cache.v_centroids).to(torch.long)
+        v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_v_candidate(
+            v_window,
+            cache.v_centroids,
+            value_objective=getattr(cache, "value_objective", "base"),
+            group_size=cache.group_size,
+            bits=cache.v_bits,
+        )
+        if v_pattern_mask is None:
+            v_pattern_mask = inferred_v_pattern_mask
     else:
         v_assignment_idx = v_assignment_idx[:, :, :tokens].contiguous().to(torch.long)
     k_centroid_per_token = pattern_gather_centroids(k_assignments, cache.k_centroids).to(k_window.dtype)
@@ -427,6 +550,7 @@ def build_cache_from_prefill(
     v_pattern_mask: torch.Tensor | None = None,
     cache_mode: str = ROLLING_CACHE_MODE,
     chunk_length: int | None = None,
+    value_objective: str = "base",
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
@@ -454,6 +578,7 @@ def build_cache_from_prefill(
     if isinstance(cache, PatternQuantizedKVCache):
         cache.k_centroids = k_centroids
         cache.v_centroids = v_centroids
+        cache.value_objective = normalize_value_objective(value_objective)
         history_k_assignments = k_assignments[:, :, sink_end:recent_start].contiguous() if k_assignments is not None and recent_start > sink_end else None
         history_v_assignment_idx = v_assignment_idx[:, :, sink_end:recent_start].contiguous() if v_assignment_idx is not None and recent_start > sink_end else None
         history_v_pattern_mask = v_pattern_mask[:, :, sink_end:recent_start].contiguous() if v_pattern_mask is not None and recent_start > sink_end else None
@@ -714,6 +839,7 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             int(cache.centroid_updates_v),
             cache.cache_mode,
             int(cache.chunk_length),
+            cache.value_objective,
         )
     return base + (cache.cache_mode, int(cache.chunk_length))
 
@@ -776,6 +902,8 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
         if len(value) >= pattern_offset + 10 and isinstance(value[pattern_offset + 8], str):
             cache.cache_mode = normalize_cache_mode(value[pattern_offset + 8])
             cache.chunk_length = int(value[pattern_offset + 9])
+        if len(value) >= pattern_offset + 11 and isinstance(value[pattern_offset + 10], str):
+            cache.value_objective = normalize_value_objective(value[pattern_offset + 10])
     validate_cache(cache)
     return cache
 

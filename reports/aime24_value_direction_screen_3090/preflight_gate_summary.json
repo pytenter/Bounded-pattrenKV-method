@@ -1,0 +1,25 @@
+{
+  "baseline_reproduction_valid": true,
+  "cache_semantics_valid": true,
+  "checkpoints": [
+    128,
+    512,
+    1024
+  ],
+  "formal_direction_value_screen_approved": true,
+  "k_path_identical": true,
+  "no_nan_inf": true,
+  "reference_alignment_valid": true,
+  "tasks": [
+    "aime24:p0:s0:seed42",
+    "aime24:p15:s1:seed15043"
+  ],
+  "v_bits_identical": true,
+  "v_dir_assignment_change_rate": 0.09033203125,
+  "v_dir_nontrivial_intervention": true,
+  "v_hybrid_assignment_change_rate": 0.0643136128783226,
+  "v_hybrid_nontrivial_intervention": true,
+  "value_candidate_reconstruction_valid": true,
+  "value_candidate_set_invariant": true,
+  "value_objective_hook_compatible": true
+}

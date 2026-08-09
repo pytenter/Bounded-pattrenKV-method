@@ -21,6 +21,8 @@ from models.segmented_cache import (
     deserialize_cache,
     flush_chunked_buffer,
     maybe_validate_cache,
+    normalize_value_objective,
+    pattern_select_v_candidate,
     serialize_cache,
     tensor_tokens,
 )
@@ -89,6 +91,7 @@ class LlamaAttention_PatternKV(nn.Module):
         # self.lambda_proj = config.lambda_proj
         # self.n_subspaces = config.n_subspaces
         self.num_v_bases = config.num_v_base
+        self.value_objective = normalize_value_objective(getattr(config, "patternkv_value_objective", "base"))
 
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
@@ -1305,12 +1308,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
 
                 # 2) 用“最新质心集合”对整个窗口做最近质心分配（minmax 距离）
                 
-                idx_w  = self._nearest_v_centroid(value_states_full, self.v_centroids)        # [bz, n_kv, Lr]
+                idx_w, v_mask_w, _ = pattern_select_v_candidate(
+                    value_states_full,
+                    self.v_centroids,
+                    value_objective=self.value_objective,
+                    group_size=self.group_size,
+                    bits=self.v_bits,
+                )
                 cent_w = self._gather_centroids(idx_w, self.v_centroids)                       # [bz, n_kv, Lr, hd]
 
                 # 3) 阈值/掩码（范围收缩检验），并条件性做残差化
-                
-                _T, v_mask_w = self._v_threshold_and_mask(value_states_full, base_override=cent_w)  # v_mask_w: [bz, n_kv, Lr]
+                _T, _ = self._v_threshold_and_mask(value_states_full, base_override=cent_w)  # v_mask_w: [bz, n_kv, Lr]
                 if _insight_old_v_centroids is not None:
                     old_idx_w = self._nearest_v_centroid(value_states_full, _insight_old_v_centroids)
                     old_cent_w = self._gather_centroids(old_idx_w, _insight_old_v_centroids)
@@ -1481,10 +1489,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     idx_q = v_assignments_idx_all[:, :, :qlen]                     # [bz, n_kv, qlen]
 
                 
+                idx_q, v_mask_q, _ = pattern_select_v_candidate(
+                    value_states_quant,
+                    self.v_centroids,
+                    value_objective=self.value_objective,
+                    group_size=self.group_size,
+                    bits=self.v_bits,
+                )
                 v_cent_per_pos_q = self._gather_centroids(idx_q, self.v_centroids)  # [bz, n_kv, qlen, hd]
 
-                # 用“最近质心”为基向量做阈值/掩码
-                T1, v_mask_q = self._v_threshold_and_mask(value_states_quant, base_override=v_cent_per_pos_q)
+                # 用已选 candidate 的生产阈值/掩码
+                T1, _ = self._v_threshold_and_mask(value_states_quant, base_override=v_cent_per_pos_q)
                 # print(v_mask_q.float().mean())
                 # exit(0)
 
@@ -1531,6 +1546,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_pattern_mask=v_assignments,
                 cache_mode=cache_mode,
                 chunk_length=self.residual_length,
+                value_objective=self.value_objective,
             )
             past_key_value = serialize_cache(cache)
         else:

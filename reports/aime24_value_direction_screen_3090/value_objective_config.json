@@ -1,0 +1,61 @@
+{
+  "candidate_set_invariant": true,
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "configs": {
+    "BASE": {
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "base"
+    },
+    "V_DIR": {
+      "config": "pattern_rolling_k2v2_s16_r128_v_dir",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "v_dir"
+    },
+    "V_HYBRID": {
+      "config": "pattern_rolling_k2v2_s16_r128_v_hybrid",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "v_hybrid"
+    }
+  },
+  "forbidden": [
+    "VarN",
+    "Hadamard",
+    "new Sink",
+    "new Recent",
+    "K4V2",
+    "K2V4",
+    "Key objective",
+    "lambda sweep"
+  ],
+  "parent_commit": "fd6748b9f93c8b357c5643e07d8e482438bdcd45",
+  "selected_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ],
+  "v_causal_attn": "NOT_RUN"
+}
