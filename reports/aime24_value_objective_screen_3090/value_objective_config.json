@@ -1,0 +1,47 @@
+{
+  "baseline_config": {
+    "config": "pattern_rolling_k2v2_s16_r128",
+    "group_size": 128,
+    "k_bits": 2,
+    "method": "patternkv",
+    "recent_length": 128,
+    "sink_length": 16,
+    "v_bits": 2
+  },
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "configs": {
+    "base": {
+      "candidate_set": "existing V centroid bank",
+      "objective": "baseline minmax residual range"
+    },
+    "v_causal_attn": {
+      "objective": "weighted mean(NRE + DIR)",
+      "status": "not formal-run compatible under current per-token independent V assignment"
+    },
+    "v_dir": {
+      "lambda_dir": null,
+      "objective": "mean(1 - cosine(v, v_hat)); zero-norm fallback=NRE"
+    },
+    "v_hybrid": {
+      "lambda_dir": 1.0,
+      "objective": "mean(NRE + DIR)"
+    }
+  },
+  "forbidden_absent": [
+    "VarN",
+    "Hadamard",
+    "new Sink",
+    "new Recent",
+    "K4V2",
+    "K2V4",
+    "Key objectives"
+  ],
+  "parent_commit": "0a644856f2a45569e489b91ae452253560484e23",
+  "task_count": 6
+}

@@ -1,0 +1,14 @@
+{
+  "baseline_decision_point": "models.segmented_cache.pattern_nearest_v_centroid",
+  "baseline_objective": "minmax residual range: amax(v-c)-amin(v-c)",
+  "baseline_v_quantization_granularity": "token x KV-head x head_dim vector; head_dim=group_size=128",
+  "bit_packing_same": true,
+  "candidate_count": "num_v_base=32 initial centroids plus one dynamic centroid per pack window, same for all V objective rescoring variants",
+  "candidate_values_same_for_v_causal_attn": true,
+  "candidate_values_same_for_v_dir_v_hybrid": true,
+  "k_path_same": true,
+  "metadata_same": true,
+  "v_causal_attn_degeneracy_reason": "positive scalar per-token attention weights cancel from independent per-token argmin",
+  "v_causal_attn_effective_under_current_granularity": false,
+  "value_candidate_set_invariant": true
+}

@@ -1,0 +1,38 @@
+{
+  "baseline_reproduction_valid": true,
+  "best_reduces_attention_output_accumulation": null,
+  "best_reduces_hidden_accumulation": null,
+  "best_reduces_v_direction_accumulation": null,
+  "best_reduces_value_oracle_accumulation": null,
+  "best_value_objective": "NONE",
+  "best_value_objective_effect": "NOT_RUN_FORMAL_GATE_FAILED",
+  "candidate_set_invariant": true,
+  "causal_attention_no_leakage": true,
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "formal_run_approved": false,
+  "full_quality_validation_recommended": false,
+  "methods": {
+    "base": {
+      "status": "baseline frozen"
+    },
+    "v_causal_attn": {
+      "status": "not effective under current per-token independent assignment"
+    },
+    "v_dir": {
+      "status": "objective definable; formal run blocked by 4-config gate"
+    },
+    "v_hybrid": {
+      "status": "objective definable; formal run blocked by 4-config gate"
+    }
+  },
+  "next_priority": "audit coupled Value-token degree of freedom: selective precision or tile-level assignment before attention weighting",
+  "parent_commit": "0a644856f2a45569e489b91ae452253560484e23",
+  "task_count": 6,
+  "value_objective_hook_compatible": true
+}

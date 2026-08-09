@@ -1,0 +1,16 @@
+{
+  "branch": "exp/aime-value-objective-screen-3090",
+  "dirty_files_at_audit": [
+    "M .gitignore",
+    "?? bench/value_objectives.py",
+    "?? reports/aime24_value_objective_screen_3090/",
+    "?? scripts/run_aime24_value_objective_screen.py",
+    "?? tests/test_value_objective_screen.py"
+  ],
+  "head": "0a644856f2a45569e489b91ae452253560484e23",
+  "parent_commit": "0a644856f2a45569e489b91ae452253560484e23",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "source_experiment_6_branch": "exp/aime-qk-routing-vdirection-3090",
+  "source_experiment_6_head": "0a644856f2a45569e489b91ae452253560484e23",
+  "worktree_dirty_at_audit": true
+}

@@ -1,0 +1,2 @@
+status,reason,method,metric_name,value
+FORMAL_NOT_RUN_GATE_FAILED,V-CAUSAL-ATTN cannot produce a meaningful objective-rescoring intervention without changing the current per-token V decision granularity; static pack-time causal importance is not exposed by the matched Experiment 6 static path.,,,

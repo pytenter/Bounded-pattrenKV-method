@@ -1,0 +1,146 @@
+{
+  "artifacts": {
+    "attention_output_metrics.csv.gz": {
+      "gzip_sha256": "b438d9588d4e0d2a4e0c3c7401cd133bb098885335d3898bdd56e3cb57046ac3",
+      "raw_rows": 0,
+      "raw_sha256": "b5af8e3e87da31b7118844472739052b6e190b6e6c3f20ee0667b021624f1041",
+      "schema": [
+        "status",
+        "reason",
+        "config",
+        "method",
+        "mode",
+        "task_key",
+        "checkpoint",
+        "layer",
+        "metric_name",
+        "metric_value"
+      ],
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "causal_attention_importance_summary.csv": {
+      "rows": 1,
+      "schema": [
+        "status",
+        "reason",
+        "method",
+        "metric_name",
+        "value"
+      ],
+      "sha256": "d89f802831f076da8582262978b31329b0923016b952bfbe3e039f091f375907",
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "hidden_accumulation_metrics.csv.gz": {
+      "gzip_sha256": "5689057eee4d093bb2cc816caf09d3ea03538a1f0bfa03dbcdf9a734e9004d46",
+      "raw_rows": 0,
+      "raw_sha256": "b5af8e3e87da31b7118844472739052b6e190b6e6c3f20ee0667b021624f1041",
+      "schema": [
+        "status",
+        "reason",
+        "config",
+        "method",
+        "mode",
+        "task_key",
+        "checkpoint",
+        "layer",
+        "metric_name",
+        "metric_value"
+      ],
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "method_mechanism_summary.csv": {
+      "rows": 1,
+      "schema": [
+        "status",
+        "reason",
+        "method",
+        "metric_name",
+        "value"
+      ],
+      "sha256": "d89f802831f076da8582262978b31329b0923016b952bfbe3e039f091f375907",
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "routing_safety_metrics.csv.gz": {
+      "gzip_sha256": "01ee300f3d69f83acde624ff04599179a6caeeb6122501271452463ae623ea29",
+      "raw_rows": 0,
+      "raw_sha256": "b5af8e3e87da31b7118844472739052b6e190b6e6c3f20ee0667b021624f1041",
+      "schema": [
+        "status",
+        "reason",
+        "config",
+        "method",
+        "mode",
+        "task_key",
+        "checkpoint",
+        "layer",
+        "metric_name",
+        "metric_value"
+      ],
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "value_direction_metrics.csv.gz": {
+      "gzip_sha256": "49a7cafc5ef47beb30b8ccf7fb7a74c8aadcc6c32a8189fd2938e51812e4429d",
+      "raw_rows": 0,
+      "raw_sha256": "b5af8e3e87da31b7118844472739052b6e190b6e6c3f20ee0667b021624f1041",
+      "schema": [
+        "status",
+        "reason",
+        "config",
+        "method",
+        "mode",
+        "task_key",
+        "checkpoint",
+        "layer",
+        "metric_name",
+        "metric_value"
+      ],
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "value_objective_auc.csv": {
+      "rows": 1,
+      "schema": [
+        "status",
+        "reason",
+        "method",
+        "metric_name",
+        "value"
+      ],
+      "sha256": "d89f802831f076da8582262978b31329b0923016b952bfbe3e039f091f375907",
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "value_objective_pairwise.csv": {
+      "rows": 1,
+      "schema": [
+        "status",
+        "reason",
+        "method",
+        "metric_name",
+        "value"
+      ],
+      "sha256": "d89f802831f076da8582262978b31329b0923016b952bfbe3e039f091f375907",
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    },
+    "value_oracle_metrics.csv.gz": {
+      "gzip_sha256": "57cebb08b3d212c1c5f75ef5d7332643b1568c712379493c8c821c93daa95246",
+      "raw_rows": 0,
+      "raw_sha256": "b5af8e3e87da31b7118844472739052b6e190b6e6c3f20ee0667b021624f1041",
+      "schema": [
+        "status",
+        "reason",
+        "config",
+        "method",
+        "mode",
+        "task_key",
+        "checkpoint",
+        "layer",
+        "metric_name",
+        "metric_value"
+      ],
+      "status": "FORMAL_NOT_RUN_GATE_FAILED"
+    }
+  },
+  "failed_rows": [],
+  "formal_run_approved": false,
+  "formal_workers_launched": 0,
+  "notes": "Formal worker families were not launched because preflight hard gate failed."
+}
