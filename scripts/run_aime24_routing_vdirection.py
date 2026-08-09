@@ -235,6 +235,14 @@ def prepare() -> dict[str, Any]:
     write_json_file(TASK_SUBSET_PATH, payload)
     write_json_file(OUT_DIR / "routing_vdirection_6task_subset.json", payload)
     head = git_text(ROOT, "rev-parse", "HEAD")
+    dirty_lines = [line.strip() for line in git_text(ROOT, "status", "--short").splitlines() if line.strip()]
+    generated_prefixes = (
+        "M configs/aime24_routing_vdirection_6tasks.json",
+        "?? configs/aime24_routing_vdirection_6tasks.json",
+        "M reports/aime24_routing_vdirection_3090/",
+        "?? reports/aime24_routing_vdirection_3090/",
+    )
+    relevant_dirty = [line for line in dirty_lines if not line.startswith(generated_prefixes)]
     origin = {
         "repository": "pytenter/Bounded-pattrenKV-method",
         "branch": git_text(ROOT, "branch", "--show-current"),
@@ -242,8 +250,8 @@ def prepare() -> dict[str, Any]:
         "parent_commit": PARENT_COMMIT,
         "source_varn_result_commit": VAR_N_RESULT_COMMIT,
         "source_varn_subset_sha256": subset_sha,
-        "worktree_dirty_at_prepare": bool(git_text(ROOT, "status", "--short")),
-        "dirty_files_at_prepare": [line.strip() for line in git_text(ROOT, "status", "--short").splitlines() if line.strip()],
+        "worktree_dirty_at_prepare": bool(relevant_dirty),
+        "dirty_files_at_prepare": relevant_dirty,
     }
     write_json_file(OUT_DIR / "experiment_origin.json", origin)
     cfg = {
