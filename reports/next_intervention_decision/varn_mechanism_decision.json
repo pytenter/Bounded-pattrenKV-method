@@ -1,0 +1,18 @@
+{
+  "forbidden_this_prompt": [
+    "Hadamard x VarN 2x2",
+    "full AIME validation",
+    "new sink sweep",
+    "assignment objective"
+  ],
+  "next_priority": "QK / attention-logit / value-direction propagation diagnostic",
+  "recommended_next_experiment": "Investigate other propagation carriers: QK logit drift, attention entropy, value-state directional drift.",
+  "varn_accumulation_effect": "NONE",
+  "varn_decision_path": "reports/varn_isolation_audit/varn_isolation_decision.json",
+  "varn_isolation_case": "CASE_B_MATHEMATICALLY_ISOLATABLE_BUT_KERNEL_FUSED",
+  "varn_norm_effect": "STRONG",
+  "varn_only_implementation_path_valid": false,
+  "varn_only_semantics_valid": true,
+  "varn_static_effect": "NONE",
+  "varn_summary_path": "reports/aime24_pattern_varn_mechanism_3090/varn_mechanism_summary.json"
+}

@@ -18,6 +18,13 @@
       "tile_shape": "[group, D]"
     }
   },
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
   "configs": {
     "pattern_s16": {
       "config": "pattern_rolling_k2v2_s16_r128",
@@ -36,5 +43,22 @@
       "varn_enabled": true
     }
   },
-  "hadamard_enabled": false
+  "excluded": [
+    "Hadamard",
+    "Hadamard+VarN",
+    "KVarN full pipeline",
+    "S0/S32/S64/S128 sink sweep",
+    "free generation",
+    "accuracy"
+  ],
+  "group_size": 128,
+  "k_bits": 2,
+  "matched_fp16_controls": true,
+  "modes": [
+    "static",
+    "pseudo"
+  ],
+  "recent_length": 128,
+  "sink_length": 16,
+  "v_bits": 2
 }

@@ -1,0 +1,184 @@
+{
+  "actual_worker_count": 8,
+  "expected_worker_count": 8,
+  "failed_completeness_rows": [],
+  "worker_manifest_schema_version": "varn_worker_manifest_v1",
+  "workers": [
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard0of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "config_key": "pattern_s16",
+      "elapsed_seconds": 1538.689561367035,
+      "failed_rows": 0,
+      "gpu_id": 0,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard0of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "pseudo",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard0of2.norm_metrics.csv",
+      "norm_rows": 52560,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard0of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 0,
+      "tasks": [
+        "aime24:p0:s0:seed42",
+        "aime24:p6:s0:seed6042",
+        "aime24:p6:s1:seed6043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard1of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "config_key": "pattern_s16",
+      "elapsed_seconds": 1573.6882507801056,
+      "failed_rows": 0,
+      "gpu_id": 1,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard1of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "pseudo",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard1of2.norm_metrics.csv",
+      "norm_rows": 51840,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.pseudo.shard1of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 1,
+      "tasks": [
+        "aime24:p11:s1:seed11043",
+        "aime24:p17:s0:seed17042",
+        "aime24:p15:s1:seed15043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard0of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "config_key": "pattern_s16",
+      "elapsed_seconds": 236.99994707107544,
+      "failed_rows": 0,
+      "gpu_id": 4,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard0of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "static",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard0of2.norm_metrics.csv",
+      "norm_rows": 52560,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard0of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 0,
+      "tasks": [
+        "aime24:p0:s0:seed42",
+        "aime24:p6:s0:seed6042",
+        "aime24:p6:s1:seed6043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard1of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "config_key": "pattern_s16",
+      "elapsed_seconds": 232.845871925354,
+      "failed_rows": 0,
+      "gpu_id": 5,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard1of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "static",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard1of2.norm_metrics.csv",
+      "norm_rows": 51840,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_r128.static.shard1of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 1,
+      "tasks": [
+        "aime24:p11:s1:seed11043",
+        "aime24:p17:s0:seed17042",
+        "aime24:p15:s1:seed15043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard0of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_varn_k2v2_s16_r128",
+      "config_key": "pattern_s16_varn",
+      "elapsed_seconds": 2120.688929796219,
+      "failed_rows": 0,
+      "gpu_id": 2,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard0of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "pseudo",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard0of2.norm_metrics.csv",
+      "norm_rows": 52560,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard0of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 0,
+      "tasks": [
+        "aime24:p0:s0:seed42",
+        "aime24:p6:s0:seed6042",
+        "aime24:p6:s1:seed6043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard1of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_varn_k2v2_s16_r128",
+      "config_key": "pattern_s16_varn",
+      "elapsed_seconds": 2106.9093391895294,
+      "failed_rows": 0,
+      "gpu_id": 3,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard1of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "pseudo",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard1of2.norm_metrics.csv",
+      "norm_rows": 51840,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.pseudo.shard1of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 1,
+      "tasks": [
+        "aime24:p11:s1:seed11043",
+        "aime24:p17:s0:seed17042",
+        "aime24:p15:s1:seed15043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard0of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_varn_k2v2_s16_r128",
+      "config_key": "pattern_s16_varn",
+      "elapsed_seconds": 235.16435766220093,
+      "failed_rows": 0,
+      "gpu_id": 6,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard0of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "static",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard0of2.norm_metrics.csv",
+      "norm_rows": 52560,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard0of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 0,
+      "tasks": [
+        "aime24:p0:s0:seed42",
+        "aime24:p6:s0:seed6042",
+        "aime24:p6:s1:seed6043"
+      ]
+    },
+    {
+      "completeness_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard1of2.completeness.csv",
+      "completeness_rows": 75,
+      "config": "pattern_rolling_k2v2_s16_varn_k2v2_s16_r128",
+      "config_key": "pattern_s16_varn",
+      "elapsed_seconds": 241.26719212532043,
+      "failed_rows": 0,
+      "gpu_id": 7,
+      "metric_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard1of2.metrics.csv",
+      "metric_rows": 195,
+      "mode": "static",
+      "norm_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard1of2.norm_metrics.csv",
+      "norm_rows": 51840,
+      "summary_path": "results/aime24_pattern_varn_mechanism_3090/shards/pattern_rolling_k2v2_s16_varn_k2v2_s16_r128.static.shard1of2.summary.json",
+      "task_shard_count": 2,
+      "task_shard_index": 1,
+      "tasks": [
+        "aime24:p11:s1:seed11043",
+        "aime24:p17:s0:seed17042",
+        "aime24:p15:s1:seed15043"
+      ]
+    }
+  ]
+}

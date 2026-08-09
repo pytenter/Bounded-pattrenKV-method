@@ -1,0 +1,50 @@
+metric,section,value
+task_count,summary,6
+checkpoints,summary,"[128, 512, 1024, 2048, 4096]"
+varn_source_valid,summary,True
+varn_equivalence_valid,summary,True
+parent_commit,summary,f7f6ca9954daa76cb702941f1b018ae294c0e378
+canonical_varn_source_commit,summary,7586257f1c632e63187bfacbbe21ccb51540f7b3
+varn_only_semantics_valid,summary,True
+varn_production_reference_equivalence_pass,summary,True
+phase_a_pass,summary,True
+phase_b_pass,summary,True
+formal_run_approved,summary,True
+baseline_reproduction_valid,summary,True
+varn_reduces_static_error,summary,False
+varn_reduces_accumulation,summary,False
+varn_reduces_hidden_accumulation,summary,False
+varn_reduces_attention_accumulation,summary,False
+varn_reduces_norm_accumulation,summary,True
+hidden_auc_median_delta,summary,0.0073394570499658585
+hidden_tasks_improved,summary,2
+attention_auc_median_delta,summary,0.0073394570499658585
+attention_tasks_improved,summary,2
+k_norm_p95_auc_delta,summary,-0.0029148082016035963
+v_norm_p95_auc_delta,summary,-0.003398546559037645
+varn_static_effect,summary,NONE
+varn_accumulation_effect,summary,NONE
+varn_norm_effect,summary,STRONG
+base_auc_median,static_hidden_auc,0.01121939078439027
+varn_auc_median,static_hidden_auc,0.01121939078439027
+median_delta,static_hidden_auc,0.0
+tasks_improved,static_hidden_auc,0
+paired_n,static_hidden_auc,6
+base_auc_median,accumulation_hidden_auc,0.5908144535496831
+varn_auc_median,accumulation_hidden_auc,0.5703466834092978
+median_delta,accumulation_hidden_auc,0.0073394570499658585
+tasks_improved,accumulation_hidden_auc,2
+paired_n,accumulation_hidden_auc,6
+base_auc_median,accumulation_attention_auc,0.5908144535496831
+varn_auc_median,accumulation_attention_auc,0.5703466834092978
+median_delta,accumulation_attention_auc,0.0073394570499658585
+tasks_improved,accumulation_attention_auc,2
+paired_n,accumulation_attention_auc,6
+k_source_p95,norm_primary_auc,"{""base_auc_median"": 0.0643781042017508, ""median_delta"": -0.0029148082016035963, ""paired_n"": 6, ""tasks_improved"": 5, ""varn_auc_median"": 0.06412813600582012}"
+k_source_p99,norm_primary_auc,"{""base_auc_median"": 0.13215649278383293, ""median_delta"": -0.008641356425359889, ""paired_n"": 6, ""tasks_improved"": 5, ""varn_auc_median"": 0.12599993087831535}"
+v_source_p95,norm_primary_auc,"{""base_auc_median"": 0.12063959046572557, ""median_delta"": -0.003398546559037645, ""paired_n"": 6, ""tasks_improved"": 4, ""varn_auc_median"": 0.11893674483799258}"
+v_source_p99,norm_primary_auc,"{""base_auc_median"": 0.22979573660733874, ""median_delta"": -0.011515596709214274, ""paired_n"": 6, ""tasks_improved"": 5, ""varn_auc_median"": 0.22706596943753538}"
+worker_failed_completeness_rows,summary,0
+varn_mechanism_supported,summary,WEAK
+varn_full_quality_validation_recommended,summary,False
+next_priority,summary,QK / attention-logit / value-direction propagation diagnostic

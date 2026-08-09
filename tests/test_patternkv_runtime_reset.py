@@ -53,7 +53,9 @@ def test_repeated_sample_cache_state_is_deterministic_after_reset() -> None:
     assert len(first) == len(second)
     assert first[0] == second[0]
     assert torch.equal(first[3], second[3])
-    assert torch.equal(first[23], second[23])
+    assert first[23] is False
+    assert second[23] is False
+    assert torch.equal(first[28], second[28])
 
 
 def test_collect_dynamic_stats_reports_assignment_alignment() -> None:

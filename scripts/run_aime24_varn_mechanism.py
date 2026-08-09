@@ -1289,12 +1289,14 @@ def write_integrated_decision(summary: dict[str, Any]) -> dict[str, Any]:
     DECISION_DIR.mkdir(parents=True, exist_ok=True)
     varn = load_varn_decision()
     varn_semantics = bool(varn.get("varn_only_semantics_valid", varn.get("varn_only_math_valid", False)))
-    if varn_semantics:
-        recommendation = "Do not launch full AIME automatically; use the mechanism summary to decide whether a separate quality-validation prompt is warranted."
-    elif summary["varn_accumulation_effect"] == "STRONG":
-        recommendation = "VarN full mechanism expansion; do not launch full AIME automatically."
-    elif summary["varn_accumulation_effect"] in {"NONE", "WEAK"}:
+    if summary["varn_norm_effect"] == "STRONG" and summary["varn_accumulation_effect"] in {"NONE", "WEAK"}:
         recommendation = "Investigate other propagation carriers: QK logit drift, attention entropy, value-state directional drift."
+    elif summary["varn_accumulation_effect"] == "STRONG":
+        recommendation = "Use a separate prompt for full AIME24 quality validation; do not launch it automatically from this diagnostic."
+    elif summary["varn_accumulation_effect"] in {"NONE", "WEAK"}:
+        recommendation = "Investigate other propagation carriers before expanding VarN."
+    elif varn_semantics:
+        recommendation = "Do not launch full AIME automatically; use the mechanism summary to decide whether a separate quality-validation prompt is warranted."
     else:
         recommendation = "Use VarN as the next small expansion while keeping VarN gated by provenance."
     payload = {

@@ -1,0 +1,89 @@
+{
+  "accumulation_attention_auc": {
+    "base_auc_median": 0.5908144535496831,
+    "median_delta": 0.0073394570499658585,
+    "paired_n": 6,
+    "tasks_improved": 2,
+    "varn_auc_median": 0.5703466834092978
+  },
+  "accumulation_hidden_auc": {
+    "base_auc_median": 0.5908144535496831,
+    "median_delta": 0.0073394570499658585,
+    "paired_n": 6,
+    "tasks_improved": 2,
+    "varn_auc_median": 0.5703466834092978
+  },
+  "attention_auc_median_delta": 0.0073394570499658585,
+  "attention_tasks_improved": 2,
+  "baseline_reproduction_valid": true,
+  "canonical_varn_source_commit": "7586257f1c632e63187bfacbbe21ccb51540f7b3",
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "formal_run_approved": true,
+  "hidden_auc_median_delta": 0.0073394570499658585,
+  "hidden_tasks_improved": 2,
+  "k_norm_p95_auc_delta": -0.0029148082016035963,
+  "next_priority": "QK / attention-logit / value-direction propagation diagnostic",
+  "norm_primary_auc": {
+    "k_source_p95": {
+      "base_auc_median": 0.0643781042017508,
+      "median_delta": -0.0029148082016035963,
+      "paired_n": 6,
+      "tasks_improved": 5,
+      "varn_auc_median": 0.06412813600582012
+    },
+    "k_source_p99": {
+      "base_auc_median": 0.13215649278383293,
+      "median_delta": -0.008641356425359889,
+      "paired_n": 6,
+      "tasks_improved": 5,
+      "varn_auc_median": 0.12599993087831535
+    },
+    "v_source_p95": {
+      "base_auc_median": 0.12063959046572557,
+      "median_delta": -0.003398546559037645,
+      "paired_n": 6,
+      "tasks_improved": 4,
+      "varn_auc_median": 0.11893674483799258
+    },
+    "v_source_p99": {
+      "base_auc_median": 0.22979573660733874,
+      "median_delta": -0.011515596709214274,
+      "paired_n": 6,
+      "tasks_improved": 5,
+      "varn_auc_median": 0.22706596943753538
+    }
+  },
+  "parent_commit": "f7f6ca9954daa76cb702941f1b018ae294c0e378",
+  "phase_a_pass": true,
+  "phase_b_pass": true,
+  "static_hidden_auc": {
+    "base_auc_median": 0.01121939078439027,
+    "median_delta": 0.0,
+    "paired_n": 6,
+    "tasks_improved": 0,
+    "varn_auc_median": 0.01121939078439027
+  },
+  "task_count": 6,
+  "v_norm_p95_auc_delta": -0.003398546559037645,
+  "varn_accumulation_effect": "NONE",
+  "varn_equivalence_valid": true,
+  "varn_full_quality_validation_recommended": false,
+  "varn_mechanism_supported": "WEAK",
+  "varn_norm_effect": "STRONG",
+  "varn_only_semantics_valid": true,
+  "varn_production_reference_equivalence_pass": true,
+  "varn_reduces_accumulation": false,
+  "varn_reduces_attention_accumulation": false,
+  "varn_reduces_hidden_accumulation": false,
+  "varn_reduces_norm_accumulation": true,
+  "varn_reduces_static_error": false,
+  "varn_source_valid": true,
+  "varn_static_effect": "NONE",
+  "worker_failed_completeness_rows": 0
+}

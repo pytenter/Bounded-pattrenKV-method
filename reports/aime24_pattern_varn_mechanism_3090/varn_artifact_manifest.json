@@ -1,0 +1,54 @@
+{
+  "completion": {
+    "accumulation_gap_rows": 300,
+    "completeness_rows": 600,
+    "failed_completeness_rows": 0,
+    "metric_rows": 1560,
+    "norm_gap_rows": 208800,
+    "norm_rows": 417600,
+    "worker_count": 8
+  },
+  "csv_gzip": [
+    {
+      "gzip_bytes": 19310,
+      "gzip_path": "reports/aime24_pattern_varn_mechanism_3090/varn_static_vs_pseudo_metrics.csv.gz",
+      "gzip_sha256": "66c281280191a93e9b11aaf4b138195b06906ba7ef25a4495af8b5c694393e2b",
+      "raw_bytes": 428345,
+      "raw_path": "reports/aime24_pattern_varn_mechanism_3090/varn_static_vs_pseudo_metrics.csv",
+      "raw_row_count": 1560,
+      "raw_sha256": "f5311e449fe388c392844d7145901b5b4481eb6b0eb8f2d03d3c7879dfffc159"
+    },
+    {
+      "gzip_bytes": 7838,
+      "gzip_path": "reports/aime24_pattern_varn_mechanism_3090/varn_accumulation_gap.csv.gz",
+      "gzip_sha256": "8a88a7232a5fe90f03df76981db0db6eac35acdf9dd144b71421e1cc917dfcaf",
+      "raw_bytes": 55055,
+      "raw_path": "reports/aime24_pattern_varn_mechanism_3090/varn_accumulation_gap.csv",
+      "raw_row_count": 300,
+      "raw_sha256": "433a5fe063ac8f0c61258e36fcf6586e1328974a934dd4169616ac8df1f52430"
+    },
+    {
+      "gzip_bytes": 4213655,
+      "gzip_path": "reports/aime24_pattern_varn_mechanism_3090/varn_norm_tail_metrics.csv.gz",
+      "gzip_sha256": "0fa09609ea007d9db773a0ea37434cf2a028afd77047876351c013da0c9b73c2",
+      "raw_bytes": 96265001,
+      "raw_path": "reports/aime24_pattern_varn_mechanism_3090/varn_norm_tail_metrics.csv",
+      "raw_row_count": 417600,
+      "raw_sha256": "55cada57e2fbcdc4864a716861a109e2ee853138bcc88fb98e2ec779c27a684d"
+    },
+    {
+      "gzip_bytes": 4684090,
+      "gzip_path": "reports/aime24_pattern_varn_mechanism_3090/varn_norm_accumulation_gap.csv.gz",
+      "gzip_sha256": "b74ac19f796fdc93e7055505e4f961428d5e3aced5d872d59cf77345143df37a",
+      "raw_bytes": 39685968,
+      "raw_path": "reports/aime24_pattern_varn_mechanism_3090/varn_norm_accumulation_gap.csv",
+      "raw_row_count": 208800,
+      "raw_sha256": "19cd224137254a7cd98350bde58e66eac1a1bb3a07fc921843e6ca8467dbce99"
+    }
+  ],
+  "schemas": {
+    "varn_accumulation_gap.csv": "pseudo degradation minus static degradation per task/config/checkpoint/metric",
+    "varn_norm_tail_metrics.csv": "Stage A norm observer rows reused for VarN diagnostic",
+    "varn_static_vs_pseudo_metrics.csv": "task/config/mode/checkpoint metric rows; metric_value is quant-vs-matched-FP16 degradation"
+  }
+}
