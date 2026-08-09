@@ -1,0 +1,52 @@
+{
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "portable_generation_hash": "86648d12304ce11890c1a8f64bf5a896",
+  "reference_hashes_valid": true,
+  "subset_sha256": "218b65375f551fb13ff9903b3fd8931f422215e0f3b86200c0d8f45130a43082",
+  "subset_sha256_valid": true,
+  "task_count": 6,
+  "tasks": [
+    {
+      "observed": "7a50b9d97068ffc8a93d794fcdf6bac89e37ed85dd38b6abbdbbe8fb4c9a8f8a",
+      "task_key": "aime24:p0:s0:seed42",
+      "trajectory_sha256": "7a50b9d97068ffc8a93d794fcdf6bac89e37ed85dd38b6abbdbbe8fb4c9a8f8a",
+      "valid": true
+    },
+    {
+      "observed": "437efafa63f236f96af74b80dfc1ee0897d780c1db5b68f052079544eea26327",
+      "task_key": "aime24:p11:s1:seed11043",
+      "trajectory_sha256": "437efafa63f236f96af74b80dfc1ee0897d780c1db5b68f052079544eea26327",
+      "valid": true
+    },
+    {
+      "observed": "3aaa4d1b0009ba297434f6ce9cc3b021533afdacc47013de66093911d7d70ffe",
+      "task_key": "aime24:p6:s0:seed6042",
+      "trajectory_sha256": "3aaa4d1b0009ba297434f6ce9cc3b021533afdacc47013de66093911d7d70ffe",
+      "valid": true
+    },
+    {
+      "observed": "69e6e42dc75e6e4dd872f1d902c29c4269171195229da34733e720e66cc0cbb3",
+      "task_key": "aime24:p17:s0:seed17042",
+      "trajectory_sha256": "69e6e42dc75e6e4dd872f1d902c29c4269171195229da34733e720e66cc0cbb3",
+      "valid": true
+    },
+    {
+      "observed": "bdc5380c721a7d62393b67524bb3065580c4b13dffda573ae8f1238fbd86cb01",
+      "task_key": "aime24:p6:s1:seed6043",
+      "trajectory_sha256": "bdc5380c721a7d62393b67524bb3065580c4b13dffda573ae8f1238fbd86cb01",
+      "valid": true
+    },
+    {
+      "observed": "b3071fe4e912d14e31a543908143a991dbe648bfe13ea6a3db80285f3da15dab",
+      "task_key": "aime24:p15:s1:seed15043",
+      "trajectory_sha256": "b3071fe4e912d14e31a543908143a991dbe648bfe13ea6a3db80285f3da15dab",
+      "valid": true
+    }
+  ]
+}

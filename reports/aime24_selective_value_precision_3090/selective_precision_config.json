@@ -1,0 +1,75 @@
+{
+  "centroid_assignment": "BASE minmax residual range",
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "configs": {
+    "BASE_V2": {
+      "budget": 0.0,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "random_seed": 20260809,
+      "recent_length": 128,
+      "selector": "base_v2",
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "base"
+    },
+    "CAUSAL_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_causal_v4_b0125",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "random_seed": 20260809,
+      "recent_length": 128,
+      "selector": "causal_v4",
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "base"
+    },
+    "ORACLE_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_oracle_v4_b0125",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "random_seed": 20260809,
+      "recent_length": 128,
+      "selector": "oracle_v4",
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "base"
+    },
+    "RANDOM_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_random_v4_b0125",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "random_seed": 20260809,
+      "recent_length": 128,
+      "selector": "random_v4",
+      "sink_length": 16,
+      "v_bits": 2,
+      "value_objective": "base"
+    }
+  },
+  "k_path": "K2 unchanged",
+  "parent_commit": "47cf601fcfd4b20fa3823fe540b1d48ca9920d7d",
+  "random_selector_seed": 20260809,
+  "selected_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ],
+  "v4_budget_fraction": 0.125
+}

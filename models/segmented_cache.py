@@ -763,6 +763,7 @@ def build_cache_from_prefill(
     random_selector_seed: int = 20260809,
     selector_task_key: str | None = None,
     selector_layer_idx: int | None = None,
+    v_causal_importance: torch.Tensor | None = None,
     v_oracle_importance: torch.Tensor | None = None,
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
@@ -799,6 +800,7 @@ def build_cache_from_prefill(
             cache.selector_task_key = str(selector_task_key)
         if selector_layer_idx is not None:
             cache.selector_layer_idx = int(selector_layer_idx)
+        cache.v_causal_importance = v_causal_importance
         cache.v_oracle_importance = v_oracle_importance
         history_k_assignments = k_assignments[:, :, sink_end:recent_start].contiguous() if k_assignments is not None and recent_start > sink_end else None
         history_v_assignment_idx = v_assignment_idx[:, :, sink_end:recent_start].contiguous() if v_assignment_idx is not None and recent_start > sink_end else None

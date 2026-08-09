@@ -1,0 +1,29 @@
+{
+  "cache_semantics_valid": true,
+  "causal_selector_no_future_leakage": true,
+  "causal_v4_median_v4_fraction": 0.1171875,
+  "centroid_assignment_identical": true,
+  "checkpoints": [
+    128,
+    512,
+    1024
+  ],
+  "formal_selective_value_run_approved": true,
+  "k_path_identical": true,
+  "mixed_path_all_v2_baseline_equivalent": true,
+  "mixed_path_v4_reference_equivalent": true,
+  "mixed_value_precision_implementable": true,
+  "no_nan_inf": true,
+  "oracle_deployable": false,
+  "oracle_v4_median_v4_fraction": 0.09375,
+  "pseudo_causal_selector_feedback_valid": true,
+  "random_selector_deterministic": true,
+  "random_v4_median_v4_fraction": 0.125,
+  "reference_alignment_valid": true,
+  "static_causal_importance_valid": true,
+  "tasks": [
+    "aime24:p0:s0:seed42",
+    "aime24:p15:s1:seed15043"
+  ],
+  "v4_budget_matched": true
+}

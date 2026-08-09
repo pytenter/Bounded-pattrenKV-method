@@ -1582,7 +1582,10 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_precision_selector=self.v_precision_selector,
                 v4_budget_fraction=self.v4_budget_fraction,
                 random_selector_seed=self.random_selector_seed,
+                selector_task_key=getattr(self, "selector_task_key", getattr(self.config, "patternkv_selector_task_key", "task")),
                 selector_layer_idx=self.layer_idx,
+                v_causal_importance=getattr(self, "v_causal_importance", None),
+                v_oracle_importance=getattr(self, "v_oracle_importance", None),
             )
             past_key_value = serialize_cache(cache)
         else:

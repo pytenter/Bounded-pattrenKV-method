@@ -83,6 +83,9 @@ def load_model(args):
         config.patternkv_cache_path = args.patternkv_cache_path
         config.patternkv_cache_mode = args.patternkv_cache_mode
         config.patternkv_value_objective = getattr(args, "patternkv_value_objective", "base")
+        config.patternkv_v_precision_selector = getattr(args, "patternkv_v_precision_selector", "base_v2")
+        config.patternkv_v4_budget_fraction = float(getattr(args, "patternkv_v4_budget_fraction", 0.0))
+        config.patternkv_random_selector_seed = int(getattr(args, "patternkv_random_selector_seed", 20260809))
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base

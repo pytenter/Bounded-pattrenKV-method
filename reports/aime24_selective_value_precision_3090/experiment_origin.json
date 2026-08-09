@@ -1,0 +1,8 @@
+{
+  "branch": "exp/aime-selective-value-precision-3090",
+  "experiment": "aime24_selective_value_precision_3090",
+  "head": "2c628861c4c7f2e0abdcf548581fa72e20617f68",
+  "parent_commit": "47cf601fcfd4b20fa3823fe540b1d48ca9920d7d",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "worktree_dirty_at_prepare": true
+}
