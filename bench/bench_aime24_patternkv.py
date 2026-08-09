@@ -82,6 +82,7 @@ def load_model(args):
         config.mixed_key_mask_path = str(args.mixed_key_mask_path or "")
         config.patternkv_cache_path = args.patternkv_cache_path
         config.patternkv_cache_mode = args.patternkv_cache_mode
+        config.patternkv_hadamard_enabled = bool(getattr(args, "patternkv_hadamard_enabled", False))
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base

@@ -29,6 +29,7 @@ from models.segmented_cache import (  # noqa: E402
     dequantize_k_reference,
     dequantize_v_reference,
     deserialize_cache,
+    hadamard_transform_last_dim,
     pattern_gather_centroids,
     tensor_tokens,
 )
@@ -361,11 +362,15 @@ def dequantized_regions(layer_cache: Any, *, pattern: bool) -> tuple[dict[str, d
     packed_k = dequantize_k_reference(cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, cache.group_size, cache.k_bits)
     if packed_k is not None:
         packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
+        if bool(getattr(cache, "hadamard_enabled", False)):
+            packed_k = hadamard_transform_last_dim(packed_k)
         if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
             packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
     packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
     if packed_v is not None:
         packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
+        if bool(getattr(cache, "hadamard_enabled", False)):
+            packed_v = hadamard_transform_last_dim(packed_v)
         if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
             mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
             if mask is not None:

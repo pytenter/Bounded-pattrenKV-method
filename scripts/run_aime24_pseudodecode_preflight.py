@@ -89,6 +89,7 @@ def make_args(model_path: Path, method: str, sink_length: int = 0, recent_length
         mixed_key_mask_hash="",
         patternkv_cache_path="segmented",
         patternkv_cache_mode="segmented_rolling",
+        patternkv_hadamard_enabled=False,
         num_k_base=32,
         num_v_base=32,
         force_think_prefix=True,

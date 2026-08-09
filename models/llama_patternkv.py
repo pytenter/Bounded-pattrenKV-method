@@ -20,6 +20,7 @@ from models.segmented_cache import (
     cache_validate_enabled,
     deserialize_cache,
     flush_chunked_buffer,
+    hadamard_transform_last_dim,
     maybe_validate_cache,
     serialize_cache,
     tensor_tokens,
@@ -834,6 +835,10 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     maybe_validate_cache(cache)
                 return attn_output, None, serialize_cache(cache) if use_cache else None
 
+            hadamard_enabled = bool(getattr(cache, "hadamard_enabled", False))
+            if hadamard_enabled and getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                raise ValueError("Hadamard PatternKV diagnostic supports segmented_rolling cache only")
+            query_states_rot = hadamard_transform_last_dim(query_states) if hadamard_enabled else query_states
             score_parts = []
             value_parts: list[tuple[str, int]] = []
             if cache.sink_k is not None:
@@ -842,21 +847,28 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 value_parts.append(("sink", cache.sink_k.shape[2]))
             if cache.packed_k is not None:
                 if cache.k_centroids is not None and cache.k_assignments is not None:
-                    packed_scores = cuda_bmm_fA_qB_outer_with_base(
-                        self.group_size,
-                        query_states,
-                        cache.packed_k,
-                        cache.packed_k_scale,
-                        cache.packed_k_zero,
-                        self.k_bits,
-                        cache.k_centroids,
-                        cache.k_assignments[:, :, : cache.packed_k_tokens],
-                        self.num_heads,
-                        self.num_key_value_heads,
-                    )
+                    if hadamard_enabled:
+                        packed_scores = cuda_bmm_fA_qB_outer(
+                            self.group_size, query_states_rot, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
+                        )
+                        k_base = self._gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids)
+                        packed_scores = packed_scores + torch.matmul(query_states, repeat_kv(k_base, self.num_key_value_groups).transpose(2, 3))
+                    else:
+                        packed_scores = cuda_bmm_fA_qB_outer_with_base(
+                            self.group_size,
+                            query_states,
+                            cache.packed_k,
+                            cache.packed_k_scale,
+                            cache.packed_k_zero,
+                            self.k_bits,
+                            cache.k_centroids,
+                            cache.k_assignments[:, :, : cache.packed_k_tokens],
+                            self.num_heads,
+                            self.num_key_value_heads,
+                        )
                 else:
                     packed_scores = cuda_bmm_fA_qB_outer(
-                        self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
+                        self.group_size, query_states_rot, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
                     )
                 score_parts.append(packed_scores[:, :, :, : cache.packed_k_tokens])
                 value_parts.append(("packed", cache.packed_k_tokens))
@@ -925,7 +937,14 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     weights = attn_weights[:, :, :, offset : offset + length]
                     if name == "packed":
                         v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
-                        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                        if hadamard_enabled:
+                            part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                            part = hadamard_transform_last_dim(part)
+                            if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                                v_base = self._gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids)
+                                v_base = v_base * v_mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(v_base.dtype)
+                                part = part + torch.matmul(weights, repeat_kv(v_base, self.num_key_value_groups))
+                        elif cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
                             part = cuda_attn_v_fused_with_base(
                                 self.group_size,
                                 weights,
@@ -1531,6 +1550,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 v_pattern_mask=v_assignments,
                 cache_mode=cache_mode,
                 chunk_length=self.residual_length,
+                hadamard_enabled=bool(getattr(self.config, "patternkv_hadamard_enabled", False)),
             )
             past_key_value = serialize_cache(cache)
         else:

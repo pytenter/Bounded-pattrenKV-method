@@ -36,6 +36,7 @@ class QuantizedKVCache:
     pack_count_v: int = 0
     cache_mode: str = "segmented_rolling"
     chunk_length: int = 128
+    hadamard_enabled: bool = False
 
 
 @dataclass
@@ -126,6 +127,25 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
 
 def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
     return value if current is None else torch.cat([current, value], dim=2).contiguous()
+
+
+def sylvester_hadamard(dim: int, *, device: torch.device | str, dtype: torch.dtype = torch.float32) -> torch.Tensor:
+    if dim <= 0 or dim & (dim - 1):
+        raise ValueError(f"Hadamard dimension must be a positive power of two, got {dim}")
+    h = torch.ones(1, 1, dtype=torch.float32, device=device)
+    while h.shape[0] < dim:
+        h = torch.cat((torch.cat((h, h), dim=1), torch.cat((h, -h), dim=1)), dim=0)
+    return (h / (float(dim) ** 0.5)).to(dtype=dtype)
+
+
+def hadamard_transform_last_dim(x: torch.Tensor) -> torch.Tensor:
+    h = sylvester_hadamard(x.shape[-1], device=x.device, dtype=torch.float32)
+    out = x.float().reshape(-1, x.shape[-1]).matmul(h).reshape_as(x)
+    return out.to(dtype=x.dtype)
+
+
+def maybe_hadamard_transform_last_dim(x: torch.Tensor, enabled: bool) -> torch.Tensor:
+    return hadamard_transform_last_dim(x) if enabled else x
 
 
 def _assign_minmax_hnk(x: torch.Tensor, centroids: torch.Tensor, block_k: int = 256) -> torch.Tensor:
@@ -256,12 +276,14 @@ def dequantize_v_reference(packed: torch.Tensor | None, scale: torch.Tensor | No
 
 def _pack_raw_pending(cache: QuantizedKVCache, tokens: int) -> None:
     to_pack = cache.pending_k[:, :, :tokens, :].contiguous()
+    to_pack = maybe_hadamard_transform_last_dim(to_pack, bool(cache.hadamard_enabled))
     packed, scale, zero = quantize_pack_k_reference(to_pack, cache.group_size, cache.k_bits)
     _cat_packed_k(cache, packed, scale, zero, tokens)
     cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
     if cache.pending_v is None or tensor_tokens(cache.pending_v) < tokens:
         raise ValueError("V pending must cover the same prefix as K pending")
     value_to_pack = cache.pending_v[:, :, :tokens, :].contiguous()
+    value_to_pack = maybe_hadamard_transform_last_dim(value_to_pack, bool(cache.hadamard_enabled))
     packed_v, scale_v, zero_v = quantize_pack_v_reference(value_to_pack, cache.group_size, cache.v_bits)
     _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
@@ -316,6 +338,8 @@ def _pack_pattern_window(
         v_pattern_mask = v_pattern_mask[:, :, :tokens].contiguous().bool()
     k_residual = k_window - k_centroid_per_token
     v_adjusted = v_window - v_pattern_mask.unsqueeze(-1).to(v_window.dtype) * v_centroid_per_token
+    k_residual = maybe_hadamard_transform_last_dim(k_residual, bool(cache.hadamard_enabled))
+    v_adjusted = maybe_hadamard_transform_last_dim(v_adjusted, bool(cache.hadamard_enabled))
     if getattr(cache, "trace_layer_idx", None) is not None:
         try:
             from bench.patternkv_equivalence_reference import save_assignment_trace
@@ -427,6 +451,7 @@ def build_cache_from_prefill(
     v_pattern_mask: torch.Tensor | None = None,
     cache_mode: str = ROLLING_CACHE_MODE,
     chunk_length: int | None = None,
+    hadamard_enabled: bool = False,
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
@@ -439,6 +464,7 @@ def build_cache_from_prefill(
         v_bits=int(v_bits),
         cache_mode=cache_mode,
         chunk_length=int(chunk_length if chunk_length is not None else group_size),
+        hadamard_enabled=bool(hadamard_enabled),
     )
     total = cache.total_tokens
     sink_end = 0 if cache_mode == CHUNKED_CACHE_MODE else min(total, sink_length)
@@ -545,6 +571,7 @@ def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
     packed_k = dequantize_k_reference(cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, cache.group_size, cache.k_bits)
     if packed_k is not None:
         packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
+        packed_k = maybe_hadamard_transform_last_dim(packed_k, bool(getattr(cache, "hadamard_enabled", False)))
         if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
             packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
     parts = [
@@ -561,6 +588,7 @@ def reconstruct_full_v(cache: QuantizedKVCache) -> torch.Tensor | None:
     packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
     if packed_v is not None:
         packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
+        packed_v = maybe_hadamard_transform_last_dim(packed_v, bool(getattr(cache, "hadamard_enabled", False)))
         if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
             mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
             if mask is not None:
@@ -601,6 +629,7 @@ def cache_segment_stats(cache: QuantizedKVCache | None) -> dict[str, int | None]
         "total_tokens": int(cache.total_tokens),
         "cache_mode": getattr(cache, "cache_mode", ROLLING_CACHE_MODE),
         "chunk_length": int(getattr(cache, "chunk_length", cache.group_size)),
+        "hadamard_enabled": bool(getattr(cache, "hadamard_enabled", False)),
         "k_assignment_tokens": tensor_tokens(k_assignments) if torch.is_tensor(k_assignments) else None,
         "v_assignment_tokens": tensor_tokens(v_assignment_idx) if torch.is_tensor(v_assignment_idx) else None,
         "v_pattern_mask_tokens": tensor_tokens(v_pattern_mask) if torch.is_tensor(v_pattern_mask) else None,
@@ -701,6 +730,7 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
         int(cache.v_bits),
         int(cache.pack_count_k),
         int(cache.pack_count_v),
+        bool(getattr(cache, "hadamard_enabled", False)),
     )
     if isinstance(cache, PatternQuantizedKVCache):
         return base + (
@@ -750,13 +780,14 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
         v_bits=int(value[20]),
         pack_count_k=int(value[21]),
         pack_count_v=int(value[22]),
+        hadamard_enabled=bool(value[23]) if len(value) > 23 and isinstance(value[23], bool) else False,
         cache_mode=ROLLING_CACHE_MODE,
         chunk_length=int(value[18]),
     )
-    if not isinstance(cache, PatternQuantizedKVCache) and len(value) >= 25 and isinstance(value[23], str):
-        cache.cache_mode = normalize_cache_mode(value[23])
-        cache.chunk_length = int(value[24])
-    pattern_offset = 23
+    pattern_offset = 24 if len(value) > 23 and isinstance(value[23], bool) else 23
+    if not isinstance(cache, PatternQuantizedKVCache) and len(value) >= pattern_offset + 2 and isinstance(value[pattern_offset], str):
+        cache.cache_mode = normalize_cache_mode(value[pattern_offset])
+        cache.chunk_length = int(value[pattern_offset + 1])
     if isinstance(cache, PatternQuantizedKVCache) and len(value) >= pattern_offset + 7:
         cache.k_assignments = value[pattern_offset]
         cache.v_assignments = value[pattern_offset + 1]

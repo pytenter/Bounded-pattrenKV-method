@@ -15,6 +15,9 @@ run/
 results/
 reports/aime24_norm_tail_3090/norm_tail_accumulation_gap.csv
 reports/aime24_norm_tail_3090/norm_tail_metrics.csv
+reports/aime24_pattern_hadamard_mechanism_3090/hadamard_accumulation_gap.csv
+reports/aime24_pattern_hadamard_mechanism_3090/hadamard_norm_tail_metrics.csv
+reports/aime24_pattern_hadamard_mechanism_3090/hadamard_static_vs_pseudo_metrics.csv
 tmp/
 archive/
 datasets/LongBench/

@@ -1,0 +1,35 @@
+{
+  "dirty_files": [
+    "M vllm/config/cache.py",
+    "M vllm/model_executor/layers/quantization/kvarn/config.py",
+    "M vllm/model_executor/layers/quantization/kvarn/debug.py",
+    "M vllm/utils/torch_utils.py",
+    "M vllm/v1/attention/backends/kvarn_attn.py",
+    "M vllm/v1/attention/ops/triton_kvarn_decode.py"
+  ],
+  "dirty_worktree": true,
+  "expected_source_commit": "7586257f1c632e63187bfacbbe21ccb51540f7b3",
+  "hadamard_source_valid": true,
+  "local_implementation": "models/segmented_cache.py::sylvester_hadamard and hadamard_transform_last_dim",
+  "semantics": {
+    "application_point": "post-RoPE K and post-projection V residual, immediately before low-bit cache quantization",
+    "axis": "last dimension / attention head_dim",
+    "decode_restore": "rotate query for QK in packed residual frame; inverse self-adjoint transform on packed V contribution before adding Pattern base",
+    "fp16_path": "unchanged; no FP16 Hadamard intervention path is enabled",
+    "head_dim": 128,
+    "matrix": "deterministic Sylvester-Hadamard",
+    "permutation": false,
+    "random_sign_vector": false,
+    "scaling": "orthonormal 1/sqrt(d)",
+    "weight_folding": "not used in this diagnostic; canonical notes allow output un-rotation or folded H^T in MLA, but PatternKV applies explicit inverse on packed V contribution"
+  },
+  "source_commit": "7586257f1c632e63187bfacbbe21ccb51540f7b3",
+  "source_commit_pinned": true,
+  "source_files": [
+    "vllm/model_executor/layers/quantization/kvarn/config.py",
+    "vllm/model_executor/layers/quantization/kvarn/mla_probe.py",
+    "vllm/model_executor/layers/quantization/kvarn/mla_quant.py"
+  ],
+  "source_remote": "https://github.com/huawei-csl/KVarN.git",
+  "source_repo": "/data/zypan/kvarn-repro/repos/KVarN"
+}
