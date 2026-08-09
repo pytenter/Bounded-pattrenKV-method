@@ -1,0 +1,58 @@
+{
+  "assignment_change_rate": {
+    "v_dir": {
+      "mean_change_rate": 0.180407400816679,
+      "median_change_rate": 0.13329553604125977,
+      "median_changed_direction_win_rate": 0.9415735304355621,
+      "rows": 250
+    },
+    "v_hybrid": {
+      "mean_change_rate": 0.1533755787834525,
+      "median_change_rate": 0.1019112728536129,
+      "median_changed_direction_win_rate": 0.7254483103752136,
+      "rows": 250
+    }
+  },
+  "baseline_reproduction_valid": true,
+  "best_direction_value_objective": "NONE",
+  "bits_identical": true,
+  "candidate_reconstruction_valid": true,
+  "candidate_set_invariant": true,
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "configs": [
+    "BASE",
+    "V_DIR",
+    "V_HYBRID"
+  ],
+  "current_centroid_rescoring_freedom_insufficient": true,
+  "formal_run_approved": true,
+  "full_aime24_quality_validation_recommended": false,
+  "k_path_identical": true,
+  "next_priority": "Selective Value Precision / Value representation capacity audit",
+  "parent_commit": "fd6748b9f93c8b357c5643e07d8e482438bdcd45",
+  "task_count": 6,
+  "v_dir": {
+    "attention_output": 0.0005019376985728741,
+    "classification": "NONE",
+    "future_v_source_direction": -0.0001512514427304268,
+    "hidden": -0.00910149421542883,
+    "static_stored_v_direction": -0.006664164364337921,
+    "value_only": 0.0035652383230626583
+  },
+  "v_dir_nontrivial_intervention": true,
+  "v_hybrid": {
+    "attention_output": -0.0023008245043456554,
+    "classification": "NONE",
+    "future_v_source_direction": 0.0011472896148916334,
+    "hidden": -0.010932981967926025,
+    "static_stored_v_direction": -0.004782358184456825,
+    "value_only": -0.00443971948698163
+  },
+  "v_hybrid_nontrivial_intervention": true
+}

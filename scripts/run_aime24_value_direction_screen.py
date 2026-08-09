@@ -641,7 +641,7 @@ def bootstrap_ci(deltas: list[float], *, seed: int = 20260809, samples: int = 10
 
 def pairwise_summary(static_auc: list[dict[str, Any]], gap_auc: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     metrics = {
-        "static_stored_v_direction": (static_auc, "stored_v_direction", "v_stored", "all_tokens", "direction_error", "p95"),
+        "static_stored_v_direction": (static_auc, "v_direction", "v_stored", "all_tokens", "direction_error", "p95"),
         "value_only": (gap_auc, "oracle_output", "attention_output", "current_history", "value_only_relative_L2", "global"),
         "attention_output": (gap_auc, "oracle_output", "attention_output", "current_history", "actual_relative_L2", "global"),
         "hidden": (gap_auc, "hidden_accumulation", "hidden_state", "current_token", "relative_L2", "global"),

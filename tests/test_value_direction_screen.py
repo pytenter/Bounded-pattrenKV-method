@@ -18,6 +18,7 @@ from models.segmented_cache import (
     deserialize_cache,
 )
 from bench.pseudodecode_metrics import trapezoid_auc_log2
+from scripts.run_aime24_value_direction_screen import pairwise_summary
 
 
 def test_value_candidate_set_invariant() -> None:
@@ -191,6 +192,19 @@ def test_value_direction_pairwise_alignment() -> None:
     base = {("task0", "metric"): 1.0}
     method = {("task0", "metric"): 0.5}
     assert set(base) == set(method)
+
+
+def test_static_stored_v_pairwise_uses_v_direction_family() -> None:
+    static_auc = [
+        {"task_key": "task0", "method": "BASE", "layer": "31", "metric_family": "v_direction", "object_type": "v_stored", "region": "all_tokens", "metric_name": "direction_error", "statistic": "p95", "auc": 1.0},
+        {"task_key": "task0", "method": "V_DIR", "layer": "31", "metric_family": "v_direction", "object_type": "v_stored", "region": "all_tokens", "metric_name": "direction_error", "statistic": "p95", "auc": 0.5},
+        {"task_key": "task0", "method": "V_HYBRID", "layer": "31", "metric_family": "v_direction", "object_type": "v_stored", "region": "all_tokens", "metric_name": "direction_error", "statistic": "p95", "auc": 0.75},
+    ]
+    pairwise, _summary = pairwise_summary(static_auc, [])
+    direct = {row["method"]: row for row in pairwise if row["metric"] == "static_stored_v_direction"}
+    assert direct["V_DIR"]["tasks_compared"] == 1
+    assert direct["V_DIR"]["median_delta"] == -0.5
+    assert direct["V_HYBRID"]["tasks_compared"] == 1
 
 
 def test_assignment_behavior_summary() -> None:
