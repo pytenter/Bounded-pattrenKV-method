@@ -6,9 +6,9 @@ def test_aime24_has_30_problems():
     assert len(rows) == 30
 
 
-def test_manifest_n2_has_180_tasks_and_60_per_method():
+def test_manifest_n2_matches_methods_and_has_60_per_method():
     rows = load_aime24()
     manifest = build_manifest(rows, METHODS, num_samples=2, base_seed=42, cfg_hash="abc")
-    assert len(manifest) == 180
+    assert len(manifest) == len(rows) * 2 * len(METHODS)
     for method in METHODS:
         assert sum(1 for t in manifest if t["method"] == method) == 60

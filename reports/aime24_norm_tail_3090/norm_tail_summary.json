@@ -1,0 +1,31 @@
+{
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "cross_method_norm_accumulation_supported": true,
+  "cross_method_norm_mechanism_supported": true,
+  "do_not_implement_varn": true,
+  "fp16_region_sanity_pass": true,
+  "kivi_norm_accumulation_supported": true,
+  "kivi_sink_reduces_norm_accumulation": true,
+  "next_priority": "locate and freeze canonical VarN source",
+  "norm_hidden_association_supported": true,
+  "norm_observer_noninvasive": true,
+  "pattern_norm_accumulation_supported": true,
+  "pattern_sink_reduces_norm_accumulation": true,
+  "stage_b_approved": false,
+  "stage_b_block_reason": "varn_source_gate_failed",
+  "task_count": 12,
+  "token_norm_accumulation_classification": "STRONG",
+  "token_norm_accumulation_supported": true,
+  "varn_can_run_without_unrelated_kvarn_components": false,
+  "varn_mechanism_gate": true,
+  "varn_semantics_audited": true,
+  "varn_source_commit_pinned": true,
+  "varn_source_found": true,
+  "varn_source_valid": false
+}

@@ -1,0 +1,45 @@
+{
+  "application_point": "K/V cache tile after attention emits fp16 K/V, before quantization/store",
+  "applies_to": [
+    "K",
+    "V"
+  ],
+  "canonical_varn_only_support": false,
+  "dirty_files": [
+    "M vllm/config/cache.py",
+    "M vllm/model_executor/layers/quantization/kvarn/config.py",
+    "M vllm/model_executor/layers/quantization/kvarn/debug.py",
+    "M vllm/utils/torch_utils.py",
+    "M vllm/v1/attention/backends/kvarn_attn.py",
+    "M vllm/v1/attention/ops/triton_kvarn_decode.py"
+  ],
+  "dirty_worktree": true,
+  "do_not_implement_varn": true,
+  "hadamard_required_by_canonical_pipeline": true,
+  "local_branch": "repro/kvarn-h-varn-ablation",
+  "local_uncommitted_varn_only_support": true,
+  "scale_semantics": {
+    "calibration": "none found in source",
+    "formula": "balanced = tile / s_col / s_row",
+    "iterations": "iterative alternating column and row standard-deviation normalization in log space; best-so-far imbalance state",
+    "k_orientation": "[D, group], s_row per-channel and s_col per-token",
+    "metadata": "s_col/s_row plus asymmetric RTN scale/zero-point are stored in the KVarN tile record",
+    "v_orientation": "[group, D], s_row per-token and s_col per-channel"
+  },
+  "source_branch": "origin/main",
+  "source_commit": "7586257f1c632e63187bfacbbe21ccb51540f7b3",
+  "source_files": [
+    "vllm/model_executor/layers/quantization/kvarn/sinkhorn.py",
+    "vllm/model_executor/layers/quantization/kvarn/config.py",
+    "vllm/v1/attention/backends/kvarn_attn.py",
+    "vllm/v1/attention/ops/triton_kvarn_sinkhorn.py",
+    "vllm/v1/attention/ops/triton_kvarn_decode.py"
+  ],
+  "source_remote_url": "https://github.com/huawei-csl/KVarN.git",
+  "source_repo": "/data/zypan/kvarn-repro/repos/KVarN",
+  "varn_can_run_without_unrelated_kvarn_components": false,
+  "varn_semantics_audited": true,
+  "varn_source_commit_pinned": true,
+  "varn_source_found": true,
+  "varn_source_valid": false
+}

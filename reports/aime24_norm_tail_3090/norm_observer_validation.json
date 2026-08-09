@@ -1,0 +1,26 @@
+{
+  "norm_observer_noninvasive": true,
+  "rows": [
+    {
+      "cache_fingerprint_same": true,
+      "config": "fp16",
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "valid": true
+    },
+    {
+      "cache_fingerprint_same": true,
+      "config": "pattern_rolling_k2v2_s0_r128",
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "valid": true
+    },
+    {
+      "cache_fingerprint_same": true,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "hidden_relative_L2": 0.0,
+      "logit_max_abs_diff": 0.0,
+      "valid": true
+    }
+  ]
+}
