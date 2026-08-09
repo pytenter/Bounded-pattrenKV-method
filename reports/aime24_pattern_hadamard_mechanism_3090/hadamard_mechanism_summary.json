@@ -1,0 +1,78 @@
+{
+  "accumulation_attention_auc": {
+    "base_auc_median": 0.5908144535496831,
+    "hadamard_auc_median": 0.5958866598084569,
+    "median_delta": 0.005072206258773804,
+    "paired_n": 6,
+    "tasks_improved": 3
+  },
+  "accumulation_hidden_auc": {
+    "base_auc_median": 0.5908144535496831,
+    "hadamard_auc_median": 0.5958866598084569,
+    "median_delta": 0.005072206258773804,
+    "paired_n": 6,
+    "tasks_improved": 3
+  },
+  "attention_auc_median_delta": 0.005072206258773804,
+  "attention_tasks_improved": 3,
+  "baseline_reproduction_valid": true,
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "hadamard_accumulation_effect": "NONE",
+  "hadamard_equivalence_valid": true,
+  "hadamard_norm_effect": "WEAK",
+  "hadamard_reduces_accumulation": false,
+  "hadamard_reduces_norm_accumulation": true,
+  "hadamard_reduces_static_error": false,
+  "hadamard_source_valid": true,
+  "hadamard_static_effect": "NONE",
+  "hidden_auc_median_delta": 0.005072206258773804,
+  "hidden_tasks_improved": 3,
+  "k_norm_p95_auc_delta": 0.0004908680217340783,
+  "next_priority": "VarN isolation / state stabilization",
+  "norm_primary_auc": {
+    "k_source_p95": {
+      "base_auc_median": 0.0643781042017508,
+      "hadamard_auc_median": 0.06390485500996873,
+      "median_delta": 0.0004908680217340783,
+      "paired_n": 6,
+      "tasks_improved": 3
+    },
+    "k_source_p99": {
+      "base_auc_median": 0.13215649278383293,
+      "hadamard_auc_median": 0.12413163701086878,
+      "median_delta": -0.0036284605972463913,
+      "paired_n": 6,
+      "tasks_improved": 4
+    },
+    "v_source_p95": {
+      "base_auc_median": 0.12063959046572557,
+      "hadamard_auc_median": 0.12426360872850631,
+      "median_delta": 0.0022548316745087393,
+      "paired_n": 6,
+      "tasks_improved": 2
+    },
+    "v_source_p99": {
+      "base_auc_median": 0.22979573660733874,
+      "hadamard_auc_median": 0.23470021875473301,
+      "median_delta": 0.000543754547834438,
+      "paired_n": 6,
+      "tasks_improved": 3
+    }
+  },
+  "static_hidden_auc": {
+    "base_auc_median": 0.01121939078439027,
+    "hadamard_auc_median": 0.01121939078439027,
+    "median_delta": 0.0,
+    "paired_n": 6,
+    "tasks_improved": 0
+  },
+  "task_count": 6,
+  "v_norm_p95_auc_delta": 0.0022548316745087393,
+  "worker_failed_completeness_rows": 0
+}

@@ -683,6 +683,8 @@ def aggregate() -> dict[str, Any]:
 def accumulation_gaps(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_key = {}
     for row in metrics:
+        if row.get("metric_name") not in PRIMARY_DEGRADATION_METRICS:
+            continue
         key = (row["mode"], row["task_key"], row["config"], int(row["checkpoint"]), row["metric_name"])
         by_key[key] = row
     rows = []
@@ -692,8 +694,11 @@ def accumulation_gaps(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
         static = by_key.get(("static", task_key, config, checkpoint, metric_name))
         if not static:
             continue
-        pv = float(pseudo["metric_value"])
-        sv = float(static["metric_value"])
+        try:
+            pv = float(pseudo["metric_value"])
+            sv = float(static["metric_value"])
+        except (TypeError, ValueError):
+            continue
         rows.append(
             {
                 "task_key": task_key,
@@ -820,7 +825,7 @@ def paired_delta_rows(
     for row in rows:
         key = tuple(row[field] for field in key_fields)
         by_key[(row["config"], *key)] = row
-    keys = sorted({key for (config, *key) in by_key if config in {base_config, had_config}})
+    keys = sorted({tuple(key) for (config, *key) in by_key if config in {base_config, had_config}})
     out = []
     for key in keys:
         base = by_key.get((base_config, *key))
@@ -1061,19 +1066,22 @@ def line_key_norm(summary: dict[str, Any], key: str) -> str:
 
 
 def load_varn_decision() -> dict[str, Any]:
+    fallback = {
+        "isolation_case": "CASE_B_MATHEMATICALLY_ISOLATABLE_BUT_KERNEL_FUSED",
+        "varn_only_semantics_valid": True,
+        "varn_only_implementation_path_valid": False,
+        "note": "Track A audit was committed on exp/aime-pseudodecode-3090-8gpu; artifact not present on this child branch.",
+    }
     candidates = [
         ROOT / "reports/varn_isolation_audit/varn_isolation_decision.json",
         ROOT / "reports/aime24_norm_tail_3090/varn_source_audit.json",
     ]
     for path in candidates:
         if path.exists():
-            return read_json(path)
-    return {
-        "isolation_case": "CASE_B_MATHEMATICALLY_ISOLATABLE_BUT_KERNEL_FUSED",
-        "varn_only_semantics_valid": True,
-        "varn_only_implementation_path_valid": False,
-        "note": "Track A audit was committed on exp/aime-pseudodecode-3090-8gpu; artifact not present on this child branch.",
-    }
+            data = read_json(path)
+            if "isolation_case" in data or "varn_only_semantics_valid" in data or "varn_only_math_valid" in data:
+                return {**fallback, **data}
+    return fallback
 
 
 def write_integrated_decision(summary: dict[str, Any]) -> dict[str, Any]:

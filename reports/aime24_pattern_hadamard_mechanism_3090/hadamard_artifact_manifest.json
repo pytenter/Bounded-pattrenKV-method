@@ -1,0 +1,44 @@
+{
+  "completion": {
+    "accumulation_gap_rows": 300,
+    "completeness_rows": 600,
+    "failed_completeness_rows": 0,
+    "metric_rows": 1560,
+    "norm_gap_rows": 208800,
+    "norm_rows": 417600
+  },
+  "csv_gzip": [
+    {
+      "gzip_bytes": 19380,
+      "gzip_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_static_vs_pseudo_metrics.csv.gz",
+      "gzip_sha256": "9e5471ccdcbea947a59f06e4a748bc2feaaed1cef19d16009ed51359be22d5e7",
+      "raw_bytes": 437701,
+      "raw_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_static_vs_pseudo_metrics.csv",
+      "raw_row_count": 1560,
+      "raw_sha256": "dc0b57eaa82e14af990f68045edd071643da05e5cac33e438bc0cfa14bbfc49f"
+    },
+    {
+      "gzip_bytes": 7826,
+      "gzip_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_accumulation_gap.csv.gz",
+      "gzip_sha256": "85e093000b8bdb61466658f84ddc66fc1ac1542c944e2a2a87555153cd4ceb55",
+      "raw_bytes": 56845,
+      "raw_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_accumulation_gap.csv",
+      "raw_row_count": 300,
+      "raw_sha256": "0a478c4e0292850032752c9545cf9144d9e60c75ced2888f769e83339daf8c1e"
+    },
+    {
+      "gzip_bytes": 4218073,
+      "gzip_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_norm_tail_metrics.csv.gz",
+      "gzip_sha256": "e9aea7f74c1995954fcd2eb2987306b1c26670b9aaf2ce14d585a33f081abb90",
+      "raw_bytes": 97099040,
+      "raw_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_norm_tail_metrics.csv",
+      "raw_row_count": 417600,
+      "raw_sha256": "53d1f8d84383238b2a288f4a7d55168366dedde27a821f8559989f2440ebcd8d"
+    }
+  ],
+  "schemas": {
+    "hadamard_accumulation_gap.csv": "pseudo degradation minus static degradation per task/config/checkpoint/metric",
+    "hadamard_norm_tail_metrics.csv": "Stage A norm observer rows reused for Hadamard diagnostic",
+    "hadamard_static_vs_pseudo_metrics.csv": "task/config/mode/checkpoint metric rows; metric_value is quant-vs-matched-FP16 degradation"
+  }
+}

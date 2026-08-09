@@ -1,0 +1,18 @@
+{
+  "forbidden_this_prompt": [
+    "Hadamard x VarN 2x2",
+    "full AIME validation",
+    "new sink sweep",
+    "assignment objective"
+  ],
+  "hadamard_accumulation_effect": "NONE",
+  "hadamard_norm_effect": "WEAK",
+  "hadamard_static_effect": "NONE",
+  "hadamard_summary_path": "reports/aime24_pattern_hadamard_mechanism_3090/hadamard_mechanism_summary.json",
+  "next_priority": "VarN isolation / state stabilization",
+  "recommended_next_experiment": "Plan a later Pattern S16 / +Hadamard / +VarN / +Hadamard+VarN 2x2 after VarN source-state stabilization; do not launch automatically.",
+  "varn_decision_path": "reports/varn_isolation_audit/varn_isolation_decision.json",
+  "varn_isolation_case": "CASE_B_MATHEMATICALLY_ISOLATABLE_BUT_KERNEL_FUSED",
+  "varn_only_implementation_path_valid": false,
+  "varn_only_semantics_valid": true
+}
