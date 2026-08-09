@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import hashlib
 from dataclasses import dataclass
 from math import lcm
 from typing import Any
@@ -49,6 +50,16 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     centroid_updates_k: int = 0
     centroid_updates_v: int = 0
     value_objective: str = "base"
+    v_precision_selector: str = "base_v2"
+    v4_budget_fraction: float = 0.0
+    random_selector_seed: int = 20260809
+    v_precision_mask: torch.Tensor | None = None
+    packed_v4: torch.Tensor | None = None
+    packed_v4_scale: torch.Tensor | None = None
+    packed_v4_zero: torch.Tensor | None = None
+    packed_v4_tokens: int = 0
+    v_causal_importance: torch.Tensor | None = None
+    v_oracle_importance: torch.Tensor | None = None
 
 
 CHUNKED_CACHE_MODE = "segmented_chunked"
@@ -125,6 +136,25 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
     cache.pack_count_v += 1
 
 
+def _cat_v_payload(
+    packed_current: torch.Tensor | None,
+    scale_current: torch.Tensor | None,
+    zero_current: torch.Tensor | None,
+    packed: torch.Tensor,
+    scale: torch.Tensor,
+    zero: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    if packed_current is None:
+        return packed, scale, zero
+    if scale_current is None or zero_current is None:
+        raise ValueError("existing V payload requires scale and zero")
+    return (
+        torch.cat([packed_current, packed], dim=2).contiguous(),
+        torch.cat([scale_current, scale], dim=2).contiguous(),
+        torch.cat([zero_current, zero], dim=2).contiguous(),
+    )
+
+
 def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
     return value if current is None else torch.cat([current, value], dim=2).contiguous()
 
@@ -188,6 +218,33 @@ def normalize_value_objective(value_objective: str | None) -> str:
     if value not in {"base", "v_dir", "v_hybrid"}:
         raise ValueError(f"unsupported PatternKV Value objective: {value_objective!r}")
     return value
+
+
+def normalize_value_precision_selector(selector: str | None) -> str:
+    value = str(selector or "base_v2").strip().lower().replace("-", "_")
+    aliases = {
+        "base": "base_v2",
+        "v2": "base_v2",
+        "all_v2": "all_v2",
+        "mixed_all_v2": "all_v2",
+        "v4": "all_v4",
+        "all_v4": "all_v4",
+        "random": "random_v4",
+        "random_v4": "random_v4",
+        "causal": "causal_v4",
+        "causal_importance": "causal_v4",
+        "causal_importance_v4": "causal_v4",
+        "oracle": "oracle_v4",
+        "oracle_v4": "oracle_v4",
+    }
+    value = aliases.get(value, value)
+    if value not in {"base_v2", "all_v2", "all_v4", "random_v4", "causal_v4", "oracle_v4"}:
+        raise ValueError(f"unsupported Value precision selector: {selector!r}")
+    return value
+
+
+def value_precision_is_mixed(selector: str | None) -> bool:
+    return normalize_value_precision_selector(selector) != "base_v2"
 
 
 def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -258,6 +315,151 @@ def _vector_nre(x: torch.Tensor, y: torch.Tensor, *, eps: float = 1e-8) -> torch
     xf = x.float()
     yf = y.float()
     return (xf - yf).pow(2).sum(dim=-1) / xf.pow(2).sum(dim=-1).clamp_min(eps)
+
+
+def local_v2_v4_gain(
+    v: torch.Tensor,
+    centroid_per_token: torch.Tensor,
+    pattern_mask: torch.Tensor,
+    *,
+    group_size: int,
+    eps: float = 1e-8,
+) -> torch.Tensor:
+    adjusted = v - pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+    recon2 = affine_dequantize_last_dim_reference(adjusted, group_size, 2) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+    recon4 = affine_dequantize_last_dim_reference(adjusted, group_size, 4) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+    loss2 = _vector_nre(v, recon2, eps=eps) + _vector_direction_error(v, recon2, eps=eps)
+    loss4 = _vector_nre(v, recon4, eps=eps) + _vector_direction_error(v, recon4, eps=eps)
+    return (loss2 - loss4).mean(dim=1).clamp_min(0.0).contiguous()
+
+
+def _budget_k(tokens: int, fraction: float, *, force_nonzero: bool = False) -> int:
+    if tokens <= 0:
+        return 0
+    k = int(round(float(fraction) * float(tokens)))
+    if force_nonzero and k == 0:
+        k = 1
+    return max(0, min(tokens, k))
+
+
+def _stable_selector_hash(*parts: object) -> int:
+    payload = "\x1f".join(str(part) for part in parts).encode("utf-8")
+    return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big", signed=False)
+
+
+def _topk_mask(score: torch.Tensor, k: int, *, tie_break: torch.Tensor | None = None, largest: bool = True) -> torch.Tensor:
+    bsz, tokens = score.shape
+    out = torch.zeros(bsz, tokens, dtype=torch.bool, device=score.device)
+    if k <= 0:
+        return out
+    for b in range(bsz):
+        rows = []
+        for t in range(tokens):
+            primary = float(score[b, t].item())
+            tie = float(tie_break[b, t].item()) if tie_break is not None else 0.0
+            rows.append((primary, tie, t))
+        if largest:
+            rows.sort(key=lambda item: (-item[0], -item[1], item[2]))
+        else:
+            rows.sort(key=lambda item: (item[0], -item[1], item[2]))
+        chosen = [t for _primary, _tie, t in rows[:k]]
+        out[b, chosen] = True
+    return out
+
+
+def select_value_precision_mask(
+    cache: PatternQuantizedKVCache,
+    v_window: torch.Tensor,
+    centroid_per_token: torch.Tensor,
+    pattern_mask: torch.Tensor,
+    *,
+    absolute_start: int,
+) -> torch.Tensor:
+    selector = normalize_value_precision_selector(getattr(cache, "v_precision_selector", "base_v2"))
+    bsz, _heads, tokens, _dim = v_window.shape
+    if selector in {"base_v2", "all_v2"}:
+        return torch.zeros(bsz, tokens, dtype=torch.bool, device=v_window.device)
+    if selector == "all_v4":
+        return torch.ones(bsz, tokens, dtype=torch.bool, device=v_window.device)
+    k = _budget_k(tokens, float(getattr(cache, "v4_budget_fraction", 0.125)), force_nonzero=False)
+    gain = local_v2_v4_gain(v_window, centroid_per_token, pattern_mask, group_size=cache.group_size)
+    if selector == "random_v4":
+        scores = torch.empty(bsz, tokens, dtype=torch.float64, device=v_window.device)
+        task_key = str(getattr(cache, "selector_task_key", "task"))
+        layer_idx = int(getattr(cache, "selector_layer_idx", -1))
+        window_idx = int(getattr(cache, "pack_count_v", 0))
+        seed = int(getattr(cache, "random_selector_seed", 20260809))
+        for b in range(bsz):
+            for t in range(tokens):
+                h = _stable_selector_hash(task_key, layer_idx, window_idx, absolute_start + t, seed)
+                scores[b, t] = float(h) / float((1 << 64) - 1)
+        return _topk_mask(scores, k, tie_break=gain, largest=False)
+    abs_positions = torch.arange(absolute_start, absolute_start + tokens, device=v_window.device).unsqueeze(0).expand(bsz, -1)
+    if selector == "causal_v4":
+        importance = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
+        causal = getattr(cache, "v_causal_importance", None)
+        if torch.is_tensor(causal) and causal.shape[1] >= absolute_start + tokens:
+            importance = causal[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
+        score = (importance + 1e-8) * gain
+        return _topk_mask(score, k, tie_break=gain - abs_positions.to(gain.dtype) * 0.0, largest=True)
+    oracle = getattr(cache, "v_oracle_importance", None)
+    future = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
+    if torch.is_tensor(oracle) and oracle.shape[1] >= absolute_start + tokens:
+        future = oracle[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
+    score = future * gain
+    return _topk_mask(score, k, tie_break=gain, largest=True)
+
+
+def _cat_mixed_packed_v(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor, precision_mask: torch.Tensor, tokens: int) -> None:
+    if v_adjusted.shape[0] != 1:
+        raise ValueError("mixed Value precision currently requires batch size 1")
+    mask = precision_mask[0].bool()
+    low = v_adjusted[:, :, ~mask, :].contiguous()
+    high = v_adjusted[:, :, mask, :].contiguous()
+    if low.shape[2]:
+        packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
+        cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, packed2, scale2, zero2)
+    if high.shape[2]:
+        packed4, scale4, zero4 = quantize_pack_v_reference(high, cache.group_size, 4)
+        cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, packed4, scale4, zero4)
+        cache.packed_v4_tokens += int(high.shape[2])
+    mask_u8 = precision_mask.to(torch.uint8)
+    cache.v_precision_mask = mask_u8 if cache.v_precision_mask is None else torch.cat([cache.v_precision_mask, mask_u8], dim=1).contiguous()
+    cache.packed_v_tokens += int(tokens)
+    cache.pack_count_v += 1
+
+
+def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
+    if not isinstance(cache, PatternQuantizedKVCache) or cache.v_precision_mask is None:
+        packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
+        return packed_v[:, :, : cache.packed_v_tokens, :].contiguous() if packed_v is not None else None
+    if cache.v_precision_mask.shape[0] != 1:
+        raise ValueError("mixed Value precision currently requires batch size 1")
+    mask = cache.v_precision_mask[:, : cache.packed_v_tokens].bool()
+    low = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, 2)
+    high = dequantize_v_reference(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, cache.group_size, 4)
+    template = high if high is not None else low
+    if template is None:
+        return None
+    out = torch.empty(template.shape[0], template.shape[1], cache.packed_v_tokens, template.shape[-1], dtype=template.dtype, device=template.device)
+    if low is not None:
+        out[:, :, ~mask[0], :] = low[:, :, : int((~mask[0]).sum().item()), :]
+    if high is not None:
+        out[:, :, mask[0], :] = high[:, :, : int(mask[0].sum().item()), :]
+    return out.contiguous()
+
+
+def update_value_causal_importance(cache: PatternQuantizedKVCache, attn_weights: torch.Tensor) -> None:
+    if attn_weights.dim() != 4:
+        raise ValueError(f"expected attention weights [B,QH,Q,T], got {tuple(attn_weights.shape)}")
+    mass = attn_weights.detach().float().mean(dim=1).sum(dim=1)
+    if cache.v_causal_importance is None or cache.v_causal_importance.shape[1] < cache.total_tokens:
+        new_state = torch.zeros(mass.shape[0], cache.total_tokens, dtype=torch.float32, device=mass.device)
+        if torch.is_tensor(cache.v_causal_importance):
+            old = cache.v_causal_importance.to(mass.device)
+            new_state[:, : old.shape[1]] = old
+        cache.v_causal_importance = new_state
+    cache.v_causal_importance[:, : mass.shape[1]] += mass[:, : cache.total_tokens]
 
 
 def pattern_select_v_candidate(
@@ -459,9 +661,14 @@ def _pack_pattern_window(
             if os.environ.get("PATTERNKV_EQUIV_TRACE_STRICT") == "1":
                 raise
     packed_k, scale_k, zero_k = quantize_pack_k_reference(k_residual, cache.group_size, cache.k_bits)
-    packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
     _cat_packed_k(cache, packed_k, scale_k, zero_k, tokens)
-    _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+    if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
+        absolute_start = tensor_tokens(cache.sink_v) + int(cache.packed_v_tokens)
+        precision_mask = select_value_precision_mask(cache, v_window, v_centroid_per_token, v_pattern_mask, absolute_start=absolute_start)
+        _cat_mixed_packed_v(cache, v_adjusted, precision_mask, tokens)
+    else:
+        packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
+        _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
     cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments)
     cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx)
     mask_u8 = v_pattern_mask.to(torch.uint8)
@@ -551,6 +758,12 @@ def build_cache_from_prefill(
     cache_mode: str = ROLLING_CACHE_MODE,
     chunk_length: int | None = None,
     value_objective: str = "base",
+    v_precision_selector: str = "base_v2",
+    v4_budget_fraction: float = 0.0,
+    random_selector_seed: int = 20260809,
+    selector_task_key: str | None = None,
+    selector_layer_idx: int | None = None,
+    v_oracle_importance: torch.Tensor | None = None,
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
@@ -579,6 +792,14 @@ def build_cache_from_prefill(
         cache.k_centroids = k_centroids
         cache.v_centroids = v_centroids
         cache.value_objective = normalize_value_objective(value_objective)
+        cache.v_precision_selector = normalize_value_precision_selector(v_precision_selector)
+        cache.v4_budget_fraction = float(v4_budget_fraction)
+        cache.random_selector_seed = int(random_selector_seed)
+        if selector_task_key is not None:
+            cache.selector_task_key = str(selector_task_key)
+        if selector_layer_idx is not None:
+            cache.selector_layer_idx = int(selector_layer_idx)
+        cache.v_oracle_importance = v_oracle_importance
         history_k_assignments = k_assignments[:, :, sink_end:recent_start].contiguous() if k_assignments is not None and recent_start > sink_end else None
         history_v_assignment_idx = v_assignment_idx[:, :, sink_end:recent_start].contiguous() if v_assignment_idx is not None and recent_start > sink_end else None
         history_v_pattern_mask = v_pattern_mask[:, :, sink_end:recent_start].contiguous() if v_pattern_mask is not None and recent_start > sink_end else None
@@ -683,7 +904,7 @@ def reconstruct_full_k(cache: QuantizedKVCache) -> torch.Tensor | None:
 
 
 def reconstruct_full_v(cache: QuantizedKVCache) -> torch.Tensor | None:
-    packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
+    packed_v = reconstruct_packed_v(cache)
     if packed_v is not None:
         packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
         if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
@@ -785,6 +1006,19 @@ def validate_cache(cache: QuantizedKVCache) -> None:
         v_mask_tokens = tensor_tokens(cache.v_pattern_mask)
         if v_mask_tokens not in (0, cache.packed_v_tokens):
             raise ValueError(f"Pattern V gate tokens must match packed history: {v_mask_tokens} != {cache.packed_v_tokens}")
+        if cache.v_precision_mask is not None:
+            if cache.v_precision_mask.dim() != 2:
+                raise ValueError(f"V precision mask must be [batch, packed_tokens], got {tuple(cache.v_precision_mask.shape)}")
+            if cache.v_precision_mask.shape[1] != cache.packed_v_tokens:
+                raise ValueError(f"V precision mask tokens must match packed history: {cache.v_precision_mask.shape[1]} != {cache.packed_v_tokens}")
+            selected = int(cache.v_precision_mask.bool().sum().item())
+            if selected != int(cache.packed_v4_tokens):
+                raise ValueError(f"V4 payload token mismatch: mask selected={selected}, payload={cache.packed_v4_tokens}")
+            v2_tokens = cache.packed_v_tokens - selected
+            if tensor_tokens(cache.packed_v) != v2_tokens:
+                raise ValueError(f"V2 payload token mismatch: mask low={v2_tokens}, payload={tensor_tokens(cache.packed_v)}")
+            if tensor_tokens(cache.packed_v4) != selected:
+                raise ValueError(f"V4 payload tensor token mismatch: mask selected={selected}, payload={tensor_tokens(cache.packed_v4)}")
         if torch.is_tensor(cache.k_centroids):
             if cache.k_centroids.dim() != 3:
                 raise ValueError(f"K centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.k_centroids.shape)}")
@@ -840,6 +1074,16 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             cache.cache_mode,
             int(cache.chunk_length),
             cache.value_objective,
+            cache.v_precision_selector,
+            float(cache.v4_budget_fraction),
+            int(cache.random_selector_seed),
+            cache.v_precision_mask,
+            cache.packed_v4,
+            cache.packed_v4_scale,
+            cache.packed_v4_zero,
+            int(cache.packed_v4_tokens),
+            cache.v_causal_importance,
+            cache.v_oracle_importance,
         )
     return base + (cache.cache_mode, int(cache.chunk_length))
 
@@ -904,6 +1148,17 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
             cache.chunk_length = int(value[pattern_offset + 9])
         if len(value) >= pattern_offset + 11 and isinstance(value[pattern_offset + 10], str):
             cache.value_objective = normalize_value_objective(value[pattern_offset + 10])
+        if len(value) >= pattern_offset + 21 and isinstance(value[pattern_offset + 11], str):
+            cache.v_precision_selector = normalize_value_precision_selector(value[pattern_offset + 11])
+            cache.v4_budget_fraction = float(value[pattern_offset + 12])
+            cache.random_selector_seed = int(value[pattern_offset + 13])
+            cache.v_precision_mask = value[pattern_offset + 14]
+            cache.packed_v4 = value[pattern_offset + 15]
+            cache.packed_v4_scale = value[pattern_offset + 16]
+            cache.packed_v4_zero = value[pattern_offset + 17]
+            cache.packed_v4_tokens = int(value[pattern_offset + 18])
+            cache.v_causal_importance = value[pattern_offset + 19]
+            cache.v_oracle_importance = value[pattern_offset + 20]
     validate_cache(cache)
     return cache
 
