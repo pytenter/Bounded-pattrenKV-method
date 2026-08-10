@@ -111,6 +111,10 @@ def method_config(method: str) -> dict[str, Any]:
     return {**base, **CONFIGS[method]}
 
 
+def method_selector(method: str) -> str:
+    return str(method_config(method)["selector"])
+
+
 def config_args(model_path: Path, method_name: str, backend: str = "patternkv") -> Any:
     cfg = method_config(method_name)
     args = make_args(model_path, backend, cfg["sink_length"], cfg["recent_length"], config_name=cfg["config"] if backend != "fp16" else "fp16")
@@ -227,7 +231,7 @@ def set_selector_context(
 
 
 def method_needs_importance(method: str) -> bool:
-    return method in {"RANDOM_V4", "CAUSAL_V4", "ORACLE_V4"}
+    return method_selector(method) in {"causal_v4", "oracle_v4"}
 
 
 def slice_sources(sources: dict[int, dict[str, torch.Tensor]], total: int) -> dict[int, dict[str, torch.Tensor]]:
@@ -445,7 +449,8 @@ def quant_pseudo_task(model: torch.nn.Module, task: dict[str, Any], method_name:
     rows = {key: [] for key in FAMILIES}
     completeness = []
     causal_imp, oracle_imp = importance_pair
-    set_selector_context(model, task["task_key"], causal_by_layer=causal_imp if method_name == "CAUSAL_V4" else None, oracle_by_layer=oracle_imp if method_name == "ORACLE_V4" else None)
+    selector = method_selector(method_name)
+    set_selector_context(model, task["task_key"], causal_by_layer=causal_imp if selector == "causal_v4" else None, oracle_by_layer=oracle_imp if selector == "oracle_v4" else None)
     set_rvd_config(method_name)
     capture = SourceCapture(selected_layers=SELECTED_LAYERS)
     capture.install(model)
@@ -543,7 +548,8 @@ def worker(model_path: Path, gpu_id: int, method: str, mode: str, task_shard_ind
             else:
                 cp = int(job["checkpoint"])
                 causal_imp, oracle_imp = importance[(task["task_key"], cp)]
-                set_selector_context(q_model, task["task_key"], causal_by_layer=causal_imp if method == "CAUSAL_V4" else None, oracle_by_layer=oracle_imp if method == "ORACLE_V4" else None)
+                selector = method_selector(method)
+                set_selector_context(q_model, task["task_key"], causal_by_layer=causal_imp if selector == "causal_v4" else None, oracle_by_layer=oracle_imp if selector == "oracle_v4" else None)
                 q_output, q_sources = run_with_source_capture(q_model, task=task, checkpoint=cp, mode="static")
                 fam0, comp = rvd.compute_channel_rows(task=task, mode="static", checkpoint=cp, fp_sources=fp_sources[(task["task_key"], cp)], quant_sources=q_sources, quant_past=q_output["past_key_values"])
                 fam = split_rvd_rows(method, fam0)

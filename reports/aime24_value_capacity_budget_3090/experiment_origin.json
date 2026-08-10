@@ -1,0 +1,9 @@
+{
+  "branch": "exp/aime-value-capacity-budget-3090",
+  "experiment": "aime24_value_capacity_budget_3090",
+  "experiment8_source_commit": "241b832",
+  "head": "241b832aee31c0e328d13675efb7819508c29ac9",
+  "parent_commit": "241b832aee31c0e328d13675efb7819508c29ac9",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "worktree_dirty_at_prepare": true
+}

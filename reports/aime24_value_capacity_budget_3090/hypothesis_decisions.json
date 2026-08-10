@@ -1,0 +1,181 @@
+{
+  "all_v4": {
+    "all_v4_no_selector_dependency": true,
+    "all_v4_reference_equivalent": true,
+    "attention_output_delta": -0.0503432285040617,
+    "attention_output_tasks_improved": 6,
+    "base_reproduction_valid": true,
+    "capacity_effect": "MODERATE",
+    "centroid_assignment_identical": true,
+    "effective_kv_bits_per_element": 3.25048828125,
+    "formal_approved": true,
+    "future_v_source_delta": -0.017926769913174212,
+    "future_v_source_tasks_improved": 5,
+    "headroom_over_causal_12p5": -0.04654949437826872,
+    "headroom_tasks_allv4_better": 6,
+    "hidden_delta": -0.08995966240763664,
+    "hidden_tasks_improved": 6,
+    "ideal_all_v4_overhead_bits_per_value_element": 0.0,
+    "ideal_effective_kv_bits_per_element": 3.25,
+    "implementation_precision_bitmap_overhead_bits_per_value_element": 0.0009765625,
+    "implementation_uses_precision_bitmap": true,
+    "k_path_identical": true,
+    "stored_v_delta": -0.2994252941571176,
+    "stored_v_task_coverage": "6/6",
+    "stored_v_tasks_improved": 6,
+    "value_only_delta": -0.008695392636582255,
+    "value_only_tasks_improved": 4
+  },
+  "artifacts": {
+    "budget_attention_output_metrics.csv.gz": {
+      "gzip_sha256": "03b0d1e36d16b522d93aefbfcade6a05f74286862d0f2e00271c7d9e9dc9e4c7",
+      "raw_rows": 5400,
+      "raw_sha256": "5f1169aff30d2eefd8c1a1ed665a684dcc97254c64ffa8af159fbfcf2a6b20aa",
+      "schema_version": "routing_vdirection_observer_v1"
+    },
+    "budget_future_v_source_metrics.csv.gz": {
+      "gzip_sha256": "9b4a326e1be82ac8c69975676c65035ff7be16a956a64f7aa525f743e0fe819e",
+      "raw_rows": 64800,
+      "raw_sha256": "8ac377f6f03e3eb7acb8ea8e595fdfbce23652f82fc2728589841aa7e5d7a054",
+      "schema_version": "routing_vdirection_observer_v1"
+    },
+    "budget_hidden_accumulation_metrics.csv.gz": {
+      "gzip_sha256": "953c87f8b922f343eca0841c187b3c621323646a1c0d37a71142c920e7f75951",
+      "raw_rows": 2700,
+      "raw_sha256": "3841898184127f956266001c2229b1d6140b65812f5d1aa336eafc8d3b2fd1d2",
+      "schema_version": "routing_vdirection_observer_v1"
+    },
+    "budget_precision_selection.csv.gz": {
+      "gzip_sha256": "aa1d332c0d6607fad5771621dd07c179507912313ba087ac2ef8eac502d73bcd",
+      "raw_rows": 30690,
+      "raw_sha256": "00b603ad76d4a8232c9e8ba3c8df7299cd48ede3775fd44aa9996349f5a5d823",
+      "schema_version": "value_capacity_budget_v1"
+    },
+    "budget_routing_safety_metrics.csv.gz": {
+      "gzip_sha256": "f730917a1363b26caa91db87b0139328275d1a63cc221f610261f4606b456628",
+      "raw_rows": 245700,
+      "raw_sha256": "90cb0e7225a42e4115caa98b45e199598ea8f6b6102ef91170a4c7ee0b6cf85b",
+      "schema_version": "routing_vdirection_observer_v1"
+    },
+    "budget_selector_quality.csv.gz": {
+      "gzip_sha256": "63d3f4f96fcd8f45b2c85adde1bcde77eabeec625086609a63ee10ff268402eb",
+      "raw_rows": 2250,
+      "raw_sha256": "1ca6dcc44dbd1f2b6ebf30d43ebfebc153ecfd596d84841e410b66ecb7aad3e5",
+      "schema_version": "value_capacity_budget_v1"
+    },
+    "budget_stored_v_metrics.csv.gz": {
+      "gzip_sha256": "c071521eb6c81a42bba5ec40a47ad46908f19c019755f65de3ae7c97440e5b1b",
+      "raw_rows": 27000,
+      "raw_sha256": "4f92dc1c553bb1dbd748082827aea3b36d841602f2e4e5abd4b214fd66f47f2e",
+      "schema_version": "routing_vdirection_observer_v1"
+    },
+    "budget_value_oracle_metrics.csv.gz": {
+      "gzip_sha256": "e329a03e7d85df045d3c3fbc803bf02847d13bee3ec5657ae782bd01a828fea6",
+      "raw_rows": 5400,
+      "raw_sha256": "ace441c6ba0db73443e6165e30a93d8a1df06793306b08f622bb5512ec47ed01",
+      "schema_version": "routing_vdirection_observer_v1"
+    }
+  },
+  "budget_response_classification": "IMPORTANCE_ALLOCATION_SUPPORTED",
+  "budget_response_run": true,
+  "budget_response_study_approved": true,
+  "budgets": [
+    0.0,
+    0.125,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "capacity_saturation_budget": "25%",
+  "causal_curve": {
+    "0.0": {
+      "attention_output": 0.294276682427153,
+      "future_v_source": 0.07337281958848507,
+      "hidden": 0.5516381371417083,
+      "value_only": 0.28950556728523225
+    },
+    "0.125": {
+      "attention_output": 0.2885930936317891,
+      "future_v_source": 0.058150106644689004,
+      "hidden": 0.5045470592158381,
+      "value_only": 0.2825453949626535
+    },
+    "0.25": {
+      "attention_output": 0.2524959467118606,
+      "future_v_source": 0.05449238694222913,
+      "hidden": 0.4967746451147832,
+      "value_only": 0.2815940255532041
+    },
+    "0.5": {
+      "attention_output": 0.2433318899711594,
+      "future_v_source": 0.050695227994083325,
+      "hidden": 0.456561935658101,
+      "value_only": 0.2675974298035726
+    },
+    "1.0": {
+      "attention_output": 0.24394999159267172,
+      "future_v_source": 0.05028529169453577,
+      "hidden": 0.4415073958807625,
+      "value_only": 0.2925377690116875
+    }
+  },
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "experiment8_source_commit": "241b832",
+  "full_aime24_quality_validation_recommended": true,
+  "historical_oracle_renamed": "FUTURE_ATTN_V4",
+  "missing_checkpoint_128_task_method_pairs": 20,
+  "next_priority": "Full AIME24 task-quality validation",
+  "parent_commit": "241b832aee31c0e328d13675efb7819508c29ac9",
+  "random_curve": {
+    "0.0": {
+      "attention_output": 0.294276682427153,
+      "future_v_source": 0.07337281958848507,
+      "hidden": 0.5516381371417083,
+      "value_only": 0.28950556728523225
+    },
+    "0.125": {
+      "attention_output": 0.3032775733154267,
+      "future_v_source": 0.059142023568938384,
+      "hidden": 0.5228992379852571,
+      "value_only": 0.2857940450194292
+    },
+    "0.25": {
+      "attention_output": 0.2702787087764591,
+      "future_v_source": 0.058213715418105494,
+      "hidden": 0.5316084499063436,
+      "value_only": 0.2772478045662865
+    },
+    "0.5": {
+      "attention_output": 0.2859430357348174,
+      "future_v_source": 0.05609748950178073,
+      "hidden": 0.49951921828323975,
+      "value_only": 0.28300254233181477
+    },
+    "1.0": {
+      "attention_output": 0.24394999159267172,
+      "future_v_source": 0.05028529169453577,
+      "hidden": 0.4415073958807625,
+      "value_only": 0.2925377690116875
+    }
+  },
+  "stored_v_old_summary_tasks_compared_1_reason": "The prior all-5-checkpoint AUC required checkpoint 128; most tasks have no packed Value rows at 128, so only one task survived. Experiment 9 computes stored-V AUC on each task's available packed checkpoints and records n_available/checkpoint span.",
+  "stored_v_raw_task_presence": {
+    "ALL_V4": "6/6",
+    "BASE_V2": "6/6",
+    "CAUSAL_V4": "6/6",
+    "RANDOM_V4": "6/6"
+  },
+  "stored_v_task_coverage": {
+    "ALL_V4": "6/6",
+    "BASE_V2": "6/6",
+    "CAUSAL_V4": "6/6",
+    "RANDOM_V4": "6/6"
+  },
+  "task_count": 6
+}

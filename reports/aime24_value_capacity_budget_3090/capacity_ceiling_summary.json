@@ -1,0 +1,127 @@
+{
+  "all_v4": {
+    "all_v4_no_selector_dependency": true,
+    "all_v4_reference_equivalent": true,
+    "attention_output_delta": -0.0503432285040617,
+    "attention_output_tasks_improved": 6,
+    "base_reproduction_valid": true,
+    "capacity_effect": "MODERATE",
+    "centroid_assignment_identical": true,
+    "effective_kv_bits_per_element": 3.25048828125,
+    "formal_approved": true,
+    "future_v_source_delta": -0.017926769913174212,
+    "future_v_source_tasks_improved": 5,
+    "headroom_over_causal_12p5": -0.04654949437826872,
+    "headroom_tasks_allv4_better": 6,
+    "hidden_delta": -0.08995966240763664,
+    "hidden_tasks_improved": 6,
+    "ideal_all_v4_overhead_bits_per_value_element": 0.0,
+    "ideal_effective_kv_bits_per_element": 3.25,
+    "implementation_precision_bitmap_overhead_bits_per_value_element": 0.0009765625,
+    "implementation_uses_precision_bitmap": true,
+    "k_path_identical": true,
+    "stored_v_delta": -0.2994252941571176,
+    "stored_v_task_coverage": "6/6",
+    "stored_v_tasks_improved": 6,
+    "value_only_delta": -0.008695392636582255,
+    "value_only_tasks_improved": 4
+  },
+  "headroom": {
+    "bootstrap_ci_high": -0.012567654252052307,
+    "bootstrap_ci_low": -0.09208851773291826,
+    "lhs": "ALL_V4",
+    "lhs_better_tasks": 6,
+    "lhs_minus_rhs_median_delta": -0.04654949437826872,
+    "metric": "hidden",
+    "rhs": "CAUSAL_V4",
+    "tasks_compared": 6
+  },
+  "missing_checkpoint_128_task_method_pairs": 20,
+  "pairwise": [
+    {
+      "base_median_auc": 0.314207099378109,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": -0.2907716976478696,
+      "bootstrap_ci_low": -0.3963599418057129,
+      "median_delta": -0.2994252941571176,
+      "method": "ALL_V4",
+      "method_median_auc": 0.014781805220991373,
+      "metric": "stored_v",
+      "tasks_compared": 6,
+      "tasks_improved": 6
+    },
+    {
+      "base_median_auc": 1.5036899596452713,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": -1.183587297797203,
+      "bootstrap_ci_low": -1.6012595631182194,
+      "median_delta": -1.2034608777612448,
+      "method": "ALL_V4",
+      "method_median_auc": 0.3002290818840265,
+      "metric": "stored_v_relative_l2",
+      "tasks_compared": 6,
+      "tasks_improved": 6
+    },
+    {
+      "base_median_auc": 0.28950556728523225,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": 0.02496387076098472,
+      "bootstrap_ci_low": -0.03105617716209963,
+      "median_delta": -0.008695392636582255,
+      "method": "ALL_V4",
+      "method_median_auc": 0.2925377690116875,
+      "metric": "value_only",
+      "tasks_compared": 6,
+      "tasks_improved": 4
+    },
+    {
+      "base_median_auc": 0.294276682427153,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": -0.02988433325663209,
+      "bootstrap_ci_low": -0.0779940471984446,
+      "median_delta": -0.0503432285040617,
+      "method": "ALL_V4",
+      "method_median_auc": 0.24394999159267172,
+      "metric": "attention_output",
+      "tasks_compared": 6,
+      "tasks_improved": 6
+    },
+    {
+      "base_median_auc": 0.5516381371417083,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": -0.07076886668801308,
+      "bootstrap_ci_low": -0.11459704302251339,
+      "median_delta": -0.08995966240763664,
+      "method": "ALL_V4",
+      "method_median_auc": 0.4415073958807625,
+      "metric": "hidden",
+      "tasks_compared": 6,
+      "tasks_improved": 6
+    },
+    {
+      "base_median_auc": 0.07337281958848507,
+      "base_method": "BASE_V2",
+      "bootstrap_ci_high": 0.02777255600085482,
+      "bootstrap_ci_low": -0.02739277499495074,
+      "median_delta": -0.017926769913174212,
+      "method": "ALL_V4",
+      "method_median_auc": 0.05028529169453577,
+      "metric": "future_v_source",
+      "tasks_compared": 6,
+      "tasks_improved": 5
+    }
+  ],
+  "stored_v_old_summary_tasks_compared_1_reason": "The prior all-5-checkpoint AUC required checkpoint 128; most tasks have no packed Value rows at 128, so only one task survived. Experiment 9 computes stored-V AUC on each task's available packed checkpoints and records n_available/checkpoint span.",
+  "stored_v_raw_task_presence": {
+    "ALL_V4": "6/6",
+    "BASE_V2": "6/6",
+    "CAUSAL_V4": "6/6",
+    "RANDOM_V4": "6/6"
+  },
+  "stored_v_task_coverage": {
+    "ALL_V4": "6/6",
+    "BASE_V2": "6/6",
+    "CAUSAL_V4": "6/6",
+    "RANDOM_V4": "6/6"
+  }
+}

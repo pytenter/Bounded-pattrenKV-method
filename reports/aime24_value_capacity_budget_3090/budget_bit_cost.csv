@@ -1,0 +1,6 @@
+budget,centroid_metadata_bits_per_value_element,ideal_effective_kv_bits_per_element,implementation_effective_kv_bits_per_element,precision_metadata_bits_per_value_element,value_payload_bits_per_element
+0.0,0.25,2.25,2.25,0.0,2.0
+0.125,0.25,2.375,2.37548828125,0.0009765625,2.25
+0.25,0.25,2.5,2.50048828125,0.0009765625,2.5
+0.5,0.25,2.75,2.75048828125,0.0009765625,3.0
+1.0,0.25,3.25,3.25048828125,0.0009765625,4.0

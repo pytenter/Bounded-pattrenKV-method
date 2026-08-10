@@ -1,0 +1,13 @@
+{
+  "budget_matched_at_each_level": true,
+  "causal_budget_selection_nested": true,
+  "random_budget_selection_nested": true,
+  "realized_fraction_median": {
+    "ALL_V4": 1.0,
+    "CAUSAL_V4_25": 0.25,
+    "CAUSAL_V4_50": 0.5,
+    "RANDOM_V4_25": 0.25,
+    "RANDOM_V4_50": 0.5
+  },
+  "rounding_rule": "k = round(budget * N), clamped to [0,N], inherited from Experiment 8"
+}

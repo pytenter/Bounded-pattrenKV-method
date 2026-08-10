@@ -1,0 +1,98 @@
+{
+  "budget_response_classification": "IMPORTANCE_ALLOCATION_SUPPORTED",
+  "capacity_saturation_budget": "25%",
+  "causal_curve": {
+    "0.0": {
+      "attention_output": 0.294276682427153,
+      "future_v_source": 0.07337281958848507,
+      "hidden": 0.5516381371417083,
+      "value_only": 0.28950556728523225
+    },
+    "0.125": {
+      "attention_output": 0.2885930936317891,
+      "future_v_source": 0.058150106644689004,
+      "hidden": 0.5045470592158381,
+      "value_only": 0.2825453949626535
+    },
+    "0.25": {
+      "attention_output": 0.2524959467118606,
+      "future_v_source": 0.05449238694222913,
+      "hidden": 0.4967746451147832,
+      "value_only": 0.2815940255532041
+    },
+    "0.5": {
+      "attention_output": 0.2433318899711594,
+      "future_v_source": 0.050695227994083325,
+      "hidden": 0.456561935658101,
+      "value_only": 0.2675974298035726
+    },
+    "1.0": {
+      "attention_output": 0.24394999159267172,
+      "future_v_source": 0.05028529169453577,
+      "hidden": 0.4415073958807625,
+      "value_only": 0.2925377690116875
+    }
+  },
+  "causal_hidden_monotonic": true,
+  "full_aime24_quality_validation_recommended": true,
+  "next_priority": "Full AIME24 task-quality validation",
+  "random_curve": {
+    "0.0": {
+      "attention_output": 0.294276682427153,
+      "future_v_source": 0.07337281958848507,
+      "hidden": 0.5516381371417083,
+      "value_only": 0.28950556728523225
+    },
+    "0.125": {
+      "attention_output": 0.3032775733154267,
+      "future_v_source": 0.059142023568938384,
+      "hidden": 0.5228992379852571,
+      "value_only": 0.2857940450194292
+    },
+    "0.25": {
+      "attention_output": 0.2702787087764591,
+      "future_v_source": 0.058213715418105494,
+      "hidden": 0.5316084499063436,
+      "value_only": 0.2772478045662865
+    },
+    "0.5": {
+      "attention_output": 0.2859430357348174,
+      "future_v_source": 0.05609748950178073,
+      "hidden": 0.49951921828323975,
+      "value_only": 0.28300254233181477
+    },
+    "1.0": {
+      "attention_output": 0.24394999159267172,
+      "future_v_source": 0.05028529169453577,
+      "hidden": 0.4415073958807625,
+      "value_only": 0.2925377690116875
+    }
+  },
+  "random_hidden_monotonic": false,
+  "selector_advantage": [
+    {
+      "bootstrap_ci_high": 0.02070597931742668,
+      "bootstrap_ci_low": -0.05580042954534292,
+      "budget": 0.125,
+      "causal_minus_random": -0.020258182659745216,
+      "tasks_causal_better": 4,
+      "tasks_compared": 6
+    },
+    {
+      "bootstrap_ci_high": -0.016931300051510334,
+      "bootstrap_ci_low": -0.06006681639701128,
+      "budget": 0.25,
+      "causal_minus_random": -0.04402434453368187,
+      "tasks_causal_better": 6,
+      "tasks_compared": 6
+    },
+    {
+      "bootstrap_ci_high": -0.0005889125168323517,
+      "bootstrap_ci_low": -0.04295728262513876,
+      "budget": 0.5,
+      "causal_minus_random": -0.02954321075230837,
+      "tasks_causal_better": 5,
+      "tasks_compared": 6
+    }
+  ]
+}

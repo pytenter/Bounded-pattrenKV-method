@@ -1,0 +1,9 @@
+{
+  "base_reused": true,
+  "base_source_artifact_hash": "27d4901924daa7688b5c4be616082400640a13721de4b91716da6fbe374da417",
+  "base_source_commit": "241b832",
+  "causal_12p5_reused": true,
+  "random_12p5_reused": true,
+  "source_commit": "241b832",
+  "source_dir": "reports/aime24_selective_value_precision_3090"
+}

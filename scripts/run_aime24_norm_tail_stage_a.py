@@ -153,7 +153,7 @@ class SourceCapture:
                 position_ids = kwargs.get("position_ids")
                 if position_ids is None and len(args) >= 3:
                     position_ids = args[2]
-                self.capture(__idx, __attn, hidden_states, position_ids)
+                self.capture(__idx, __attn, hidden_states, position_ids, kwargs.get("position_embeddings"))
                 return __orig(*args, **kwargs)
 
             attn.forward = wrapped
@@ -165,17 +165,23 @@ class SourceCapture:
         self._original.clear()
 
     @torch.no_grad()
-    def capture(self, layer_idx: int, attn: Any, hidden_states: torch.Tensor, position_ids: torch.Tensor | None) -> None:
+    def capture(self, layer_idx: int, attn: Any, hidden_states: torch.Tensor, position_ids: torch.Tensor | None, position_embeddings: Any = None) -> None:
         if position_ids is None:
             q_len = hidden_states.shape[1]
             position_ids = torch.arange(q_len, device=hidden_states.device, dtype=torch.long).unsqueeze(0)
         bsz, q_len, _ = hidden_states.shape
         if getattr(attn.config, "pretraining_tp", 1) > 1:
             raise RuntimeError("pretraining_tp capture path is not implemented for this diagnostic")
-        q = attn.q_proj(hidden_states).view(bsz, q_len, attn.num_heads, attn.head_dim).transpose(1, 2)
-        k = attn.k_proj(hidden_states).view(bsz, q_len, attn.num_key_value_heads, attn.head_dim).transpose(1, 2)
-        v = attn.v_proj(hidden_states).view(bsz, q_len, attn.num_key_value_heads, attn.head_dim).transpose(1, 2)
-        cos, sin = attn.rotary_emb(v, position_ids)
+        num_heads = int(getattr(attn, "num_heads", getattr(attn.config, "num_attention_heads")))
+        num_key_value_heads = int(getattr(attn, "num_key_value_heads", getattr(attn.config, "num_key_value_heads", num_heads)))
+        head_dim = int(getattr(attn, "head_dim", getattr(attn.config, "head_dim", getattr(attn.config, "hidden_size") // num_heads)))
+        q = attn.q_proj(hidden_states).view(bsz, q_len, num_heads, head_dim).transpose(1, 2)
+        k = attn.k_proj(hidden_states).view(bsz, q_len, num_key_value_heads, head_dim).transpose(1, 2)
+        v = attn.v_proj(hidden_states).view(bsz, q_len, num_key_value_heads, head_dim).transpose(1, 2)
+        if position_embeddings is not None:
+            cos, sin = position_embeddings
+        else:
+            cos, sin = attn.rotary_emb(v, position_ids)
         q, k = apply_rotary_pos_emb(q, k, cos, sin, position_ids)
         bucket = self.parts[layer_idx]
         bucket["hidden"].append(hidden_states.detach().cpu().to(torch.float32))

@@ -1,0 +1,67 @@
+{
+  "budgets": [
+    0.0,
+    0.125,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "checkpoints": [
+    128,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "configs": {
+    "ALL_V4": {
+      "budget": 1.0,
+      "config": "pattern_rolling_k2v4_s16_r128_all_v4",
+      "selector": "all_v4"
+    },
+    "BASE_V2": {
+      "budget": 0.0,
+      "config": "pattern_rolling_k2v2_s16_r128",
+      "selector": "base_v2"
+    },
+    "CAUSAL_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_causal_v4_b0125",
+      "selector": "causal_v4"
+    },
+    "CAUSAL_V4_25": {
+      "budget": 0.25,
+      "config": "pattern_rolling_k2v2_s16_r128_causal_v4_b025",
+      "selector": "causal_v4"
+    },
+    "CAUSAL_V4_50": {
+      "budget": 0.5,
+      "config": "pattern_rolling_k2v2_s16_r128_causal_v4_b050",
+      "selector": "causal_v4"
+    },
+    "FUTURE_ATTN_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_future_attn_v4_b0125",
+      "selector": "oracle_v4"
+    },
+    "RANDOM_V4": {
+      "budget": 0.125,
+      "config": "pattern_rolling_k2v2_s16_r128_random_v4_b0125",
+      "selector": "random_v4"
+    },
+    "RANDOM_V4_25": {
+      "budget": 0.25,
+      "config": "pattern_rolling_k2v2_s16_r128_random_v4_b025",
+      "selector": "random_v4"
+    },
+    "RANDOM_V4_50": {
+      "budget": 0.5,
+      "config": "pattern_rolling_k2v2_s16_r128_random_v4_b050",
+      "selector": "random_v4"
+    }
+  },
+  "historical_oracle_renamed": "FUTURE_ATTN_V4",
+  "portable_hash": "86648d12304ce11890c1a8f64bf5a896",
+  "random_selector_seed": 20260809,
+  "subset_sha256": "218b65375f551fb13ff9903b3fd8931f422215e0f3b86200c0d8f45130a43082"
+}

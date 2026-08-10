@@ -1,9 +1,13 @@
 import torch
 # import ipdb
 import random
+import sys
+from pathlib import Path
 import triton
 import triton.language as tl
-import patternkv_gemv 
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import patternkv_gemv
 
 
 @triton.jit
@@ -403,4 +407,3 @@ def cuda_attn_v_fused_with_base(
 
     return out16.view(B, nh, 1, OC) 
     # return c
-

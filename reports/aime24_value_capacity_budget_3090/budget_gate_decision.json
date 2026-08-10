@@ -1,0 +1,15 @@
+{
+  "all_v4_capacity_effect": "MODERATE",
+  "allv4_headroom_over_causal_12p5": {
+    "bootstrap_ci_high": -0.012567654252052307,
+    "bootstrap_ci_low": -0.09208851773291826,
+    "lhs": "ALL_V4",
+    "lhs_better_tasks": 6,
+    "lhs_minus_rhs_median_delta": -0.04654949437826872,
+    "metric": "hidden",
+    "rhs": "CAUSAL_V4",
+    "tasks_compared": 6
+  },
+  "budget_response_study_approved": true,
+  "decision_rule": "approved iff effect in {STRONG,MODERATE}, ALL_V4 better than CAUSAL_12P5 on >=4/6 tasks, and paired median < 0"
+}

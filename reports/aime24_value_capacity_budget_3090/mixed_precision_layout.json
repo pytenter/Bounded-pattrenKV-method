@@ -1,0 +1,8 @@
+{
+  "duplicate_sidecar": false,
+  "granularity": "token-level per layer",
+  "implementable": true,
+  "logical_order_restore": "v_precision_mask scatter",
+  "selected_token_storage": "V4 payload only",
+  "unselected_token_storage": "V2 payload only"
+}

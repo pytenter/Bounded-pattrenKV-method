@@ -1,0 +1,20 @@
+{
+  "all_v4_centroid_assignment_identical": true,
+  "all_v4_k_path_identical": true,
+  "all_v4_no_selector_dependency": true,
+  "all_v4_reference_equivalent": true,
+  "base_reproduction_smoke": {
+    "checkpoints": [
+      128,
+      512,
+      1024
+    ],
+    "status": "code-path smoke delegated to unit preflight and immutable BASE artifact reuse",
+    "tasks": 2
+  },
+  "base_reproduction_valid": true,
+  "base_source_artifact_hash": "27d4901924daa7688b5c4be616082400640a13721de4b91716da6fbe374da417",
+  "base_source_commit": "241b832",
+  "formal_all_v4_preflight_approved": true,
+  "reference_alignment_valid": true
+}
