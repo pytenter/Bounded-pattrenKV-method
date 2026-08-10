@@ -1,0 +1,11 @@
+{
+  "base_effective_kv_bits_per_element": 2.25,
+  "base_payload_v_bits_per_element": 2.0,
+  "causal_effective_kv_bits_per_element": 2.37548828125,
+  "oracle_effective_kv_bits_per_element": 2.37548828125,
+  "precision_metadata_overhead_bits_per_value_element": 0.0009765625,
+  "random_effective_kv_bits_per_element": 2.37548828125,
+  "selective_config_bit_cost_identical": true,
+  "selective_payload_v_bits_per_element": 2.25,
+  "selective_realized_v4_fraction": 0.125
+}

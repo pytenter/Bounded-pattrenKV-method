@@ -52,6 +52,7 @@ from models.segmented_cache import (  # noqa: E402
     dequantize_v_reference,
     deserialize_cache,
     pattern_gather_centroids,
+    reconstruct_packed_v,
     tensor_tokens,
 )
 from scripts.run_aime24_norm_tail_stage_a import SourceCapture  # noqa: E402
@@ -311,7 +312,7 @@ def dequantized_layer_kv(layer_cache: Any) -> tuple[torch.Tensor, torch.Tensor, 
         packed_k = packed_k[:, :, : cache.packed_k_tokens, :].contiguous()
         if isinstance(cache, PatternQuantizedKVCache) and cache.k_centroids is not None and cache.k_assignments is not None:
             packed_k = packed_k + pattern_gather_centroids(cache.k_assignments[:, :, : cache.packed_k_tokens], cache.k_centroids).to(packed_k.dtype)
-    packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
+    packed_v = reconstruct_packed_v(cache)
     if packed_v is not None:
         packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
         if isinstance(cache, PatternQuantizedKVCache) and cache.v_centroids is not None and cache.v_assignment_idx is not None:
@@ -460,6 +461,9 @@ def compute_channel_rows(
             q_q_cur = current_query(q_q)
             l_fp = qk_logits(q_fp_cur, k_fp, num_key_value_groups=groups)
             l_quant = qk_logits(q_q_cur, stored_k, num_key_value_groups=groups)
+            route_total = min(l_fp.shape[-1], l_quant.shape[-1])
+            l_fp = l_fp[..., :route_total].contiguous()
+            l_quant = l_quant[..., :route_total].contiguous()
             for metric_name, value in logit_metrics(l_quant, l_fp).items():
                 add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_logits", region="current_history", metric_name=metric_name, value=value)
             top1 = top1_agreement(l_quant, l_fp)
@@ -467,15 +471,15 @@ def compute_channel_rows(
             add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_ranking", region="current_history", metric_name="top1_disagreement", value=float((1.0 - top1).mean().item()))
             for k in (5, 10):
                 overlap = topk_overlap(l_quant, l_fp, k)
-                add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_ranking", region="current_history", metric_name=f"top{k}_overlap", value=float(overlap.mean().item()), extra={"effective_k": min(k, total)})
-                add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_ranking", region="current_history", metric_name=f"top{k}_missing", value=float((1.0 - overlap).mean().item()), extra={"effective_k": min(k, total)})
+                add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_ranking", region="current_history", metric_name=f"top{k}_overlap", value=float(overlap.mean().item()), extra={"effective_k": min(k, route_total)})
+                add_scalar_row(families["qk_logit"], family="qk_logit", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="qk_ranking", region="current_history", metric_name=f"top{k}_missing", value=float((1.0 - overlap).mean().item()), extra={"effective_k": min(k, route_total)})
 
             a_fp = attention_probs(l_fp)
             a_quant = attention_probs(l_quant)
             probs = probability_metrics(a_quant, a_fp)
             for metric_name, values in probs.items():
                 add_scalar_row(families["attention_routing"], family="attention_routing", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="attention_probs", region="current_history", metric_name=metric_name, value=float(values.mean().item()), statistic="mean")
-            regions = attention_regions(total, recent_length=CONFIG["recent_length"])
+            regions = attention_regions(route_total, recent_length=CONFIG["recent_length"])
             mass_fp = region_mass(a_fp, regions)
             mass_quant = region_mass(a_quant, regions)
             for region_name in sorted(regions):
@@ -488,11 +492,16 @@ def compute_channel_rows(
 
             stored_v_gqa = repeat_kv_for_gqa(stored_v, groups)
             fp_v_gqa = repeat_kv_for_gqa(v_fp, groups)
-            weighted = attention_weighted_vector_errors(stored_v_gqa, fp_v_gqa, a_fp, a_quant)
+            hist = min(stored_v_gqa.shape[2], fp_v_gqa.shape[2], a_fp.shape[-1], a_quant.shape[-1])
+            stored_v_gqa = stored_v_gqa[:, :, :hist, :]
+            fp_v_gqa = fp_v_gqa[:, :, :hist, :]
+            a_fp_hist = a_fp[..., :hist]
+            a_quant_hist = a_quant[..., :hist]
+            weighted = attention_weighted_vector_errors(stored_v_gqa, fp_v_gqa, a_fp_hist, a_quant_hist)
             for metric_name, values in weighted.items():
                 add_scalar_row(families["v_direction"], family="v_direction", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="v_stored", region="current_history", metric_name=metric_name, value=float(values.mean().item()), statistic="mean")
 
-            out = oracle_outputs(fp_probs=a_fp, quant_probs=a_quant, fp_value=fp_v_gqa, quant_value=stored_v_gqa)
+            out = oracle_outputs(fp_probs=a_fp_hist, quant_probs=a_quant_hist, fp_value=fp_v_gqa, quant_value=stored_v_gqa)
             oracle = oracle_error_metrics(out)
             for metric_name, value in oracle.items():
                 add_scalar_row(families["oracle_output"], family="oracle_output", task=task, mode=mode, checkpoint=checkpoint, layer=layer, object_type="attention_output", region="current_history", metric_name=metric_name, value=value)

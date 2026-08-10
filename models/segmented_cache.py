@@ -459,7 +459,10 @@ def update_value_causal_importance(cache: PatternQuantizedKVCache, attn_weights:
             old = cache.v_causal_importance.to(mass.device)
             new_state[:, : old.shape[1]] = old
         cache.v_causal_importance = new_state
-    cache.v_causal_importance[:, : mass.shape[1]] += mass[:, : cache.total_tokens]
+    elif cache.v_causal_importance.device != mass.device or cache.v_causal_importance.dtype != torch.float32:
+        cache.v_causal_importance = cache.v_causal_importance.to(device=mass.device, dtype=torch.float32)
+    width = min(mass.shape[1], cache.total_tokens)
+    cache.v_causal_importance[:, :width] += mass[:, :width]
 
 
 def pattern_select_v_candidate(

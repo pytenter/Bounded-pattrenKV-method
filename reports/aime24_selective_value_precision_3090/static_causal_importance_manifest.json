@@ -1,0 +1,11 @@
+{
+  "hash": "23c167e1fdad4664f8946080aa5a6e9119023d05da95beed93952d9b46834498",
+  "schema": "computed from frozen FP q/k selected-layer causal replay",
+  "selected_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ]
+}

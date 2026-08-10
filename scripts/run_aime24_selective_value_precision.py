@@ -226,6 +226,10 @@ def set_selector_context(
         attn.v_oracle_importance = oracle_by_layer.get(idx) if oracle_by_layer else None
 
 
+def method_needs_importance(method: str) -> bool:
+    return method in {"RANDOM_V4", "CAUSAL_V4", "ORACLE_V4"}
+
+
 def slice_sources(sources: dict[int, dict[str, torch.Tensor]], total: int) -> dict[int, dict[str, torch.Tensor]]:
     out: dict[int, dict[str, torch.Tensor]] = {}
     for layer, layer_map in sources.items():
@@ -488,9 +492,17 @@ def all_jobs(records: list[dict[str, Any]], method: str, mode: str) -> list[dict
 
 
 @torch.no_grad()
-def worker(model_path: Path, gpu_id: int, method: str, mode: str) -> dict[str, Any]:
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+def worker(model_path: Path, gpu_id: int, method: str, mode: str, task_shard_index: int = 0, task_shard_count: int = 1) -> dict[str, Any]:
+    os.environ.setdefault("CUDA_VISIBLE_DEVICES", str(gpu_id))
     records = load_records()
+    if task_shard_count < 1:
+        raise ValueError("task_shard_count must be >= 1")
+    if not 0 <= task_shard_index < task_shard_count:
+        raise ValueError("task_shard_index must satisfy 0 <= index < count")
+    if task_shard_count > 1:
+        records = [row for idx, row in enumerate(records) if idx % task_shard_count == task_shard_index]
+    if not records:
+        raise ValueError("task shard selected no records")
     by_key = {row["task_key"]: row for row in records}
     jobs = all_jobs(records, method, mode)
     rows = {key: [] for key in FAMILIES}
@@ -505,7 +517,8 @@ def worker(model_path: Path, gpu_id: int, method: str, mode: str) -> dict[str, A
             for task in records:
                 src = fp16_pseudo_sources(fp_model, task)
                 fp_sources[(task["task_key"], None)] = src
-                importance[(task["task_key"], None)] = importance_from_sources(src)
+                importance[(task["task_key"], None)] = importance_from_sources(src) if method_needs_importance(method) else ({}, {})
+                print(json.dumps({"phase": "fp_precompute", "method": method, "mode": mode, "task_key": task["task_key"]}), flush=True)
         else:
             for job in jobs:
                 task = by_key[job["task_key"]]
@@ -513,7 +526,8 @@ def worker(model_path: Path, gpu_id: int, method: str, mode: str) -> dict[str, A
                 out, src = run_with_source_capture(fp_model, task=task, checkpoint=cp, mode="static")
                 del out
                 fp_sources[(task["task_key"], cp)] = src
-                importance[(task["task_key"], cp)] = importance_from_sources(src)
+                importance[(task["task_key"], cp)] = importance_from_sources(src) if method_needs_importance(method) else ({}, {})
+                print(json.dumps({"phase": "fp_precompute", "method": method, "mode": mode, "task_key": task["task_key"], "checkpoint": cp}), flush=True)
     finally:
         free_model(fp_model)
         del fp_model
@@ -550,6 +564,8 @@ def worker(model_path: Path, gpu_id: int, method: str, mode: str) -> dict[str, A
         del q_model
     SHARD_DIR.mkdir(parents=True, exist_ok=True)
     stem = f"{method}.{mode}.gpu{gpu_id}"
+    if task_shard_count > 1:
+        stem += f".shard{task_shard_index}of{task_shard_count}"
     paths = {}
     for family, family_rows in rows.items():
         path = SHARD_DIR / f"{stem}.{family}.csv"
@@ -559,7 +575,7 @@ def worker(model_path: Path, gpu_id: int, method: str, mode: str) -> dict[str, A
     write_csv_rows(comp_path, completeness)
     manifest_path = SHARD_DIR / f"{stem}.jobs.json"
     write_json(manifest_path, job_manifest)
-    summary = {"method": method, "mode": mode, "gpu_id": gpu_id, "jobs": len(jobs), "pseudo_jobs": sum(j["mode"] == "pseudo" for j in jobs), "static_jobs": sum(j["mode"] == "static" for j in jobs), "failed_rows": sum(1 for row in completeness if row.get("status") != "ok"), "elapsed_seconds": time.time() - started, "job_manifest_path": str(manifest_path.relative_to(ROOT)), "completeness_path": str(comp_path.relative_to(ROOT)), **{f"{k}_rows": len(v) for k, v in rows.items()}, **paths}
+    summary = {"method": method, "mode": mode, "gpu_id": gpu_id, "task_shard_index": task_shard_index, "task_shard_count": task_shard_count, "jobs": len(jobs), "pseudo_jobs": sum(j["mode"] == "pseudo" for j in jobs), "static_jobs": sum(j["mode"] == "static" for j in jobs), "failed_rows": sum(1 for row in completeness if row.get("status") != "ok"), "elapsed_seconds": time.time() - started, "job_manifest_path": str(manifest_path.relative_to(ROOT)), "completeness_path": str(comp_path.relative_to(ROOT)), **{f"{k}_rows": len(v) for k, v in rows.items()}, **paths}
     write_json(SHARD_DIR / f"{stem}.summary.json", summary)
     print(json.dumps(summary, indent=2, sort_keys=True), flush=True)
     return summary
@@ -703,7 +719,10 @@ def aggregate() -> dict[str, Any]:
         for path in sorted(SHARD_DIR.glob(f"*.{family}.csv")):
             rows.extend(read_csv_rows(path))
         all_rows[family] = rows
-        raw = OUT_DIR / f"{family}_metrics.csv" if family != "precision_selection" else OUT_DIR / "precision_selection.csv"
+        if family in {"precision_selection", "selector_quality"}:
+            raw = OUT_DIR / f"{family}.csv"
+        else:
+            raw = OUT_DIR / f"{family}_metrics.csv"
         write_csv_rows(raw, rows)
         gz = gzip_file(raw)
         artifact_entries[gz.name] = {"raw_rows": len(rows), "raw_sha256": sha256_file(raw), "gzip_sha256": sha256_file(gz), "schema_version": "selective_precision_v1" if family in {"precision_selection", "selector_quality"} else SCHEMA_VERSION}
@@ -818,13 +837,15 @@ def main() -> None:
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--method", choices=list(CONFIGS), default="BASE_V2")
     parser.add_argument("--mode", choices=["pseudo", "static"], default="pseudo")
+    parser.add_argument("--task-shard-index", type=int, default=0)
+    parser.add_argument("--task-shard-count", type=int, default=1)
     args = parser.parse_args()
     if args.command == "prepare":
         print(json.dumps(prepare(), indent=2, sort_keys=True))
     elif args.command == "preflight":
         print(json.dumps(preflight(args.model_path, args.gpu_id), indent=2, sort_keys=True))
     elif args.command == "worker":
-        print(json.dumps(worker(args.model_path, args.gpu_id, args.method, args.mode), indent=2, sort_keys=True))
+        print(json.dumps(worker(args.model_path, args.gpu_id, args.method, args.mode, args.task_shard_index, args.task_shard_count), indent=2, sort_keys=True))
     elif args.command == "aggregate":
         print(json.dumps(aggregate(), indent=2, sort_keys=True))
     elif args.command == "launch":

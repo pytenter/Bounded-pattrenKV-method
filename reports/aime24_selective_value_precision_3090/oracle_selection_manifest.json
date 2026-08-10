@@ -1,0 +1,11 @@
+{
+  "oracle_deployable": false,
+  "oracle_uses_future_information": true,
+  "selected_layers": [
+    0,
+    7,
+    15,
+    23,
+    31
+  ]
+}
