@@ -3,7 +3,8 @@
   "formal_config_hash": "35fdc9fe0d9dda5e",
   "formal_config_version": "aime24_full_causal25_quality_v2_task_keyed_selector",
   "parent": "83c46ed1252a32ca42dcb81e172bd3e4c0a060a0",
+  "pre_selector_fix_head": "8d57a99c46a5b818266fad0574ba8f695a036bb1",
   "repository": "pytenter/Bounded-pattrenKV-method",
-  "starting_head": "8d57a99c46a5b818266fad0574ba8f695a036bb1",
+  "starting_head": "e3fe0d3df798f3b0c0b86035be3539a4feb4681b",
   "timestamp": "2026-08-10T08:14:03.725381+00:00"
 }

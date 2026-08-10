@@ -24,6 +24,7 @@ from scripts.run_aime24_full_causal25_quality import (
     question_level_rows,
     set_selector_task_context,
     transition_rows,
+    v4_realized_by_layer_rows,
 )
 
 
@@ -220,6 +221,59 @@ def test_accuracy_summary() -> None:
     decision = classify(summary, transitions, qrows, seed_rows)
     assert decision["FULL_AIME24_METHOD_CLASSIFICATION"] == "SUPPORTED"
     assert decision["CAUSAL25_beats_RANDOM25_on_ge_2_of_3_seeds"] is True
+
+
+def test_harmful_classification_takes_precedence() -> None:
+    summary = [
+        {"method": "FP16", "mean_accuracy": 0.5},
+        {"method": "PATTERN_BASE", "mean_accuracy": 0.4},
+        {"method": "RANDOM_V4_25", "mean_accuracy": 0.4},
+        {"method": "CAUSAL_V4_25", "mean_accuracy": 0.3},
+    ]
+    seed_rows = [
+        {"method": "PATTERN_BASE", "base_seed": seed, "accuracy": 0.4}
+        for seed in BASE_SEEDS
+    ] + [
+        {"method": "RANDOM_V4_25", "base_seed": seed, "accuracy": 0.4}
+        for seed in BASE_SEEDS
+    ] + [
+        {"method": "CAUSAL_V4_25", "base_seed": seed, "accuracy": 0.3}
+        for seed in BASE_SEEDS
+    ]
+    decision = classify(summary, [], [{"causal_minus_random": -0.1}], seed_rows)
+    assert decision["FULL_AIME24_METHOD_CLASSIFICATION"] == "HARMFUL"
+
+
+def test_v4_realized_by_layer_export_rows() -> None:
+    rows = [
+        {
+            "method": "RANDOM_V4_25",
+            "base_seed": 42,
+            "effective_seed": 42,
+            "problem_id": 0,
+            "selector_task_key": "aime24:p0:s0:seed42",
+            "generation_config_hash": "g",
+            "formal_config_hash": experiment_hash(),
+            "v4_realized_by_layer": [{"layer": 0, "v4_tokens": 4, "total_tokens": 16, "fraction": 0.25}],
+        },
+        {"method": "FP16", "v4_realized_by_layer": [{"layer": 0, "v4_tokens": 16, "total_tokens": 16, "fraction": 1.0}]},
+    ]
+    out = v4_realized_by_layer_rows(rows)
+    assert out == [
+        {
+            "method": "RANDOM_V4_25",
+            "base_seed": 42,
+            "effective_seed": 42,
+            "problem_id": 0,
+            "selector_task_key": "aime24:p0:s0:seed42",
+            "layer": 0,
+            "v4_tokens": 4,
+            "total_tokens": 16,
+            "fraction": 0.25,
+            "generation_config_hash": "g",
+            "formal_config_hash": experiment_hash(),
+        }
+    ]
 
 
 def test_transition_matrix() -> None:

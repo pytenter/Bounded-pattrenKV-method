@@ -916,6 +916,30 @@ def bit_cost_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def v4_realized_by_layer_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out = []
+    for rec in rows:
+        if rec.get("method") not in {"RANDOM_V4_25", "CAUSAL_V4_25"}:
+            continue
+        for layer_row in rec.get("v4_realized_by_layer") or []:
+            out.append(
+                {
+                    "method": rec.get("method"),
+                    "base_seed": rec.get("base_seed"),
+                    "effective_seed": rec.get("effective_seed"),
+                    "problem_id": rec.get("problem_id"),
+                    "selector_task_key": rec.get("selector_task_key"),
+                    "layer": layer_row.get("layer"),
+                    "v4_tokens": layer_row.get("v4_tokens"),
+                    "total_tokens": layer_row.get("total_tokens"),
+                    "fraction": layer_row.get("fraction"),
+                    "generation_config_hash": rec.get("generation_config_hash"),
+                    "formal_config_hash": rec.get("formal_config_hash"),
+                }
+            )
+    return out
+
+
 def classify(summary_rows: list[dict[str, Any]], transition: list[dict[str, Any]], question_rows: list[dict[str, Any]], seed_rows: list[dict[str, Any]]) -> dict[str, Any]:
     acc = {r["method"]: float(r["mean_accuracy"]) if r["mean_accuracy"] is not None else None for r in summary_rows}
     per_seed = defaultdict(dict)
@@ -934,10 +958,10 @@ def classify(summary_rows: list[dict[str, Any]], transition: list[dict[str, Any]
         label = "PROMISING_BUT_INCONSISTENT"
     elif abs(causal_base) < 1e-12 and abs(causal_random) < 1e-12:
         label = "MECHANISM_ONLY"
-    elif causal_base <= 0 and causal_random <= 0:
-        label = "NO_QUALITY_GAIN"
     elif causal_base < 0 and causal_random < 0 and causal_lt_random >= 2:
         label = "HARMFUL"
+    elif causal_base <= 0 and causal_random <= 0:
+        label = "NO_QUALITY_GAIN"
     else:
         label = "INCONCLUSIVE"
     return {
@@ -1010,6 +1034,7 @@ def aggregate() -> dict[str, Any]:
     write_csv(OUT_DIR / "truncation_summary.csv", trunc)
     bits = bit_cost_summary(rows)
     write_json(OUT_DIR / "bit_cost_summary.json", bits)
+    write_csv(OUT_DIR / "v4_realized_by_layer.csv", v4_realized_by_layer_rows(rows))
     decisions = classify(method_acc, transitions, qrows, seed_acc)
     write_json(OUT_DIR / "hypothesis_decisions.json", decisions)
     failures = [r for r in rows if r.get("status") != "completed"]
