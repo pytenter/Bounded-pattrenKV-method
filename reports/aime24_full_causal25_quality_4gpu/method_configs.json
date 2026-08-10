@@ -1,0 +1,62 @@
+{
+  "CAUSAL_SELECTOR_NO_FUTURE_LEAKAGE": true,
+  "RANDOM_CAUSAL_BIT_BUDGET_MATCHED": true,
+  "causal_score": "(causal_importance + eps) * max(local_loss_v2_nre_dir - local_loss_v4_nre_dir, 0)",
+  "frozen_from_experiment_9": true,
+  "method_config_hashes": {
+    "CAUSAL_V4_25": "df086b3089b7912d",
+    "FP16": "7cffe089a9825640",
+    "PATTERN_BASE": "fe90942e45be9e79",
+    "RANDOM_V4_25": "ac94cabede2d69a9"
+  },
+  "methods": {
+    "CAUSAL_V4_25": {
+      "config_name": "pattern_rolling_k2v2_s16_r128_causal_v4_b025",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "residual_length": 128,
+      "selector": "causal_v4",
+      "sink_length": 16,
+      "v4_budget_fraction": 0.25,
+      "v_bits": 2
+    },
+    "FP16": {
+      "config_name": "fp16",
+      "group_size": 0,
+      "k_bits": 16,
+      "method": "fp16",
+      "recent_length": 0,
+      "residual_length": 0,
+      "selector": null,
+      "sink_length": 0,
+      "v4_budget_fraction": null,
+      "v_bits": 16
+    },
+    "PATTERN_BASE": {
+      "config_name": "pattern_rolling_k2v2_s16_r128",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "residual_length": 128,
+      "selector": "base_v2",
+      "sink_length": 16,
+      "v4_budget_fraction": 0.0,
+      "v_bits": 2
+    },
+    "RANDOM_V4_25": {
+      "config_name": "pattern_rolling_k2v2_s16_r128_random_v4_b025",
+      "group_size": 128,
+      "k_bits": 2,
+      "method": "patternkv",
+      "recent_length": 128,
+      "residual_length": 128,
+      "selector": "random_v4",
+      "sink_length": 16,
+      "v4_budget_fraction": 0.25,
+      "v_bits": 2
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "FOUR_GPU_PREFLIGHT_VALID": true,
+  "four_gpu_schedule": {
+    "GPU_A": {
+      "method": "FP16",
+      "physical_gpu": "1"
+    },
+    "GPU_B": {
+      "method": "PATTERN_BASE",
+      "physical_gpu": "2"
+    },
+    "GPU_C": {
+      "method": "RANDOM_V4_25",
+      "physical_gpu": "3"
+    },
+    "GPU_D": {
+      "method": "CAUSAL_V4_25",
+      "physical_gpu": "4"
+    }
+  },
+  "snapshot": {
+    "compute_busy_gpus": [
+      "6"
+    ],
+    "gpus": [
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": false,
+        "index": "0",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 1358,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 1
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": true,
+        "index": "1",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 21,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": true,
+        "index": "2",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 20,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": true,
+        "index": "3",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 21,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": true,
+        "index": "4",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 21,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": false,
+        "index": "5",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 21,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      },
+      {
+        "foreign_compute_process": true,
+        "idle_by_gate": false,
+        "index": "6",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 8570,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 89
+      },
+      {
+        "foreign_compute_process": false,
+        "idle_by_gate": false,
+        "index": "7",
+        "memory_total_mib": 24576,
+        "memory_used_mib": 21,
+        "name": "NVIDIA GeForce RTX 3090",
+        "utilization_gpu_percent": 0
+      }
+    ],
+    "requested": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "selected": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  }
+}

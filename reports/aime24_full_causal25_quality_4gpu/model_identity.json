@@ -1,0 +1,28 @@
+{
+  "MODEL_IDENTITY_VALID": true,
+  "config_exists": true,
+  "exists": true,
+  "files": {
+    "config.json": {
+      "bytes": 826,
+      "sha256": "54acfad3cffe057640904ca8a1e83525e6551c70c7a04c641f5a9eda0bbf64bd"
+    },
+    "generation_config.json": {
+      "bytes": 181,
+      "sha256": "cd5194726d1e8f7361a8c8425fc11d33ade5e69de1fd7615eb23fae5601af68b"
+    },
+    "tokenizer.json": {
+      "bytes": 9084480,
+      "sha256": "b9c9eb63a8e03059914880f918cd28a880dec8b6e15e4461e1ff677e3743dbb8"
+    },
+    "tokenizer_config.json": {
+      "bytes": 3071,
+      "sha256": "8ac8c85fb242563c2260baec0909debd69d718af6a0b3d90e6cab62b4d341cd5"
+    }
+  },
+  "model": "DeepSeek-R1-Distill-Llama-8B",
+  "model_file_bytes": 16060556354,
+  "model_file_count": 2,
+  "path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "tokenizer_file_count": 2
+}

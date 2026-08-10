@@ -1,0 +1,20 @@
+{
+  "GENERATION_CONFIG_VALID": true,
+  "do_sample": true,
+  "force_think_prefix": true,
+  "formal_sample_id": 0,
+  "generation_config_hash_by_method": {
+    "CAUSAL_V4_25": "545d0b0747f79c59",
+    "FP16": "399a43c7be0e3658",
+    "PATTERN_BASE": "8a802d914fc05bd3",
+    "RANDOM_V4_25": "a1090b08b1afe5ab"
+  },
+  "max_new_tokens": 32768,
+  "num_return_sequences": 1,
+  "prompt_protocol": "deepseek_r1_recommended",
+  "repetition_penalty": 1.0,
+  "seed_formula": "effective_seed = base_seed + problem_id * 1000 + sample_id",
+  "temperature": 0.6,
+  "top_p": 0.95,
+  "use_cache": true
+}

@@ -575,6 +575,9 @@ def collect_patternkv_dynamic_stats(model: nn.Module, past_key_values=None) -> d
         "v_assignment_tokens_per_layer": [],
         "v_pattern_selected_tokens_per_layer": [],
         "v_pattern_rejected_tokens_per_layer": [],
+        "v_precision_v4_tokens_per_layer": [],
+        "v_precision_total_tokens_per_layer": [],
+        "v_precision_v4_fraction_per_layer": [],
         "packed_k_tokens_per_layer": [],
         "packed_v_tokens_per_layer": [],
     }
@@ -596,9 +599,12 @@ def collect_patternkv_dynamic_stats(model: nn.Module, past_key_values=None) -> d
         v_mask = getattr(cache, "v_pattern_mask", None) if cache is not None else None
         if v_mask is None and cache is not None:
             v_mask = getattr(cache, "v_assignments", None)
+        v_precision_mask = getattr(cache, "v_precision_mask", None) if cache is not None else None
         packed_k_tokens = int(getattr(cache, "packed_k_tokens", 0) or 0) if cache is not None else 0
         packed_v_tokens = int(getattr(cache, "packed_v_tokens", 0) or 0) if cache is not None else 0
         v_selected = int(v_mask.sum().item()) if torch.is_tensor(v_mask) else 0
+        v_precision_total = int(v_precision_mask.shape[1]) if torch.is_tensor(v_precision_mask) and v_precision_mask.dim() == 2 else 0
+        v_precision_v4 = int(v_precision_mask.bool().sum().item()) if torch.is_tensor(v_precision_mask) else 0
         v_assignment_tokens = int(v_idx.shape[2]) if torch.is_tensor(v_idx) else 0
         stats["initial_k_centroids_per_layer"].append(initial_k if k_count else 0)
         stats["final_k_centroids_per_layer"].append(k_count)
@@ -610,6 +616,9 @@ def collect_patternkv_dynamic_stats(model: nn.Module, past_key_values=None) -> d
         stats["v_assignment_tokens_per_layer"].append(v_assignment_tokens)
         stats["v_pattern_selected_tokens_per_layer"].append(v_selected)
         stats["v_pattern_rejected_tokens_per_layer"].append(int(v_mask.numel()) - v_selected if torch.is_tensor(v_mask) else 0)
+        stats["v_precision_v4_tokens_per_layer"].append(v_precision_v4)
+        stats["v_precision_total_tokens_per_layer"].append(v_precision_total)
+        stats["v_precision_v4_fraction_per_layer"].append((v_precision_v4 / v_precision_total) if v_precision_total else None)
         stats["packed_k_tokens_per_layer"].append(packed_k_tokens)
         stats["packed_v_tokens_per_layer"].append(packed_v_tokens)
     return stats

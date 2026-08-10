@@ -1,0 +1,9 @@
+{
+  "branch": "exp/aime24-full-causal25-quality-4gpu",
+  "formal_config_hash": "de1e2b33fd35598d",
+  "formal_config_version": "aime24_full_causal25_quality_v1",
+  "parent": "83c46ed1252a32ca42dcb81e172bd3e4c0a060a0",
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "starting_head": "83c46ed1252a32ca42dcb81e172bd3e4c0a060a0",
+  "timestamp": "2026-08-10T05:30:24.531741+00:00"
+}
