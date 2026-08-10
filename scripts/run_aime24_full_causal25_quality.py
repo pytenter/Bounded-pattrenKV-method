@@ -35,6 +35,7 @@ from bench.aime_utils import (  # noqa: E402
     utc_now,
     write_json_atomic,
 )
+from bench.aime24_int2_wave1 import task_key3  # noqa: E402
 from bench.bench_aime24_patternkv import load_model, render_prompt, run_task, validate_context  # noqa: E402
 from bench.paper_config import apply_method_defaults, method_config_dict  # noqa: E402
 from scripts.run_aime24_value_capacity_budget import effective_kv_bits  # noqa: E402
@@ -54,7 +55,7 @@ RANDOM_SELECTOR_SEED = 20260809
 BOOTSTRAP_SEED = 20260810
 BOOTSTRAP_RESAMPLES = 10000
 METHOD_ORDER = ("FP16", "PATTERN_BASE", "RANDOM_V4_25", "CAUSAL_V4_25")
-FORMAL_CONFIG_VERSION = "aime24_full_causal25_quality_v1"
+FORMAL_CONFIG_VERSION = "aime24_full_causal25_quality_v2_task_keyed_selector"
 
 METHOD_CONFIGS: dict[str, dict[str, Any]] = {
     "FP16": {
@@ -158,6 +159,7 @@ def frozen_generation_config() -> dict[str, Any]:
         "force_think_prefix": True,
         "seed_formula": "effective_seed = base_seed + problem_id * 1000 + sample_id",
         "formal_sample_id": 0,
+        "patternkv_selector_task_key": "task_key3(problem_id, sample_id=0, effective_seed)",
     }
 
 
@@ -220,6 +222,7 @@ def method_generation_hash(method_id: str) -> str:
             "method_config": METHOD_CONFIGS[method_id],
             "formal_config_version": FORMAL_CONFIG_VERSION,
             "random_selector_seed": RANDOM_SELECTOR_SEED,
+            "selector_task_key_semantics": "task_key3(problem_id, sample_id=0, effective_seed)",
         }
     )
     return config_hash(cfg)
@@ -248,6 +251,25 @@ def is_completed_with_provenance(path: Path, *, method_id: str, base_seed: int, 
         and rec.get("formal_config_hash") == experiment_hash()
         and rec.get("generation_config_hash") == method_generation_hash(method_id)
     )
+
+
+def is_current_record(rec: dict[str, Any]) -> bool:
+    method = rec.get("method")
+    if method not in METHOD_CONFIGS:
+        return False
+    return rec.get("formal_config_hash") == experiment_hash() and rec.get("generation_config_hash") == method_generation_hash(str(method))
+
+
+def set_selector_task_context(model: Any, selector_task_key: str) -> None:
+    if hasattr(model, "config"):
+        model.config.patternkv_selector_task_key = selector_task_key
+    for layer in getattr(getattr(model, "model", None), "layers", []):
+        attn = getattr(layer, "self_attn", None)
+        if attn is None:
+            continue
+        attn.selector_task_key = selector_task_key
+        attn.v_causal_importance = None
+        attn.v_oracle_importance = None
 
 
 def v4_realized_stats(rec: dict[str, Any]) -> dict[str, Any]:
@@ -417,9 +439,12 @@ def run_worker(args: argparse.Namespace) -> None:
                 if is_completed_with_provenance(out_path, method_id=method_id, base_seed=base_seed, problem_id=problem_id):
                     print(json.dumps({"event": "skip", "path": str(out_path), "method": method_id, "base_seed": base_seed, "problem_id": problem_id}, sort_keys=True), flush=True)
                     continue
+                selector_task_key = task_key3(problem_id, 0, effective_seed(base_seed, problem_id, 0))
                 last_error = None
                 for attempt in (1, 2):
                     try:
+                        if wargs.method in {"patternkv_paper", "patternkv"}:
+                            set_selector_task_context(model, selector_task_key)
                         rec = run_task(wargs, model, tokenizer, row_by_id[problem_id], 0, generation_hash, git_commit)
                         text = rec.pop("generated_text", "")
                         generated_ids = rec.pop("generated_token_ids", None)
@@ -428,6 +453,7 @@ def run_worker(args: argparse.Namespace) -> None:
                         raw_path.write_text(text, encoding="utf-8")
                         raw_sha = sha256_file(raw_path)
                         compact = compact_record(rec, phase=phase, method_id=method_id, physical_gpu=physical_gpu, raw_path=raw_path, raw_sha256=raw_sha, generation_hash=generation_hash)
+                        compact["selector_task_key"] = selector_task_key if wargs.method in {"patternkv_paper", "patternkv"} else None
                         if generated_ids is not None:
                             compact["generated_token_sha256"] = sha256_text(json.dumps(generated_ids, separators=(",", ":")))
                         write_json_atomic(out_path, compact)
@@ -681,11 +707,14 @@ def launch_workers(phase: str, selected_gpus: list[str], *, detach: bool = False
     return rc
 
 
-def collect_records(phase: str = "formal") -> list[dict[str, Any]]:
+def collect_records(phase: str = "formal", *, current_only: bool = True) -> list[dict[str, Any]]:
     rows = []
     for path in sorted((RESULT_DIR / phase).glob("*/*/p*.json")):
         try:
-            rows.append(read_json(path))
+            rec = read_json(path)
+            if current_only and not is_current_record(rec):
+                continue
+            rows.append(rec)
         except Exception:
             continue
     return rows

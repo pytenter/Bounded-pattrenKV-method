@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-10T05:40:39.491554+00:00",
+  "updated_at": "2026-08-10T08:23:53.481690+00:00",
   "workers": [
     {
       "ended_at_unix": 1786339952.3416624,
@@ -47,6 +47,54 @@
       "pid": 4187718,
       "runtime_seconds": 611.56,
       "started_at_unix": 1786339827.9298637,
+      "status": "completed"
+    },
+    {
+      "ended_at_unix": 1786349753.880217,
+      "failure": null,
+      "logical_gpu": "cuda:0",
+      "method": "FP16",
+      "phase": "smoke",
+      "physical_gpu": "1",
+      "pid": 93256,
+      "runtime_seconds": 106.736,
+      "started_at_unix": 1786349647.1443527,
+      "status": "completed"
+    },
+    {
+      "ended_at_unix": 1786349916.4745526,
+      "failure": null,
+      "logical_gpu": "cuda:0",
+      "method": "CAUSAL_V4_25",
+      "phase": "smoke",
+      "physical_gpu": "4",
+      "pid": 93259,
+      "runtime_seconds": 269.338,
+      "started_at_unix": 1786349647.1365557,
+      "status": "completed"
+    },
+    {
+      "ended_at_unix": 1786350040.1764405,
+      "failure": null,
+      "logical_gpu": "cuda:0",
+      "method": "RANDOM_V4_25",
+      "phase": "smoke",
+      "physical_gpu": "3",
+      "pid": 93258,
+      "runtime_seconds": 393.205,
+      "started_at_unix": 1786349646.9713745,
+      "status": "completed"
+    },
+    {
+      "ended_at_unix": 1786350233.480294,
+      "failure": null,
+      "logical_gpu": "cuda:0",
+      "method": "PATTERN_BASE",
+      "phase": "smoke",
+      "physical_gpu": "2",
+      "pid": 93257,
+      "runtime_seconds": 586.217,
+      "started_at_unix": 1786349647.263038,
       "status": "completed"
     }
   ]

@@ -28,9 +28,9 @@
         "idle_by_gate": false,
         "index": "0",
         "memory_total_mib": 24576,
-        "memory_used_mib": 1358,
+        "memory_used_mib": 748,
         "name": "NVIDIA GeForce RTX 3090",
-        "utilization_gpu_percent": 1
+        "utilization_gpu_percent": 15
       },
       {
         "foreign_compute_process": false,
@@ -84,7 +84,7 @@
         "memory_total_mib": 24576,
         "memory_used_mib": 8570,
         "name": "NVIDIA GeForce RTX 3090",
-        "utilization_gpu_percent": 89
+        "utilization_gpu_percent": 63
       },
       {
         "foreign_compute_process": false,

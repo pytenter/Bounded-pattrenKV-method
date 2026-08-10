@@ -4,13 +4,14 @@
   "force_think_prefix": true,
   "formal_sample_id": 0,
   "generation_config_hash_by_method": {
-    "CAUSAL_V4_25": "545d0b0747f79c59",
-    "FP16": "399a43c7be0e3658",
-    "PATTERN_BASE": "8a802d914fc05bd3",
-    "RANDOM_V4_25": "a1090b08b1afe5ab"
+    "CAUSAL_V4_25": "fda7c0ebafea3955",
+    "FP16": "3ad15a5ea5cc236d",
+    "PATTERN_BASE": "75c5b3cefd493322",
+    "RANDOM_V4_25": "492fa5712211d981"
   },
   "max_new_tokens": 32768,
   "num_return_sequences": 1,
+  "patternkv_selector_task_key": "task_key3(problem_id, sample_id=0, effective_seed)",
   "prompt_protocol": "deepseek_r1_recommended",
   "repetition_penalty": 1.0,
   "seed_formula": "effective_seed = base_seed + problem_id * 1000 + sample_id",

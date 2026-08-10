@@ -18,9 +18,11 @@ from scripts.run_aime24_full_causal25_quality import (
     ensure_complete_records,
     experiment_hash,
     frozen_generation_config,
+    is_current_record,
     method_generation_hash,
     paired_counts,
     question_level_rows,
+    set_selector_task_context,
     transition_rows,
 )
 
@@ -57,6 +59,7 @@ def test_method_config_frozen() -> None:
     assert gen["max_new_tokens"] == 32768
     assert METHOD_CONFIGS["PATTERN_BASE"]["config_name"] == "pattern_rolling_k2v2_s16_r128"
     assert METHOD_CONFIGS["CAUSAL_V4_25"]["config_name"] == "pattern_rolling_k2v2_s16_r128_causal_v4_b025"
+    assert gen["patternkv_selector_task_key"] == "task_key3(problem_id, sample_id=0, effective_seed)"
     assert experiment_hash()
 
 
@@ -94,6 +97,41 @@ def test_worker_gpu_isolation() -> None:
     mapping = dict(zip(("GPU_A", "GPU_B", "GPU_C", "GPU_D"), physical))
     assert len(set(mapping.values())) == 4
     assert all(logical == "cuda:0" for logical in ["cuda:0"] * 4)
+
+
+def test_selector_task_context_is_per_generation() -> None:
+    class Attn:
+        selector_task_key = "old"
+        v_causal_importance = object()
+        v_oracle_importance = object()
+
+    class Layer:
+        self_attn = Attn()
+
+    class Inner:
+        layers = [Layer()]
+
+    class Model:
+        model = Inner()
+
+        class Config:
+            patternkv_selector_task_key = "old"
+
+        config = Config()
+
+    model = Model()
+    set_selector_task_context(model, "aime24:p1:s0:seed1042")
+    assert model.config.patternkv_selector_task_key == "aime24:p1:s0:seed1042"
+    assert model.model.layers[0].self_attn.selector_task_key == "aime24:p1:s0:seed1042"
+    assert model.model.layers[0].self_attn.v_causal_importance is None
+    assert model.model.layers[0].self_attn.v_oracle_importance is None
+
+
+def test_current_record_requires_matching_provenance() -> None:
+    rec = {"method": "RANDOM_V4_25", "formal_config_hash": experiment_hash(), "generation_config_hash": method_generation_hash("RANDOM_V4_25")}
+    assert is_current_record(rec)
+    stale = {**rec, "formal_config_hash": "old"}
+    assert not is_current_record(stale)
 
 
 def test_compact_result_schema(tmp_path) -> None:
