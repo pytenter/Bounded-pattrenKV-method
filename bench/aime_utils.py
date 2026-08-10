@@ -164,8 +164,16 @@ def build_manifest(rows: list[dict[str, Any]], methods=METHODS, num_samples: int
     return manifest
 
 
-def result_path(output_dir: Path, method: str, problem_id: int, sample_id: int, cfg_hash: str) -> Path:
-    return output_dir / method / f"p{problem_id:02d}_s{sample_id}_{cfg_hash}.json"
+def result_path(
+    output_dir: Path,
+    method: str,
+    problem_id: int,
+    sample_id: int,
+    cfg_hash: str,
+    seed: int | None = None,
+) -> Path:
+    seed_suffix = f"_seed{seed}" if seed is not None else ""
+    return output_dir / method / f"p{problem_id:02d}_s{sample_id}{seed_suffix}_{cfg_hash}.json"
 
 
 def is_complete_result(path: Path, cfg_hash: str, retry_failed: bool = False, retry_oom: bool = False) -> bool:

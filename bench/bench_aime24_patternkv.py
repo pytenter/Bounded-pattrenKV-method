@@ -117,9 +117,9 @@ def validate_context(args, tokenizer, model, rows) -> dict[str, Any]:
 
 
 @torch.no_grad()
-def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_hash: str, git_commit: str) -> dict[str, Any]:
+def run_task(args, model, tokenizer, row: dict[str, Any], sample_id: int, cfg_hash: str, git_commit: str, seed_override: int | None = None) -> dict[str, Any]:
     problem_id = int(row["problem_id"])
-    seed = effective_seed(args.base_seed, problem_id, sample_id)
+    seed = int(seed_override) if seed_override is not None else effective_seed(args.base_seed, problem_id, sample_id)
     set_all_seeds(seed)
     if args.method in {"patternkv_paper", "patternkv"}:
         from models.llama_patternkv import reset_patternkv_runtime_state
@@ -274,6 +274,7 @@ def parse_args():
     p.add_argument("--sink-length", type=int, default=0)
     p.add_argument("--recent-length", type=int, default=None)
     p.add_argument("--selected-tasks", type=Path)
+    p.add_argument("--use-manifest-seed", action="store_true")
     p.add_argument("--config-name")
     p.add_argument("--mixed-key-mask-path", type=Path)
     p.add_argument("--mixed-key-int4-ratio", type=float, default=0.0)
@@ -357,12 +358,29 @@ def main() -> None:
     row_by_id = {int(r["problem_id"]): r for r in load_aime24(args.dataset_path)}
     try:
         for task in tasks:
-            path = result_path(args.output_dir, args.config_name or args.method, int(task["problem_id"]), int(task["sample_id"]), cfg_hash)
+            task_seed = int(task["seed"]) if args.use_manifest_seed and "seed" in task else None
+            path = result_path(
+                args.output_dir,
+                args.config_name or args.method,
+                int(task["problem_id"]),
+                int(task["sample_id"]),
+                cfg_hash,
+                seed=task_seed,
+            )
             if is_complete_result(path, cfg_hash, args.retry_failed, args.retry_oom):
                 print(f"[{utc_now()}] skip complete {path}", flush=True)
                 continue
             try:
-                rec = run_task(args, model, tokenizer, row_by_id[int(task["problem_id"])], int(task["sample_id"]), cfg_hash, git_commit)
+                rec = run_task(
+                    args,
+                    model,
+                    tokenizer,
+                    row_by_id[int(task["problem_id"])],
+                    int(task["sample_id"]),
+                    cfg_hash,
+                    git_commit,
+                    task_seed,
+                )
             except torch.cuda.OutOfMemoryError as exc:
                 torch.cuda.empty_cache()
                 rec = {**task, "experiment_id": args.experiment_id, "model_path": str(args.model_path), "method": args.method, "stop_reason": "oom", "error": repr(exc), "generated_text": "", "parsed_answer": None, "parser_strategy": "failure", "parser_error": "oom", "git_commit": git_commit, "timestamp": utc_now()}
