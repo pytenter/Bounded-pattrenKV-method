@@ -1,0 +1,25 @@
+comparison_name,comparison,baseline,candidate,seed,paired_n,rescues,regressions,ties_both_correct,ties_both_wrong,ties,net_gain,missing
+pattern_paper_to_s16,PatternKV_paper -> Pattern S16,patternkv_paper,pattern_rolling_s16_r128,42,30,6,1,5,18,23,5,0
+pattern_paper_to_s16,PatternKV_paper -> Pattern S16,patternkv_paper,pattern_rolling_s16_r128,43,30,7,2,7,14,21,5,0
+pattern_paper_to_s16,PatternKV_paper -> Pattern S16,patternkv_paper,pattern_rolling_s16_r128,44,30,10,0,6,14,20,10,0
+pattern_paper_to_s16,PatternKV_paper -> Pattern S16,patternkv_paper,pattern_rolling_s16_r128,aggregate,90,23,3,18,46,64,20,0
+pattern_paper_to_s0,PatternKV_paper -> Pattern S0,patternkv_paper,pattern_rolling_s0_r128,42,30,4,1,5,20,25,3,0
+pattern_paper_to_s0,PatternKV_paper -> Pattern S0,patternkv_paper,pattern_rolling_s0_r128,43,30,2,3,6,19,25,-1,0
+pattern_paper_to_s0,PatternKV_paper -> Pattern S0,patternkv_paper,pattern_rolling_s0_r128,44,30,5,2,4,19,23,3,0
+pattern_paper_to_s0,PatternKV_paper -> Pattern S0,patternkv_paper,pattern_rolling_s0_r128,aggregate,90,11,6,15,58,73,5,0
+pattern_s0_to_s16,Pattern S0 -> Pattern S16,pattern_rolling_s0_r128,pattern_rolling_s16_r128,42,30,4,2,7,17,24,2,0
+pattern_s0_to_s16,Pattern S0 -> Pattern S16,pattern_rolling_s0_r128,pattern_rolling_s16_r128,43,30,7,1,7,15,22,6,0
+pattern_s0_to_s16,Pattern S0 -> Pattern S16,pattern_rolling_s0_r128,pattern_rolling_s16_r128,44,30,9,2,7,12,19,7,0
+pattern_s0_to_s16,Pattern S0 -> Pattern S16,pattern_rolling_s0_r128,pattern_rolling_s16_r128,aggregate,90,20,5,21,44,65,15,0
+kivi_s0_to_s16,KIVI S0 -> KIVI S16,kivi_rolling_s0_r128,kivi_rolling_s16_r128,42,30,10,0,4,16,20,10,0
+kivi_s0_to_s16,KIVI S0 -> KIVI S16,kivi_rolling_s0_r128,kivi_rolling_s16_r128,43,30,8,2,4,16,20,6,0
+kivi_s0_to_s16,KIVI S0 -> KIVI S16,kivi_rolling_s0_r128,kivi_rolling_s16_r128,44,30,9,1,5,15,20,8,0
+kivi_s0_to_s16,KIVI S0 -> KIVI S16,kivi_rolling_s0_r128,kivi_rolling_s16_r128,aggregate,90,27,3,13,47,60,24,0
+kivi_paper_to_s0,KIVI_paper -> KIVI S0,kivi_paper,kivi_rolling_s0_r128,42,30,0,0,4,26,30,0,0
+kivi_paper_to_s0,KIVI_paper -> KIVI S0,kivi_paper,kivi_rolling_s0_r128,43,30,0,0,6,24,30,0,0
+kivi_paper_to_s0,KIVI_paper -> KIVI S0,kivi_paper,kivi_rolling_s0_r128,44,30,0,0,6,24,30,0,0
+kivi_paper_to_s0,KIVI_paper -> KIVI S0,kivi_paper,kivi_rolling_s0_r128,aggregate,90,0,0,16,74,90,0,0
+kivi_paper_to_s16,KIVI_paper -> KIVI S16,kivi_paper,kivi_rolling_s16_r128,42,30,10,0,4,16,20,10,0
+kivi_paper_to_s16,KIVI_paper -> KIVI S16,kivi_paper,kivi_rolling_s16_r128,43,30,8,2,4,16,20,6,0
+kivi_paper_to_s16,KIVI_paper -> KIVI S16,kivi_paper,kivi_rolling_s16_r128,44,30,9,1,5,15,20,8,0
+kivi_paper_to_s16,KIVI_paper -> KIVI S16,kivi_paper,kivi_rolling_s16_r128,aggregate,90,27,3,13,47,60,24,0

@@ -1,0 +1,24 @@
+# PatternKV Paper Configuration Audit
+
+- Config name: `patternkv_paper`
+- Backend method: `patternkv`
+- Cache mode: `legacy_tuple_chunked`
+- PatternKV cache path: `legacy`
+- PatternKV cache mode: `legacy_tuple_chunked`
+- Residual length: `128`
+- Sink length: `0`
+- Recent length: `128`
+- K bits: `2`
+- V bits: `2`
+- Group size: `128`
+- K quantization granularity: `per-channel: quantize transposed K along token axis`
+- V quantization granularity: `per-token: quantize V residual/centroids along head_dim axis`
+- Asymmetric quantization: `True`
+- Quantized-region affine bits: `2.25`
+- Initial K centroid count: `32`
+- Initial V centroid count: `32`
+- Pattern group: `128`
+- Pattern selection position: `post-RoPE key/value states`
+- Assignment behavior: paper PatternKV K/V assignment path with residual chunk semantics.
+- Centroid behavior: 32 initial K and V bases with PatternKV runtime dynamic state reset per sample.
+- V gate behavior: production PatternKV V residual/centroid gate semantics.
