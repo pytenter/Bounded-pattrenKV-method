@@ -1,0 +1,153 @@
+{
+  "accuracy": [
+    {
+      "mean_accuracy": 0.5,
+      "method": "FP16",
+      "std_accuracy": 0.05773502691896256,
+      "total": 90,
+      "total_correct": 45
+    },
+    {
+      "mean_accuracy": 0.3555555555555555,
+      "method": "PATTERN_BASE",
+      "std_accuracy": 0.01924500897298752,
+      "total": 90,
+      "total_correct": 32
+    },
+    {
+      "mean_accuracy": 0.39999999999999997,
+      "method": "RANDOM_V4_25",
+      "std_accuracy": 0.057735026918962595,
+      "total": 90,
+      "total_correct": 36
+    },
+    {
+      "mean_accuracy": 0.5,
+      "method": "CAUSAL_V4_25",
+      "std_accuracy": 0.033333333333333326,
+      "total": 90,
+      "total_correct": 45
+    }
+  ],
+  "bit_cost": {
+    "CAUSAL_V4_25": {
+      "effective_kv_bits_per_element_max": 2.50048828125,
+      "effective_kv_bits_per_element_mean": 2.50048828125,
+      "effective_kv_bits_per_element_min": 2.50048828125,
+      "realized_v4_fraction_max": 0.25,
+      "realized_v4_fraction_mean": 0.25,
+      "realized_v4_fraction_min": 0.25
+    },
+    "FP16": {
+      "effective_kv_bits_per_element_max": 16.0,
+      "effective_kv_bits_per_element_mean": 16.0,
+      "effective_kv_bits_per_element_min": 16.0,
+      "realized_v4_fraction_max": null,
+      "realized_v4_fraction_mean": null,
+      "realized_v4_fraction_min": null
+    },
+    "PATTERN_BASE": {
+      "effective_kv_bits_per_element_max": 2.25,
+      "effective_kv_bits_per_element_mean": 2.25,
+      "effective_kv_bits_per_element_min": 2.25,
+      "realized_v4_fraction_max": null,
+      "realized_v4_fraction_mean": null,
+      "realized_v4_fraction_min": null
+    },
+    "RANDOM_V4_25": {
+      "effective_kv_bits_per_element_max": 2.50048828125,
+      "effective_kv_bits_per_element_mean": 2.50048828125,
+      "effective_kv_bits_per_element_min": 2.50048828125,
+      "realized_v4_fraction_max": 0.25,
+      "realized_v4_fraction_mean": 0.25,
+      "realized_v4_fraction_min": 0.25
+    },
+    "SAME_BIT_CONTROL_VALID": true,
+    "same_bit_delta": 0.0
+  },
+  "branch": "exp/aime24-full-causal25-quality-4gpu",
+  "completed_generations": 360,
+  "decisions": {
+    "CAUSAL25_beats_BASE": true,
+    "CAUSAL25_beats_RANDOM25": true,
+    "CAUSAL25_beats_RANDOM25_on_ge_2_of_3_seeds": true,
+    "FULL_AIME24_METHOD_CLASSIFICATION": "SUPPORTED",
+    "GENERALIZATION_VALIDATION_RECOMMENDED": true,
+    "NEXT_PRIORITY": "AIME25 generalization validation",
+    "importance_aware_allocation_task_quality_supported": true,
+    "seeds_causal_eq_random": 1,
+    "seeds_causal_gt_random": 2,
+    "seeds_causal_lt_random": 0
+  },
+  "expected_generations": 360,
+  "formal_run_complete": true,
+  "head": "96e042ddde0b833209ede6e3308391c9cd322d9e",
+  "length_truncated_generations": 27,
+  "nan_inf_failures": 0,
+  "oom_failures": 0,
+  "paired_counts": {
+    "base_correct_random_correct_causal_wrong": 2,
+    "base_correct_random_wrong_causal_correct": 8,
+    "base_wrong_random_correct_causal_correct": 7,
+    "base_wrong_random_wrong_causal_correct": 11,
+    "causal_win_random_loss": 19,
+    "random_win_causal_loss": 10,
+    "tie_random_causal": 61
+  },
+  "parent": "83c46ed1252a32ca42dcb81e172bd3e4c0a060a0",
+  "primary_quality_differences": {
+    "CAUSAL25_minus_BASE": {
+      "mean_delta": 0.14444444444444446,
+      "per_seed": [
+        {
+          "base_seed": 42,
+          "delta": 0.16666666666666669
+        },
+        {
+          "base_seed": 43,
+          "delta": 0.16666666666666669
+        },
+        {
+          "base_seed": 44,
+          "delta": 0.10000000000000003
+        }
+      ]
+    },
+    "CAUSAL25_minus_RANDOM25": {
+      "mean_delta": 0.10000000000000002,
+      "per_seed": [
+        {
+          "base_seed": 42,
+          "delta": 0.16666666666666669
+        },
+        {
+          "base_seed": 43,
+          "delta": 0.13333333333333336
+        },
+        {
+          "base_seed": 44,
+          "delta": 0.0
+        }
+      ]
+    },
+    "FP16_minus_CAUSAL25": {
+      "mean_delta": 0.0,
+      "per_seed": [
+        {
+          "base_seed": 42,
+          "delta": 0.0
+        },
+        {
+          "base_seed": 43,
+          "delta": -0.06666666666666665
+        },
+        {
+          "base_seed": 44,
+          "delta": 0.06666666666666665
+        }
+      ]
+    }
+  },
+  "repository": "pytenter/Bounded-pattrenKV-method",
+  "runtime_failed_generations": 0
+}

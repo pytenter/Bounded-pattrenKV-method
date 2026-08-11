@@ -1,0 +1,17 @@
+{
+  "bootstrap_unit": "question",
+  "causal_minus_base": {
+    "ci95_high": 0.24444444444444444,
+    "ci95_low": 0.04444444444444444,
+    "mean_delta": 0.14438888888888887,
+    "median_delta": 0.14444444444444443
+  },
+  "causal_minus_random": {
+    "ci95_high": 0.21111111111111105,
+    "ci95_low": -0.011111111111111108,
+    "mean_delta": 0.10012444444444443,
+    "median_delta": 0.09999999999999999
+  },
+  "resamples": 10000,
+  "seed": 20260810
+}

@@ -1,0 +1,12 @@
+{
+  "CAUSAL25_beats_BASE": true,
+  "CAUSAL25_beats_RANDOM25": true,
+  "CAUSAL25_beats_RANDOM25_on_ge_2_of_3_seeds": true,
+  "FULL_AIME24_METHOD_CLASSIFICATION": "SUPPORTED",
+  "GENERALIZATION_VALIDATION_RECOMMENDED": true,
+  "NEXT_PRIORITY": "AIME25 generalization validation",
+  "importance_aware_allocation_task_quality_supported": true,
+  "seeds_causal_eq_random": 1,
+  "seeds_causal_gt_random": 2,
+  "seeds_causal_lt_random": 0
+}

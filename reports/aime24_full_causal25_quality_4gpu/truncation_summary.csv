@@ -1,0 +1,13 @@
+method,base_seed,length_truncated,truncated_correct,truncated_incorrect,stop_eos,stop_length,stop_other
+FP16,42,1,0,1,29,1,0
+FP16,43,3,0,3,27,3,0
+FP16,44,2,0,2,28,2,0
+PATTERN_BASE,42,2,0,2,28,2,0
+PATTERN_BASE,43,2,0,2,28,2,0
+PATTERN_BASE,44,2,0,2,28,2,0
+RANDOM_V4_25,42,2,0,2,28,2,0
+RANDOM_V4_25,43,5,1,4,25,5,0
+RANDOM_V4_25,44,1,0,1,29,1,0
+CAUSAL_V4_25,42,2,0,2,28,2,0
+CAUSAL_V4_25,43,3,0,3,27,3,0
+CAUSAL_V4_25,44,2,0,2,28,2,0
