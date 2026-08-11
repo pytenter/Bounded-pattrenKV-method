@@ -417,8 +417,22 @@ def run_worker(args: argparse.Namespace) -> None:
     phase = args.phase
     physical_gpu = str(args.physical_gpu)
     rows = load_aime24(DATASET_PATH)
-    problem_ids = [int(args.smoke_problem_id)] if phase == "smoke" else [int(r["problem_id"]) for r in rows]
-    seeds = [BASE_SEEDS[0]] if phase == "smoke" else list(BASE_SEEDS)
+    requested_problem_ids = parse_int_csv(getattr(args, "problem_ids", None))
+    requested_base_seeds = parse_int_csv(getattr(args, "base_seeds", None))
+    problem_ids = (
+        [int(args.smoke_problem_id)]
+        if phase == "smoke"
+        else requested_problem_ids
+        if requested_problem_ids is not None
+        else [int(r["problem_id"]) for r in rows]
+    )
+    seeds = (
+        [BASE_SEEDS[0]]
+        if phase == "smoke"
+        else requested_base_seeds
+        if requested_base_seeds is not None
+        else list(BASE_SEEDS)
+    )
     row_by_id = {int(r["problem_id"]): r for r in rows}
     generation_hash = method_generation_hash(method_id)
     worker_started = time.time()
@@ -513,6 +527,12 @@ def update_worker_manifest(row: dict[str, Any]) -> None:
     rows = [r for r in rows if not (r.get("phase") == row.get("phase") and r.get("method") == row.get("method") and r.get("pid") == row.get("pid"))]
     rows.append(row)
     write_json(path, {"updated_at": utc_now(), "workers": rows})
+
+
+def parse_int_csv(value: str | None) -> list[int] | None:
+    if not value:
+        return None
+    return [int(part.strip()) for part in value.split(",") if part.strip()]
 
 
 def query_gpu_rows() -> list[dict[str, Any]]:
@@ -1193,6 +1213,8 @@ def main() -> None:
     parser.add_argument("--phase", choices=["smoke", "formal"], default="formal")
     parser.add_argument("--method-id", choices=METHOD_ORDER)
     parser.add_argument("--physical-gpu")
+    parser.add_argument("--base-seeds", help="Comma-separated seed subset for a formal worker, e.g. 44.")
+    parser.add_argument("--problem-ids", help="Comma-separated problem subset for a formal worker, e.g. 0,1,2.")
     parser.add_argument("--gpus", help="Comma-separated physical GPU IDs to use, in GPU_A..GPU_D order if already idle.")
     parser.add_argument("--smoke-problem-id", type=int, default=0)
     args = parser.parse_args()

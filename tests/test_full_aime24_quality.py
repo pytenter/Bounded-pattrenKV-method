@@ -21,6 +21,7 @@ from scripts.run_aime24_full_causal25_quality import (
     is_current_record,
     method_generation_hash,
     paired_counts,
+    parse_int_csv,
     question_level_rows,
     set_selector_task_context,
     transition_rows,
@@ -68,6 +69,13 @@ def test_random25_budget() -> None:
     cfg = METHOD_CONFIGS["RANDOM_V4_25"]
     assert cfg["selector"] == "random_v4"
     assert cfg["v4_budget_fraction"] == 0.25
+
+
+def test_parse_int_csv_for_worker_subsets() -> None:
+    assert parse_int_csv(None) is None
+    assert parse_int_csv("") is None
+    assert parse_int_csv("44") == [44]
+    assert parse_int_csv("0, 1,2") == [0, 1, 2]
 
 
 def test_causal25_budget() -> None:
