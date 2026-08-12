@@ -1,0 +1,98 @@
+{
+  "cuda_available": true,
+  "extension_sha256": "e0b17f8a607846fb4f404f13d0ca1652848d7a1c65a543c656118e73e57973bb",
+  "git_head": "ed4b2731ff58eddc744e116ea1d55c8660af14f6",
+  "gpu_rows": [
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "0",
+      "memory.total": "24576",
+      "memory.used": "18409",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "19.33",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "1",
+      "memory.total": "24576",
+      "memory.used": "21",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "22.92",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "2",
+      "memory.total": "24576",
+      "memory.used": "17",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "18.94",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "3",
+      "memory.total": "24576",
+      "memory.used": "18",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "21.60",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "4",
+      "memory.total": "24576",
+      "memory.used": "18",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "17.03",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "5",
+      "memory.total": "24576",
+      "memory.used": "18",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "20.16",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "6",
+      "memory.total": "24576",
+      "memory.used": "18",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "15.62",
+      "utilization.gpu": "0"
+    },
+    {
+      "clocks.sm": "210",
+      "driver_version": "580.173.02",
+      "index": "7",
+      "memory.total": "24576",
+      "memory.used": "18",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw": "17.94",
+      "utilization.gpu": "0"
+    }
+  ],
+  "loaded_cuda_extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "ncu_available": false,
+  "nsys_available": false,
+  "physical_gpu": "1",
+  "production_cache_backend": "contiguous",
+  "production_gqa_backend": "baseline",
+  "production_mixed_v_backend": "fused",
+  "production_page_reader": "contiguous",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "visible_cuda_device_count": 1
+}

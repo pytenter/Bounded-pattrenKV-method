@@ -25,6 +25,9 @@ _CACHE_MUTATIONS: dict[str, dict[str, float]] = defaultdict(
 
 
 def profile_enabled() -> bool:
+    system_flag = os.environ.get("PATTERNKV_SYSTEM_PROFILE")
+    if system_flag is not None:
+        return system_flag.strip().lower() in {"1", "true", "yes", "on"}
     return os.environ.get("PATTERNKV_PROFILE", "0").strip().lower() in {"1", "true", "yes", "on"}
 
 

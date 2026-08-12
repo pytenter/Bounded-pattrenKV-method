@@ -1,0 +1,21 @@
+{
+  "contexts": [
+    {
+      "context_tokens": 2048,
+      "cosine": 1.000000238418579,
+      "inf_count": 0,
+      "max_abs": 0.0,
+      "nan_count": 0,
+      "passed": true
+    },
+    {
+      "context_tokens": 8192,
+      "cosine": 1.0000001192092896,
+      "inf_count": 0,
+      "max_abs": 0.0,
+      "nan_count": 0,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

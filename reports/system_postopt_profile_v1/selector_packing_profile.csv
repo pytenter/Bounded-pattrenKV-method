@@ -1,0 +1,7 @@
+context_tokens,component,us_per_token,share_percent,timer_type,inclusive_or_exclusive,calls_per_token,profile_total_us,profile_tokens_recorded
+8192,selector,1276.6639962792397,0.8400509418840444,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,163412.99152374268,4096.0
+8192,packing,2109.79200899601,1.388253110843484,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,270053.37715148926,4096.0
+16384,selector,1277.247991412878,0.8166721453993303,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,163487.7429008484,4096.0
+16384,packing,2114.919990301132,1.3522794770000386,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,270709.7587585449,4096.0
+32768,selector,1296.575989574194,0.8190538400180419,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,165961.72666549683,4096.0
+32768,packing,2149.224005639553,1.357676055266256,cuda_event,exclusive_group_from_selected_leaf_ranges,0.25,275100.6727218628,4096.0

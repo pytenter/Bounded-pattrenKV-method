@@ -1,0 +1,28 @@
+context_tokens,counter,value
+8192,mixed_v_calls/token,32.0
+8192,V2 kernel calls/token,32.0
+8192,V4 kernel calls/token,32.0
+8192,QK calls/token,127.75
+8192,importance_update_calls/token,32.0
+8192,selector_calls/token,0.25
+8192,pack_calls/token,0.25
+8192,torch_cat_events/token,129.25
+8192,cache_mutation_events/token,129.25
+16384,mixed_v_calls/token,32.0
+16384,V2 kernel calls/token,32.0
+16384,V4 kernel calls/token,32.0
+16384,QK calls/token,127.75
+16384,importance_update_calls/token,32.0
+16384,selector_calls/token,0.25
+16384,pack_calls/token,0.25
+16384,torch_cat_events/token,129.25
+16384,cache_mutation_events/token,129.25
+32768,mixed_v_calls/token,32.0
+32768,V2 kernel calls/token,32.0
+32768,V4 kernel calls/token,32.0
+32768,QK calls/token,127.75
+32768,importance_update_calls/token,32.0
+32768,selector_calls/token,0.25
+32768,pack_calls/token,0.25
+32768,torch_cat_events/token,129.25
+32768,cache_mutation_events/token,129.25
