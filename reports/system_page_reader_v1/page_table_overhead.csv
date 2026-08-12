@@ -1,0 +1,6 @@
+tokens,page_count,historical_materialize_calls,historical_torch_cat_calls,historical_materialized_bytes,page_native_kernel_calls,page_table_rebuilds,page_table_device_updates,page_table_bytes_uploaded
+2048,16,0,0,0,1,5,5,640
+4096,32,0,0,0,1,5,5,1280
+8192,64,0,0,0,1,5,5,2560
+16384,128,0,0,0,1,5,5,5120
+32768,256,0,0,0,1,5,5,10240

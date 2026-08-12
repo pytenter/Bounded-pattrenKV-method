@@ -1,0 +1,6 @@
+tokens,pages,page_table_bytes,fragmentation_tokens_max
+2048,16,640,0
+4096,32,1280,0
+8192,64,2560,0
+16384,128,5120,0
+32768,256,10240,0

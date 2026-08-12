@@ -66,6 +66,26 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
     torch::Tensor _v_full
 );
 
+// Experimental S3-2 V2 page-native Value attention reader. It consumes fixed
+// page pointer tables and preserves the production V2 math path.
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_paged_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq_page_ptrs,
+    torch::Tensor _vscale_page_ptrs,
+    torch::Tensor _vzero_page_ptrs,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_page_ptrs,
+    torch::Tensor _idx_page_ptrs,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full,
+    const int K,
+    const int page_size,
+    const int idx_bytes
+);
+
 // Benchmark-only centroid ablation entry. Production code must keep using
 // attn_v_forward_cuda_outer_dim_with_base.
 torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(

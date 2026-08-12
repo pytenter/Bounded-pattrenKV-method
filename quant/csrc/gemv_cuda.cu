@@ -1511,6 +1511,199 @@ __global__ void battn_v_kernel_with_base(
   }
 }
 
+__device__ __forceinline__ const uint32_t* page_ptr_u32(const int64_t* ptrs, int page_id) {
+  return reinterpret_cast<const uint32_t*>(static_cast<uintptr_t>(ptrs[page_id]));
+}
+
+__device__ __forceinline__ const half* page_ptr_half(const int64_t* ptrs, int page_id) {
+  return reinterpret_cast<const half*>(static_cast<uintptr_t>(ptrs[page_id]));
+}
+
+__device__ __forceinline__ const uint8_t* page_ptr_u8(const int64_t* ptrs, int page_id) {
+  return reinterpret_cast<const uint8_t*>(static_cast<uintptr_t>(ptrs[page_id]));
+}
+
+__device__ __forceinline__ const char* page_ptr_char(const int64_t* ptrs, int page_id) {
+  return reinterpret_cast<const char*>(static_cast<uintptr_t>(ptrs[page_id]));
+}
+
+__device__ __forceinline__ int load_idx_paged_runtime(const int64_t* page_ptrs, int page_id, size_t offset, int idx_bytes) {
+  const char* base = page_ptr_char(page_ptrs, page_id);
+  if (idx_bytes == 1) return int(*((const uint8_t*)(base + offset)));
+  if (idx_bytes == 2) return int(*((const uint16_t*)(base + offset * 2)));
+  return int(*((const int32_t*)(base + offset * 4)));
+}
+
+__global__ void battn_v_kernel_with_base_paged_v2(
+  const half*      __restrict__ _alpha_q,   // [B*nh, K]
+  const int64_t*   __restrict__ _vq_pages,  // num_pages, each [B*nh_kv, OC/16, page_size]
+  const int64_t*   __restrict__ _vsc_pages, // num_pages, each [B*nh_kv, OC/group, page_size]
+  const int64_t*   __restrict__ _vzr_pages, // num_pages, each [B*nh_kv, OC/group, page_size]
+  const half*      __restrict__ _centroids, // [nh_kv, Mcent, OC]
+  const int64_t*   __restrict__ _mask_pages,// num_pages, each [B, nh_kv, page_size]
+  const int64_t*   __restrict__ _idx_pages, // num_pages, each [B, nh_kv, page_size]
+  const half*      __restrict__ _alpha_f,   // [B*nh, Lf] (optional)
+  const half*      __restrict__ _v_full,    // [B, nh_kv, Lf, OC] (optional)
+  half*            __restrict__ _out,       // [B*nh, OC]
+  const int K, const int OC, const int Lf,
+  const int group_size, const int nh, const int nh_kv,
+  const int Mcent, const int page_size, const int idx_bytes)
+{
+  constexpr int BIT = 2;
+  constexpr int PACK = 16;
+  const uint32_t CODE_MASK = 3u;
+  const int TILE = 128;
+
+  const int bnh = blockIdx.x;
+  const int wy = threadIdx.y;
+  const int lane = threadIdx.x;
+  const int packed_oc_idx = blockIdx.y * blockDim.y + wy;
+  const int oc_start = packed_oc_idx * PACK;
+  if (oc_start >= OC) return;
+
+  const int ratio = nh / nh_kv;
+  const int b = bnh / nh;
+  const int hq = bnh % nh;
+  const int hk = hq / ratio;
+  const size_t bkv = (size_t)b * nh_kv + hk;
+
+  const half* alpha_q = _alpha_q + (size_t)bnh * K;
+  half* out_row = _out + (size_t)bnh * OC;
+  const half* C = _centroids + (size_t)hk * (size_t)Mcent * OC;
+  const int oc_group = oc_start / group_size;
+
+  extern __shared__ float s_Sacc[];
+  const int sacc_elems = Mcent * blockDim.y;
+  for (int c = wy * blockDim.x + lane; c < sacc_elems; c += blockDim.x * blockDim.y) {
+    s_Sacc[c] = 0.f;
+  }
+  __syncthreads();
+
+  float psum[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) psum[p] = 0.f;
+
+  for (int kt = 0; kt < (K + TILE - 1) / TILE; ++kt) {
+    const int t_base = kt * TILE + lane * 4;
+
+    half a4[4] = {__float2half(0.f), __float2half(0.f), __float2half(0.f), __float2half(0.f)};
+    #pragma unroll
+    for (int i = 0; i < 4; ++i) {
+      const int t = t_base + i;
+      if (t < K) a4[i] = __ldg(alpha_q + t);
+    }
+
+    const int hist_t = kt * TILE + wy * blockDim.x + lane;
+    if (hist_t < K) {
+      const int page_id = hist_t / page_size;
+      const int page_off = hist_t - page_id * page_size;
+      const size_t off = bkv * (size_t)page_size + page_off;
+      const uint8_t* mask_page = page_ptr_u8(_mask_pages, page_id);
+      const uint8_t m = __ldg(mask_page + off);
+      if (m) {
+        const int idx = load_idx_paged_runtime(_idx_pages, page_id, off, idx_bytes);
+        if (0 <= idx && idx < Mcent) {
+          atomicAdd(&s_Sacc[wy * Mcent + idx], __half2float(__ldg(alpha_q + hist_t)));
+        }
+      }
+    }
+
+    uint32_t qw[4] = {0, 0, 0, 0};
+    half sc4[4] = {__float2half(0.f), __float2half(0.f), __float2half(0.f), __float2half(0.f)};
+    half zr4[4] = {__float2half(0.f), __float2half(0.f), __float2half(0.f), __float2half(0.f)};
+
+    #pragma unroll
+    for (int i = 0; i < 4; ++i) {
+      const int t = t_base + i;
+      if (t < K) {
+        const int page_id = t / page_size;
+        const int page_off = t - page_id * page_size;
+        const uint32_t* vq_page = page_ptr_u32(_vq_pages, page_id);
+        const half* vsc_page = page_ptr_half(_vsc_pages, page_id);
+        const half* vzr_page = page_ptr_half(_vzr_pages, page_id);
+        qw[i] = __ldg(vq_page + bkv * (size_t)(OC / PACK) * page_size + (size_t)packed_oc_idx * page_size + page_off);
+        sc4[i] = __ldg(vsc_page + bkv * (size_t)(OC / group_size) * page_size + (size_t)oc_group * page_size + page_off);
+        zr4[i] = __ldg(vzr_page + bkv * (size_t)(OC / group_size) * page_size + (size_t)oc_group * page_size + page_off);
+      }
+    }
+
+    #pragma unroll
+    for (int j = 0; j < 4; ++j) {
+      const float a = __half2float(a4[j]);
+      uint32_t cur = qw[j];
+      const float s = __half2float(sc4[j]);
+      const float z = __half2float(zr4[j]);
+      #pragma unroll
+      for (int p = 0; p < PACK; ++p) {
+        const int oc = oc_start + p;
+        if (oc < OC) {
+          const float code = float(cur & CODE_MASK);
+          psum[p] += (s * code + z) * a;
+        }
+        cur >>= BIT;
+      }
+    }
+  }
+  __syncthreads();
+
+  float add_base[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) add_base[p] = 0.f;
+
+  if (lane == 0) {
+    for (int c = 0; c < Mcent; ++c) {
+      float s = 0.f;
+      #pragma unroll
+      for (int w = 0; w < 4; ++w) {
+        if (w < blockDim.y) s += s_Sacc[w * Mcent + c];
+      }
+      if (s != 0.f) {
+        const half* crow = C + (size_t)c * OC + oc_start;
+        #pragma unroll
+        for (int p = 0; p < PACK; ++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) add_base[p] += s * __half2float(__ldg(crow + p));
+        }
+      }
+    }
+  }
+
+  float add_full[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) add_full[p] = 0.f;
+
+  if (Lf > 0 && _alpha_f && _v_full) {
+    const half* aF = _alpha_f + (size_t)bnh * Lf;
+    const half* vF = _v_full + ((size_t)b * nh_kv + hk) * (size_t)Lf * OC;
+    for (int t = lane; t < Lf; t += blockDim.x) {
+      const float a = __half2float(__ldg(aF + t));
+      const half* row = vF + (size_t)t * OC + oc_start;
+      #pragma unroll
+      for (int p = 0; p < PACK; ++p) {
+        const int oc = oc_start + p;
+        if (oc < OC) add_full[p] += a * __half2float(__ldg(row + p));
+      }
+    }
+    #pragma unroll
+    for (int p = 0; p < PACK; ++p) {
+      float v = add_full[p];
+      v = warp_reduce_sum_f32(v);
+      if (lane == 0) add_full[p] = v;
+    }
+  }
+
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) {
+    const int oc = oc_start + p;
+    if (oc < OC) {
+      const float vqsum = warp_reduce_sum_f32(psum[p]);
+      if (lane == 0) {
+        out_row[oc] = __float2half(vqsum + add_base[p] + add_full[p]);
+      }
+    }
+  }
+}
+
 __device__ __forceinline__ int load_idx_runtime(const char* base, int t, int idx_bytes) {
   if (idx_bytes == 1) return int(*((const uint8_t*)(base + t)));
   if (idx_bytes == 2) return int(*((const uint16_t*)(base + (size_t)t * 2)));
@@ -1807,6 +2000,84 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
   }
+  return _out;
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_paged_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq_page_ptrs,
+    torch::Tensor _vscale_page_ptrs,
+    torch::Tensor _vzero_page_ptrs,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_page_ptrs,
+    torch::Tensor _idx_page_ptrs,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full,
+    const int K,
+    const int page_size,
+    const int idx_bytes
+){
+  TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
+  TORCH_CHECK(_alpha_q.size(2)==K, "alpha_q K mismatch");
+  TORCH_CHECK(_alpha_q.is_cuda(), "alpha_q must be CUDA");
+  TORCH_CHECK(page_size > 0, "page_size must be positive");
+  TORCH_CHECK(idx_bytes == 1 || idx_bytes == 2 || idx_bytes == 4, "idx_bytes must be 1, 2, or 4");
+  TORCH_CHECK(nh > 0 && nh_kv > 0 && nh % nh_kv == 0, "nh must be divisible by nh_kv");
+  const int BSnh = _alpha_q.size(0);
+  TORCH_CHECK(BSnh % nh == 0, "B*nh must be divisible by nh");
+  const int B = BSnh / nh;
+
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  const int Mcent = _centroids.size(1);
+  const int OC = _centroids.size(2);
+  constexpr int PACK = 16;
+  TORCH_CHECK(OC % PACK == 0, "V2 page reader requires OC divisible by 16");
+  TORCH_CHECK(OC % group_size == 0, "OC must be divisible by group_size");
+  TORCH_CHECK(Mcent <= MAX_CENTROIDS, "too many centroids");
+
+  const int num_pages = (K + page_size - 1) / page_size;
+  TORCH_CHECK(_vq_page_ptrs.dim()==1 && _vq_page_ptrs.size(0)>=num_pages, "vq_page_ptrs must cover K pages");
+  TORCH_CHECK(_vscale_page_ptrs.dim()==1 && _vscale_page_ptrs.size(0)>=num_pages, "vscale_page_ptrs must cover K pages");
+  TORCH_CHECK(_vzero_page_ptrs.dim()==1 && _vzero_page_ptrs.size(0)>=num_pages, "vzero_page_ptrs must cover K pages");
+  TORCH_CHECK(_mask_page_ptrs.dim()==1 && _mask_page_ptrs.size(0)>=num_pages, "mask_page_ptrs must cover K pages");
+  TORCH_CHECK(_idx_page_ptrs.dim()==1 && _idx_page_ptrs.size(0)>=num_pages, "idx_page_ptrs must cover K pages");
+  TORCH_CHECK(_vq_page_ptrs.dtype()==torch::kInt64 && _vscale_page_ptrs.dtype()==torch::kInt64 &&
+              _vzero_page_ptrs.dtype()==torch::kInt64 && _mask_page_ptrs.dtype()==torch::kInt64 &&
+              _idx_page_ptrs.dtype()==torch::kInt64, "page pointer tables must be int64");
+  TORCH_CHECK(_vq_page_ptrs.is_cuda() && _vscale_page_ptrs.is_cuda() && _vzero_page_ptrs.is_cuda() &&
+              _mask_page_ptrs.is_cuda() && _idx_page_ptrs.is_cuda(), "page pointer tables must be CUDA tensors");
+
+  const int Lf = (_alpha_f.numel()==0 || _v_full.numel()==0) ? 0 : _alpha_f.size(1);
+  if (Lf > 0) {
+    TORCH_CHECK(_v_full.dim()==4 && _v_full.size(0)==B && _v_full.size(1)==nh_kv &&
+                _v_full.size(2)==Lf && _v_full.size(3)==OC, "v_full must be [B,nh_kv,Lf,OC]");
+  }
+
+  auto options = torch::TensorOptions().dtype(_alpha_q.dtype()).device(_alpha_q.device());
+  at::Tensor _out = torch::empty({BSnh, 1, OC}, options);
+
+  const half* alpha_q = reinterpret_cast<const half*>(_alpha_q.data_ptr<at::Half>());
+  const int64_t* vq_pages = _vq_page_ptrs.data_ptr<int64_t>();
+  const int64_t* vsc_pages = _vscale_page_ptrs.data_ptr<int64_t>();
+  const int64_t* vzr_pages = _vzero_page_ptrs.data_ptr<int64_t>();
+  const half* cent = reinterpret_cast<const half*>(_centroids.data_ptr<at::Half>());
+  const int64_t* mask_pages = _mask_page_ptrs.data_ptr<int64_t>();
+  const int64_t* idx_pages = _idx_page_ptrs.data_ptr<int64_t>();
+  const half* alpha_f = (_alpha_f.numel()==0) ? nullptr : reinterpret_cast<const half*>(_alpha_f.data_ptr<at::Half>());
+  const half* v_full = (_v_full.numel()==0) ? nullptr : reinterpret_cast<const half*>(_v_full.data_ptr<at::Half>());
+  half* outp = reinterpret_cast<half*>(_out.data_ptr<at::Half>());
+
+  dim3 threads(32, 4, 1);
+  dim3 blocks(BSnh, (OC / PACK + threads.y - 1) / threads.y, 1);
+  size_t shmem = (size_t)Mcent * (size_t)threads.y * sizeof(float);
+  battn_v_kernel_with_base_paged_v2<<<blocks, threads, shmem>>>(
+    alpha_q, vq_pages, vsc_pages, vzr_pages, cent, mask_pages, idx_pages,
+    alpha_f, v_full, outp, K, OC, Lf, group_size, nh, nh_kv, Mcent,
+    page_size, idx_bytes
+  );
   return _out;
 }
 

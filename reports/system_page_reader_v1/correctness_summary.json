@@ -1,0 +1,33 @@
+{
+  "all_passed": true,
+  "assignments_tested": [
+    "normal",
+    "uniform",
+    "skewed",
+    "all_same"
+  ],
+  "contexts_tested": [
+    127,
+    128,
+    129,
+    255,
+    256,
+    257,
+    2048,
+    8192,
+    16384,
+    32768
+  ],
+  "cosine_similarity_min": 0.9999998211860657,
+  "inf_count_total": 0,
+  "mask_densities_tested": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "max_abs_error": 0.0,
+  "nan_count_total": 0,
+  "passed_cases": 160,
+  "total_cases": 160
+}

@@ -21,6 +21,16 @@ _MIXED_V_COUNTERS = {
 	"gqa_v2_fallbacks": 0,
 }
 
+_PAGE_V_READER_COUNTERS = {
+	"historical_materialize_calls": 0,
+	"historical_torch_cat_calls": 0,
+	"historical_materialized_bytes": 0,
+	"page_native_kernel_calls": 0,
+	"page_table_rebuilds": 0,
+	"page_table_device_updates": 0,
+	"page_table_bytes_uploaded": 0,
+}
+
 
 def reset_patternkv_mixed_v_counters() -> None:
 	for key in _MIXED_V_COUNTERS:
@@ -29,6 +39,15 @@ def reset_patternkv_mixed_v_counters() -> None:
 
 def get_patternkv_mixed_v_counters() -> dict:
 	return dict(_MIXED_V_COUNTERS)
+
+
+def reset_patternkv_page_v_reader_counters() -> None:
+	for key in _PAGE_V_READER_COUNTERS:
+		_PAGE_V_READER_COUNTERS[key] = 0
+
+
+def get_patternkv_page_v_reader_counters() -> dict:
+	return dict(_PAGE_V_READER_COUNTERS)
 
 
 def record_mixed_v_reference_call(tokens: int = 0) -> None:
@@ -45,6 +64,46 @@ def patternkv_gqa_v_backend() -> str:
 	if backend not in {"baseline", "gqa"}:
 		raise ValueError("PATTERNKV_GQA_V_BACKEND must be 'baseline' or 'gqa'")
 	return backend
+
+
+def patternkv_page_v_reader_backend() -> str:
+	backend = os.environ.get("PATTERNKV_PAGE_V_READER", "contiguous").strip().lower()
+	if backend not in {"contiguous", "paged_v2"}:
+		raise ValueError("PATTERNKV_PAGE_V_READER must be 'contiguous' or 'paged_v2'")
+	return backend
+
+
+class DevicePageTable:
+	"""Device-resident pointer table for fixed pages.
+
+	The table is refreshed only when page allocations change. Existing page
+	contents may mutate without requiring a table update because the data_ptrs are
+	stable for the lifetime of each page tensor.
+	"""
+
+	def __init__(self, stream: str = "page") -> None:
+		self.stream = str(stream)
+		self._signature: tuple[int, ...] = ()
+		self.tensor: torch.Tensor | None = None
+
+	def refresh(self, pages: list[torch.Tensor] | tuple[torch.Tensor, ...]) -> torch.Tensor:
+		if not pages:
+			raise ValueError(f"{self.stream} page table cannot be built from an empty page list")
+		signature = tuple(int(page.data_ptr()) for page in pages)
+		device = pages[0].device
+		if self.tensor is not None and self._signature == signature and self.tensor.device == device:
+			return self.tensor
+		if not all(page.device == device for page in pages):
+			raise ValueError(f"{self.stream} pages must live on the same device")
+		host = torch.tensor(signature, dtype=torch.int64, device="cpu")
+		table = torch.empty((len(signature),), dtype=torch.int64, device=device)
+		table.copy_(host, non_blocking=False)
+		self.tensor = table
+		self._signature = signature
+		_PAGE_V_READER_COUNTERS["page_table_rebuilds"] += 1
+		_PAGE_V_READER_COUNTERS["page_table_device_updates"] += 1
+		_PAGE_V_READER_COUNTERS["page_table_bytes_uploaded"] += int(table.numel() * table.element_size())
+		return table
 
 
 @triton.jit
@@ -445,6 +504,149 @@ def cuda_attn_v_fused_with_base(
 
     return out16.view(B, nh, 1, OC) 
     # return c
+
+
+def _page_token_length(buffer) -> int:
+	if hasattr(buffer, "logical_length"):
+		return int(buffer.logical_length())
+	return int(getattr(buffer, "num_tokens"))
+
+
+def _require_page_buffer(name: str, buffer, *, tokens: int) -> list[torch.Tensor]:
+	if buffer is None or not hasattr(buffer, "pages"):
+		raise TypeError(f"{name} must be a FixedPageBuffer-like object with .pages")
+	pages = list(buffer.pages)
+	if not pages:
+		raise RuntimeError(f"{name} has no pages")
+	if _page_token_length(buffer) != tokens:
+		raise RuntimeError(f"{name} token mismatch: expected {tokens}, got {_page_token_length(buffer)}")
+	return pages
+
+
+def _idx_bytes_for_page_reader(idx_dtype: torch.dtype) -> int:
+	if idx_dtype == torch.uint8:
+		return 1
+	if idx_dtype == torch.int16:
+		return 2
+	if idx_dtype == torch.int32:
+		return 4
+	raise RuntimeError("paged V reader requires v_idx_q pages to be uint8, int16, or int32")
+
+
+def cuda_attn_v_fused_with_base_paged_v2(
+	group_size: int,
+	attn_q: torch.Tensor,
+	vq_pages,
+	v_scale_pages,
+	v_zero_pages,
+	v_centroids: torch.Tensor,
+	v_mask_pages,
+	v_idx_pages,
+	nh: int,
+	nh_kv: int,
+	attn_f: torch.Tensor | None = None,
+	v_full: torch.Tensor | None = None,
+	page_tables: dict[str, DevicePageTable] | None = None,
+) -> torch.Tensor:
+	"""Experimental V2 page-native Value attention reader.
+
+	Page tensors must use the extension-native layout:
+	- vq: [B*nh_kv, OC/16, page_size]
+	- scale/zero: [B*nh_kv, OC/group_size, page_size]
+	- mask/idx: [B, nh_kv, page_size]
+	"""
+	assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
+	B, nh_in, _, K = attn_q.shape
+	assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
+	assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
+	OC = v_centroids.size(-1)
+	if OC % 16 != 0:
+		raise RuntimeError("V2 page reader requires OC divisible by 16")
+	if OC % group_size != 0:
+		raise RuntimeError("OC must be divisible by group_size")
+
+	vq_page_list = _require_page_buffer("vq_pages", vq_pages, tokens=K)
+	scale_page_list = _require_page_buffer("v_scale_pages", v_scale_pages, tokens=K)
+	zero_page_list = _require_page_buffer("v_zero_pages", v_zero_pages, tokens=K)
+	mask_page_list = _require_page_buffer("v_mask_pages", v_mask_pages, tokens=K)
+	idx_page_list = _require_page_buffer("v_idx_pages", v_idx_pages, tokens=K)
+	page_size = int(getattr(vq_pages, "page_size"))
+	for name, buffer in (
+		("v_scale_pages", v_scale_pages),
+		("v_zero_pages", v_zero_pages),
+		("v_mask_pages", v_mask_pages),
+		("v_idx_pages", v_idx_pages),
+	):
+		if int(getattr(buffer, "page_size")) != page_size:
+			raise RuntimeError(f"{name} page_size mismatch")
+
+	flat_kv = B * nh_kv
+	expected = {
+		"vq": (flat_kv, OC // 16, page_size),
+		"scale": (flat_kv, OC // group_size, page_size),
+		"zero": (flat_kv, OC // group_size, page_size),
+		"mask": (B, nh_kv, page_size),
+		"idx": (B, nh_kv, page_size),
+	}
+	first_pages = {
+		"vq": vq_page_list[0],
+		"scale": scale_page_list[0],
+		"zero": zero_page_list[0],
+		"mask": mask_page_list[0],
+		"idx": idx_page_list[0],
+	}
+	for name, page in first_pages.items():
+		if tuple(page.shape) != expected[name]:
+			raise RuntimeError(f"{name} page layout mismatch: expected {expected[name]}, got {tuple(page.shape)}")
+		if not page.is_cuda:
+			raise RuntimeError(f"{name} pages must be CUDA tensors")
+		if not page.is_contiguous():
+			raise RuntimeError(f"{name} pages must be contiguous")
+
+	idx_bytes = _idx_bytes_for_page_reader(idx_page_list[0].dtype)
+	attn_q = attn_q.to(torch.float16).contiguous()
+	v_centroids = v_centroids.to(torch.float16).contiguous()
+	if attn_f is not None:
+		attn_f = attn_f.to(torch.float16).contiguous()
+	if v_full is not None:
+		v_full = v_full.to(torch.float16).contiguous()
+
+	if (attn_f is None) or (v_full is None):
+		alpha_f = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+		v_full_ = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+	else:
+		Lf = attn_f.shape[-1] if attn_f.size(-2) == 1 else attn_f.size(-2)
+		assert v_full.size(2) == Lf and v_full.size(-1) == OC, f"v_full shape mismatch: {v_full.shape}, Lf={Lf}, OC={OC}"
+		alpha_f = attn_f.view(-1, Lf).contiguous()
+		v_full_ = v_full.contiguous()
+
+	table_cache = {} if page_tables is None else page_tables
+	vq_table = table_cache.setdefault("vq", DevicePageTable("vq")).refresh(vq_page_list)
+	scale_table = table_cache.setdefault("scale", DevicePageTable("scale")).refresh(scale_page_list)
+	zero_table = table_cache.setdefault("zero", DevicePageTable("zero")).refresh(zero_page_list)
+	mask_table = table_cache.setdefault("mask", DevicePageTable("mask")).refresh(mask_page_list)
+	idx_table = table_cache.setdefault("idx", DevicePageTable("idx")).refresh(idx_page_list)
+
+	alpha_q = attn_q.view(-1, 1, K).contiguous()
+	_PAGE_V_READER_COUNTERS["page_native_kernel_calls"] += 1
+	out16 = patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_paged_v2(
+		alpha_q,
+		vq_table,
+		scale_table,
+		zero_table,
+		int(group_size),
+		int(nh),
+		int(nh_kv),
+		v_centroids.contiguous(),
+		mask_table,
+		idx_table,
+		alpha_f,
+		v_full_,
+		int(K),
+		int(page_size),
+		int(idx_bytes),
+	)
+	return out16.view(B, nh, 1, OC)
 
 
 def _supports_gqa_v2_kernel(

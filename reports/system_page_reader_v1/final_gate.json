@@ -1,0 +1,17 @@
+{
+  "algorithm_semantics_changed": false,
+  "classification": "PAGE_NATIVE_READER_NOT_FASTER",
+  "default_reader_backend": "contiguous",
+  "e2e_started": false,
+  "experimental_backend": "paged_v2",
+  "gqa_redesign_started": false,
+  "iters": 200,
+  "mixed_extended": false,
+  "qk_rewrite_started": false,
+  "rounds": 5,
+  "v2_32k_regression_vs_contiguous": 0.3759493466632312,
+  "v2_correctness_passed": true,
+  "v2_perf_gate_le_10_percent_regression": false,
+  "v4_extended": false,
+  "warmup": 30
+}
