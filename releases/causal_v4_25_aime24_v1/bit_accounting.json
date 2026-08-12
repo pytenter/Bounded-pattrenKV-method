@@ -1,0 +1,38 @@
+{
+  "level_a_formal_budget_metric": {
+    "CAUSAL_V4_25": 2.50048828125,
+    "PATTERN_BASE": 2.25,
+    "RANDOM_V4_25": 2.50048828125,
+    "SAME_BIT_CONTROL_VALID": true,
+    "included_components": [
+      "INT2/INT4 payload",
+      "FP16 scale",
+      "FP16 zero/min",
+      "mixed V2/V4 precision metadata"
+    ],
+    "metric_name": "payload-and-metadata effective quantization budget",
+    "purpose": "Demonstrates RANDOM_V4_25 and CAUSAL_V4_25 use exactly the same formal bit budget.",
+    "same_bit_delta": 0.0,
+    "units": "bit/element"
+  },
+  "level_b_physical_storage_status": {
+    "future_systems_metrics": [
+      "actual bytes/token",
+      "actual KV bytes",
+      "peak allocated memory",
+      "max cache capacity",
+      "actual effective physical bits/element"
+    ],
+    "not_included_in_2_500488_metric": [
+      "Sink FP16 storage",
+      "Recent FP16 storage",
+      "Pattern centroid storage",
+      "assignment tensors",
+      "Python tensor dtype overhead",
+      "allocator/alignment overhead",
+      "other implementation storage"
+    ],
+    "physical_full_cache_accounting_status": "NOT_YET_FINALIZED",
+    "warning": "The 2.500488-bit metric is not the complete allocator-level physical memory footprint."
+  }
+}

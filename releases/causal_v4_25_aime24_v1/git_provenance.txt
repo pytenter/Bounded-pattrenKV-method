@@ -1,0 +1,28 @@
+REPO_ROOT=/data/zypan/Bounded-pattrenKV-pseudodecode-3090
+CURRENT_BRANCH_AT_FREEZE=exp/aime24-full-causal25-quality-4gpu
+ALGORITHM_COMMIT=c73aeed3247c136859f695d5b238eeb357434b17
+ARCHIVE_SOURCE_HEAD_AT_CREATION=c73aeed3247c136859f695d5b238eeb357434b17
+PARENT_COMMIT=96e042ddde0b833209ede6e3308391c9cd322d9e
+ALGORITHM_TAG=causal-v4-25-aime24-v1
+SYSTEMS_BRANCH=sys/causal-v4-25-kernel-v1
+
+REMOTE:
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+origin	https://github.com/HCOOOH/PatternKV.git (fetch)
+origin	https://github.com/HCOOOH/PatternKV.git (push)
+
+LOG5_AT_CREATION:
+c73aeed run: complete Full AIME24 causal25 validation
+96e042d feat: allow formal worker seed subsets
+c34738b fix: harden AIME24 quality reporting
+e3fe0d3 fix: key PatternKV value selector by AIME task
+8d57a99 exp: add 4-GPU Full AIME24 quality runner
+
+ALGORITHM_COMMIT_INFO:
+c73aeed3247c136859f695d5b238eeb357434b17
+2026-08-11T22:54:52+08:00
+2026-08-11T22:54:52+08:00
+Codex Repro Engineer
+codex-repro@example.local
+run: complete Full AIME24 causal25 validation
