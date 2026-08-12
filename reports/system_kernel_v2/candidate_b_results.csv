@@ -1,0 +1,2 @@
+candidate,status,reason,correctness_risk,performance_result
+candidate_b_gqa_reuse,NOT_IMPLEMENTED,"Audit found GQA global-load reuse opportunity, but implementing shared/cross-query-head reuse requires non-local kernel restructuring and new synchronization/tiling contracts beyond S2B-1 V2-only local optimization scope.",not_measured,not_measured

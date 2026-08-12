@@ -1,0 +1,2 @@
+candidate,status,reason,correctness_risk,performance_result
+candidate_c_metadata_reuse,NOT_IMPLEMENTED,"Current V2 path already passes compact mask/index pointers directly; useful metadata reuse would require changing layout/preprocessing or fusing selector-side contracts, which is outside immutable packing/cache-layout constraints.",not_measured,not_measured
