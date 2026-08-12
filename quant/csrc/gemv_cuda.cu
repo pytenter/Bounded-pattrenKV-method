@@ -1223,8 +1223,15 @@ __device__ __forceinline__ float warp_reduce_sum_f32(float v) {
   return v;
 }
 
+enum AttnVAblationMode {
+  ABLATION_FULL = 0,
+  ABLATION_RESIDUAL_ONLY = 1,
+  ABLATION_NO_CENTROID_HISTOGRAM = 2,
+  ABLATION_CENTROID_ONLY = 3,
+};
+
 // ===================== 最终修正版 V 融合核 =====================
-template<int BIT>
+template<int BIT, int MODE>
 __global__ void battn_v_kernel_with_base(
   const half*      __restrict__ _alpha_q,   // [B*nh, K]
   const uint32_t*  __restrict__ _vq_lin,    // [B*nh_kv, (OC/pack)*K] 线性化
@@ -1241,6 +1248,13 @@ __global__ void battn_v_kernel_with_base(
   const int Mcent, const int idx_bytes)
 {
   static_assert(BIT==2 || BIT==4, "BIT must be 2 or 4");
+  static_assert(MODE==ABLATION_FULL || MODE==ABLATION_RESIDUAL_ONLY ||
+                MODE==ABLATION_NO_CENTROID_HISTOGRAM || MODE==ABLATION_CENTROID_ONLY,
+                "invalid V attention ablation mode");
+  constexpr bool DO_RESIDUAL = MODE != ABLATION_CENTROID_ONLY;
+  constexpr bool DO_HISTOGRAM = MODE == ABLATION_FULL || MODE == ABLATION_CENTROID_ONLY;
+  constexpr bool DO_CENTROID_TABLE = MODE == ABLATION_FULL || MODE == ABLATION_CENTROID_ONLY;
+  constexpr bool DO_FULL_RECENT = MODE == ABLATION_FULL;
   constexpr int PACK = 32 / BIT;        // 2bit=16, 4bit=8
   const uint32_t CODE_MASK = (1u << BIT) - 1u;
   const int TILE = 128;
@@ -1303,6 +1317,7 @@ __global__ void battn_v_kernel_with_base(
     }
 
     // 直方图：Sacc[idx[t]] += α_q[t] * mask[t]
+    if constexpr (DO_HISTOGRAM) {
     if (wy == 0) {                           // ★ 仅由 wy==0 的 warp 累加 s_Sacc
       #pragma unroll
       for (int i=0;i<4;++i) {
@@ -1321,6 +1336,7 @@ __global__ void battn_v_kernel_with_base(
         }
       }
     }
+    }
 
     // 量化 V：对 [oc_start .. oc_start+PACK-1] 载入 packed 行、scale/zero 行
     // vq 行基址：第 packed_oc_idx 行
@@ -1333,32 +1349,34 @@ __global__ void battn_v_kernel_with_base(
     half sc4[4] = {__float2half(0.f),__float2half(0.f),__float2half(0.f),__float2half(0.f)};
     half zr4[4] = {__float2half(0.f),__float2half(0.f),__float2half(0.f),__float2half(0.f)};
 
-    #pragma unroll
-    for (int i=0;i<4;++i) {
-      const int t = t_base + i;
-      if (t < K) {
-        qw[i]  = __ldg(vq_row + t);
-        sc4[i] = __ldg(vsc_row + t);
-        zr4[i] = __ldg(vzr_row + t);
-      }
-    }
-
-    // FMA：psum[p] += (s*code + z) * a
-    #pragma unroll
-    for (int j=0;j<4;++j) {
-      const float a = __half2float(a4[j]);
-      uint32_t cur = qw[j];
-      const float s = __half2float(sc4[j]);
-      const float z = __half2float(zr4[j]);
-
+    if constexpr (DO_RESIDUAL) {
       #pragma unroll
-      for (int p=0;p<PACK;++p) {
-        const int oc = oc_start + p;
-        if (oc < OC) {
-          const float code = float(cur & CODE_MASK);
-          psum[p] += (s * code + z) * a;
+      for (int i=0;i<4;++i) {
+        const int t = t_base + i;
+        if (t < K) {
+          qw[i]  = __ldg(vq_row + t);
+          sc4[i] = __ldg(vsc_row + t);
+          zr4[i] = __ldg(vzr_row + t);
         }
-        cur >>= BIT;
+      }
+
+      // FMA：psum[p] += (s*code + z) * a
+      #pragma unroll
+      for (int j=0;j<4;++j) {
+        const float a = __half2float(a4[j]);
+        uint32_t cur = qw[j];
+        const float s = __half2float(sc4[j]);
+        const float z = __half2float(zr4[j]);
+
+        #pragma unroll
+        for (int p=0;p<PACK;++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) {
+            const float code = float(cur & CODE_MASK);
+            psum[p] += (s * code + z) * a;
+          }
+          cur >>= BIT;
+        }
       }
     }
   } // end kt
@@ -1369,14 +1387,16 @@ __global__ void battn_v_kernel_with_base(
   #pragma unroll
   for (int p=0;p<PACK;++p) add_base[p] = 0.f;
 
-  for (int c=0; c<Mcent; ++c) {
-    const float s = s_Sacc[c];
-    if (s != 0.f) {
-      const half* crow = C + (size_t)c * OC + oc_start;
-      #pragma unroll
-      for (int p=0;p<PACK;++p) {
-        const int oc = oc_start + p;
-        if (oc < OC) add_base[p] += s * __half2float(__ldg(crow + p));
+  if constexpr (DO_CENTROID_TABLE) {
+    for (int c=0; c<Mcent; ++c) {
+      const float s = s_Sacc[c];
+      if (s != 0.f) {
+        const half* crow = C + (size_t)c * OC + oc_start;
+        #pragma unroll
+        for (int p=0;p<PACK;++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) add_base[p] += s * __half2float(__ldg(crow + p));
+        }
       }
     }
   }
@@ -1386,6 +1406,7 @@ __global__ void battn_v_kernel_with_base(
   #pragma unroll
   for (int p=0;p<PACK;++p) add_full[p] = 0.f;
 
+  if constexpr (DO_FULL_RECENT) {
   if (Lf > 0 && _alpha_f && _v_full) {
     const half* aF = _alpha_f + (size_t)bnh * Lf;                          // [Lf]
     const half* vF = _v_full  + ((size_t)b * nh_kv + hk) * (size_t)Lf * OC; // [Lf, OC]
@@ -1406,13 +1427,14 @@ __global__ void battn_v_kernel_with_base(
       if (lane == 0) add_full[p] = v;
     }
   }
+  }
 
   // --- 写回 ---
   #pragma unroll
   for (int p=0;p<PACK;++p) {
     const int oc = oc_start + p;
     if (oc < OC) {
-      float vqsum = warp_reduce_sum_f32(psum[p]);
+      float vqsum = DO_RESIDUAL ? warp_reduce_sum_f32(psum[p]) : 0.f;
       if (lane == 0) {
         const float val = vqsum + add_base[p] + add_full[p];
         out_row[oc] = __float2half(val);
@@ -1490,18 +1512,106 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
 
   // ---- 调度 ----
   if (bit == 4) {
-    battn_v_kernel_with_base<4><<<blocks, threads, shmem>>>(
+    battn_v_kernel_with_base<4, ABLATION_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
       K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
     );
   } else if (bit == 2) {
-    battn_v_kernel_with_base<2><<<blocks, threads, shmem>>>(
+    battn_v_kernel_with_base<2, ABLATION_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
       K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
     );
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
   }
+  return _out;
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int bit,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full,
+    const int debug_mode
+){
+  TORCH_CHECK(debug_mode == ABLATION_FULL ||
+              debug_mode == ABLATION_RESIDUAL_ONLY ||
+              debug_mode == ABLATION_NO_CENTROID_HISTOGRAM ||
+              debug_mode == ABLATION_CENTROID_ONLY,
+              "Invalid debug_mode. Expected 0=FULL, 1=RESIDUAL_ONLY, 2=NO_CENTROID_HISTOGRAM, 3=CENTROID_ONLY.");
+  TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
+  const int BSnh = _alpha_q.size(0);
+  const int K    = _alpha_q.size(2);
+
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  const int OC   = _centroids.size(2);
+
+  TORCH_CHECK(_vq.dim()==3 && _vq.size(2)==K, "vq must be [B*nh_kv, OC/pack, K]");
+  const int PACK = 32 / bit;
+  TORCH_CHECK(_vq.size(1) * PACK == OC, "vq.pack mismatch: (OC/pack)*pack must equal OC");
+
+  TORCH_CHECK(_vscale.dim()==3 && _vzero.dim()==3, "scale/zero must be 3D [B*nh_kv, OC/group, K]");
+  const int Mcent = _centroids.size(1);
+
+  TORCH_CHECK(_mask_q.dim()==3 && _mask_q.size(2)==K && _mask_q.size(1)==nh_kv, "mask_q must be [B,nh_kv,K]");
+  TORCH_CHECK(_idx_q .dim()==3 && _idx_q .size(2)==K && _idx_q .size(1)==nh_kv, "idx_q must be [B,nh_kv,K]");
+
+  const int Lf = (_alpha_f.numel()==0 || _v_full.numel()==0) ? 0 : _alpha_f.size(1);
+  if (Lf > 0) {
+    TORCH_CHECK(_v_full.dim()==4 && _v_full.size(2)==Lf && _v_full.size(3)==OC, "v_full must be [B,nh_kv,Lf,OC]");
+  }
+
+  auto options = torch::TensorOptions().dtype(_alpha_q.dtype()).device(_alpha_q.device());
+  at::Tensor _out = torch::empty({BSnh, 1, OC}, options);
+
+  const half*      alpha_q = reinterpret_cast<const half*     >(_alpha_q.data_ptr<at::Half>());
+  const uint32_t*  vq      = reinterpret_cast<const uint32_t* >(_vq      .data_ptr<int>());
+  const half*      vsc     = reinterpret_cast<const half*     >(_vscale  .data_ptr<at::Half>());
+  const half*      vzr     = reinterpret_cast<const half*     >(_vzero   .data_ptr<at::Half>());
+  const half*      cent    = reinterpret_cast<const half*     >(_centroids.data_ptr<at::Half>());
+  const uint8_t*   mask    = reinterpret_cast<const uint8_t*  >(_mask_q  .data_ptr<uint8_t>());
+  const void*      idx     = static_cast<const void*>(_idx_q.data_ptr());
+  const half*      alpha_f = (_alpha_f.numel()==0) ? nullptr : reinterpret_cast<const half*>(_alpha_f.data_ptr<at::Half>());
+  const half*      v_full  = (_v_full .numel()==0) ? nullptr : reinterpret_cast<const half*>(_v_full .data_ptr<at::Half>());
+  half*            outp    = reinterpret_cast<half*>(_out.data_ptr<at::Half>());
+
+  dim3 threads(32, 4, 1);
+  dim3 blocks(BSnh, (OC / PACK + threads.y - 1) / threads.y, 1);
+  size_t shmem = (size_t)Mcent * sizeof(float);
+
+  const int idx_bytes =
+      (_idx_q.dtype() == torch::kUInt8) ? 1 :
+      (_idx_q.dtype() == torch::kInt16) ? 2 : 4;
+
+#define DISPATCH_V_ABLATION(BIT_VALUE, MODE_VALUE) \
+  battn_v_kernel_with_base<BIT_VALUE, MODE_VALUE><<<blocks, threads, shmem>>>( \
+    alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp, \
+    K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes)
+
+  if (bit == 4) {
+    if (debug_mode == ABLATION_FULL) DISPATCH_V_ABLATION(4, ABLATION_FULL);
+    else if (debug_mode == ABLATION_RESIDUAL_ONLY) DISPATCH_V_ABLATION(4, ABLATION_RESIDUAL_ONLY);
+    else if (debug_mode == ABLATION_NO_CENTROID_HISTOGRAM) DISPATCH_V_ABLATION(4, ABLATION_NO_CENTROID_HISTOGRAM);
+    else DISPATCH_V_ABLATION(4, ABLATION_CENTROID_ONLY);
+  } else if (bit == 2) {
+    if (debug_mode == ABLATION_FULL) DISPATCH_V_ABLATION(2, ABLATION_FULL);
+    else if (debug_mode == ABLATION_RESIDUAL_ONLY) DISPATCH_V_ABLATION(2, ABLATION_RESIDUAL_ONLY);
+    else if (debug_mode == ABLATION_NO_CENTROID_HISTOGRAM) DISPATCH_V_ABLATION(2, ABLATION_NO_CENTROID_HISTOGRAM);
+    else DISPATCH_V_ABLATION(2, ABLATION_CENTROID_ONLY);
+  } else {
+    TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
+  }
+
+#undef DISPATCH_V_ABLATION
   return _out;
 }
 

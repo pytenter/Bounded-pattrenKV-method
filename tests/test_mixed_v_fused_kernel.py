@@ -6,6 +6,7 @@ import torch
 from models.segmented_cache import dequantize_v_reference, pattern_gather_centroids, quantize_pack_v_reference
 from quant.matmul import (
     cuda_attn_v_fused_with_base,
+    cuda_attn_v_fused_with_base_debug,
     cuda_attn_v_mixed_fused_with_base,
     get_patternkv_mixed_v_counters,
     reset_patternkv_mixed_v_counters,
@@ -221,3 +222,156 @@ def test_mixed_v_fused_all_v4_matches_existing_fused_kernel():
         NH_KV,
     )
     _assert_close_with_metrics(fused, base)
+
+
+def test_full_mode_matches_existing_path():
+    data = _build_case("all_v2", 128)
+    p2 = data["p2"]
+    production = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    debug_full = cuda_attn_v_fused_with_base_debug(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+        debug_mode="FULL",
+    )
+    torch.testing.assert_close(debug_full, production, rtol=1e-5, atol=1e-5)
+
+
+def test_residual_only_debug_mode_not_default():
+    data = _build_case("all_v2", 128)
+    p2 = data["p2"]
+    production = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    residual_only = cuda_attn_v_fused_with_base_debug(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+        debug_mode="RESIDUAL_ONLY",
+    )
+    assert not torch.allclose(residual_only, production, rtol=1e-5, atol=1e-5)
+
+
+def test_centroid_debug_mode_not_default():
+    data = _build_case("all_v2", 128)
+    p2 = data["p2"]
+    production = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    centroid_only = cuda_attn_v_fused_with_base_debug(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+        debug_mode="CENTROID_ONLY",
+    )
+    assert not torch.allclose(centroid_only, production, rtol=1e-5, atol=1e-5)
+
+
+def test_invalid_debug_mode_rejected():
+    data = _build_case("all_v2", 128)
+    p2 = data["p2"]
+    with pytest.raises(ValueError):
+        cuda_attn_v_fused_with_base_debug(
+            GROUP_SIZE,
+            data["attn"],
+            p2[0],
+            p2[1],
+            p2[2],
+            2,
+            data["centroids"],
+            data["v_pattern_mask"],
+            data["v_idx"],
+            NH,
+            NH_KV,
+            debug_mode="NOT_A_MODE",
+        )
+
+
+def test_production_backend_unchanged_when_env_unset(monkeypatch):
+    data = _build_case("all_v2", 128)
+    p2 = data["p2"]
+    monkeypatch.delenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", raising=False)
+    baseline = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "CENTROID_ONLY")
+    env_ignored = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    torch.testing.assert_close(env_ignored, baseline, rtol=1e-5, atol=1e-5)

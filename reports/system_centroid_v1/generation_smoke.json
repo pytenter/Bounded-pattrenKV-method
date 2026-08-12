@@ -1,0 +1,10 @@
+{
+  "cuda_visible_devices": "5",
+  "generated_tokens": 128,
+  "max_new_tokens": 128,
+  "method_id": "CAUSAL_V4_25",
+  "output_prefix": "To compute 1 + 1, I start by identifying the two numbers involved, which are both 1.\n\nNext, I perform the addition operation by adding the two numbers together.\n\nFinally, I arrive at the sum, which is 2.\n</think>\n\nTo compute \\(1 + 1\\), follow these simple steps:\n\n1. **Identify the numbers to add:**\n",
+  "prompt_tokens": 37,
+  "status": "PASS",
+  "wall_seconds": 10.680381689919159
+}

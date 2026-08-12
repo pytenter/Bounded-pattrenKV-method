@@ -8,4 +8,5 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)
   m.def("gemv_forward_cuda_outer_dim", &gemv_forward_cuda_outer_dim);
   m.def("gemv_forward_cuda_outer_dim_with_base", &gemv_forward_cuda_outer_dim_with_base);
   m.def("attn_v_forward_cuda_outer_dim_with_base", &attn_v_forward_cuda_outer_dim_with_base);
+  m.def("attn_v_forward_cuda_outer_dim_with_base_debug", &attn_v_forward_cuda_outer_dim_with_base_debug);
 }

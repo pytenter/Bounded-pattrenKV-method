@@ -1,0 +1,204 @@
+{
+  "estimates": {
+    "16384/bit2": {
+      "centroid_overhead_estimate_us": 120.83200365304947,
+      "centroid_overhead_fraction": 0.5412844174487876,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    },
+    "16384/bit4": {
+      "centroid_overhead_estimate_us": 9.216003119945526,
+      "centroid_overhead_fraction": 0.09473687112847265,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    },
+    "32768/bit2": {
+      "centroid_overhead_estimate_us": 246.78398668766022,
+      "centroid_overhead_fraction": 0.5591647119493914,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    },
+    "32768/bit4": {
+      "centroid_overhead_estimate_us": 64.5119920372963,
+      "centroid_overhead_fraction": 0.3987341399085642,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    },
+    "8192/bit2": {
+      "centroid_overhead_estimate_us": 14.336004853248596,
+      "centroid_overhead_fraction": 0.1250000406024415,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    },
+    "8192/bit4": {
+      "centroid_overhead_estimate_us": 9.216003119945526,
+      "centroid_overhead_fraction": 0.09574471049507317,
+      "note": "NOT_STRICTLY_ADDITIVE_APPROXIMATE_ABLATION_COST"
+    }
+  },
+  "groups": {
+    "16384/bit2/CENTROID_ONLY": {
+      "round_cv": 0.002674703837998058,
+      "round_mean_us": 171.21280431747437,
+      "round_median_us": 171.00800573825836,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit2/FULL": {
+      "round_cv": 0.0020495439674622917,
+      "round_mean_us": 223.4367996454239,
+      "round_median_us": 223.23200106620789,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit2/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.0,
+      "round_mean_us": 102.39999741315842,
+      "round_median_us": 102.39999741315842,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit2/RESIDUAL_ONLY": {
+      "round_cv": 0.005499224473551398,
+      "round_mean_us": 101.99039727449417,
+      "round_median_us": 102.39999741315842,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit4/CENTROID_ONLY": {
+      "round_cv": 0.004673079744037957,
+      "round_mean_us": 97.99680337309837,
+      "round_median_us": 98.30400347709656,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit4/FULL": {
+      "round_cv": 0.0,
+      "round_mean_us": 97.28000313043594,
+      "round_median_us": 97.28000313043594,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit4/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.006339383588026028,
+      "round_mean_us": 88.47360014915466,
+      "round_median_us": 88.06400001049042,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "16384/bit4/RESIDUAL_ONLY": {
+      "round_cv": 0.010352170049625183,
+      "round_mean_us": 88.47360014915466,
+      "round_median_us": 88.06400001049042,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit2/CENTROID_ONLY": {
+      "round_cv": 0.0017256670637231305,
+      "round_mean_us": 325.0176012516022,
+      "round_median_us": 324.6079981327057,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit2/FULL": {
+      "round_cv": 0.0,
+      "round_mean_us": 441.3439929485321,
+      "round_median_us": 441.3439929485321,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit2/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.004722430233556196,
+      "round_mean_us": 193.9456045627594,
+      "round_median_us": 194.5600062608719,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit2/RESIDUAL_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 194.5600062608719,
+      "round_median_us": 194.5600062608719,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit4/CENTROID_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 125.95200538635254,
+      "round_median_us": 125.95200538635254,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit4/FULL": {
+      "round_cv": 0.0,
+      "round_mean_us": 161.79199516773224,
+      "round_median_us": 161.79199516773224,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit4/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.0,
+      "round_mean_us": 97.28000313043594,
+      "round_median_us": 97.28000313043594,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "32768/bit4/RESIDUAL_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 97.28000313043594,
+      "round_median_us": 97.28000313043594,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit2/CENTROID_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 97.28000313043594,
+      "round_median_us": 97.28000313043594,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit2/FULL": {
+      "round_cv": 0.0,
+      "round_mean_us": 114.68800157308578,
+      "round_median_us": 114.68800157308578,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit2/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.01473135599300148,
+      "round_mean_us": 98.30400049686432,
+      "round_median_us": 97.28000313043594,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit2/RESIDUAL_ONLY": {
+      "round_cv": 0.03662479436744749,
+      "round_mean_us": 101.58079862594604,
+      "round_median_us": 100.35199671983719,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit4/CENTROID_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 91.13600105047226,
+      "round_median_us": 91.13600105047226,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit4/FULL": {
+      "round_cv": 0.011567518116517224,
+      "round_mean_us": 96.9728022813797,
+      "round_median_us": 96.25600278377533,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit4/NO_CENTROID_HISTOGRAM": {
+      "round_cv": 0.005242834092455578,
+      "round_mean_us": 87.34719976782799,
+      "round_median_us": 87.0399996638298,
+      "rounds": 5,
+      "stability": "STABLE"
+    },
+    "8192/bit4/RESIDUAL_ONLY": {
+      "round_cv": 0.0,
+      "round_mean_us": 87.0399996638298,
+      "round_median_us": 87.0399996638298,
+      "rounds": 5,
+      "stability": "STABLE"
+    }
+  }
+}

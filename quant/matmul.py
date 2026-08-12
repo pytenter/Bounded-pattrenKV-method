@@ -437,6 +437,105 @@ def cuda_attn_v_fused_with_base(
     # return c
 
 
+_ATTN_V_DEBUG_MODES = {
+    "FULL": 0,
+    "RESIDUAL_ONLY": 1,
+    "NO_CENTROID_HISTOGRAM": 2,
+    "CENTROID_ONLY": 3,
+}
+
+
+def cuda_attn_v_fused_with_base_debug(
+    group_size: int,
+    attn_q: torch.Tensor,
+    vq: torch.Tensor,
+    v_scale: torch.Tensor,
+    v_zero: torch.Tensor,
+    bits: int,
+    v_centroids: torch.Tensor,
+    v_mask_q: torch.Tensor,
+    v_idx_q: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+    *,
+    debug_mode: str,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Benchmark-only Value attention ablation path.
+
+    Production callers should use cuda_attn_v_fused_with_base. This wrapper is
+    intentionally explicit so unset environment variables cannot affect the
+    frozen production path.
+    """
+    if debug_mode not in _ATTN_V_DEBUG_MODES:
+        valid = ", ".join(sorted(_ATTN_V_DEBUG_MODES))
+        raise ValueError(f"invalid debug_mode={debug_mode!r}; expected one of: {valid}")
+    assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
+    B, nh_in, _, K = attn_q.shape
+    assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
+    assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
+    OC = v_centroids.size(-1)
+
+    pack = 32 // bits
+    assert bits in (2, 4), f"bits must be 2/4, got {bits}"
+    assert vq.shape == (B, nh_kv, K, OC // pack), f"vq expected [B,{nh_kv},{K},{OC//pack}], got {vq.shape}"
+    assert vq.dtype in (torch.int32, torch.int), "vq must be int32"
+
+    group = group_size
+    assert (OC % group) == 0, f"OC({OC}) not divisible by group_size({group})"
+    assert v_scale.shape == (B, nh_kv, K, OC // group), f"v_scale shape mismatch: {v_scale.shape}"
+    assert v_zero.shape == (B, nh_kv, K, OC // group), f"v_zero shape mismatch: {v_zero.shape}"
+
+    attn_q = attn_q.to(torch.float16).contiguous()
+    v_centroids = v_centroids.to(torch.float16).contiguous()
+    v_scale = v_scale.to(torch.float16).contiguous()
+    v_zero = v_zero.to(torch.float16).contiguous()
+    if attn_f is not None:
+        attn_f = attn_f.to(torch.float16).contiguous()
+    if v_full is not None:
+        v_full = v_full.to(torch.float16).contiguous()
+
+    vq = vq.contiguous()
+    v_mask_q = v_mask_q.to(torch.uint8).contiguous()
+    if v_idx_q.dtype not in (torch.uint8, torch.int16, torch.int32):
+        v_idx_q = v_idx_q.to(torch.uint8 if v_centroids.size(1) <= 256 else torch.int16)
+    v_idx_q = v_idx_q.contiguous()
+
+    alpha_q = attn_q.view(-1, 1, K).contiguous()
+    vq_ = vq.reshape(-1, K, vq.shape[-1]).transpose(1, 2).contiguous()
+    flat_kv = B * nh_kv
+    v_scale_ = v_scale.view(flat_kv, v_scale.shape[-2], v_scale.shape[-1]).transpose(1, 2).contiguous()
+    v_zero_ = v_zero.view(flat_kv, v_zero.shape[-2], v_zero.shape[-1]).transpose(1, 2).contiguous()
+
+    if (attn_f is None) or (v_full is None):
+        alpha_f = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+        v_full_ = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+    else:
+        Lf = attn_f.shape[-1] if attn_f.size(-2) == 1 else attn_f.size(-2)
+        assert v_full.size(2) == Lf and v_full.size(-1) == OC, f"v_full shape mismatch: {v_full.shape}, Lf={Lf}, OC={OC}"
+        alpha_f = attn_f.view(-1, Lf).contiguous()
+        v_full_ = v_full.contiguous()
+
+    out16 = patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_debug(
+        alpha_q,
+        vq_,
+        v_scale_,
+        v_zero_,
+        int(bits),
+        int(group_size),
+        int(nh),
+        int(nh_kv),
+        v_centroids.contiguous(),
+        v_mask_q,
+        v_idx_q,
+        alpha_f,
+        v_full_,
+        int(_ATTN_V_DEBUG_MODES[debug_mode]),
+    )
+    return out16.view(B, nh, 1, OC)
+
+
 def cuda_attn_v_mixed_fused_with_base(
     group_size: int,
     attn_q: torch.Tensor,

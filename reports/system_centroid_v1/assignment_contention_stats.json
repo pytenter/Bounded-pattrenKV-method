@@ -1,0 +1,20 @@
+{
+  "RANDOM_UNIFORM": {
+    "active_assignments": 129024,
+    "centroid_count": 16,
+    "entropy": 3.9999184608459473,
+    "max_fraction": 0.06346106150793651,
+    "tokens_per_centroid_mean": 8064.0,
+    "top_centroid": 10,
+    "top_count": 8188
+  },
+  "SKEWED": {
+    "active_assignments": 129024,
+    "centroid_count": 16,
+    "entropy": 2.9539341926574707,
+    "max_fraction": 0.49986049107142855,
+    "tokens_per_centroid_mean": 8064.0,
+    "top_centroid": 0,
+    "top_count": 64494
+  }
+}
