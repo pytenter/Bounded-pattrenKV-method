@@ -1,0 +1,8 @@
+{
+  "decode_tokens": 128,
+  "device": "NVIDIA GeForce RTX 3090",
+  "page_size": 128,
+  "rounds": 5,
+  "torch_version": "2.4.1+cu124",
+  "warmup": 20
+}

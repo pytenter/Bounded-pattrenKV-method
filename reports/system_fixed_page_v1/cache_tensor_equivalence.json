@@ -1,0 +1,22 @@
+{
+  "all_passed": true,
+  "boundary_cases": [
+    127,
+    128,
+    129,
+    255,
+    256,
+    257
+  ],
+  "cache_tensor_equivalence": true,
+  "decode_output_correctness": "NOT_RUN_PAGE_NATIVE_READER_NOT_IMPLEMENTED",
+  "pattern_assignment_preserved": true,
+  "pattern_mask_preserved": true,
+  "recent_ring_flush": true,
+  "recent_ring_order": true,
+  "scale_zero_metadata_preserved": true,
+  "sink_preserved": true,
+  "v2_compact_order_preserved": true,
+  "v4_compact_order_preserved": true,
+  "v4_token_identity_preserved": true
+}

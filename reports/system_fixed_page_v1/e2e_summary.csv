@@ -1,0 +1,2 @@
+status,reason
+NOT_RUN,"S3-1 retained a storage-ABI milestone; page-native attention reader is not implemented, so E2E would materialize pages and was skipped."

@@ -38,6 +38,7 @@ class QuantizedKVCache:
     pack_count_v: int = 0
     cache_mode: str = "segmented_rolling"
     chunk_length: int = 128
+    cache_backend: str = "contiguous"
 
 
 @dataclass
@@ -65,6 +66,331 @@ class PatternQuantizedKVCache(QuantizedKVCache):
 
 CHUNKED_CACHE_MODE = "segmented_chunked"
 ROLLING_CACHE_MODE = "segmented_rolling"
+CONTIGUOUS_CACHE_BACKEND = "contiguous"
+FIXED_PAGE_CACHE_BACKEND = "paged"
+DEFAULT_PAGE_SIZE = 128
+
+
+@dataclass(frozen=True)
+class PageDescriptor:
+    stream: str
+    page_id: int
+    logical_start_token: int
+    valid_tokens: int
+    page_size: int
+    shape: tuple[int, ...]
+    dtype: str
+    device: str
+
+
+class FixedPageBuffer:
+    """Fixed-size page storage for one logical token stream.
+
+    The token dimension can differ by stream: FP16 K/V use dim=2, packed K uses
+    dim=3, compact V payload/metadata use dim=2, and precision masks use dim=1.
+    """
+
+    def __init__(self, *, stream: str, page_size: int = DEFAULT_PAGE_SIZE, token_dim: int = 2) -> None:
+        if page_size <= 0:
+            raise ValueError(f"page_size must be positive, got {page_size}")
+        self.stream = str(stream)
+        self.page_size = int(page_size)
+        self.token_dim = int(token_dim)
+        self.pages: list[torch.Tensor] = []
+        self.num_tokens = 0
+        self.page_allocations = 0
+        self.page_writes = 0
+        self.page_crossings = 0
+        self.new_bytes_written = 0
+        self.old_bytes_copied = 0
+
+    def logical_length(self) -> int:
+        return int(self.num_tokens)
+
+    def page_count(self) -> int:
+        return len(self.pages)
+
+    def last_page_fill(self) -> int:
+        if not self.pages:
+            return 0
+        rem = self.num_tokens % self.page_size
+        return self.page_size if rem == 0 else rem
+
+    def allocated_slots(self) -> int:
+        return self.page_count() * self.page_size
+
+    def valid_slots(self) -> int:
+        return self.logical_length()
+
+    def fragmentation_slots(self) -> int:
+        return max(self.allocated_slots() - self.valid_slots(), 0)
+
+    def fragmentation_bytes(self) -> int:
+        if not self.pages:
+            return 0
+        page = self.pages[0]
+        bytes_per_slot = page.numel() * page.element_size() // self.page_size
+        return self.fragmentation_slots() * bytes_per_slot
+
+    def _normalize_dim(self, dim: int, rank: int) -> int:
+        return dim if dim >= 0 else rank + dim
+
+    def _allocate_page_like(self, value: torch.Tensor) -> torch.Tensor:
+        token_dim = self._normalize_dim(self.token_dim, value.dim())
+        shape = list(value.shape)
+        shape[token_dim] = self.page_size
+        page = torch.empty(tuple(shape), dtype=value.dtype, device=value.device)
+        self.pages.append(page)
+        self.page_allocations += 1
+        return page
+
+    def append(self, value: torch.Tensor) -> None:
+        self.append_block(value)
+
+    def append_block(self, value: torch.Tensor) -> None:
+        if not torch.is_tensor(value):
+            raise TypeError("FixedPageBuffer.append_block expects a tensor")
+        token_dim = self._normalize_dim(self.token_dim, value.dim())
+        tokens = int(value.shape[token_dim])
+        if tokens == 0:
+            return
+        cursor = 0
+        while cursor < tokens:
+            page_id = self.num_tokens // self.page_size
+            offset = self.num_tokens % self.page_size
+            if page_id == len(self.pages):
+                self._allocate_page_like(value)
+            page = self.pages[page_id]
+            take = min(tokens - cursor, self.page_size - offset)
+            dst = page.narrow(token_dim, offset, take)
+            src = value.narrow(token_dim, cursor, take).contiguous()
+            dst.copy_(src)
+            self.page_writes += 1
+            self.new_bytes_written += tensor_bytes(src)
+            self.num_tokens += take
+            cursor += take
+            if cursor < tokens:
+                self.page_crossings += 1
+
+    def view_page(self, page_id: int) -> torch.Tensor:
+        return self.pages[int(page_id)]
+
+    def iterate_pages(self):
+        token_dim = self._normalize_dim(self.token_dim, self.pages[0].dim()) if self.pages else self.token_dim
+        for page_id, page in enumerate(self.pages):
+            valid = min(self.page_size, self.num_tokens - page_id * self.page_size)
+            if valid <= 0:
+                continue
+            yield page_id, page.narrow(token_dim, 0, valid)
+
+    def descriptors(self) -> list[PageDescriptor]:
+        out = []
+        for page_id, page in enumerate(self.pages):
+            valid = min(self.page_size, max(self.num_tokens - page_id * self.page_size, 0))
+            out.append(
+                PageDescriptor(
+                    stream=self.stream,
+                    page_id=page_id,
+                    logical_start_token=page_id * self.page_size,
+                    valid_tokens=valid,
+                    page_size=self.page_size,
+                    shape=tuple(page.shape),
+                    dtype=str(page.dtype),
+                    device=str(page.device),
+                )
+            )
+        return out
+
+    def materialize_contiguous(self) -> torch.Tensor | None:
+        parts = [part for _page_id, part in self.iterate_pages()]
+        if not parts:
+            return None
+        token_dim = self._normalize_dim(self.token_dim, parts[0].dim())
+        return torch.cat(parts, dim=token_dim).contiguous()
+
+    def stats(self) -> dict[str, int | str]:
+        return {
+            "stream": self.stream,
+            "page_size": self.page_size,
+            "tokens": self.logical_length(),
+            "page_count": self.page_count(),
+            "last_page_fill": self.last_page_fill(),
+            "page_allocations": self.page_allocations,
+            "page_writes": self.page_writes,
+            "page_crossings": self.page_crossings,
+            "old_bytes_copied": self.old_bytes_copied,
+            "new_bytes_written": self.new_bytes_written,
+            "allocated_slots": self.allocated_slots(),
+            "valid_slots": self.valid_slots(),
+            "fragmentation_slots": self.fragmentation_slots(),
+            "fragmentation_bytes": self.fragmentation_bytes(),
+        }
+
+
+class RecentRingBuffer:
+    """Fixed-capacity recent window with logical oldest-to-newest materialization."""
+
+    def __init__(self, *, capacity: int = DEFAULT_PAGE_SIZE, token_dim: int = 2, stream: str = "recent") -> None:
+        if capacity <= 0:
+            raise ValueError(f"capacity must be positive, got {capacity}")
+        self.capacity = int(capacity)
+        self.token_dim = int(token_dim)
+        self.stream = str(stream)
+        self.buffer: torch.Tensor | None = None
+        self.start = 0
+        self.length = 0
+        self.page_writes = 0
+        self.rollover_count = 0
+        self.old_bytes_copied = 0
+        self.new_bytes_written = 0
+
+    def _normalize_dim(self, dim: int, rank: int) -> int:
+        return dim if dim >= 0 else rank + dim
+
+    def _allocate_like(self, value: torch.Tensor) -> None:
+        token_dim = self._normalize_dim(self.token_dim, value.dim())
+        shape = list(value.shape)
+        shape[token_dim] = self.capacity
+        self.buffer = torch.empty(tuple(shape), dtype=value.dtype, device=value.device)
+
+    def _read_logical(self, start: int, tokens: int) -> torch.Tensor | None:
+        if self.buffer is None or tokens <= 0:
+            return None
+        token_dim = self._normalize_dim(self.token_dim, self.buffer.dim())
+        logical_start = (self.start + int(start)) % self.capacity
+        first = min(tokens, self.capacity - logical_start)
+        parts = [self.buffer.narrow(token_dim, logical_start, first)]
+        remain = tokens - first
+        if remain:
+            parts.append(self.buffer.narrow(token_dim, 0, remain))
+        return torch.cat(parts, dim=token_dim).contiguous() if len(parts) > 1 else parts[0].contiguous()
+
+    def _write_at(self, offset: int, value: torch.Tensor) -> None:
+        if self.buffer is None:
+            self._allocate_like(value)
+        assert self.buffer is not None
+        token_dim = self._normalize_dim(self.token_dim, self.buffer.dim())
+        tokens = int(value.shape[token_dim])
+        first = min(tokens, self.capacity - offset)
+        self.buffer.narrow(token_dim, offset, first).copy_(value.narrow(token_dim, 0, first).contiguous())
+        if tokens > first:
+            self.buffer.narrow(token_dim, 0, tokens - first).copy_(value.narrow(token_dim, first, tokens - first).contiguous())
+        self.page_writes += 1
+        self.new_bytes_written += tensor_bytes(value)
+
+    def append(self, value: torch.Tensor) -> torch.Tensor | None:
+        return self.append_block(value)
+
+    def append_block(self, value: torch.Tensor) -> torch.Tensor | None:
+        if not torch.is_tensor(value):
+            raise TypeError("RecentRingBuffer.append_block expects a tensor")
+        token_dim = self._normalize_dim(self.token_dim, value.dim())
+        tokens = int(value.shape[token_dim])
+        if tokens == 0:
+            return None
+        if self.buffer is None:
+            self._allocate_like(value)
+        overflow_parts = []
+        if tokens >= self.capacity:
+            old = self.materialize_contiguous()
+            if old is not None:
+                overflow_parts.append(old)
+            prefix = tokens - self.capacity
+            if prefix:
+                overflow_parts.append(value.narrow(token_dim, 0, prefix).contiguous())
+            keep = value.narrow(token_dim, prefix, self.capacity).contiguous()
+            self.start = 0
+            self.length = self.capacity
+            self._write_at(0, keep)
+            self.rollover_count += 1
+        else:
+            overflow = max(self.length + tokens - self.capacity, 0)
+            if overflow:
+                old = self._read_logical(0, overflow)
+                if old is not None:
+                    overflow_parts.append(old)
+                    self.old_bytes_copied += tensor_bytes(old)
+                self.start = (self.start + overflow) % self.capacity
+                self.length -= overflow
+                self.rollover_count += 1
+            write_offset = (self.start + self.length) % self.capacity
+            self._write_at(write_offset, value.contiguous())
+            self.length += tokens
+        if not overflow_parts:
+            return None
+        return torch.cat(overflow_parts, dim=token_dim).contiguous() if len(overflow_parts) > 1 else overflow_parts[0]
+
+    def logical_length(self) -> int:
+        return int(self.length)
+
+    def materialize_contiguous(self) -> torch.Tensor | None:
+        return self._read_logical(0, self.length)
+
+    def stats(self) -> dict[str, int | str]:
+        return {
+            "stream": self.stream,
+            "capacity": self.capacity,
+            "tokens": self.logical_length(),
+            "page_writes": self.page_writes,
+            "rollover_count": self.rollover_count,
+            "old_bytes_copied": self.old_bytes_copied,
+            "new_bytes_written": self.new_bytes_written,
+        }
+
+
+class FixedPageCacheStorage:
+    """Descriptor-oriented fixed-page storage for PatternKV cache streams."""
+
+    DEFAULT_TOKEN_DIMS = {
+        "packed_k": 3,
+        "packed_k_scale": 3,
+        "packed_k_zero": 3,
+        "packed_v": 2,
+        "packed_v_scale": 2,
+        "packed_v_zero": 2,
+        "packed_v4": 2,
+        "packed_v4_scale": 2,
+        "packed_v4_zero": 2,
+        "v_precision_mask": 1,
+        "k_assignments": 2,
+        "v_pattern_mask": 2,
+        "v_assignment_idx": 2,
+    }
+
+    def __init__(self, *, page_size: int = DEFAULT_PAGE_SIZE) -> None:
+        self.page_size = int(page_size)
+        self.buffers: dict[str, FixedPageBuffer] = {}
+
+    def buffer(self, stream: str, *, token_dim: int | None = None) -> FixedPageBuffer:
+        if stream not in self.buffers:
+            dim = self.DEFAULT_TOKEN_DIMS.get(stream, 2) if token_dim is None else int(token_dim)
+            self.buffers[stream] = FixedPageBuffer(stream=stream, page_size=self.page_size, token_dim=dim)
+        return self.buffers[stream]
+
+    def append_stream(self, stream: str, value: torch.Tensor, *, token_dim: int | None = None) -> None:
+        self.buffer(stream, token_dim=token_dim).append_block(value)
+
+    def materialize(self, stream: str) -> torch.Tensor | None:
+        buf = self.buffers.get(stream)
+        return None if buf is None else buf.materialize_contiguous()
+
+    def descriptors(self) -> list[PageDescriptor]:
+        out: list[PageDescriptor] = []
+        for stream in sorted(self.buffers):
+            out.extend(self.buffers[stream].descriptors())
+        return out
+
+    def stats(self) -> list[dict[str, int | str]]:
+        return [self.buffers[stream].stats() for stream in sorted(self.buffers)]
+
+
+def normalize_cache_backend(cache_backend: str | None) -> str:
+    backend = str(cache_backend or os.environ.get("PATTERNKV_CACHE_BACKEND", CONTIGUOUS_CACHE_BACKEND)).strip().lower()
+    aliases = {"fixed_page": FIXED_PAGE_CACHE_BACKEND, "page": FIXED_PAGE_CACHE_BACKEND}
+    backend = aliases.get(backend, backend)
+    if backend not in (CONTIGUOUS_CACHE_BACKEND, FIXED_PAGE_CACHE_BACKEND):
+        raise ValueError("PATTERNKV_CACHE_BACKEND must be 'contiguous' or 'paged'")
+    return backend
 
 
 def normalize_cache_mode(cache_mode: str | None) -> str:
