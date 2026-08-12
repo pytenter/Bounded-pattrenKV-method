@@ -1,5 +1,6 @@
 import torch
 # import ipdb
+import os
 import random
 import sys
 from pathlib import Path
@@ -16,6 +17,8 @@ _MIXED_V_COUNTERS = {
 	"v2_tokens_processed": 0,
 	"v4_tokens_processed": 0,
 	"fused_temp_bytes": 0,
+	"gqa_v2_calls": 0,
+	"gqa_v2_fallbacks": 0,
 }
 
 
@@ -35,6 +38,13 @@ def record_mixed_v_reference_call(tokens: int = 0) -> None:
 
 def _tensor_bytes(value: torch.Tensor | None) -> int:
 	return 0 if value is None else int(value.numel() * value.element_size())
+
+
+def patternkv_gqa_v_backend() -> str:
+	backend = os.environ.get("PATTERNKV_GQA_V_BACKEND", "baseline").strip().lower()
+	if backend not in {"baseline", "gqa"}:
+		raise ValueError("PATTERNKV_GQA_V_BACKEND must be 'baseline' or 'gqa'")
+	return backend
 
 
 @triton.jit
@@ -437,6 +447,122 @@ def cuda_attn_v_fused_with_base(
     # return c
 
 
+def _supports_gqa_v2_kernel(
+    *,
+    group_size: int,
+    bits: int,
+    attn_q: torch.Tensor,
+    v_centroids: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+) -> bool:
+    if bits != 2 or nh_kv <= 0 or nh % nh_kv != 0 or (nh // nh_kv) != 4:
+        return False
+    if attn_q.dim() != 4 or attn_q.size(0) < 1 or attn_q.size(1) != nh:
+        return False
+    if group_size != 128:
+        return False
+    return bool(v_centroids.dim() == 3 and v_centroids.size(-1) == 128)
+
+
+def cuda_attn_v_fused_with_base_gqa_v2(
+    group_size: int,
+    attn_q: torch.Tensor,
+    vq: torch.Tensor,
+    v_scale: torch.Tensor,
+    v_zero: torch.Tensor,
+    bits: int,
+    v_centroids: torch.Tensor,
+    v_mask_q: torch.Tensor,
+    v_idx_q: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Experimental S2B-3 V2 GQA backend with safe production fallback."""
+    if not _supports_gqa_v2_kernel(
+        group_size=group_size,
+        bits=bits,
+        attn_q=attn_q,
+        v_centroids=v_centroids,
+        nh=nh,
+        nh_kv=nh_kv,
+    ):
+        _MIXED_V_COUNTERS["gqa_v2_fallbacks"] += 1
+        return cuda_attn_v_fused_with_base(
+            group_size,
+            attn_q,
+            vq,
+            v_scale,
+            v_zero,
+            bits,
+            v_centroids,
+            v_mask_q,
+            v_idx_q,
+            nh,
+            nh_kv,
+            attn_f=attn_f,
+            v_full=v_full,
+        )
+
+    assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
+    B, nh_in, _, K = attn_q.shape
+    assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
+    OC = v_centroids.size(-1)
+    pack = 16
+    assert vq.shape == (B, nh_kv, K, OC // pack), f"vq expected [B,{nh_kv},{K},{OC//pack}], got {vq.shape}"
+    assert vq.dtype in (torch.int32, torch.int), "vq must be int32"
+    assert v_scale.shape == (B, nh_kv, K, OC // group_size), f"v_scale shape mismatch: {v_scale.shape}"
+    assert v_zero.shape == (B, nh_kv, K, OC // group_size), f"v_zero shape mismatch: {v_zero.shape}"
+
+    attn_q = attn_q.to(torch.float16).contiguous()
+    v_centroids = v_centroids.to(torch.float16).contiguous()
+    v_scale = v_scale.to(torch.float16).contiguous()
+    v_zero = v_zero.to(torch.float16).contiguous()
+    if attn_f is not None:
+        attn_f = attn_f.to(torch.float16).contiguous()
+    if v_full is not None:
+        v_full = v_full.to(torch.float16).contiguous()
+    vq = vq.contiguous()
+    v_mask_q = v_mask_q.to(torch.uint8).contiguous()
+    if v_idx_q.dtype not in (torch.uint8, torch.int16, torch.int32):
+        v_idx_q = v_idx_q.to(torch.uint8 if v_centroids.size(1) <= 256 else torch.int16)
+    v_idx_q = v_idx_q.contiguous()
+
+    alpha_q = attn_q.view(-1, 1, K).contiguous()
+    vq_ = vq.reshape(-1, K, vq.shape[-1]).transpose(1, 2).contiguous()
+    flat_kv = B * nh_kv
+    v_scale_ = v_scale.view(flat_kv, v_scale.shape[-2], v_scale.shape[-1]).transpose(1, 2).contiguous()
+    v_zero_ = v_zero.view(flat_kv, v_zero.shape[-2], v_zero.shape[-1]).transpose(1, 2).contiguous()
+
+    if (attn_f is None) or (v_full is None):
+        alpha_f = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+        v_full_ = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+    else:
+        Lf = attn_f.shape[-1] if attn_f.size(-2) == 1 else attn_f.size(-2)
+        assert v_full.size(2) == Lf and v_full.size(-1) == OC, f"v_full shape mismatch: {v_full.shape}, Lf={Lf}, OC={OC}"
+        alpha_f = attn_f.view(-1, Lf).contiguous()
+        v_full_ = v_full.contiguous()
+
+    _MIXED_V_COUNTERS["gqa_v2_calls"] += 1
+    out16 = patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
+        alpha_q,
+        vq_,
+        v_scale_,
+        v_zero_,
+        int(group_size),
+        int(nh),
+        int(nh_kv),
+        v_centroids.contiguous(),
+        v_mask_q,
+        v_idx_q,
+        alpha_f,
+        v_full_,
+    )
+    return out16.view(B, nh, 1, OC)
+
+
 _ATTN_V_DEBUG_MODES = {
     "FULL": 0,
     "RESIDUAL_ONLY": 1,
@@ -625,6 +751,7 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
         high_mask = mask
         v2_tokens = int(low_mask.sum().item())
         v4_tokens = int(high_mask.sum().item())
+        gqa_backend = patternkv_gqa_v_backend()
     if v2_tokens + v4_tokens != total_tokens:
         raise RuntimeError("precision mask token count mismatch")
 
@@ -649,7 +776,8 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
         record_temp_allocation("mixed_v_idx2_compact", idx2)
         _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn2) + _tensor_bytes(mask2) + _tensor_bytes(idx2)
         with profile_range("mixed_v_v2_compute", tokens=v2_tokens):
-            out = cuda_attn_v_fused_with_base(
+            v2_fn = cuda_attn_v_fused_with_base_gqa_v2 if gqa_backend == "gqa" else cuda_attn_v_fused_with_base
+            out = v2_fn(
                 group_size,
                 attn2,
                 vq2,

@@ -7,8 +7,10 @@ from models.segmented_cache import dequantize_v_reference, pattern_gather_centro
 from quant.matmul import (
     cuda_attn_v_fused_with_base,
     cuda_attn_v_fused_with_base_debug,
+    cuda_attn_v_fused_with_base_gqa_v2,
     cuda_attn_v_mixed_fused_with_base,
     get_patternkv_mixed_v_counters,
+    patternkv_gqa_v_backend,
     reset_patternkv_mixed_v_counters,
 )
 
@@ -525,3 +527,158 @@ def test_production_mode_unchanged_when_debug_disabled(monkeypatch):
     monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "NO_TABLE_CONTRIBUTION")
     env_ignored = _single_lane_output(data, bit=2)
     torch.testing.assert_close(env_ignored, production, rtol=1e-5, atol=1e-5)
+
+
+def _gqa_candidate_output(data, *, nh: int = NH, nh_kv: int = NH_KV):
+    precision = data["precision"][0].bool()
+    token_mask = ~precision
+    p2 = data["p2"]
+    return cuda_attn_v_fused_with_base_gqa_v2(
+        GROUP_SIZE,
+        data["attn"][:, :nh, :, token_mask].contiguous(),
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"][:, :, token_mask].contiguous(),
+        data["v_idx"][:, :, token_mask].contiguous(),
+        nh,
+        nh_kv,
+    )
+
+
+def _gqa_baseline_output(data, *, nh: int = NH, nh_kv: int = NH_KV):
+    precision = data["precision"][0].bool()
+    token_mask = ~precision
+    p2 = data["p2"]
+    return cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"][:, :nh, :, token_mask].contiguous(),
+        p2[0],
+        p2[1],
+        p2[2],
+        2,
+        data["centroids"],
+        data["v_pattern_mask"][:, :, token_mask].contiguous(),
+        data["v_idx"][:, :, token_mask].contiguous(),
+        nh,
+        nh_kv,
+    )
+
+
+def test_gqa_qhead_to_kvhead_mapping():
+    device = torch.device("cuda")
+    tokens = 128
+    precision = torch.zeros(1, tokens, dtype=torch.bool, device=device)
+    values = torch.zeros(1, NH_KV, tokens, HEAD_DIM, device=device, dtype=torch.float16)
+    p2 = quantize_pack_v_reference(values, GROUP_SIZE, 2)
+    centroids = torch.zeros(NH_KV, CENTROIDS, HEAD_DIM, device=device, dtype=torch.float16)
+    for hk in range(NH_KV):
+        centroids[hk, 0, :].fill_(float(hk + 1))
+    data = {
+        "precision": precision,
+        "attn": torch.full((1, NH, 1, tokens), 1.0 / tokens, device=device, dtype=torch.float16),
+        "p2": p2,
+        "centroids": centroids,
+        "v_pattern_mask": torch.ones(1, NH_KV, tokens, device=device, dtype=torch.uint8),
+        "v_idx": torch.zeros(1, NH_KV, tokens, device=device, dtype=torch.int64),
+    }
+    out = _gqa_candidate_output(data)
+    for hq in range(NH):
+        hk = hq // 4
+        torch.testing.assert_close(out[0, hq, 0], torch.full((HEAD_DIM,), float(hk + 1), device=device, dtype=torch.float16))
+
+
+def test_gqa_ratio4_v2_matches_baseline():
+    data = _build_case("all_v2", 512)
+    torch.testing.assert_close(_gqa_candidate_output(data), _gqa_baseline_output(data), rtol=1e-5, atol=1e-5)
+
+
+def test_gqa_ratio1_fallback():
+    data = _build_case("all_v2", 256)
+    candidate = _gqa_candidate_output(data, nh=8, nh_kv=8)
+    baseline = _gqa_baseline_output(data, nh=8, nh_kv=8)
+    torch.testing.assert_close(candidate, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_gqa_ratio2_if_supported():
+    data = _build_case("all_v2", 256)
+    candidate = _gqa_candidate_output(data, nh=16, nh_kv=8)
+    baseline = _gqa_baseline_output(data, nh=16, nh_kv=8)
+    torch.testing.assert_close(candidate, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_all_same_centroid_gqa():
+    data = _build_case("all_v2", 256)
+    data["v_idx"].zero_()
+    data["v_pattern_mask"].fill_(1)
+    torch.testing.assert_close(_gqa_candidate_output(data), _gqa_baseline_output(data), rtol=1e-5, atol=1e-5)
+
+
+def test_skewed_assignment_gqa():
+    data = _build_case("all_v2", 256)
+    skew = torch.rand_like(data["v_idx"].float()) < 0.75
+    data["v_idx"] = torch.randint(1, CENTROIDS, data["v_idx"].shape, device="cuda", dtype=torch.int64)
+    data["v_idx"][skew] = 0
+    data["v_pattern_mask"].fill_(1)
+    torch.testing.assert_close(_gqa_candidate_output(data), _gqa_baseline_output(data), rtol=1e-5, atol=1e-5)
+
+
+def test_mask_zero_gqa():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].zero_()
+    torch.testing.assert_close(_gqa_candidate_output(data), _gqa_baseline_output(data), rtol=1e-5, atol=1e-5)
+
+
+def test_mask_full_gqa():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].fill_(1)
+    torch.testing.assert_close(_gqa_candidate_output(data), _gqa_baseline_output(data), rtol=1e-5, atol=1e-5)
+
+
+def test_per_warp_histogram_preserved():
+    data = _build_case("all_v2", 256)
+    candidate = _gqa_candidate_output(data)
+    baseline = _gqa_baseline_output(data)
+    torch.testing.assert_close(candidate, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_lane0_table_contribution_preserved():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].fill_(1)
+    candidate = _gqa_candidate_output(data)
+    baseline = _gqa_baseline_output(data)
+    torch.testing.assert_close(candidate, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_v4_baseline_unchanged(monkeypatch):
+    data = _build_case("all_v4", 256)
+    monkeypatch.setenv("PATTERNKV_GQA_V_BACKEND", "gqa")
+    fused = _mixed_output(data)
+    p4 = data["p4"]
+    baseline = cuda_attn_v_fused_with_base(
+        GROUP_SIZE,
+        data["attn"],
+        p4[0],
+        p4[1],
+        p4[2],
+        4,
+        data["centroids"],
+        data["v_pattern_mask"],
+        data["v_idx"],
+        NH,
+        NH_KV,
+    )
+    _assert_close_with_metrics(fused, baseline)
+
+
+def test_default_backend_is_safe(monkeypatch):
+    monkeypatch.delenv("PATTERNKV_GQA_V_BACKEND", raising=False)
+    assert patternkv_gqa_v_backend() == "baseline"
+    data = _build_case("mixed25", 256)
+    reset_patternkv_mixed_v_counters()
+    _mixed_output(data)
+    counters = get_patternkv_mixed_v_counters()
+    assert counters["gqa_v2_calls"] == 0
+    assert counters["gqa_v2_fallbacks"] == 0

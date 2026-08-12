@@ -1,0 +1,10 @@
+candidate,tile_tokens,implemented,tested,reason
+gqa4_cta,128,YES,YES,
+gqa4_cta,64,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.
+gqa4_cta,256,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.
+gqa4_cta,128,YES,YES,
+gqa4_cta,64,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.
+gqa4_cta,256,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.
+gqa4_cta,128,YES,YES,
+gqa4_cta,64,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.
+gqa4_cta,256,NO,NO,Tile sweep stopped after 128-token candidate regressed strongly.

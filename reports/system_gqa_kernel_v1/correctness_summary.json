@@ -1,0 +1,10 @@
+{
+  "all_passed": true,
+  "case_count": 48,
+  "cosine_similarity_min": 0.9999998807907104,
+  "inf_count": 0,
+  "max_abs_error": 3.0517578125e-05,
+  "mean_abs_error_max": 7.596099749207497e-09,
+  "nan_count": 0,
+  "relative_l2_max": 2.7791562388301827e-05
+}

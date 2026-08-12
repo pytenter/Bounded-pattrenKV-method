@@ -1,0 +1,4 @@
+context_tokens,v2_tokens,baseline_estimated_bytes_per_kv_group,ideal_reuse_estimated_bytes_per_kv_group,theoretical_byte_reduction_fraction,theoretical_duplicate_factor,actual_reuse_factor
+8192,5952,1635328,408832,0.75,4,4-way staged per CTA for V2 shared data
+16384,12096,3306496,826624,0.75,4,4-way staged per CTA for V2 shared data
+32768,24384,6648832,1662208,0.75,4,4-way staged per CTA for V2 shared data

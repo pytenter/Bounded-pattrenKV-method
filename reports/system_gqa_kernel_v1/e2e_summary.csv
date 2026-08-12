@@ -1,0 +1,2 @@
+status,reason
+NOT_RUN,"GQA V2 candidate failed the microbench and mixed-V performance gates, so E2E was skipped by policy."

@@ -84,3 +84,21 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
     torch::Tensor _v_full,
     const int debug_mode
 );
+
+// Experimental S2B-3 V2-only GQA backend. Production remains
+// attn_v_forward_cuda_outer_dim_with_base unless explicitly selected by the
+// Python benchmark/backend switch.
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+);

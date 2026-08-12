@@ -1511,6 +1511,221 @@ __global__ void battn_v_kernel_with_base(
   }
 }
 
+__device__ __forceinline__ int load_idx_runtime(const char* base, int t, int idx_bytes) {
+  if (idx_bytes == 1) return int(*((const uint8_t*)(base + t)));
+  if (idx_bytes == 2) return int(*((const uint16_t*)(base + (size_t)t * 2)));
+  return int(*((const int32_t*)(base + (size_t)t * 4)));
+}
+
+template<int TILE>
+__global__ void battn_v_kernel_gqa4_v2_with_base(
+  const half*      __restrict__ _alpha_q,   // [B*nh, K]
+  const uint32_t*  __restrict__ _vq_lin,    // [B*nh_kv, (OC/16)*K]
+  const half*      __restrict__ _vscale_lin,// [B*nh_kv, (OC/group)*K]
+  const half*      __restrict__ _vzero_lin, // [B*nh_kv, (OC/group)*K]
+  const half*      __restrict__ _centroids, // [nh_kv, Mcent, OC]
+  const uint8_t*   __restrict__ _mask_q,    // [B, nh_kv, K]
+  const void*      __restrict__ _idx_q,     // [B, nh_kv, K]
+  const half*      __restrict__ _alpha_f,   // [B*nh, Lf]
+  const half*      __restrict__ _v_full,    // [B, nh_kv, Lf, OC]
+  half*            __restrict__ _out,       // [B*nh, OC]
+  const int K, const int OC, const int Lf,
+  const int group_size, const int nh, const int nh_kv,
+  const int Mcent, const int idx_bytes)
+{
+  constexpr int PACK = 16;
+  constexpr int RATIO = 4;
+  const uint32_t CODE_MASK = 3u;
+
+  const int lane = threadIdx.x;
+  const int wy = threadIdx.y;
+  const int qslot = threadIdx.z;
+  const int tile_oc = blockDim.y * PACK;
+  const int packed_oc_idx = blockIdx.y * blockDim.y + wy;
+  const int oc_start = packed_oc_idx * PACK;
+  if (oc_start >= OC) return;
+
+  const int bkv = blockIdx.x;
+  const int b = bkv / nh_kv;
+  const int hk = bkv % nh_kv;
+  const int hq = hk * RATIO + qslot;
+  const int bnh = b * nh + hq;
+
+  const half* alpha_q = _alpha_q + (size_t)bnh * K;
+  half* out_row = _out + (size_t)bnh * OC;
+
+  const uint32_t* vq_base = _vq_lin + (size_t)bkv * (size_t)(OC / PACK) * K;
+  const half* vsc_base = _vscale_lin + (size_t)bkv * (size_t)(OC / group_size) * K;
+  const half* vzr_base = _vzero_lin + (size_t)bkv * (size_t)(OC / group_size) * K;
+  const half* C = _centroids + (size_t)hk * (size_t)Mcent * OC;
+  const uint8_t* mask_row = _mask_q + (size_t)bkv * K;
+  const char* idx_row = reinterpret_cast<const char*>(_idx_q) + (size_t)bkv * (size_t)K * idx_bytes;
+
+  extern __shared__ __align__(16) unsigned char smem[];
+  size_t off = 0;
+  float* s_Sacc = reinterpret_cast<float*>(smem + off);
+  off += (size_t)RATIO * blockDim.y * Mcent * sizeof(float);
+  uint32_t* s_vq = reinterpret_cast<uint32_t*>(smem + off);
+  off += (size_t)blockDim.y * TILE * sizeof(uint32_t);
+  half* s_scale = reinterpret_cast<half*>(smem + off);
+  off += (size_t)blockDim.y * TILE * sizeof(half);
+  half* s_zero = reinterpret_cast<half*>(smem + off);
+  off += (size_t)blockDim.y * TILE * sizeof(half);
+  int* s_mask = reinterpret_cast<int*>(smem + off);
+  off += (size_t)TILE * sizeof(int);
+  int* s_idx = reinterpret_cast<int*>(smem + off);
+  off += (size_t)TILE * sizeof(int);
+  half* s_cent = reinterpret_cast<half*>(smem + off);
+
+  const int hist_elems = RATIO * blockDim.y * Mcent;
+  for (int i = ((qslot * blockDim.y + wy) * blockDim.x + lane);
+       i < hist_elems;
+       i += blockDim.x * blockDim.y * blockDim.z) {
+    s_Sacc[i] = 0.f;
+  }
+  __syncthreads();
+
+  float psum[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) psum[p] = 0.f;
+
+  const int oc_group = oc_start / group_size;
+  const int kt_count = (K + TILE - 1) / TILE;
+  for (int kt = 0; kt < kt_count; ++kt) {
+    const int base_t = kt * TILE;
+    if (qslot == 0) {
+      for (int e = lane; e < TILE; e += blockDim.x) {
+        const int t = base_t + e;
+        uint32_t qw = 0;
+        half sc = __float2half(0.f);
+        half zr = __float2half(0.f);
+        if (t < K) {
+          qw = __ldg(vq_base + (size_t)packed_oc_idx * K + t);
+          sc = __ldg(vsc_base + (size_t)oc_group * K + t);
+          zr = __ldg(vzr_base + (size_t)oc_group * K + t);
+        }
+        s_vq[wy * TILE + e] = qw;
+        s_scale[wy * TILE + e] = sc;
+        s_zero[wy * TILE + e] = zr;
+      }
+      if (wy == 0) {
+        for (int e = lane; e < TILE; e += blockDim.x) {
+          const int t = base_t + e;
+          int m = 0;
+          int idx = 0;
+          if (t < K) {
+            m = int(__ldg(mask_row + t));
+            idx = load_idx_runtime(idx_row, t, idx_bytes);
+          }
+          s_mask[e] = m;
+          s_idx[e] = idx;
+        }
+      }
+    }
+    __syncthreads();
+
+    for (int e = lane; e < TILE; e += blockDim.x) {
+      const int t = base_t + e;
+      if (t < K) {
+        const float a = __half2float(__ldg(alpha_q + t));
+        uint32_t cur = s_vq[wy * TILE + e];
+        const float sc = __half2float(s_scale[wy * TILE + e]);
+        const float zr = __half2float(s_zero[wy * TILE + e]);
+        #pragma unroll
+        for (int p = 0; p < PACK; ++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) {
+            const float code = float(cur & CODE_MASK);
+            psum[p] += (sc * code + zr) * a;
+          }
+          cur >>= 2;
+        }
+      }
+    }
+
+    const int hist_e = wy * blockDim.x + lane;
+    if (hist_e < TILE) {
+      const int t = base_t + hist_e;
+      if (t < K && s_mask[hist_e]) {
+        const int idx = s_idx[hist_e];
+        if (0 <= idx && idx < Mcent) {
+          const float mass = __half2float(__ldg(alpha_q + t));
+          atomicAdd(&s_Sacc[(qslot * blockDim.y + wy) * Mcent + idx], mass);
+        }
+      }
+    }
+    __syncthreads();
+  }
+
+  if (qslot == 0) {
+    const int cent_elems = Mcent * tile_oc;
+    for (int i = wy * blockDim.x + lane; i < cent_elems; i += blockDim.x * blockDim.y) {
+      const int c = i / tile_oc;
+      const int oc_delta = i - c * tile_oc;
+      const int oc = blockIdx.y * tile_oc + oc_delta;
+      s_cent[i] = (oc < OC) ? __ldg(C + (size_t)c * OC + oc) : __float2half(0.f);
+    }
+  }
+  __syncthreads();
+
+  float add_base[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) add_base[p] = 0.f;
+
+  if (lane == 0) {
+    for (int c = 0; c < Mcent; ++c) {
+      float s = 0.f;
+      #pragma unroll
+      for (int w = 0; w < 4; ++w) {
+        s += s_Sacc[(qslot * blockDim.y + w) * Mcent + c];
+      }
+      if (s != 0.f) {
+        const half* crow = s_cent + c * tile_oc + wy * PACK;
+        #pragma unroll
+        for (int p = 0; p < PACK; ++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) add_base[p] += s * __half2float(crow[p]);
+        }
+      }
+    }
+  }
+
+  float add_full[PACK];
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) add_full[p] = 0.f;
+
+  if (Lf > 0 && _alpha_f && _v_full) {
+    const half* aF = _alpha_f + (size_t)bnh * Lf;
+    const half* vF = _v_full + (size_t)bkv * (size_t)Lf * OC;
+    for (int t = lane; t < Lf; t += blockDim.x) {
+      const float a = __half2float(__ldg(aF + t));
+      const half* row = vF + (size_t)t * OC + oc_start;
+      #pragma unroll
+      for (int p = 0; p < PACK; ++p) {
+        const int oc = oc_start + p;
+        if (oc < OC) add_full[p] += a * __half2float(__ldg(row + p));
+      }
+    }
+    #pragma unroll
+    for (int p = 0; p < PACK; ++p) {
+      float v = add_full[p];
+      v = warp_reduce_sum_f32(v);
+      if (lane == 0) add_full[p] = v;
+    }
+  }
+
+  #pragma unroll
+  for (int p = 0; p < PACK; ++p) {
+    const int oc = oc_start + p;
+    if (oc < OC) {
+      float vqsum = warp_reduce_sum_f32(psum[p]);
+      if (lane == 0) {
+        out_row[oc] = __float2half(vqsum + add_base[p] + add_full[p]);
+      }
+    }
+  }
+}
+
 
 
 // 导出：选择 2bit/4bit（与 battn_v_kernel_with_base<BIT> 对齐）
@@ -1592,6 +1807,86 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
   }
+  return _out;
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+){
+  TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
+  const int BSnh = _alpha_q.size(0);
+  const int K = _alpha_q.size(2);
+  TORCH_CHECK(nh > 0 && nh_kv > 0 && nh % nh_kv == 0, "nh must be divisible by nh_kv");
+  TORCH_CHECK(nh / nh_kv == 4, "experimental GQA V2 kernel supports ratio=4 only");
+  TORCH_CHECK(BSnh % nh == 0, "B*nh must be divisible by nh");
+  const int B = BSnh / nh;
+
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  const int Mcent = _centroids.size(1);
+  const int OC = _centroids.size(2);
+  TORCH_CHECK(OC == 128, "experimental GQA V2 kernel supports OC=128 only");
+  TORCH_CHECK(group_size == 128, "experimental GQA V2 kernel supports group_size=128 only");
+  TORCH_CHECK(Mcent <= MAX_CENTROIDS, "too many centroids");
+
+  constexpr int PACK = 16;
+  TORCH_CHECK(_vq.dim()==3 && _vq.size(1) * PACK == OC && _vq.size(2)==K, "vq must be [B*nh_kv,OC/16,K]");
+  TORCH_CHECK(_vq.size(0) == B * nh_kv, "vq batch/head mismatch");
+  TORCH_CHECK(_vscale.dim()==3 && _vzero.dim()==3, "scale/zero must be [B*nh_kv,OC/group,K]");
+  TORCH_CHECK(_vscale.size(0)==B * nh_kv && _vzero.size(0)==B * nh_kv, "scale/zero batch/head mismatch");
+  TORCH_CHECK(_vscale.size(2)==K && _vzero.size(2)==K, "scale/zero K mismatch");
+  TORCH_CHECK(_mask_q.dim()==3 && _mask_q.size(0)==B && _mask_q.size(1)==nh_kv && _mask_q.size(2)==K, "mask_q must be [B,nh_kv,K]");
+  TORCH_CHECK(_idx_q.dim()==3 && _idx_q.size(0)==B && _idx_q.size(1)==nh_kv && _idx_q.size(2)==K, "idx_q must be [B,nh_kv,K]");
+
+  const int Lf = (_alpha_f.numel()==0 || _v_full.numel()==0) ? 0 : _alpha_f.size(1);
+  if (Lf > 0) {
+    TORCH_CHECK(_v_full.dim()==4 && _v_full.size(0)==B && _v_full.size(1)==nh_kv && _v_full.size(2)==Lf && _v_full.size(3)==OC, "v_full must be [B,nh_kv,Lf,OC]");
+  }
+
+  auto options = torch::TensorOptions().dtype(_alpha_q.dtype()).device(_alpha_q.device());
+  at::Tensor _out = torch::empty({BSnh, 1, OC}, options);
+
+  const half* alpha_q = reinterpret_cast<const half*>(_alpha_q.data_ptr<at::Half>());
+  const uint32_t* vq = reinterpret_cast<const uint32_t*>(_vq.data_ptr<int>());
+  const half* vsc = reinterpret_cast<const half*>(_vscale.data_ptr<at::Half>());
+  const half* vzr = reinterpret_cast<const half*>(_vzero.data_ptr<at::Half>());
+  const half* cent = reinterpret_cast<const half*>(_centroids.data_ptr<at::Half>());
+  const uint8_t* mask = reinterpret_cast<const uint8_t*>(_mask_q.data_ptr<uint8_t>());
+  const void* idx = static_cast<const void*>(_idx_q.data_ptr());
+  const half* alpha_f = (_alpha_f.numel()==0) ? nullptr : reinterpret_cast<const half*>(_alpha_f.data_ptr<at::Half>());
+  const half* v_full = (_v_full.numel()==0) ? nullptr : reinterpret_cast<const half*>(_v_full.data_ptr<at::Half>());
+  half* outp = reinterpret_cast<half*>(_out.data_ptr<at::Half>());
+
+  const int idx_bytes =
+      (_idx_q.dtype() == torch::kUInt8) ? 1 :
+      (_idx_q.dtype() == torch::kInt16) ? 2 : 4;
+
+  constexpr int TILE = 128;
+  dim3 threads(32, 4, 4);
+  dim3 blocks(B * nh_kv, (OC / PACK + threads.y - 1) / threads.y, 1);
+  const size_t hist_bytes = (size_t)4 * threads.y * Mcent * sizeof(float);
+  const size_t vq_bytes = (size_t)threads.y * TILE * sizeof(uint32_t);
+  const size_t scale_bytes = (size_t)threads.y * TILE * sizeof(half);
+  const size_t zero_bytes = (size_t)threads.y * TILE * sizeof(half);
+  const size_t mask_bytes = (size_t)TILE * sizeof(int);
+  const size_t idx_bytes_s = (size_t)TILE * sizeof(int);
+  const size_t centroid_bytes = (size_t)Mcent * threads.y * PACK * sizeof(half);
+  const size_t shmem = hist_bytes + vq_bytes + scale_bytes + zero_bytes + mask_bytes + idx_bytes_s + centroid_bytes;
+
+  battn_v_kernel_gqa4_v2_with_base<TILE><<<blocks, threads, shmem>>>(
+    alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
+    K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
+  );
   return _out;
 }
 

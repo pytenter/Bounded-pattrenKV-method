@@ -1,0 +1,2 @@
+candidate,implemented,decision,reason
+2_qhead_partial_reuse,NO,NOT_IMPLEMENTED,"4-Q-head candidate was correct but a large regression, so partial-reuse implementation was not pursued in S2B-3."
