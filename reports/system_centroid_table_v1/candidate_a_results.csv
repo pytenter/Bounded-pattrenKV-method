@@ -1,0 +1,2 @@
+candidate,implemented,decision,reason,active_centroid_median_range,v2_32k_us,speedup,mixed_v_32k_speedup,correctness
+A_active_centroid_skip,NO,NOT_IMPLEMENTED,"Active centroid audit showed median 16/16 active centroids for all measured V2/V4 workloads, so skipping rows would add branch/control overhead with no expected production win.",16/16,,,,N/A

@@ -1,0 +1,19 @@
+{
+  "binary_mtime": 1786549043.0,
+  "binary_sha256": "1be618032b6b983a6bafd56a148916cb2afc9f216417d89fd6dd90510e6b0998",
+  "cuda_version": "12.4",
+  "cuda_visible_devices": "1",
+  "final_binary_mtime": 1786549425.0,
+  "final_binary_mtime_readable": "2026-08-12 23:43:45 +08",
+  "final_binary_sha256": "1d87b35d6b895ea3bf103ff1e006c180046390962d03334a75e5bef55dc36aac",
+  "final_cuda_visible_devices_probe": "5",
+  "final_git_head_before_commit": "274e193a78feccc490256fff5e9f7008b13d131a",
+  "final_loaded_extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "git_head": "274e193a78feccc490256fff5e9f7008b13d131a",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "iters": 200,
+  "loaded_extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "rounds": 5,
+  "torch_version": "2.4.1+cu124",
+  "warmup": 30
+}

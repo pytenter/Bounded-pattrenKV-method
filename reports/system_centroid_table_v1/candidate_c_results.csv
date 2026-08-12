@@ -1,0 +1,2 @@
+candidate,implemented,decision,reuse_opportunity,theoretical_duplicate_factor,extra_shared_memory_bytes,reason,v2_32k_us,speedup,mixed_v_32k_us,correctness
+C_gqa_centroid_table_reuse,NO,NOT_IMPLEMENTED_DESIGN_ONLY,YES,4,4096,"Would require CTA/grid reorganization to serve four Q heads per KV head while preserving per-warp private histograms; local lane0 candidate already passed gates, so broader GQA redesign is deferred.",,,,N/A

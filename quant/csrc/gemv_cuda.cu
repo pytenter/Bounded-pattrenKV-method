@@ -1230,6 +1230,8 @@ enum AttnVAblationMode {
   ABLATION_CENTROID_ONLY = 3,
   ABLATION_WARP_AGG_FULL = 4,
   ABLATION_PER_WARP_HIST_FULL = 5,
+  ABLATION_NO_TABLE_CONTRIBUTION = 6,
+  ABLATION_LANE0_TABLE_FULL = 7,
 };
 
 // ===================== 最终修正版 V 融合核 =====================
@@ -1252,16 +1254,24 @@ __global__ void battn_v_kernel_with_base(
   static_assert(BIT==2 || BIT==4, "BIT must be 2 or 4");
   static_assert(MODE==ABLATION_FULL || MODE==ABLATION_RESIDUAL_ONLY ||
                 MODE==ABLATION_NO_CENTROID_HISTOGRAM || MODE==ABLATION_CENTROID_ONLY ||
-                MODE==ABLATION_WARP_AGG_FULL || MODE==ABLATION_PER_WARP_HIST_FULL,
+                MODE==ABLATION_WARP_AGG_FULL || MODE==ABLATION_PER_WARP_HIST_FULL ||
+                MODE==ABLATION_NO_TABLE_CONTRIBUTION || MODE==ABLATION_LANE0_TABLE_FULL,
                 "invalid V attention ablation mode");
   constexpr bool DO_RESIDUAL = MODE != ABLATION_CENTROID_ONLY;
   constexpr bool DO_HISTOGRAM = MODE == ABLATION_FULL || MODE == ABLATION_CENTROID_ONLY ||
-                                MODE == ABLATION_WARP_AGG_FULL || MODE == ABLATION_PER_WARP_HIST_FULL;
+                                MODE == ABLATION_WARP_AGG_FULL || MODE == ABLATION_PER_WARP_HIST_FULL ||
+                                MODE == ABLATION_NO_TABLE_CONTRIBUTION || MODE == ABLATION_LANE0_TABLE_FULL;
   constexpr bool DO_CENTROID_TABLE = MODE == ABLATION_FULL || MODE == ABLATION_CENTROID_ONLY ||
-                                     MODE == ABLATION_WARP_AGG_FULL || MODE == ABLATION_PER_WARP_HIST_FULL;
-  constexpr bool DO_FULL_RECENT = MODE == ABLATION_FULL || MODE == ABLATION_WARP_AGG_FULL || MODE == ABLATION_PER_WARP_HIST_FULL;
+                                     MODE == ABLATION_WARP_AGG_FULL || MODE == ABLATION_PER_WARP_HIST_FULL ||
+                                     MODE == ABLATION_LANE0_TABLE_FULL;
+  constexpr bool DO_FULL_RECENT = MODE == ABLATION_FULL || MODE == ABLATION_WARP_AGG_FULL ||
+                                  MODE == ABLATION_PER_WARP_HIST_FULL || MODE == ABLATION_NO_TABLE_CONTRIBUTION ||
+                                  MODE == ABLATION_LANE0_TABLE_FULL;
   constexpr bool DO_WARP_AGG_HISTOGRAM = MODE == ABLATION_WARP_AGG_FULL;
-  constexpr bool DO_PER_WARP_HISTOGRAM = MODE == ABLATION_PER_WARP_HIST_FULL;
+  constexpr bool DO_PER_WARP_HISTOGRAM = MODE == ABLATION_PER_WARP_HIST_FULL ||
+                                         MODE == ABLATION_NO_TABLE_CONTRIBUTION ||
+                                         MODE == ABLATION_LANE0_TABLE_FULL;
+  constexpr bool DO_LANE0_TABLE = MODE == ABLATION_LANE0_TABLE_FULL;
   constexpr int PACK = 32 / BIT;        // 2bit=16, 4bit=8
   const uint32_t CODE_MASK = (1u << BIT) - 1u;
   const int TILE = 128;
@@ -1436,6 +1446,7 @@ __global__ void battn_v_kernel_with_base(
   for (int p=0;p<PACK;++p) add_base[p] = 0.f;
 
   if constexpr (DO_CENTROID_TABLE) {
+    if (!DO_LANE0_TABLE || lane == 0) {
     for (int c=0; c<Mcent; ++c) {
       float s = 0.f;
       if constexpr (DO_PER_WARP_HISTOGRAM) {
@@ -1454,6 +1465,7 @@ __global__ void battn_v_kernel_with_base(
           if (oc < OC) add_base[p] += s * __half2float(__ldg(crow + p));
         }
       }
+    }
     }
   }
 
@@ -1568,12 +1580,12 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
 
   // ---- 调度 ----
   if (bit == 4) {
-    battn_v_kernel_with_base<4, ABLATION_PER_WARP_HIST_FULL><<<blocks, threads, shmem>>>(
+    battn_v_kernel_with_base<4, ABLATION_LANE0_TABLE_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
       K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
     );
   } else if (bit == 2) {
-    battn_v_kernel_with_base<2, ABLATION_PER_WARP_HIST_FULL><<<blocks, threads, shmem>>>(
+    battn_v_kernel_with_base<2, ABLATION_LANE0_TABLE_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
       K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
     );
@@ -1604,8 +1616,10 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
               debug_mode == ABLATION_NO_CENTROID_HISTOGRAM ||
               debug_mode == ABLATION_CENTROID_ONLY ||
               debug_mode == ABLATION_WARP_AGG_FULL ||
-              debug_mode == ABLATION_PER_WARP_HIST_FULL,
-              "Invalid debug_mode. Expected 0=FULL, 1=RESIDUAL_ONLY, 2=NO_CENTROID_HISTOGRAM, 3=CENTROID_ONLY, 4=WARP_AGG_FULL, 5=PER_WARP_HIST_FULL.");
+              debug_mode == ABLATION_PER_WARP_HIST_FULL ||
+              debug_mode == ABLATION_NO_TABLE_CONTRIBUTION ||
+              debug_mode == ABLATION_LANE0_TABLE_FULL,
+              "Invalid debug_mode. Expected 0=FULL, 1=RESIDUAL_ONLY, 2=NO_CENTROID_HISTOGRAM, 3=CENTROID_ONLY, 4=WARP_AGG_FULL, 5=PER_WARP_HIST_FULL, 6=NO_TABLE_CONTRIBUTION, 7=LANE0_TABLE_FULL.");
   TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
   const int BSnh = _alpha_q.size(0);
   const int K    = _alpha_q.size(2);
@@ -1644,7 +1658,9 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
 
   dim3 threads(32, 4, 1);
   dim3 blocks(BSnh, (OC / PACK + threads.y - 1) / threads.y, 1);
-  const int sacc_rows = (debug_mode == ABLATION_PER_WARP_HIST_FULL) ? 4 : 1;
+  const int sacc_rows = (debug_mode == ABLATION_PER_WARP_HIST_FULL ||
+                         debug_mode == ABLATION_NO_TABLE_CONTRIBUTION ||
+                         debug_mode == ABLATION_LANE0_TABLE_FULL) ? 4 : 1;
   size_t shmem = (size_t)Mcent * (size_t)sacc_rows * sizeof(float);
 
   const int idx_bytes =
@@ -1662,14 +1678,18 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
     else if (debug_mode == ABLATION_NO_CENTROID_HISTOGRAM) DISPATCH_V_ABLATION(4, ABLATION_NO_CENTROID_HISTOGRAM);
     else if (debug_mode == ABLATION_CENTROID_ONLY) DISPATCH_V_ABLATION(4, ABLATION_CENTROID_ONLY);
     else if (debug_mode == ABLATION_WARP_AGG_FULL) DISPATCH_V_ABLATION(4, ABLATION_WARP_AGG_FULL);
-    else DISPATCH_V_ABLATION(4, ABLATION_PER_WARP_HIST_FULL);
+    else if (debug_mode == ABLATION_PER_WARP_HIST_FULL) DISPATCH_V_ABLATION(4, ABLATION_PER_WARP_HIST_FULL);
+    else if (debug_mode == ABLATION_NO_TABLE_CONTRIBUTION) DISPATCH_V_ABLATION(4, ABLATION_NO_TABLE_CONTRIBUTION);
+    else DISPATCH_V_ABLATION(4, ABLATION_LANE0_TABLE_FULL);
   } else if (bit == 2) {
     if (debug_mode == ABLATION_FULL) DISPATCH_V_ABLATION(2, ABLATION_FULL);
     else if (debug_mode == ABLATION_RESIDUAL_ONLY) DISPATCH_V_ABLATION(2, ABLATION_RESIDUAL_ONLY);
     else if (debug_mode == ABLATION_NO_CENTROID_HISTOGRAM) DISPATCH_V_ABLATION(2, ABLATION_NO_CENTROID_HISTOGRAM);
     else if (debug_mode == ABLATION_CENTROID_ONLY) DISPATCH_V_ABLATION(2, ABLATION_CENTROID_ONLY);
     else if (debug_mode == ABLATION_WARP_AGG_FULL) DISPATCH_V_ABLATION(2, ABLATION_WARP_AGG_FULL);
-    else DISPATCH_V_ABLATION(2, ABLATION_PER_WARP_HIST_FULL);
+    else if (debug_mode == ABLATION_PER_WARP_HIST_FULL) DISPATCH_V_ABLATION(2, ABLATION_PER_WARP_HIST_FULL);
+    else if (debug_mode == ABLATION_NO_TABLE_CONTRIBUTION) DISPATCH_V_ABLATION(2, ABLATION_NO_TABLE_CONTRIBUTION);
+    else DISPATCH_V_ABLATION(2, ABLATION_LANE0_TABLE_FULL);
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
   }

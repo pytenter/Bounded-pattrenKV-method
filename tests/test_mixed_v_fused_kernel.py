@@ -463,3 +463,65 @@ def test_production_default_path(monkeypatch):
     monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "WARP_AGG_FULL")
     still_production = _single_lane_output(data, bit=2)
     torch.testing.assert_close(still_production, production, rtol=1e-5, atol=1e-5)
+
+
+def test_current_per_warp_histogram_still_default():
+    data = _build_case("all_v2", 256)
+    production = _single_lane_output(data, bit=2)
+    lane0_table = _single_lane_output(data, bit=2, mode="LANE0_TABLE_FULL")
+    per_warp_hist = _single_lane_output(data, bit=2, mode="PER_WARP_HIST_FULL")
+    torch.testing.assert_close(production, lane0_table, rtol=1e-5, atol=1e-5)
+    torch.testing.assert_close(lane0_table, per_warp_hist, rtol=1e-5, atol=1e-5)
+
+
+def test_no_table_debug_mode_not_default():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].fill_(1)
+    production = _single_lane_output(data, bit=2)
+    no_table = _single_lane_output(data, bit=2, mode="NO_TABLE_CONTRIBUTION")
+    assert not torch.allclose(no_table, production, rtol=1e-5, atol=1e-5)
+
+
+def test_centroid_table_candidate_matches_baseline():
+    data = _build_case("all_v2", 256)
+    baseline = _single_lane_output(data, bit=2, mode="PER_WARP_HIST_FULL")
+    candidate = _single_lane_output(data, bit=2, mode="LANE0_TABLE_FULL")
+    torch.testing.assert_close(candidate, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_single_active_centroid():
+    data = _build_case("all_v2", 256)
+    data["v_idx"].zero_()
+    data["v_pattern_mask"].fill_(1)
+    production = _single_lane_output(data, bit=2)
+    baseline = _single_lane_output(data, bit=2, mode="PER_WARP_HIST_FULL")
+    torch.testing.assert_close(production, baseline, rtol=1e-5, atol=1e-5)
+    _assert_close_with_metrics(_mixed_output(data), _reference_output(data))
+
+
+def test_all_centroids_active():
+    data = _build_case("all_v2", 256)
+    ids = torch.arange(data["v_idx"].shape[-1], device="cuda", dtype=torch.int64) % CENTROIDS
+    data["v_idx"] = ids.view(1, 1, -1).expand_as(data["v_idx"]).contiguous()
+    data["v_pattern_mask"].fill_(1)
+    production = _single_lane_output(data, bit=2)
+    baseline = _single_lane_output(data, bit=2, mode="PER_WARP_HIST_FULL")
+    torch.testing.assert_close(production, baseline, rtol=1e-5, atol=1e-5)
+    _assert_close_with_metrics(_mixed_output(data), _reference_output(data))
+
+
+def test_gqa_ratio4_correctness():
+    assert NH // NH_KV == 4
+    data = _build_case("mixed25", 512)
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_production_mode_unchanged_when_debug_disabled(monkeypatch):
+    data = _build_case("all_v2", 256)
+    monkeypatch.delenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", raising=False)
+    production = _single_lane_output(data, bit=2)
+    monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "NO_TABLE_CONTRIBUTION")
+    env_ignored = _single_lane_output(data, bit=2)
+    torch.testing.assert_close(env_ignored, production, rtol=1e-5, atol=1e-5)

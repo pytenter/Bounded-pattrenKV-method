@@ -1,0 +1,74 @@
+{
+  "rows": [
+    {
+      "bit": 2,
+      "context_tokens": 8192,
+      "cost_model": "APPROXIMATE_ABLATION_COST_FULL_MINUS_NO_TABLE",
+      "full_median_us": 115.7120019197464,
+      "histogram_plus_table_estimated_us": 24.57600086927414,
+      "histogram_plus_table_fraction": 0.21238938451967285,
+      "lane0_speedup_vs_full": 1.2555555573520882,
+      "lane0_table_full_median_us": 92.16000139713287,
+      "no_table_contribution_median_us": 92.16000139713287,
+      "residual_only_median_us": 91.13600105047226,
+      "table_estimated_us": 23.552000522613525,
+      "table_fraction": 0.20353982414847796
+    },
+    {
+      "bit": 2,
+      "context_tokens": 16384,
+      "cost_model": "APPROXIMATE_ABLATION_COST_FULL_MINUS_NO_TABLE",
+      "full_median_us": 225.2800017595291,
+      "histogram_plus_table_estimated_us": 122.8800043463707,
+      "histogram_plus_table_fraction": 0.5454545604875156,
+      "lane0_speedup_vs_full": 1.4102564700522506,
+      "lane0_table_full_median_us": 159.743994474411,
+      "no_table_contribution_median_us": 150.52799880504608,
+      "residual_only_median_us": 102.39999741315842,
+      "table_estimated_us": 74.75200295448303,
+      "table_fraction": 0.3318181923412609
+    },
+    {
+      "bit": 4,
+      "context_tokens": 16384,
+      "cost_model": "APPROXIMATE_ABLATION_COST_FULL_MINUS_NO_TABLE",
+      "full_median_us": 91.13600105047226,
+      "histogram_plus_table_estimated_us": 9.216003119945526,
+      "histogram_plus_table_fraction": 0.10112362857397691,
+      "lane0_speedup_vs_full": 1.0,
+      "lane0_table_full_median_us": 91.13600105047226,
+      "no_table_contribution_median_us": 91.13600105047226,
+      "residual_only_median_us": 81.91999793052673,
+      "table_estimated_us": 0.0,
+      "table_fraction": 0.0
+    },
+    {
+      "bit": 2,
+      "context_tokens": 32768,
+      "cost_model": "APPROXIMATE_ABLATION_COST_FULL_MINUS_NO_TABLE",
+      "full_median_us": 448.5119879245758,
+      "histogram_plus_table_estimated_us": 252.9279887676239,
+      "histogram_plus_table_fraction": 0.563926930778398,
+      "lane0_speedup_vs_full": 1.4599998913457048,
+      "lane0_table_full_median_us": 307.20001459121704,
+      "no_table_contribution_median_us": 295.9359884262085,
+      "residual_only_median_us": 195.5839991569519,
+      "table_estimated_us": 152.5759994983673,
+      "table_fraction": 0.3401826564422294
+    },
+    {
+      "bit": 4,
+      "context_tokens": 32768,
+      "cost_model": "APPROXIMATE_ABLATION_COST_FULL_MINUS_NO_TABLE",
+      "full_median_us": 164.86400365829468,
+      "histogram_plus_table_estimated_us": 69.63200122117996,
+      "histogram_plus_table_fraction": 0.4223602464823231,
+      "lane0_speedup_vs_full": 1.490740771306749,
+      "lane0_table_full_median_us": 110.59200018644333,
+      "no_table_contribution_median_us": 104.44799810647964,
+      "residual_only_median_us": 95.23200243711472,
+      "table_estimated_us": 60.41600555181503,
+      "table_fraction": 0.36645965287265647
+    }
+  ]
+}
