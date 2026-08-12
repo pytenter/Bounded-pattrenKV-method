@@ -8,7 +8,7 @@ import triton.language as tl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import patternkv_gemv
-from quant.patternkv_profile import profile_range
+from quant.patternkv_profile import profile_range, record_counter, record_temp_allocation
 
 _MIXED_V_COUNTERS = {
 	"mixed_v_fused_calls": 0,
@@ -516,17 +516,19 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
     if v_centroids is None or v_centroids.dim() != 3:
         raise RuntimeError("fused mixed Value attention requires Pattern centroids")
 
-    mask = precision_mask[0].bool()
-    low_mask = ~mask
-    high_mask = mask
-    v2_tokens = int(low_mask.sum().item())
-    v4_tokens = int(high_mask.sum().item())
+    with profile_range("mixed_v_mapping_prepare", tokens=int(total_tokens)):
+        mask = precision_mask[0].bool()
+        low_mask = ~mask
+        high_mask = mask
+        v2_tokens = int(low_mask.sum().item())
+        v4_tokens = int(high_mask.sum().item())
     if v2_tokens + v4_tokens != total_tokens:
         raise RuntimeError("precision mask token count mismatch")
 
     _MIXED_V_COUNTERS["mixed_v_fused_calls"] += 1
     _MIXED_V_COUNTERS["v2_tokens_processed"] += v2_tokens
     _MIXED_V_COUNTERS["v4_tokens_processed"] += v4_tokens
+    record_counter("mixed_v_kernel_launches", calls=int(bool(v2_tokens)) + int(bool(v4_tokens)))
 
     out = None
     full_attached = False
@@ -535,25 +537,30 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
             raise RuntimeError("V2 payload/scale/zero are required for V2 tokens")
         if vq2.shape[2] != v2_tokens:
             raise RuntimeError(f"V2 payload token mismatch: payload={vq2.shape[2]} mask={v2_tokens}")
-        attn2 = attn_q[..., low_mask].contiguous()
-        mask2 = v_mask_q[:, :, low_mask].contiguous()
-        idx2 = v_idx_q[:, :, low_mask].contiguous()
+        with profile_range("mixed_v_layout_prepare_v2", tokens=v2_tokens):
+            attn2 = attn_q[..., low_mask].contiguous()
+            mask2 = v_mask_q[:, :, low_mask].contiguous()
+            idx2 = v_idx_q[:, :, low_mask].contiguous()
+        record_temp_allocation("mixed_v_attn2_compact", attn2)
+        record_temp_allocation("mixed_v_mask2_compact", mask2)
+        record_temp_allocation("mixed_v_idx2_compact", idx2)
         _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn2) + _tensor_bytes(mask2) + _tensor_bytes(idx2)
-        out = cuda_attn_v_fused_with_base(
-            group_size,
-            attn2,
-            vq2,
-            v2_scale,
-            v2_zero,
-            2,
-            v_centroids,
-            mask2,
-            idx2,
-            nh=nh,
-            nh_kv=nh_kv,
-            attn_f=attn_f,
-            v_full=v_full,
-        )
+        with profile_range("mixed_v_v2_compute", tokens=v2_tokens):
+            out = cuda_attn_v_fused_with_base(
+                group_size,
+                attn2,
+                vq2,
+                v2_scale,
+                v2_zero,
+                2,
+                v_centroids,
+                mask2,
+                idx2,
+                nh=nh,
+                nh_kv=nh_kv,
+                attn_f=attn_f,
+                v_full=v_full,
+            )
         full_attached = attn_f is not None and v_full is not None
 
     if v4_tokens:
@@ -561,26 +568,32 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
             raise RuntimeError("V4 payload/scale/zero are required for V4 tokens")
         if vq4.shape[2] != v4_tokens:
             raise RuntimeError(f"V4 payload token mismatch: payload={vq4.shape[2]} mask={v4_tokens}")
-        attn4 = attn_q[..., high_mask].contiguous()
-        mask4 = v_mask_q[:, :, high_mask].contiguous()
-        idx4 = v_idx_q[:, :, high_mask].contiguous()
+        with profile_range("mixed_v_layout_prepare_v4", tokens=v4_tokens):
+            attn4 = attn_q[..., high_mask].contiguous()
+            mask4 = v_mask_q[:, :, high_mask].contiguous()
+            idx4 = v_idx_q[:, :, high_mask].contiguous()
+        record_temp_allocation("mixed_v_attn4_compact", attn4)
+        record_temp_allocation("mixed_v_mask4_compact", mask4)
+        record_temp_allocation("mixed_v_idx4_compact", idx4)
         _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn4) + _tensor_bytes(mask4) + _tensor_bytes(idx4)
-        part4 = cuda_attn_v_fused_with_base(
-            group_size,
-            attn4,
-            vq4,
-            v4_scale,
-            v4_zero,
-            4,
-            v_centroids,
-            mask4,
-            idx4,
-            nh=nh,
-            nh_kv=nh_kv,
-            attn_f=None if full_attached else attn_f,
-            v_full=None if full_attached else v_full,
-        )
-        out = part4 if out is None else out + part4
+        with profile_range("mixed_v_v4_compute", tokens=v4_tokens):
+            part4 = cuda_attn_v_fused_with_base(
+                group_size,
+                attn4,
+                vq4,
+                v4_scale,
+                v4_zero,
+                4,
+                v_centroids,
+                mask4,
+                idx4,
+                nh=nh,
+                nh_kv=nh_kv,
+                attn_f=None if full_attached else attn_f,
+                v_full=None if full_attached else v_full,
+            )
+        with profile_range("mixed_v_output_reduce"):
+            out = part4 if out is None else out + part4
         full_attached = full_attached or (attn_f is not None and v_full is not None)
 
     if out is None:

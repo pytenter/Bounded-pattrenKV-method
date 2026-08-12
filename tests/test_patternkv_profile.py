@@ -5,7 +5,17 @@ import os
 import pytest
 import torch
 
-from quant.patternkv_profile import merge_profile_rows, profile_range, profile_snapshot, record_counter, reset_profile
+from quant.patternkv_profile import (
+    cache_mutation_snapshot,
+    merge_profile_rows,
+    profile_range,
+    profile_snapshot,
+    record_cache_mutation,
+    record_counter,
+    record_temp_allocation,
+    reset_profile,
+    temp_allocation_snapshot,
+)
 
 
 def test_profile_disabled_does_not_change_output(monkeypatch):
@@ -56,6 +66,34 @@ def test_profile_csv_schema_valid(monkeypatch):
     assert int(parsed[0]["calls"]) == 3
 
 
+def test_cache_mutation_counter_classification_and_bytes(monkeypatch):
+    monkeypatch.setenv("PATTERNKV_PROFILE", "1")
+    reset_profile()
+    old = torch.zeros(1, 2, 3, dtype=torch.float16)
+    app = torch.zeros(1, 2, 1, dtype=torch.float16)
+    result = torch.zeros(1, 2, 4, dtype=torch.float16)
+    record_cache_mutation("packed_v2_payload", old, app, result)
+    rows = cache_mutation_snapshot()
+    row = next(row for row in rows if row["category"] == "packed_v2_payload")
+    assert row["calls"] == 1
+    assert row["old_bytes"] == old.numel() * old.element_size()
+    assert row["append_bytes"] == app.numel() * app.element_size()
+    assert row["estimated_copy_bytes"] == (old.numel() + app.numel()) * old.element_size()
+    assert row["largest_result_bytes"] == result.numel() * result.element_size()
+
+
+def test_temp_allocation_snapshot_schema(monkeypatch):
+    monkeypatch.setenv("PATTERNKV_PROFILE", "1")
+    reset_profile()
+    value = torch.zeros(2, 3, dtype=torch.float32)
+    record_temp_allocation("mixed_v_attn2_compact", value)
+    rows = temp_allocation_snapshot(decode_tokens=2)
+    assert rows[0]["tensor"] == "mixed_v_attn2_compact"
+    assert rows[0]["shape"] == "2x3"
+    assert rows[0]["dtype"] == "torch.float32"
+    assert rows[0]["bytes_per_decode_token"] == value.numel() * value.element_size() / 2
+
+
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required for mixed V backend profile smoke")
 def test_fused_and_reference_backend_both_profile(monkeypatch):
     from bench.bench_mixed_v_kernel_perf import build_case
@@ -87,6 +125,7 @@ def test_fused_and_reference_backend_both_profile(monkeypatch):
     snap = profile_snapshot(reset=True)
     counters = get_patternkv_mixed_v_counters()
     assert snap["mixed_v_fused_attention"]["calls"] == 1
+    assert snap["mixed_v_kernel_launches"]["calls"] == 2
     assert counters["mixed_v_fused_calls"] == 1
 
     reset_profile()

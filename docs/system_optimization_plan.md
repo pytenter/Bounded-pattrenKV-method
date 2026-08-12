@@ -45,6 +45,15 @@ causal-importance update, and packing were not dominant. The recorded next
 phase is `PROFILE_INCONCLUSIVE` because the listed S2/S3 options do not directly
 target the largest remaining component.
 
+## Phase S2A Deep Profile Finding
+
+S2A split the two remaining candidates. Mixed-V is dominated by CUDA execution,
+especially the V2 lane, while host/layout overhead is small. Cache mutation is
+visible but copy bytes per token grew only `1.172x` from 16K to 32K in the
+controlled profile. The next phase is therefore
+`S2B_MIXED_V_KERNEL_OPTIMIZATION`; fixed-page ABI remains relevant later, but it
+is not the immediate root-cause target.
+
 ## Phase S3
 
 Design a fixed tile ABI for full 128-token tiles with 96 V2 tokens and 32 V4

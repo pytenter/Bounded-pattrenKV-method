@@ -1,0 +1,30 @@
+{
+  "by_context": {
+    "16384": {
+      "bytes_per_generated_token": 30624416.0,
+      "largest_copy": 4161536,
+      "top_category_by_bytes": "recent_pending",
+      "top_category_by_calls": "recent_pending",
+      "total_concat_events": 20832,
+      "total_estimated_copy_bytes": 3919925248
+    },
+    "32768": {
+      "bytes_per_generated_token": 35904160.0,
+      "largest_copy": 8355840,
+      "top_category_by_bytes": "recent_pending",
+      "top_category_by_calls": "recent_pending",
+      "total_concat_events": 20832,
+      "total_estimated_copy_bytes": 4595732480
+    },
+    "8192": {
+      "bytes_per_generated_token": 27984544.0,
+      "largest_copy": 2064384,
+      "top_category_by_bytes": "recent_pending",
+      "top_category_by_calls": "recent_pending",
+      "total_concat_events": 20832,
+      "total_estimated_copy_bytes": 3582021632
+    }
+  },
+  "cache_copy_growth_ratio_16k_to_32k": 1.1724030917030386,
+  "classification": "constant"
+}

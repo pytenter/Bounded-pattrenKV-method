@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT / "quant"))
 from bench.bench_aime24_patternkv import load_model
 from models.segmented_cache import PatternQuantizedKVCache, serialize_cache, validate_cache
 from quant.matmul import get_patternkv_mixed_v_counters, reset_patternkv_mixed_v_counters
-from quant.patternkv_profile import merge_profile_rows, profile_snapshot, reset_profile
+from quant.patternkv_profile import cache_mutation_snapshot, merge_profile_rows, profile_snapshot, reset_profile, temp_allocation_snapshot
 from scripts.run_aime24_full_causal25_quality import make_worker_args
 
 
@@ -213,7 +213,11 @@ def run_decode_case(model, *, backend: str, context_tokens: int, decode_tokens: 
     torch.cuda.synchronize()
     token_ms = [float(start.elapsed_time(end)) for start, end in events]
     decode_total_ms = float(sum(token_ms))
-    snapshot = profile_snapshot(reset=True) if profile else {}
+    snapshot = profile_snapshot(reset=False) if profile else {}
+    temp_allocations = temp_allocation_snapshot(decode_tokens=decode_tokens) if profile else []
+    cache_mutations = cache_mutation_snapshot() if profile else []
+    if profile:
+        reset_profile()
     counters = get_patternkv_mixed_v_counters()
     peak_allocated = int(torch.cuda.max_memory_allocated())
     peak_reserved = int(torch.cuda.max_memory_reserved())
@@ -241,6 +245,8 @@ def run_decode_case(model, *, backend: str, context_tokens: int, decode_tokens: 
         "largest_cache_concat_bytes": int(snapshot.get("cache_cat_largest_bytes", {}).get("bytes", 0.0)),
         "profile_enabled": bool(profile),
         "profile_snapshot": snapshot,
+        "temp_allocations": temp_allocations,
+        "cache_mutations": cache_mutations,
     }
 
 

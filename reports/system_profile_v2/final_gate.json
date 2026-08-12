@@ -1,0 +1,20 @@
+{
+  "aime25_started": false,
+  "algorithm_changed": false,
+  "cache_copy_bytes_per_token_16k": 30624416.0,
+  "cache_copy_bytes_per_token_32k": 35904160.0,
+  "cache_copy_growth_ratio_16k_to_32k": 1.1724030917030386,
+  "cache_mutation_deep_profile_completed": true,
+  "decision_reason": "Mixed-V CUDA execution is the largest remaining root cause; host/layout overhead is small, and cache copy bytes/token growth from 16K to 32K is 1.172 (constant).",
+  "dominant_mixed_v_subcomponent": "mixed_v_v2_compute",
+  "full_aime24_started": false,
+  "gpqa_started": false,
+  "mixed_v_deep_profile_completed": true,
+  "ncu_available": false,
+  "nsys_available": false,
+  "profile_off_baseline_verified": true,
+  "recommended_next_phase": "S2B_MIXED_V_KERNEL_OPTIMIZATION",
+  "sglang_started": false,
+  "top_cache_mutation_category_by_bytes": "recent_pending",
+  "vllm_started": false
+}

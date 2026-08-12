@@ -12,6 +12,16 @@ import torch
 _COUNTERS: dict[str, dict[str, float]] = defaultdict(lambda: {"calls": 0.0, "tokens": 0.0, "bytes": 0.0})
 _CUDA_EVENTS: dict[str, list[tuple[torch.cuda.Event, torch.cuda.Event]]] = defaultdict(list)
 _CPU_US: dict[str, float] = defaultdict(float)
+_TEMP_ALLOCS: dict[str, dict[str, Any]] = {}
+_CACHE_MUTATIONS: dict[str, dict[str, float]] = defaultdict(
+    lambda: {
+        "calls": 0.0,
+        "append_bytes": 0.0,
+        "old_bytes": 0.0,
+        "estimated_copy_bytes": 0.0,
+        "largest_result_bytes": 0.0,
+    }
+)
 
 
 def profile_enabled() -> bool:
@@ -22,6 +32,8 @@ def reset_profile() -> None:
     _COUNTERS.clear()
     _CUDA_EVENTS.clear()
     _CPU_US.clear()
+    _TEMP_ALLOCS.clear()
+    _CACHE_MUTATIONS.clear()
 
 
 def record_counter(component: str, *, calls: int = 1, tokens: int = 0, bytes_copied: int = 0) -> None:
@@ -38,6 +50,38 @@ def record_counter(component: str, *, calls: int = 1, tokens: int = 0, bytes_cop
 
 def tensor_bytes(value: torch.Tensor | None) -> int:
     return 0 if value is None else int(value.numel() * value.element_size())
+
+
+def record_temp_allocation(name: str, value: torch.Tensor | None) -> None:
+    if not profile_enabled() or value is None:
+        return
+    bytes_value = tensor_bytes(value)
+    rec = _TEMP_ALLOCS.setdefault(
+        name,
+        {
+            "tensor": name,
+            "shape": tuple(value.shape),
+            "dtype": str(value.dtype),
+            "bytes": 0.0,
+            "calls": 0.0,
+        },
+    )
+    rec["calls"] += 1.0
+    rec["bytes"] += float(bytes_value)
+
+
+def record_cache_mutation(category: str, old_value: torch.Tensor | None, append_value: torch.Tensor | None, result_value: torch.Tensor | None) -> None:
+    if not profile_enabled():
+        return
+    old_bytes = tensor_bytes(old_value)
+    append_bytes = tensor_bytes(append_value)
+    result_bytes = tensor_bytes(result_value)
+    rec = _CACHE_MUTATIONS[category]
+    rec["calls"] += 1.0
+    rec["old_bytes"] += float(old_bytes)
+    rec["append_bytes"] += float(append_bytes)
+    rec["estimated_copy_bytes"] += float(old_bytes + append_bytes)
+    rec["largest_result_bytes"] = max(float(rec["largest_result_bytes"]), float(result_bytes))
 
 
 @contextmanager
@@ -87,6 +131,41 @@ def profile_snapshot(*, reset: bool = False) -> dict[str, dict[str, float]]:
     if reset:
         reset_profile()
     return out
+
+
+def temp_allocation_snapshot(*, decode_tokens: int = 1) -> list[dict[str, Any]]:
+    rows = []
+    for name, rec in sorted(_TEMP_ALLOCS.items()):
+        rows.append(
+            {
+                "tensor": name,
+                "shape": "x".join(str(x) for x in rec["shape"]),
+                "dtype": rec["dtype"],
+                "bytes": int(rec["bytes"]),
+                "calls": int(rec["calls"]),
+                "bytes_per_decode_token": float(rec["bytes"]) / max(int(decode_tokens), 1),
+            }
+        )
+    return rows
+
+
+def cache_mutation_snapshot() -> list[dict[str, Any]]:
+    rows = []
+    for category, rec in sorted(_CACHE_MUTATIONS.items()):
+        calls = int(rec["calls"])
+        estimated = float(rec["estimated_copy_bytes"])
+        rows.append(
+            {
+                "category": category,
+                "calls": calls,
+                "append_bytes": int(rec["append_bytes"]),
+                "old_bytes": int(rec["old_bytes"]),
+                "estimated_copy_bytes": int(estimated),
+                "largest_result_bytes": int(rec["largest_result_bytes"]),
+                "mean_copy_bytes": estimated / max(calls, 1),
+            }
+        )
+    return rows
 
 
 def merge_profile_rows(snapshot: dict[str, dict[str, float]], *, decode_tokens: int, decode_total_us: float) -> list[dict[str, Any]]:

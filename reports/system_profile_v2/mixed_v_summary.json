@@ -1,0 +1,41 @@
+[
+  {
+    "context_tokens": 8192,
+    "cuda_total_mean_us": 1068.4108746051788,
+    "host_dispatch_mean_us": 37.37728225067258,
+    "iters": 100,
+    "kernel_launches_per_call": 2.0,
+    "kernel_launches_total": 200,
+    "mixed_v_calls": 100,
+    "packed_tokens": 7936,
+    "v2_tokens_per_call": 5952,
+    "v4_tokens_per_call": 1984,
+    "wrapper_mean_us": 1105.7881568558514
+  },
+  {
+    "context_tokens": 16384,
+    "cuda_total_mean_us": 1161.0214471817017,
+    "host_dispatch_mean_us": 36.86586730182171,
+    "iters": 100,
+    "kernel_launches_per_call": 2.0,
+    "kernel_launches_total": 200,
+    "mixed_v_calls": 100,
+    "packed_tokens": 16128,
+    "v2_tokens_per_call": 12096,
+    "v4_tokens_per_call": 4032,
+    "wrapper_mean_us": 1197.8873144835234
+  },
+  {
+    "context_tokens": 32768,
+    "cuda_total_mean_us": 1493.893119096756,
+    "host_dispatch_mean_us": 29.627848360687494,
+    "iters": 100,
+    "kernel_launches_per_call": 2.0,
+    "kernel_launches_total": 200,
+    "mixed_v_calls": 100,
+    "packed_tokens": 32512,
+    "v2_tokens_per_call": 24384,
+    "v4_tokens_per_call": 8128,
+    "wrapper_mean_us": 1523.5209674574435
+  }
+]

@@ -9,7 +9,7 @@ from typing import Any
 import torch
 
 from quant.new_pack import pack_tensor, triton_quantize_and_pack_along_last_dim, unpack_tensor
-from quant.patternkv_profile import profile_range, record_counter, tensor_bytes
+from quant.patternkv_profile import profile_range, record_cache_mutation, record_counter, tensor_bytes
 
 
 @dataclass
@@ -113,7 +113,7 @@ def _empty_like_tokens(reference: torch.Tensor, tokens: int) -> torch.Tensor | N
     return reference[:, :, :tokens, :].contiguous()
 
 
-def _cat_token(a: torch.Tensor | None, b: torch.Tensor | None) -> torch.Tensor | None:
+def _cat_token(a: torch.Tensor | None, b: torch.Tensor | None, *, category: str = "recent_pending") -> torch.Tensor | None:
     if a is None:
         return b
     if b is None:
@@ -122,7 +122,9 @@ def _cat_token(a: torch.Tensor | None, b: torch.Tensor | None) -> torch.Tensor |
     record_counter("cache_cat_events", bytes_copied=bytes_copied)
     record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
     with profile_range("cache_mutation", bytes_copied=bytes_copied):
-        return torch.cat([a, b], dim=2).contiguous()
+        result = torch.cat([a, b], dim=2).contiguous()
+    record_cache_mutation(category, a, b, result)
+    return result
 
 
 def _cat_packed_k(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Tensor, zero: torch.Tensor, tokens: int) -> None:
@@ -135,9 +137,13 @@ def _cat_packed_k(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         record_counter("cache_cat_events", bytes_copied=bytes_copied)
         record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
         with profile_range("cache_mutation", bytes_copied=bytes_copied):
-            cache.packed_k = torch.cat([cache.packed_k, packed], dim=3)
-            cache.packed_k_scale = torch.cat([cache.packed_k_scale, scale], dim=3)
-            cache.packed_k_zero = torch.cat([cache.packed_k_zero, zero], dim=3)
+            old_packed, old_scale, old_zero = cache.packed_k, cache.packed_k_scale, cache.packed_k_zero
+            cache.packed_k = torch.cat([old_packed, packed], dim=3)
+            cache.packed_k_scale = torch.cat([old_scale, scale], dim=3)
+            cache.packed_k_zero = torch.cat([old_zero, zero], dim=3)
+        record_cache_mutation("packed_k_payload", old_packed, packed, cache.packed_k)
+        record_cache_mutation("packed_k_scale", old_scale, scale, cache.packed_k_scale)
+        record_cache_mutation("packed_k_zero", old_zero, zero, cache.packed_k_zero)
     cache.packed_k_tokens += int(tokens)
     cache.pack_count_k += 1
 
@@ -152,9 +158,13 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         record_counter("cache_cat_events", bytes_copied=bytes_copied)
         record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
         with profile_range("cache_mutation", bytes_copied=bytes_copied):
-            cache.packed_v = torch.cat([cache.packed_v, packed], dim=2)
-            cache.packed_v_scale = torch.cat([cache.packed_v_scale, scale], dim=2)
-            cache.packed_v_zero = torch.cat([cache.packed_v_zero, zero], dim=2)
+            old_packed, old_scale, old_zero = cache.packed_v, cache.packed_v_scale, cache.packed_v_zero
+            cache.packed_v = torch.cat([old_packed, packed], dim=2)
+            cache.packed_v_scale = torch.cat([old_scale, scale], dim=2)
+            cache.packed_v_zero = torch.cat([old_zero, zero], dim=2)
+        record_cache_mutation("packed_v2_payload", old_packed, packed, cache.packed_v)
+        record_cache_mutation("packed_v2_scale", old_scale, scale, cache.packed_v_scale)
+        record_cache_mutation("packed_v2_zero", old_zero, zero, cache.packed_v_zero)
     cache.packed_v_tokens += int(tokens)
     cache.pack_count_v += 1
 
@@ -166,6 +176,8 @@ def _cat_v_payload(
     packed: torch.Tensor,
     scale: torch.Tensor,
     zero: torch.Tensor,
+    *,
+    category_prefix: str = "packed_v2",
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     if packed_current is None:
         return packed, scale, zero
@@ -175,21 +187,27 @@ def _cat_v_payload(
     record_counter("cache_cat_events", bytes_copied=bytes_copied)
     record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
     with profile_range("cache_mutation", bytes_copied=bytes_copied):
-        return (
+        result = (
             torch.cat([packed_current, packed], dim=2).contiguous(),
             torch.cat([scale_current, scale], dim=2).contiguous(),
             torch.cat([zero_current, zero], dim=2).contiguous(),
         )
+    record_cache_mutation(f"{category_prefix}_payload", packed_current, packed, result[0])
+    record_cache_mutation(f"{category_prefix}_scale", scale_current, scale, result[1])
+    record_cache_mutation(f"{category_prefix}_zero", zero_current, zero, result[2])
+    return result
 
 
-def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
+def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor, *, category: str = "assignments") -> torch.Tensor:
     if current is None:
         return value
     bytes_copied = tensor_bytes(current) + tensor_bytes(value)
     record_counter("cache_cat_events", bytes_copied=bytes_copied)
     record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
     with profile_range("cache_mutation", bytes_copied=bytes_copied):
-        return torch.cat([current, value], dim=2).contiguous()
+        result = torch.cat([current, value], dim=2).contiguous()
+    record_cache_mutation(category, current, value, result)
+    return result
 
 
 def _assign_minmax_hnk(x: torch.Tensor, centroids: torch.Tensor, block_k: int = 256) -> torch.Tensor:
@@ -458,10 +476,26 @@ def _cat_mixed_packed_v(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor
         high = v_adjusted[:, :, mask, :].contiguous()
         if low.shape[2]:
             packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
-            cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, packed2, scale2, zero2)
+            cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(
+                cache.packed_v,
+                cache.packed_v_scale,
+                cache.packed_v_zero,
+                packed2,
+                scale2,
+                zero2,
+                category_prefix="packed_v2",
+            )
         if high.shape[2]:
             packed4, scale4, zero4 = quantize_pack_v_reference(high, cache.group_size, 4)
-            cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, packed4, scale4, zero4)
+            cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(
+                cache.packed_v4,
+                cache.packed_v4_scale,
+                cache.packed_v4_zero,
+                packed4,
+                scale4,
+                zero4,
+                category_prefix="packed_v4",
+            )
             cache.packed_v4_tokens += int(high.shape[2])
         mask_u8 = precision_mask.to(torch.uint8)
         if cache.v_precision_mask is None:
@@ -471,7 +505,9 @@ def _cat_mixed_packed_v(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor
             record_counter("cache_cat_events", bytes_copied=bytes_copied)
             record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
             with profile_range("cache_mutation", bytes_copied=bytes_copied):
-                cache.v_precision_mask = torch.cat([cache.v_precision_mask, mask_u8], dim=1).contiguous()
+                old_mask = cache.v_precision_mask
+                cache.v_precision_mask = torch.cat([old_mask, mask_u8], dim=1).contiguous()
+            record_cache_mutation("precision_mask", old_mask, mask_u8, cache.v_precision_mask)
         cache.packed_v_tokens += int(tokens)
         cache.pack_count_v += 1
 
@@ -506,6 +542,9 @@ def update_value_causal_importance(cache: PatternQuantizedKVCache, attn_weights:
             if torch.is_tensor(cache.v_causal_importance):
                 old = cache.v_causal_importance.to(mass.device)
                 new_state[:, : old.shape[1]] = old
+                record_cache_mutation("causal_importance", old, None, new_state)
+            else:
+                record_cache_mutation("causal_importance", None, None, new_state)
             cache.v_causal_importance = new_state
         elif cache.v_causal_importance.device != mass.device or cache.v_causal_importance.dtype != torch.float32:
             cache.v_causal_importance = cache.v_causal_importance.to(device=mass.device, dtype=torch.float32)
@@ -744,10 +783,10 @@ def _pack_pattern_window_impl(
     else:
         packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
         _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
-    cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments)
-    cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx)
+    cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments, category="assignments")
+    cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx, category="assignments")
     mask_u8 = v_pattern_mask.to(torch.uint8)
-    cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8)
+    cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8, category="pattern_mask")
     cache.v_assignments = cache.v_pattern_mask
     cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
@@ -910,16 +949,16 @@ def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, val
     sink_capacity = max(int(cache.sink_length) - tensor_tokens(cache.sink_k), 0)
     sink_fill = min(sink_capacity, append_tokens)
     if sink_fill:
-        cache.sink_k = _cat_token(cache.sink_k, key_states[:, :, :sink_fill, :].contiguous())
-        cache.sink_v = _cat_token(cache.sink_v, value_states[:, :, :sink_fill, :].contiguous())
+        cache.sink_k = _cat_token(cache.sink_k, key_states[:, :, :sink_fill, :].contiguous(), category="sink")
+        cache.sink_v = _cat_token(cache.sink_v, value_states[:, :, :sink_fill, :].contiguous(), category="sink")
     if sink_fill < append_tokens:
-        cache.recent_k = _cat_token(cache.recent_k, key_states[:, :, sink_fill:, :].contiguous())
-        cache.recent_v = _cat_token(cache.recent_v, value_states[:, :, sink_fill:, :].contiguous())
+        cache.recent_k = _cat_token(cache.recent_k, key_states[:, :, sink_fill:, :].contiguous(), category="recent_pending")
+        cache.recent_v = _cat_token(cache.recent_v, value_states[:, :, sink_fill:, :].contiguous(), category="recent_pending")
     cache.total_tokens += int(key_states.shape[2])
     overflow = max(tensor_tokens(cache.recent_k) - cache.recent_length, 0)
     if overflow:
-        cache.pending_k = _cat_token(cache.pending_k, cache.recent_k[:, :, :overflow, :].contiguous())
-        cache.pending_v = _cat_token(cache.pending_v, cache.recent_v[:, :, :overflow, :].contiguous())
+        cache.pending_k = _cat_token(cache.pending_k, cache.recent_k[:, :, :overflow, :].contiguous(), category="recent_pending")
+        cache.pending_v = _cat_token(cache.pending_v, cache.recent_v[:, :, :overflow, :].contiguous(), category="recent_pending")
         cache.recent_k = cache.recent_k[:, :, overflow:, :].contiguous()
         cache.recent_v = cache.recent_v[:, :, overflow:, :].contiguous()
     flush_pending(cache)
@@ -951,8 +990,8 @@ def append_decode_chunked(cache: QuantizedKVCache, key_states: torch.Tensor, val
 def append_decode_chunked_buffer_only(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
     if tensor_tokens(cache.sink_k) or tensor_tokens(cache.recent_k):
         raise ValueError("chunked cache must not contain sink or rolling recent tokens")
-    cache.pending_k = _cat_token(cache.pending_k, key_states)
-    cache.pending_v = _cat_token(cache.pending_v, value_states)
+    cache.pending_k = _cat_token(cache.pending_k, key_states, category="recent_pending")
+    cache.pending_v = _cat_token(cache.pending_v, value_states, category="recent_pending")
     cache.total_tokens += int(key_states.shape[2])
     return cache
 
