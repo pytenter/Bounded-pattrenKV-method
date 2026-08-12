@@ -1,0 +1,17 @@
+{
+  "additional_system_metadata_introduced": false,
+  "old_persistent_metadata_bytes": 0,
+  "new_persistent_metadata_bytes": 0,
+  "delta_persistent_metadata_bytes": 0,
+  "additional_bytes_per_token": 0.0,
+  "bits_per_value_element_equivalent": 0.0,
+  "temporary_gather_buffers": [
+    "compact V2 attention weights",
+    "compact V4 attention weights",
+    "compact V2 Pattern mask and assignment",
+    "compact V4 Pattern mask and assignment"
+  ],
+  "temporary_buffers_are_not_persistent_cache_metadata": true,
+  "formal_2_500488_algorithm_budget_changed": false,
+  "physical_accounting_note": "Phase S1 introduces no persistent cache metadata. Temporary gather allocation is measured separately as fused_temp_bytes in benchmark counters."
+}

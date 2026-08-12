@@ -1,0 +1,21 @@
+{
+  "algorithm_semantics_changed": false,
+  "all_v2_equivalence_passed": true,
+  "all_v4_equivalence_passed": true,
+  "e2e_smoke_max_new_tokens": 512,
+  "e2e_smoke_mixed_v_fused_calls": 34912,
+  "e2e_smoke_mixed_v_reference_calls": 0,
+  "e2e_smoke_passed": true,
+  "full_aime24_rerun_started": false,
+  "fused_faster_than_reference_ge_2k": true,
+  "fused_reconstruct_packed_v_calls": 0,
+  "implementation": "CUDA compressed-domain two-pass using existing fused V kernels",
+  "long_context_correctness_passed": true,
+  "mixed_25_equivalence_passed": true,
+  "mixed_fused_kernel_implemented": true,
+  "nan_inf_failures": 0,
+  "phase_s1_batch_support": 1,
+  "reference_path_preserved": true,
+  "sglang_integration_started": false,
+  "vllm_integration_started": false
+}

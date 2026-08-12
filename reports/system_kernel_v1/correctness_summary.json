@@ -1,0 +1,14 @@
+{
+  "all_passed": true,
+  "batch_support": 1,
+  "case_count": 56,
+  "cosine_similarity_min": 0.9999997615814209,
+  "gqa_supported": true,
+  "inf_failures": 0,
+  "longest_tested_t": 8192,
+  "max_abs_error": 0.000244140625,
+  "mean_abs_error_max": 1.7567144823260605e-05,
+  "nan_failures": 0,
+  "passed_count": 56,
+  "relative_l2_max": 0.000631161907222122
+}

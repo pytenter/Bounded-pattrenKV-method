@@ -1,0 +1,66 @@
+{
+  "backend": "fused",
+  "base_seed": 42,
+  "counters": {
+    "fused_temp_bytes": 1188200448,
+    "mixed_v_fused_calls": 34912,
+    "mixed_v_reference_calls": 0,
+    "v2_tokens_processed": 6552576,
+    "v4_tokens_processed": 2184192
+  },
+  "full_aime24_rerun_started": false,
+  "max_new_tokens": 512,
+  "passed": true,
+  "problem_ids": [
+    0,
+    7,
+    9
+  ],
+  "rows": [
+    {
+      "backend": "fused",
+      "base_seed": 42,
+      "frozen_reference_correct": true,
+      "frozen_reference_generated_tokens": 2379,
+      "frozen_reference_parsed_answer": "204",
+      "frozen_reference_stop_reason": "eos",
+      "generated_tokens": 512,
+      "is_correct": false,
+      "nan_inf_detected": false,
+      "parsed_answer": "2",
+      "problem_id": 0,
+      "reference_answer": "204",
+      "stop_reason": "length"
+    },
+    {
+      "backend": "fused",
+      "base_seed": 42,
+      "frozen_reference_correct": true,
+      "frozen_reference_generated_tokens": 2141,
+      "frozen_reference_parsed_answer": "25",
+      "frozen_reference_stop_reason": "eos",
+      "generated_tokens": 512,
+      "is_correct": false,
+      "nan_inf_detected": false,
+      "parsed_answer": "5",
+      "problem_id": 7,
+      "reference_answer": "25",
+      "stop_reason": "length"
+    },
+    {
+      "backend": "fused",
+      "base_seed": 42,
+      "frozen_reference_correct": true,
+      "frozen_reference_generated_tokens": 2592,
+      "frozen_reference_parsed_answer": "116",
+      "frozen_reference_stop_reason": "eos",
+      "generated_tokens": 512,
+      "is_correct": false,
+      "nan_inf_detected": false,
+      "parsed_answer": null,
+      "problem_id": 9,
+      "reference_answer": "116",
+      "stop_reason": "length"
+    }
+  ]
+}

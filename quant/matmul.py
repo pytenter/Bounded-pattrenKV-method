@@ -9,6 +9,32 @@ import triton.language as tl
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import patternkv_gemv
 
+_MIXED_V_COUNTERS = {
+	"mixed_v_fused_calls": 0,
+	"mixed_v_reference_calls": 0,
+	"v2_tokens_processed": 0,
+	"v4_tokens_processed": 0,
+	"fused_temp_bytes": 0,
+}
+
+
+def reset_patternkv_mixed_v_counters() -> None:
+	for key in _MIXED_V_COUNTERS:
+		_MIXED_V_COUNTERS[key] = 0
+
+
+def get_patternkv_mixed_v_counters() -> dict:
+	return dict(_MIXED_V_COUNTERS)
+
+
+def record_mixed_v_reference_call(tokens: int = 0) -> None:
+	_MIXED_V_COUNTERS["mixed_v_reference_calls"] += 1
+	_MIXED_V_COUNTERS["v2_tokens_processed"] += int(tokens)
+
+
+def _tensor_bytes(value: torch.Tensor | None) -> int:
+	return 0 if value is None else int(value.numel() * value.element_size())
+
 
 @triton.jit
 def qbvm_kernel(
@@ -407,3 +433,117 @@ def cuda_attn_v_fused_with_base(
 
     return out16.view(B, nh, 1, OC) 
     # return c
+
+
+def cuda_attn_v_mixed_fused_with_base(
+    group_size: int,
+    attn_q: torch.Tensor,
+    vq2: torch.Tensor | None,
+    v2_scale: torch.Tensor | None,
+    v2_zero: torch.Tensor | None,
+    vq4: torch.Tensor | None,
+    v4_scale: torch.Tensor | None,
+    v4_zero: torch.Tensor | None,
+    precision_mask: torch.Tensor,
+    v_centroids: torch.Tensor,
+    v_mask_q: torch.Tensor,
+    v_idx_q: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Compressed-domain mixed V2/V4 Value attention.
+
+    This Phase S1 path keeps the frozen split payload representation. It gathers
+    logical-order attention/Pattern metadata into V2 and V4 compact order, then
+    runs the existing CUDA fused Value-attention kernel separately for each
+    precision and sums the outputs. It never materializes the full historical
+    FP16 Value tensor.
+    """
+    assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,T], got {attn_q.shape}"
+    B, nh_in, _, total_tokens = attn_q.shape
+    assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
+    if B != 1:
+        raise RuntimeError("Phase S1 mixed fused Value attention currently supports B=1, matching frozen mixed cache packing")
+    if precision_mask.dim() != 2 or precision_mask.shape != (B, total_tokens):
+        raise RuntimeError(f"precision_mask must be [B,T]={B,total_tokens}, got {tuple(precision_mask.shape)}")
+    if v_mask_q.shape != (B, nh_kv, total_tokens):
+        raise RuntimeError(f"v_mask_q must be [B,nh_kv,T]={B,nh_kv,total_tokens}, got {tuple(v_mask_q.shape)}")
+    if v_idx_q.shape != (B, nh_kv, total_tokens):
+        raise RuntimeError(f"v_idx_q must be [B,nh_kv,T]={B,nh_kv,total_tokens}, got {tuple(v_idx_q.shape)}")
+    if v_centroids is None or v_centroids.dim() != 3:
+        raise RuntimeError("fused mixed Value attention requires Pattern centroids")
+
+    mask = precision_mask[0].bool()
+    low_mask = ~mask
+    high_mask = mask
+    v2_tokens = int(low_mask.sum().item())
+    v4_tokens = int(high_mask.sum().item())
+    if v2_tokens + v4_tokens != total_tokens:
+        raise RuntimeError("precision mask token count mismatch")
+
+    _MIXED_V_COUNTERS["mixed_v_fused_calls"] += 1
+    _MIXED_V_COUNTERS["v2_tokens_processed"] += v2_tokens
+    _MIXED_V_COUNTERS["v4_tokens_processed"] += v4_tokens
+
+    out = None
+    full_attached = False
+    if v2_tokens:
+        if vq2 is None or v2_scale is None or v2_zero is None:
+            raise RuntimeError("V2 payload/scale/zero are required for V2 tokens")
+        if vq2.shape[2] != v2_tokens:
+            raise RuntimeError(f"V2 payload token mismatch: payload={vq2.shape[2]} mask={v2_tokens}")
+        attn2 = attn_q[..., low_mask].contiguous()
+        mask2 = v_mask_q[:, :, low_mask].contiguous()
+        idx2 = v_idx_q[:, :, low_mask].contiguous()
+        _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn2) + _tensor_bytes(mask2) + _tensor_bytes(idx2)
+        out = cuda_attn_v_fused_with_base(
+            group_size,
+            attn2,
+            vq2,
+            v2_scale,
+            v2_zero,
+            2,
+            v_centroids,
+            mask2,
+            idx2,
+            nh=nh,
+            nh_kv=nh_kv,
+            attn_f=attn_f,
+            v_full=v_full,
+        )
+        full_attached = attn_f is not None and v_full is not None
+
+    if v4_tokens:
+        if vq4 is None or v4_scale is None or v4_zero is None:
+            raise RuntimeError("V4 payload/scale/zero are required for V4 tokens")
+        if vq4.shape[2] != v4_tokens:
+            raise RuntimeError(f"V4 payload token mismatch: payload={vq4.shape[2]} mask={v4_tokens}")
+        attn4 = attn_q[..., high_mask].contiguous()
+        mask4 = v_mask_q[:, :, high_mask].contiguous()
+        idx4 = v_idx_q[:, :, high_mask].contiguous()
+        _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn4) + _tensor_bytes(mask4) + _tensor_bytes(idx4)
+        part4 = cuda_attn_v_fused_with_base(
+            group_size,
+            attn4,
+            vq4,
+            v4_scale,
+            v4_zero,
+            4,
+            v_centroids,
+            mask4,
+            idx4,
+            nh=nh,
+            nh_kv=nh_kv,
+            attn_f=None if full_attached else attn_f,
+            v_full=None if full_attached else v_full,
+        )
+        out = part4 if out is None else out + part4
+        full_attached = full_attached or (attn_f is not None and v_full is not None)
+
+    if out is None:
+        if attn_f is None or v_full is None:
+            raise RuntimeError("mixed fused Value attention received no quantized or full-precision Value tokens")
+        out = torch.matmul(attn_f, torch.repeat_interleave(v_full, nh // nh_kv, dim=1))
+    return out

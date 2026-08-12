@@ -9,7 +9,13 @@ import torch.nn.functional as F
 from torch import nn
 
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
-from quant.matmul import cuda_bmm_fA_qB_outer, cuda_bmm_fA_qB_outer_with_base, cuda_attn_v_fused_with_base
+from quant.matmul import (
+    cuda_attn_v_fused_with_base,
+    cuda_attn_v_mixed_fused_with_base,
+    cuda_bmm_fA_qB_outer,
+    cuda_bmm_fA_qB_outer_with_base,
+    record_mixed_v_reference_call,
+)
 from models.segmented_cache import (
     CHUNKED_CACHE_MODE,
     PatternQuantizedKVCache,
@@ -52,6 +58,69 @@ except ImportError:
 
 
 _CONFIG_FOR_DOC = "LlamaConfig"
+
+
+def patternkv_mixed_v_backend() -> str:
+    backend = os.environ.get("PATTERNKV_MIXED_V_BACKEND", "fused").strip().lower()
+    if backend not in {"fused", "reference"}:
+        raise ValueError("PATTERNKV_MIXED_V_BACKEND must be 'fused' or 'reference'")
+    return backend
+
+
+def patternkv_mixed_value_attention(
+    module: nn.Module,
+    cache: PatternQuantizedKVCache,
+    weights: torch.Tensor,
+    v_mask: torch.Tensor | None,
+    quant_tokens: int,
+    *,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    backend = patternkv_mixed_v_backend()
+    if backend == "reference":
+        record_mixed_v_reference_call(quant_tokens)
+        packed_v = reconstruct_packed_v(cache)
+        if packed_v is None:
+            if attn_f is None or v_full is None:
+                raise RuntimeError("reference mixed Value path has no quantized or full-precision Value")
+            return torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+        packed_v = packed_v[:, :, :quant_tokens, :].contiguous()
+        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+            centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
+            gathered = torch.gather(
+                centroids,
+                2,
+                cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1]),
+            ).to(packed_v.dtype)
+            packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
+        out = torch.matmul(weights, repeat_kv(packed_v, module.num_key_value_groups))
+        if attn_f is not None and v_full is not None:
+            out = out + torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+        return out
+
+    if cache.v_centroids is None or cache.v_assignment_idx is None or v_mask is None:
+        raise RuntimeError("fused mixed Value path requires Pattern centroid, assignment, and mask metadata")
+    if cache.v_precision_mask is None:
+        raise RuntimeError("fused mixed Value path requires v_precision_mask")
+    return cuda_attn_v_mixed_fused_with_base(
+        module.group_size,
+        weights,
+        cache.packed_v,
+        cache.packed_v_scale,
+        cache.packed_v_zero,
+        cache.packed_v4,
+        cache.packed_v4_scale,
+        cache.packed_v4_zero,
+        cache.v_precision_mask[:, :quant_tokens],
+        cache.v_centroids,
+        v_mask[:, :, :quant_tokens],
+        cache.v_assignment_idx[:, :, :quant_tokens],
+        nh=module.num_heads,
+        nh_kv=module.num_key_value_heads,
+        attn_f=attn_f,
+        v_full=v_full,
+    )
 
 
 class LlamaAttention_PatternKV(nn.Module):
@@ -906,13 +975,15 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 if quant_tokens and full_tokens:
                     v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                     if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
-                        packed_v = reconstruct_packed_v(cache)
-                        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                            centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
-                            gathered = torch.gather(centroids, 2, cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1])).to(packed_v.dtype)
-                            packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
-                        attn_output = torch.matmul(attn_weights[:, :, :, :quant_tokens], repeat_kv(packed_v, self.num_key_value_groups))
-                        attn_output += torch.matmul(attn_weights[:, :, :, quant_tokens:], repeat_kv(cache.pending_v, self.num_key_value_groups))
+                        attn_output = patternkv_mixed_value_attention(
+                            self,
+                            cache,
+                            attn_weights[:, :, :, :quant_tokens],
+                            v_mask,
+                            quant_tokens,
+                            attn_f=attn_weights[:, :, :, quant_tokens:],
+                            v_full=cache.pending_v,
+                        )
                     else:
                         attn_output = cuda_attn_v_fused_with_base(
                             self.group_size,
@@ -933,12 +1004,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 elif quant_tokens:
                     v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                     if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
-                        packed_v = reconstruct_packed_v(cache)
-                        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                            centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
-                            gathered = torch.gather(centroids, 2, cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1])).to(packed_v.dtype)
-                            packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
-                        attn_output = torch.matmul(attn_weights, repeat_kv(packed_v, self.num_key_value_groups))
+                        attn_output = patternkv_mixed_value_attention(self, cache, attn_weights, v_mask, quant_tokens)
                     else:
                         attn_output = cuda_attn_v_fused_with_base(
                             self.group_size,
@@ -963,12 +1029,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     if name == "packed":
                         v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                         if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
-                            packed_v = reconstruct_packed_v(cache)
-                            if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                                centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
-                                gathered = torch.gather(centroids, 2, cache.v_assignment_idx[:, :, : cache.packed_v_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1])).to(packed_v.dtype)
-                                packed_v = packed_v + v_mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
-                            part = torch.matmul(weights, repeat_kv(packed_v, self.num_key_value_groups))
+                            part = patternkv_mixed_value_attention(self, cache, weights, v_mask, cache.packed_v_tokens)
                         elif cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
                             part = cuda_attn_v_fused_with_base(
                                 self.group_size,
