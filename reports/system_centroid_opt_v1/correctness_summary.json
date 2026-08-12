@@ -1,0 +1,108 @@
+{
+  "all_passed": true,
+  "label": "candidate_b",
+  "rows": [
+    {
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 8192
+    },
+    {
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 4,
+      "context_tokens": 8192
+    },
+    {
+      "baseline_vs_candidate_cosine": 0.9999998807907104,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 16384
+    },
+    {
+      "baseline_vs_candidate_cosine": 1.000000238418579,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 4,
+      "context_tokens": 16384
+    },
+    {
+      "assignment": "RANDOM_UNIFORM",
+      "baseline_vs_candidate_cosine": 0.9999998807907104,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 16384
+    },
+    {
+      "assignment": "SKEWED",
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 16384
+    },
+    {
+      "assignment": "ALL_SAME",
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 16384
+    },
+    {
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 32768
+    },
+    {
+      "baseline_vs_candidate_cosine": 1.0000001192092896,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 4,
+      "context_tokens": 32768
+    },
+    {
+      "assignment": "RANDOM_UNIFORM",
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 32768
+    },
+    {
+      "assignment": "SKEWED",
+      "baseline_vs_candidate_cosine": 1.0,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 32768
+    },
+    {
+      "assignment": "ALL_SAME",
+      "baseline_vs_candidate_cosine": 1.0000001192092896,
+      "baseline_vs_candidate_max_abs": 0.0,
+      "baseline_vs_candidate_mean_abs": 0.0,
+      "baseline_vs_candidate_relative_l2": 0.0,
+      "bit": 2,
+      "context_tokens": 32768
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+label,context_tokens,bit,assignment,density,original_atomic_ops,candidate_atomic_ops,atomic_reduction_fraction
+candidate_b,8192,2,mixed25_normal,normal,21268,14210,0.3318600714688734
+candidate_b,8192,4,mixed25_normal,normal,7171,4793,0.3316134430344443
+candidate_b,16384,2,mixed25_normal,normal,43585,28884,0.3372949409200413
+candidate_b,16384,4,mixed25_normal,normal,14396,9597,0.3333564879133093
+candidate_b,16384,2,RANDOM_UNIFORM,1.0,129024,56334,0.5633835565476191
+candidate_b,16384,2,SKEWED,1.0,129024,44205,0.6573893229166667
+candidate_b,16384,2,ALL_SAME,1.0,129024,4032,0.96875
+candidate_b,32768,2,mixed25_normal,normal,87925,58510,0.33454648848450386
+candidate_b,32768,4,mixed25_normal,normal,29326,19493,0.33529973402441515
+candidate_b,32768,2,RANDOM_UNIFORM,1.0,260096,113582,0.5633073941929134
+candidate_b,32768,2,SKEWED,1.0,260096,89005,0.6577994279035433
+candidate_b,32768,2,ALL_SAME,1.0,260096,8128,0.96875

@@ -375,3 +375,91 @@ def test_production_backend_unchanged_when_env_unset(monkeypatch):
         NH_KV,
     )
     torch.testing.assert_close(env_ignored, baseline, rtol=1e-5, atol=1e-5)
+
+
+def _single_lane_output(data, *, bit: int, mode: str | None = None):
+    precision = data["precision"][0].bool()
+    token_mask = ~precision if bit == 2 else precision
+    payload = data["p2"] if bit == 2 else data["p4"]
+    fn = cuda_attn_v_fused_with_base if mode is None else cuda_attn_v_fused_with_base_debug
+    kwargs = {} if mode is None else {"debug_mode": mode}
+    return fn(
+        GROUP_SIZE,
+        data["attn"][..., token_mask].contiguous(),
+        payload[0],
+        payload[1],
+        payload[2],
+        bit,
+        data["centroids"],
+        data["v_pattern_mask"][:, :, token_mask].contiguous(),
+        data["v_idx"][:, :, token_mask].contiguous(),
+        NH,
+        NH_KV,
+        **kwargs,
+    )
+
+
+def test_histogram_baseline_matches_reference():
+    data = _build_case("all_v2", 256)
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_warp_aggregate_histogram_matches_baseline():
+    data = _build_case("all_v2", 256)
+    baseline = _single_lane_output(data, bit=2, mode="FULL")
+    warp_agg = _single_lane_output(data, bit=2, mode="WARP_AGG_FULL")
+    torch.testing.assert_close(warp_agg, baseline, rtol=1e-5, atol=1e-5)
+
+
+def test_skewed_assignment_correctness():
+    data = _build_case("all_v2", 256)
+    skew = torch.rand_like(data["v_idx"].float()) < 0.5
+    data["v_idx"] = torch.randint(1, CENTROIDS, data["v_idx"].shape, device="cuda", dtype=torch.int64)
+    data["v_idx"][skew] = 0
+    data["v_pattern_mask"].fill_(1)
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_all_same_centroid_correctness():
+    data = _build_case("all_v2", 256)
+    data["v_idx"].zero_()
+    data["v_pattern_mask"].fill_(1)
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_mask_zero_correctness():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].zero_()
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_mask_full_correctness():
+    data = _build_case("all_v2", 256)
+    data["v_pattern_mask"].fill_(1)
+    fused = _mixed_output(data)
+    ref = _reference_output(data)
+    _assert_close_with_metrics(fused, ref)
+
+
+def test_v4_regression_guard():
+    data = _build_case("all_v4", 256)
+    production = _single_lane_output(data, bit=4)
+    baseline_full = _single_lane_output(data, bit=4, mode="FULL")
+    torch.testing.assert_close(production, baseline_full, rtol=1e-5, atol=1e-5)
+
+
+def test_production_default_path(monkeypatch):
+    data = _build_case("all_v2", 256)
+    monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "FULL")
+    production = _single_lane_output(data, bit=2)
+    monkeypatch.setenv("PATTERNKV_ATTENTION_V_DEBUG_MODE", "WARP_AGG_FULL")
+    still_production = _single_lane_output(data, bit=2)
+    torch.testing.assert_close(still_production, production, rtol=1e-5, atol=1e-5)

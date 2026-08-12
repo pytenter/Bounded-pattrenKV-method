@@ -1,0 +1,13 @@
+{
+  "binary_mtime": 1786544377.0,
+  "binary_sha256": "f15fd51856d8ba3c2f353fe7d4e0ce52259276e964314f951cd49d35748c98a3",
+  "cuda_version": "12.4",
+  "cuda_visible_devices": "1",
+  "git_head": "9cda2ccd190e1f3577db61927c3b5980f9bd6895",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "iters": 200,
+  "loaded_extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "rounds": 5,
+  "torch_version": "2.4.1+cu124",
+  "warmup": 30
+}

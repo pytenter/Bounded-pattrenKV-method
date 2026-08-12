@@ -1,0 +1,2 @@
+candidate,status,reason,decision
+candidate_c_hybrid,NOT_IMPLEMENTED,"Candidate B passed normal V2, mixed-V, E2E, correctness, and regression gates; prompt forbids random extra tuning after a stable measurable winner.",NOT_IMPLEMENTED
