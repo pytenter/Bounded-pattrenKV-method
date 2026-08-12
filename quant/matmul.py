@@ -8,6 +8,7 @@ import triton.language as tl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import patternkv_gemv
+from quant.patternkv_profile import profile_range
 
 _MIXED_V_COUNTERS = {
 	"mixed_v_fused_calls": 0,
@@ -313,33 +314,34 @@ def cuda_bmm_fA_qB_outer_with_base(
     计算 logits = Q @ K_residual^T + Q @ C[assign]^T
     返回 [B, nh, 1, N]
     """
-    assert fA.dim() == 4 and fA.size(2) == 1, "decode 路径 q_len 必须为 1"
-    B, nh_in, _, K = fA.shape
-    assert nh_in == nh
+    with profile_range("qk_quantized_history"):
+        assert fA.dim() == 4 and fA.size(2) == 1, "decode 路径 q_len 必须为 1"
+        B, nh_in, _, K = fA.shape
+        assert nh_in == nh
 
-    feat_per_int = 32 // bits
-    N = qB.shape[-1] * feat_per_int
+        feat_per_int = 32 // bits
+        N = qB.shape[-1] * feat_per_int
 
-    # 展平到 C++ 期望的视图
-    fA_ = fA.view(-1, 1, K).contiguous()  # [B*nh, 1, K]
-    qB_ = qB.reshape(-1, K, qB.shape[-1]).transpose(1, 2).contiguous()  # [B*nh_kv, N/pack, K]
+        # 展平到 C++ 期望的视图
+        fA_ = fA.view(-1, 1, K).contiguous()  # [B*nh, 1, K]
+        qB_ = qB.reshape(-1, K, qB.shape[-1]).transpose(1, 2).contiguous()  # [B*nh_kv, N/pack, K]
 
-    flatten_B_kv = B * nh_kv
-    scales_ = scales.view(flatten_B_kv, scales.shape[-2], scales.shape[-1]).transpose(1, 2).contiguous()
-    zeros_  = zeros.view(flatten_B_kv,  zeros.shape[-2],  zeros.shape[-1]).transpose(1, 2).contiguous()
+        flatten_B_kv = B * nh_kv
+        scales_ = scales.view(flatten_B_kv, scales.shape[-2], scales.shape[-1]).transpose(1, 2).contiguous()
+        zeros_  = zeros.view(flatten_B_kv,  zeros.shape[-2],  zeros.shape[-1]).transpose(1, 2).contiguous()
 
-    # assignments 尽量用紧凑整数类型
-    if assignments.dtype not in (torch.uint8, torch.int16, torch.int32):
-        assignments_ = assignments.to(torch.int16).contiguous()
-    else:
-        assignments_ = assignments.contiguous()
+        # assignments 尽量用紧凑整数类型
+        if assignments.dtype not in (torch.uint8, torch.int16, torch.int32):
+            assignments_ = assignments.to(torch.int16).contiguous()
+        else:
+            assignments_ = assignments.contiguous()
 
-    out = patternkv_gemv.gemv_forward_cuda_outer_dim_with_base(
-        fA_, qB_, scales_, zeros_, bits, group_size, nh, nh_kv,
-        centroids.contiguous(), assignments_
-    )  # [B*nh, 1, N]
+        out = patternkv_gemv.gemv_forward_cuda_outer_dim_with_base(
+            fA_, qB_, scales_, zeros_, bits, group_size, nh, nh_kv,
+            centroids.contiguous(), assignments_
+        )  # [B*nh, 1, N]
 
-    return out.view(B, nh, 1, N)
+        return out.view(B, nh, 1, N)
 
 def cuda_attn_v_fused_with_base(
     group_size: int,
@@ -461,6 +463,45 @@ def cuda_attn_v_mixed_fused_with_base(
     precision and sums the outputs. It never materializes the full historical
     FP16 Value tensor.
     """
+    with profile_range("mixed_v_fused_attention"):
+        return _cuda_attn_v_mixed_fused_with_base_impl(
+            group_size,
+            attn_q,
+            vq2,
+            v2_scale,
+            v2_zero,
+            vq4,
+            v4_scale,
+            v4_zero,
+            precision_mask,
+            v_centroids,
+            v_mask_q,
+            v_idx_q,
+            nh,
+            nh_kv,
+            attn_f=attn_f,
+            v_full=v_full,
+        )
+
+
+def _cuda_attn_v_mixed_fused_with_base_impl(
+    group_size: int,
+    attn_q: torch.Tensor,
+    vq2: torch.Tensor | None,
+    v2_scale: torch.Tensor | None,
+    v2_zero: torch.Tensor | None,
+    vq4: torch.Tensor | None,
+    v4_scale: torch.Tensor | None,
+    v4_zero: torch.Tensor | None,
+    precision_mask: torch.Tensor,
+    v_centroids: torch.Tensor,
+    v_mask_q: torch.Tensor,
+    v_idx_q: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
     assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,T], got {attn_q.shape}"
     B, nh_in, _, total_tokens = attn_q.shape
     assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"

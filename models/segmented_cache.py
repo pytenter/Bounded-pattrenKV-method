@@ -9,6 +9,7 @@ from typing import Any
 import torch
 
 from quant.new_pack import pack_tensor, triton_quantize_and_pack_along_last_dim, unpack_tensor
+from quant.patternkv_profile import profile_range, record_counter, tensor_bytes
 
 
 @dataclass
@@ -117,21 +118,43 @@ def _cat_token(a: torch.Tensor | None, b: torch.Tensor | None) -> torch.Tensor |
         return b
     if b is None:
         return a
-    return torch.cat([a, b], dim=2).contiguous()
+    bytes_copied = tensor_bytes(a) + tensor_bytes(b)
+    record_counter("cache_cat_events", bytes_copied=bytes_copied)
+    record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+    with profile_range("cache_mutation", bytes_copied=bytes_copied):
+        return torch.cat([a, b], dim=2).contiguous()
 
 
 def _cat_packed_k(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Tensor, zero: torch.Tensor, tokens: int) -> None:
-    cache.packed_k = packed if cache.packed_k is None else torch.cat([cache.packed_k, packed], dim=3)
-    cache.packed_k_scale = scale if cache.packed_k_scale is None else torch.cat([cache.packed_k_scale, scale], dim=3)
-    cache.packed_k_zero = zero if cache.packed_k_zero is None else torch.cat([cache.packed_k_zero, zero], dim=3)
+    if cache.packed_k is None:
+        cache.packed_k = packed
+        cache.packed_k_scale = scale
+        cache.packed_k_zero = zero
+    else:
+        bytes_copied = tensor_bytes(cache.packed_k) + tensor_bytes(packed) + tensor_bytes(cache.packed_k_scale) + tensor_bytes(scale) + tensor_bytes(cache.packed_k_zero) + tensor_bytes(zero)
+        record_counter("cache_cat_events", bytes_copied=bytes_copied)
+        record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+        with profile_range("cache_mutation", bytes_copied=bytes_copied):
+            cache.packed_k = torch.cat([cache.packed_k, packed], dim=3)
+            cache.packed_k_scale = torch.cat([cache.packed_k_scale, scale], dim=3)
+            cache.packed_k_zero = torch.cat([cache.packed_k_zero, zero], dim=3)
     cache.packed_k_tokens += int(tokens)
     cache.pack_count_k += 1
 
 
 def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Tensor, zero: torch.Tensor, tokens: int) -> None:
-    cache.packed_v = packed if cache.packed_v is None else torch.cat([cache.packed_v, packed], dim=2)
-    cache.packed_v_scale = scale if cache.packed_v_scale is None else torch.cat([cache.packed_v_scale, scale], dim=2)
-    cache.packed_v_zero = zero if cache.packed_v_zero is None else torch.cat([cache.packed_v_zero, zero], dim=2)
+    if cache.packed_v is None:
+        cache.packed_v = packed
+        cache.packed_v_scale = scale
+        cache.packed_v_zero = zero
+    else:
+        bytes_copied = tensor_bytes(cache.packed_v) + tensor_bytes(packed) + tensor_bytes(cache.packed_v_scale) + tensor_bytes(scale) + tensor_bytes(cache.packed_v_zero) + tensor_bytes(zero)
+        record_counter("cache_cat_events", bytes_copied=bytes_copied)
+        record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+        with profile_range("cache_mutation", bytes_copied=bytes_copied):
+            cache.packed_v = torch.cat([cache.packed_v, packed], dim=2)
+            cache.packed_v_scale = torch.cat([cache.packed_v_scale, scale], dim=2)
+            cache.packed_v_zero = torch.cat([cache.packed_v_zero, zero], dim=2)
     cache.packed_v_tokens += int(tokens)
     cache.pack_count_v += 1
 
@@ -148,15 +171,25 @@ def _cat_v_payload(
         return packed, scale, zero
     if scale_current is None or zero_current is None:
         raise ValueError("existing V payload requires scale and zero")
-    return (
-        torch.cat([packed_current, packed], dim=2).contiguous(),
-        torch.cat([scale_current, scale], dim=2).contiguous(),
-        torch.cat([zero_current, zero], dim=2).contiguous(),
-    )
+    bytes_copied = tensor_bytes(packed_current) + tensor_bytes(packed) + tensor_bytes(scale_current) + tensor_bytes(scale) + tensor_bytes(zero_current) + tensor_bytes(zero)
+    record_counter("cache_cat_events", bytes_copied=bytes_copied)
+    record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+    with profile_range("cache_mutation", bytes_copied=bytes_copied):
+        return (
+            torch.cat([packed_current, packed], dim=2).contiguous(),
+            torch.cat([scale_current, scale], dim=2).contiguous(),
+            torch.cat([zero_current, zero], dim=2).contiguous(),
+        )
 
 
 def _cat_assignment(current: torch.Tensor | None, value: torch.Tensor) -> torch.Tensor:
-    return value if current is None else torch.cat([current, value], dim=2).contiguous()
+    if current is None:
+        return value
+    bytes_copied = tensor_bytes(current) + tensor_bytes(value)
+    record_counter("cache_cat_events", bytes_copied=bytes_copied)
+    record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+    with profile_range("cache_mutation", bytes_copied=bytes_copied):
+        return torch.cat([current, value], dim=2).contiguous()
 
 
 def _assign_minmax_hnk(x: torch.Tensor, centroids: torch.Tensor, block_k: int = 256) -> torch.Tensor:
@@ -325,12 +358,13 @@ def local_v2_v4_gain(
     group_size: int,
     eps: float = 1e-8,
 ) -> torch.Tensor:
-    adjusted = v - pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
-    recon2 = affine_dequantize_last_dim_reference(adjusted, group_size, 2) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
-    recon4 = affine_dequantize_last_dim_reference(adjusted, group_size, 4) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
-    loss2 = _vector_nre(v, recon2, eps=eps) + _vector_direction_error(v, recon2, eps=eps)
-    loss4 = _vector_nre(v, recon4, eps=eps) + _vector_direction_error(v, recon4, eps=eps)
-    return (loss2 - loss4).mean(dim=1).clamp_min(0.0).contiguous()
+    with profile_range("selector_gain", tokens=int(v.shape[2])):
+        adjusted = v - pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+        recon2 = affine_dequantize_last_dim_reference(adjusted, group_size, 2) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+        recon4 = affine_dequantize_last_dim_reference(adjusted, group_size, 4) + pattern_mask.unsqueeze(-1).to(v.dtype) * centroid_per_token
+        loss2 = _vector_nre(v, recon2, eps=eps) + _vector_direction_error(v, recon2, eps=eps)
+        loss4 = _vector_nre(v, recon4, eps=eps) + _vector_direction_error(v, recon4, eps=eps)
+        return (loss2 - loss4).mean(dim=1).clamp_min(0.0).contiguous()
 
 
 def _budget_k(tokens: int, fraction: float, *, force_nonzero: bool = False) -> int:
@@ -348,23 +382,24 @@ def _stable_selector_hash(*parts: object) -> int:
 
 
 def _topk_mask(score: torch.Tensor, k: int, *, tie_break: torch.Tensor | None = None, largest: bool = True) -> torch.Tensor:
-    bsz, tokens = score.shape
-    out = torch.zeros(bsz, tokens, dtype=torch.bool, device=score.device)
-    if k <= 0:
+    with profile_range("selector_topk", tokens=int(score.shape[1])):
+        bsz, tokens = score.shape
+        out = torch.zeros(bsz, tokens, dtype=torch.bool, device=score.device)
+        if k <= 0:
+            return out
+        for b in range(bsz):
+            rows = []
+            for t in range(tokens):
+                primary = float(score[b, t].item())
+                tie = float(tie_break[b, t].item()) if tie_break is not None else 0.0
+                rows.append((primary, tie, t))
+            if largest:
+                rows.sort(key=lambda item: (-item[0], -item[1], item[2]))
+            else:
+                rows.sort(key=lambda item: (item[0], -item[1], item[2]))
+            chosen = [t for _primary, _tie, t in rows[:k]]
+            out[b, chosen] = True
         return out
-    for b in range(bsz):
-        rows = []
-        for t in range(tokens):
-            primary = float(score[b, t].item())
-            tie = float(tie_break[b, t].item()) if tie_break is not None else 0.0
-            rows.append((primary, tie, t))
-        if largest:
-            rows.sort(key=lambda item: (-item[0], -item[1], item[2]))
-        else:
-            rows.sort(key=lambda item: (item[0], -item[1], item[2]))
-        chosen = [t for _primary, _tie, t in rows[:k]]
-        out[b, chosen] = True
-    return out
 
 
 def select_value_precision_mask(
@@ -375,58 +410,70 @@ def select_value_precision_mask(
     *,
     absolute_start: int,
 ) -> torch.Tensor:
-    selector = normalize_value_precision_selector(getattr(cache, "v_precision_selector", "base_v2"))
-    bsz, _heads, tokens, _dim = v_window.shape
-    if selector in {"base_v2", "all_v2"}:
-        return torch.zeros(bsz, tokens, dtype=torch.bool, device=v_window.device)
-    if selector == "all_v4":
-        return torch.ones(bsz, tokens, dtype=torch.bool, device=v_window.device)
-    k = _budget_k(tokens, float(getattr(cache, "v4_budget_fraction", 0.125)), force_nonzero=False)
-    gain = local_v2_v4_gain(v_window, centroid_per_token, pattern_mask, group_size=cache.group_size)
-    if selector == "random_v4":
-        scores = torch.empty(bsz, tokens, dtype=torch.float64, device=v_window.device)
-        task_key = str(getattr(cache, "selector_task_key", "task"))
-        layer_idx = int(getattr(cache, "selector_layer_idx", -1))
-        window_idx = int(getattr(cache, "pack_count_v", 0))
-        seed = int(getattr(cache, "random_selector_seed", 20260809))
-        for b in range(bsz):
-            for t in range(tokens):
-                h = _stable_selector_hash(task_key, layer_idx, window_idx, absolute_start + t, seed)
-                scores[b, t] = float(h) / float((1 << 64) - 1)
-        return _topk_mask(scores, k, tie_break=gain, largest=False)
-    abs_positions = torch.arange(absolute_start, absolute_start + tokens, device=v_window.device).unsqueeze(0).expand(bsz, -1)
-    if selector == "causal_v4":
-        importance = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
-        causal = getattr(cache, "v_causal_importance", None)
-        if torch.is_tensor(causal) and causal.shape[1] >= absolute_start + tokens:
-            importance = causal[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
-        score = (importance + 1e-8) * gain
-        return _topk_mask(score, k, tie_break=gain - abs_positions.to(gain.dtype) * 0.0, largest=True)
-    oracle = getattr(cache, "v_oracle_importance", None)
-    future = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
-    if torch.is_tensor(oracle) and oracle.shape[1] >= absolute_start + tokens:
-        future = oracle[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
-    score = future * gain
-    return _topk_mask(score, k, tie_break=gain, largest=True)
+    with profile_range("selector_total", tokens=int(v_window.shape[2])):
+        selector = normalize_value_precision_selector(getattr(cache, "v_precision_selector", "base_v2"))
+        bsz, _heads, tokens, _dim = v_window.shape
+        if selector in {"base_v2", "all_v2"}:
+            return torch.zeros(bsz, tokens, dtype=torch.bool, device=v_window.device)
+        if selector == "all_v4":
+            return torch.ones(bsz, tokens, dtype=torch.bool, device=v_window.device)
+        k = _budget_k(tokens, float(getattr(cache, "v4_budget_fraction", 0.125)), force_nonzero=False)
+        gain = local_v2_v4_gain(v_window, centroid_per_token, pattern_mask, group_size=cache.group_size)
+        if selector == "random_v4":
+            with profile_range("selector_score", tokens=tokens):
+                scores = torch.empty(bsz, tokens, dtype=torch.float64, device=v_window.device)
+                task_key = str(getattr(cache, "selector_task_key", "task"))
+                layer_idx = int(getattr(cache, "selector_layer_idx", -1))
+                window_idx = int(getattr(cache, "pack_count_v", 0))
+                seed = int(getattr(cache, "random_selector_seed", 20260809))
+                for b in range(bsz):
+                    for t in range(tokens):
+                        h = _stable_selector_hash(task_key, layer_idx, window_idx, absolute_start + t, seed)
+                        scores[b, t] = float(h) / float((1 << 64) - 1)
+            return _topk_mask(scores, k, tie_break=gain, largest=False)
+        abs_positions = torch.arange(absolute_start, absolute_start + tokens, device=v_window.device).unsqueeze(0).expand(bsz, -1)
+        if selector == "causal_v4":
+            with profile_range("selector_score", tokens=tokens):
+                importance = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
+                causal = getattr(cache, "v_causal_importance", None)
+                if torch.is_tensor(causal) and causal.shape[1] >= absolute_start + tokens:
+                    importance = causal[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
+                score = (importance + 1e-8) * gain
+            return _topk_mask(score, k, tie_break=gain - abs_positions.to(gain.dtype) * 0.0, largest=True)
+        with profile_range("selector_score", tokens=tokens):
+            oracle = getattr(cache, "v_oracle_importance", None)
+            future = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
+            if torch.is_tensor(oracle) and oracle.shape[1] >= absolute_start + tokens:
+                future = oracle[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
+            score = future * gain
+        return _topk_mask(score, k, tie_break=gain, largest=True)
 
 
 def _cat_mixed_packed_v(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor, precision_mask: torch.Tensor, tokens: int) -> None:
-    if v_adjusted.shape[0] != 1:
-        raise ValueError("mixed Value precision currently requires batch size 1")
-    mask = precision_mask[0].bool()
-    low = v_adjusted[:, :, ~mask, :].contiguous()
-    high = v_adjusted[:, :, mask, :].contiguous()
-    if low.shape[2]:
-        packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
-        cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, packed2, scale2, zero2)
-    if high.shape[2]:
-        packed4, scale4, zero4 = quantize_pack_v_reference(high, cache.group_size, 4)
-        cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, packed4, scale4, zero4)
-        cache.packed_v4_tokens += int(high.shape[2])
-    mask_u8 = precision_mask.to(torch.uint8)
-    cache.v_precision_mask = mask_u8 if cache.v_precision_mask is None else torch.cat([cache.v_precision_mask, mask_u8], dim=1).contiguous()
-    cache.packed_v_tokens += int(tokens)
-    cache.pack_count_v += 1
+    with profile_range("pack_total", tokens=int(tokens)):
+        if v_adjusted.shape[0] != 1:
+            raise ValueError("mixed Value precision currently requires batch size 1")
+        mask = precision_mask[0].bool()
+        low = v_adjusted[:, :, ~mask, :].contiguous()
+        high = v_adjusted[:, :, mask, :].contiguous()
+        if low.shape[2]:
+            packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
+            cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, packed2, scale2, zero2)
+        if high.shape[2]:
+            packed4, scale4, zero4 = quantize_pack_v_reference(high, cache.group_size, 4)
+            cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, packed4, scale4, zero4)
+            cache.packed_v4_tokens += int(high.shape[2])
+        mask_u8 = precision_mask.to(torch.uint8)
+        if cache.v_precision_mask is None:
+            cache.v_precision_mask = mask_u8
+        else:
+            bytes_copied = tensor_bytes(cache.v_precision_mask) + tensor_bytes(mask_u8)
+            record_counter("cache_cat_events", bytes_copied=bytes_copied)
+            record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+            with profile_range("cache_mutation", bytes_copied=bytes_copied):
+                cache.v_precision_mask = torch.cat([cache.v_precision_mask, mask_u8], dim=1).contiguous()
+        cache.packed_v_tokens += int(tokens)
+        cache.pack_count_v += 1
 
 
 def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
@@ -450,19 +497,20 @@ def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
 
 
 def update_value_causal_importance(cache: PatternQuantizedKVCache, attn_weights: torch.Tensor) -> None:
-    if attn_weights.dim() != 4:
-        raise ValueError(f"expected attention weights [B,QH,Q,T], got {tuple(attn_weights.shape)}")
-    mass = attn_weights.detach().float().mean(dim=1).sum(dim=1)
-    if cache.v_causal_importance is None or cache.v_causal_importance.shape[1] < cache.total_tokens:
-        new_state = torch.zeros(mass.shape[0], cache.total_tokens, dtype=torch.float32, device=mass.device)
-        if torch.is_tensor(cache.v_causal_importance):
-            old = cache.v_causal_importance.to(mass.device)
-            new_state[:, : old.shape[1]] = old
-        cache.v_causal_importance = new_state
-    elif cache.v_causal_importance.device != mass.device or cache.v_causal_importance.dtype != torch.float32:
-        cache.v_causal_importance = cache.v_causal_importance.to(device=mass.device, dtype=torch.float32)
-    width = min(mass.shape[1], cache.total_tokens)
-    cache.v_causal_importance[:, :width] += mass[:, :width]
+    with profile_range("importance_update", tokens=int(attn_weights.shape[-1]) if attn_weights.dim() == 4 else 0):
+        if attn_weights.dim() != 4:
+            raise ValueError(f"expected attention weights [B,QH,Q,T], got {tuple(attn_weights.shape)}")
+        mass = attn_weights.detach().float().mean(dim=1).sum(dim=1)
+        if cache.v_causal_importance is None or cache.v_causal_importance.shape[1] < cache.total_tokens:
+            new_state = torch.zeros(mass.shape[0], cache.total_tokens, dtype=torch.float32, device=mass.device)
+            if torch.is_tensor(cache.v_causal_importance):
+                old = cache.v_causal_importance.to(mass.device)
+                new_state[:, : old.shape[1]] = old
+            cache.v_causal_importance = new_state
+        elif cache.v_causal_importance.device != mass.device or cache.v_causal_importance.dtype != torch.float32:
+            cache.v_causal_importance = cache.v_causal_importance.to(device=mass.device, dtype=torch.float32)
+        width = min(mass.shape[1], cache.total_tokens)
+        cache.v_causal_importance[:, :width] += mass[:, :width]
 
 
 def pattern_select_v_candidate(
@@ -512,42 +560,44 @@ def pattern_select_v_candidate(
 
 
 def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    if k.shape[2] % group_size != 0:
-        raise ValueError(f"K token length {k.shape[2]} must be divisible by group_size={group_size}")
-    if k.is_cuda:
-        return triton_quantize_and_pack_along_last_dim(k.transpose(2, 3).contiguous(), group_size, bits)
-    feat_per_int = 32 // bits
-    legal_multiple = lcm(group_size, feat_per_int)
-    pad_tokens = (-k.shape[2]) % legal_multiple
-    if pad_tokens:
-        pad = torch.zeros(k.shape[0], k.shape[1], pad_tokens, k.shape[3], dtype=k.dtype, device=k.device)
-        k = torch.cat([k, pad], dim=2)
-    transposed = k.transpose(2, 3).contiguous()
-    bsz, heads, dim, tokens = transposed.shape
-    levels = float((1 << bits) - 1)
-    grouped = transposed.reshape(bsz, heads, dim, tokens // group_size, group_size)
-    zero = grouped.amin(dim=-1)
-    mx = grouped.amax(dim=-1)
-    scale = ((mx - zero) / levels).clamp_min(torch.finfo(transposed.dtype).eps)
-    q = torch.round((grouped - zero.unsqueeze(-1)) / scale.unsqueeze(-1)).clamp_(0, levels).to(torch.int32)
-    q = q.reshape(bsz, heads, dim, tokens)
-    return pack_tensor(q, bits, pack_dim=3), scale.contiguous(), zero.contiguous()
+    with profile_range("pack_k", tokens=int(k.shape[2])):
+        if k.shape[2] % group_size != 0:
+            raise ValueError(f"K token length {k.shape[2]} must be divisible by group_size={group_size}")
+        if k.is_cuda:
+            return triton_quantize_and_pack_along_last_dim(k.transpose(2, 3).contiguous(), group_size, bits)
+        feat_per_int = 32 // bits
+        legal_multiple = lcm(group_size, feat_per_int)
+        pad_tokens = (-k.shape[2]) % legal_multiple
+        if pad_tokens:
+            pad = torch.zeros(k.shape[0], k.shape[1], pad_tokens, k.shape[3], dtype=k.dtype, device=k.device)
+            k = torch.cat([k, pad], dim=2)
+        transposed = k.transpose(2, 3).contiguous()
+        bsz, heads, dim, tokens = transposed.shape
+        levels = float((1 << bits) - 1)
+        grouped = transposed.reshape(bsz, heads, dim, tokens // group_size, group_size)
+        zero = grouped.amin(dim=-1)
+        mx = grouped.amax(dim=-1)
+        scale = ((mx - zero) / levels).clamp_min(torch.finfo(transposed.dtype).eps)
+        q = torch.round((grouped - zero.unsqueeze(-1)) / scale.unsqueeze(-1)).clamp_(0, levels).to(torch.int32)
+        q = q.reshape(bsz, heads, dim, tokens)
+        return pack_tensor(q, bits, pack_dim=3), scale.contiguous(), zero.contiguous()
 
 
 def quantize_pack_v_reference(v: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    if v.shape[-1] % group_size != 0:
-        raise ValueError(f"V head_dim {v.shape[-1]} must be divisible by group_size={group_size}")
-    if v.is_cuda:
-        return triton_quantize_and_pack_along_last_dim(v.contiguous(), group_size, bits)
-    bsz, heads, tokens, dim = v.shape
-    levels = float((1 << bits) - 1)
-    grouped = v.reshape(bsz, heads, tokens, dim // group_size, group_size)
-    zero = grouped.amin(dim=-1)
-    mx = grouped.amax(dim=-1)
-    scale = ((mx - zero) / levels).clamp_min(torch.finfo(v.dtype).eps)
-    q = torch.round((grouped - zero.unsqueeze(-1)) / scale.unsqueeze(-1)).clamp_(0, levels).to(torch.int32)
-    q = q.reshape(bsz, heads, tokens, dim)
-    return pack_tensor(q, bits, pack_dim=3), scale.contiguous(), zero.contiguous()
+    with profile_range(f"pack_v{bits}", tokens=int(v.shape[2])):
+        if v.shape[-1] % group_size != 0:
+            raise ValueError(f"V head_dim {v.shape[-1]} must be divisible by group_size={group_size}")
+        if v.is_cuda:
+            return triton_quantize_and_pack_along_last_dim(v.contiguous(), group_size, bits)
+        bsz, heads, tokens, dim = v.shape
+        levels = float((1 << bits) - 1)
+        grouped = v.reshape(bsz, heads, tokens, dim // group_size, group_size)
+        zero = grouped.amin(dim=-1)
+        mx = grouped.amax(dim=-1)
+        scale = ((mx - zero) / levels).clamp_min(torch.finfo(v.dtype).eps)
+        q = torch.round((grouped - zero.unsqueeze(-1)) / scale.unsqueeze(-1)).clamp_(0, levels).to(torch.int32)
+        q = q.reshape(bsz, heads, tokens, dim)
+        return pack_tensor(q, bits, pack_dim=3), scale.contiguous(), zero.contiguous()
 
 
 def dequantize_k_reference(packed: torch.Tensor | None, scale: torch.Tensor | None, zero: torch.Tensor | None, group_size: int, bits: int) -> torch.Tensor | None:
@@ -588,18 +638,39 @@ def _pack_raw_pending(cache: QuantizedKVCache, tokens: int) -> None:
 
 
 def _append_dynamic_centroids(cache: PatternQuantizedKVCache, k_window: torch.Tensor, v_window: torch.Tensor) -> None:
-    bsz, heads, tokens, dim = k_window.shape
-    xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
-    xv = v_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
-    k_centroid = pattern_chebyshev_center_per_head(xk).to(cache.k_centroids.dtype)
-    v_centroid = pattern_chebyshev_center_per_head(xv).to(cache.v_centroids.dtype)
-    cache.k_centroids = torch.cat([cache.k_centroids, k_centroid], dim=1).contiguous()
-    cache.v_centroids = torch.cat([cache.v_centroids, v_centroid], dim=1).contiguous()
-    cache.centroid_updates_k += 1
-    cache.centroid_updates_v += 1
+    with profile_range("centroid_update", tokens=int(k_window.shape[2])):
+        bsz, heads, tokens, dim = k_window.shape
+        xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+        xv = v_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+        k_centroid = pattern_chebyshev_center_per_head(xk).to(cache.k_centroids.dtype)
+        v_centroid = pattern_chebyshev_center_per_head(xv).to(cache.v_centroids.dtype)
+        cache.k_centroids = torch.cat([cache.k_centroids, k_centroid], dim=1).contiguous()
+        cache.v_centroids = torch.cat([cache.v_centroids, v_centroid], dim=1).contiguous()
+        cache.centroid_updates_k += 1
+        cache.centroid_updates_v += 1
 
 
 def _pack_pattern_window(
+    cache: PatternQuantizedKVCache,
+    tokens: int,
+    *,
+    k_assignments: torch.Tensor | None = None,
+    v_assignment_idx: torch.Tensor | None = None,
+    v_pattern_mask: torch.Tensor | None = None,
+    dynamic_update: bool,
+) -> None:
+    with profile_range("pack_window", tokens=int(tokens)):
+        _pack_pattern_window_impl(
+            cache,
+            tokens,
+            k_assignments=k_assignments,
+            v_assignment_idx=v_assignment_idx,
+            v_pattern_mask=v_pattern_mask,
+            dynamic_update=dynamic_update,
+        )
+
+
+def _pack_pattern_window_impl(
     cache: PatternQuantizedKVCache,
     tokens: int,
     *,
@@ -625,13 +696,14 @@ def _pack_pattern_window(
     else:
         k_assignments = k_assignments[:, :, :tokens].contiguous().to(torch.long)
     if v_assignment_idx is None:
-        v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_v_candidate(
-            v_window,
-            cache.v_centroids,
-            value_objective=getattr(cache, "value_objective", "base"),
-            group_size=cache.group_size,
-            bits=cache.v_bits,
-        )
+        with profile_range("pattern_assignment", tokens=int(tokens)):
+            v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_v_candidate(
+                v_window,
+                cache.v_centroids,
+                value_objective=getattr(cache, "value_objective", "base"),
+                group_size=cache.group_size,
+                bits=cache.v_bits,
+            )
         if v_pattern_mask is None:
             v_pattern_mask = inferred_v_pattern_mask
     else:

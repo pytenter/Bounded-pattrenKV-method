@@ -16,6 +16,7 @@ from quant.matmul import (
     cuda_bmm_fA_qB_outer_with_base,
     record_mixed_v_reference_call,
 )
+from quant.patternkv_profile import profile_range
 from models.segmented_cache import (
     CHUNKED_CACHE_MODE,
     PatternQuantizedKVCache,
@@ -79,25 +80,26 @@ def patternkv_mixed_value_attention(
 ) -> torch.Tensor:
     backend = patternkv_mixed_v_backend()
     if backend == "reference":
-        record_mixed_v_reference_call(quant_tokens)
-        packed_v = reconstruct_packed_v(cache)
-        if packed_v is None:
-            if attn_f is None or v_full is None:
-                raise RuntimeError("reference mixed Value path has no quantized or full-precision Value")
-            return torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
-        packed_v = packed_v[:, :, :quant_tokens, :].contiguous()
-        if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-            centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
-            gathered = torch.gather(
-                centroids,
-                2,
-                cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1]),
-            ).to(packed_v.dtype)
-            packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
-        out = torch.matmul(weights, repeat_kv(packed_v, module.num_key_value_groups))
-        if attn_f is not None and v_full is not None:
-            out = out + torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
-        return out
+        with profile_range("mixed_v_reference_attention", tokens=int(quant_tokens)):
+            record_mixed_v_reference_call(quant_tokens)
+            packed_v = reconstruct_packed_v(cache)
+            if packed_v is None:
+                if attn_f is None or v_full is None:
+                    raise RuntimeError("reference mixed Value path has no quantized or full-precision Value")
+                return torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+            packed_v = packed_v[:, :, :quant_tokens, :].contiguous()
+            if cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
+                centroids = cache.v_centroids.unsqueeze(0).expand(packed_v.shape[0], -1, -1, -1)
+                gathered = torch.gather(
+                    centroids,
+                    2,
+                    cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1]),
+                ).to(packed_v.dtype)
+                packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
+            out = torch.matmul(weights, repeat_kv(packed_v, module.num_key_value_groups))
+            if attn_f is not None and v_full is not None:
+                out = out + torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+            return out
 
     if cache.v_centroids is None or cache.v_assignment_idx is None or v_mask is None:
         raise RuntimeError("fused mixed Value path requires Pattern centroid, assignment, and mask metadata")
@@ -189,31 +191,32 @@ class LlamaAttention_PatternKV(nn.Module):
             )
         bsz, q_len, _ = hidden_states.size()
 
-        if self.config.pretraining_tp > 1:
-            key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
-            query_slices = self.q_proj.weight.split(
-                (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
-            )
-            key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
-            value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
+        with profile_range("qkv_projection"):
+            if self.config.pretraining_tp > 1:
+                key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
+                query_slices = self.q_proj.weight.split(
+                    (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
+                )
+                key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
+                value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
 
-            query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
-            query_states = torch.cat(query_states, dim=-1)
+                query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
+                query_states = torch.cat(query_states, dim=-1)
 
-            key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
-            key_states = torch.cat(key_states, dim=-1)
+                key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
+                key_states = torch.cat(key_states, dim=-1)
 
-            value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
-            value_states = torch.cat(value_states, dim=-1)
+                value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
+                value_states = torch.cat(value_states, dim=-1)
 
-        else:
-            query_states = self.q_proj(hidden_states)
-            key_states = self.k_proj(hidden_states)
-            value_states = self.v_proj(hidden_states)
+            else:
+                query_states = self.q_proj(hidden_states)
+                key_states = self.k_proj(hidden_states)
+                value_states = self.v_proj(hidden_states)
 
-        query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
-        key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
-        value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+            query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
+            key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+            value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
 
         kv_seq_len = key_states.shape[-2]
         if past_key_value is not None:
@@ -878,15 +881,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 kv_seq_len += int(past_key_value[13])
             else:
                 kv_seq_len += past_key_value[8]
-        cos, sin = self.rotary_emb(value_states, position_ids)
-        query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
+        with profile_range("rope_position"):
+            cos, sin = self.rotary_emb(value_states, position_ids)
+            query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
         if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "patternkv_segmented_cache_v1":
             cache = deserialize_cache(past_key_value, pattern=True)
-            if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
-                append_decode_chunked_buffer_only(cache, key_states, value_states)
-            else:
-                append_decode(cache, key_states, value_states)
-                maybe_validate_cache(cache)
+            with profile_range("cache_append"):
+                if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
+                    append_decode_chunked_buffer_only(cache, key_states, value_states)
+                else:
+                    append_decode(cache, key_states, value_states)
+                    maybe_validate_cache(cache)
             if patternkv_equivalence_backend(self.config) == "reference":
                 from bench.patternkv_equivalence_reference import (
                     record_reference_metric_capture,
@@ -925,8 +930,9 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             score_parts = []
             value_parts: list[tuple[str, int]] = []
             if cache.sink_k is not None:
-                sink_k = repeat_kv(cache.sink_k, self.num_key_value_groups)
-                score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
+                with profile_range("qk_fp16_regions", tokens=int(cache.sink_k.shape[2])):
+                    sink_k = repeat_kv(cache.sink_k, self.num_key_value_groups)
+                    score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
                 value_parts.append(("sink", cache.sink_k.shape[2]))
             if cache.packed_k is not None:
                 if cache.k_centroids is not None and cache.k_assignments is not None:
@@ -949,14 +955,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 score_parts.append(packed_scores[:, :, :, : cache.packed_k_tokens])
                 value_parts.append(("packed", cache.packed_k_tokens))
             if cache.pending_k is not None:
-                pending_k = repeat_kv(cache.pending_k, self.num_key_value_groups)
-                score_parts.append(torch.matmul(query_states, pending_k.transpose(2, 3)))
+                with profile_range("qk_fp16_regions", tokens=int(cache.pending_k.shape[2])):
+                    pending_k = repeat_kv(cache.pending_k, self.num_key_value_groups)
+                    score_parts.append(torch.matmul(query_states, pending_k.transpose(2, 3)))
                 value_parts.append(("pending", cache.pending_k.shape[2]))
             if cache.recent_k is not None:
-                recent_k = repeat_kv(cache.recent_k, self.num_key_value_groups)
-                score_parts.append(torch.matmul(query_states, recent_k.transpose(2, 3)))
+                with profile_range("qk_fp16_regions", tokens=int(cache.recent_k.shape[2])):
+                    recent_k = repeat_kv(cache.recent_k, self.num_key_value_groups)
+                    score_parts.append(torch.matmul(query_states, recent_k.transpose(2, 3)))
                 value_parts.append(("recent", cache.recent_k.shape[2]))
-            attn_weights = torch.cat(score_parts, dim=-1) / math.sqrt(self.head_dim)
+            with profile_range("attention_score_concat", tokens=int(cache.total_tokens)):
+                attn_weights = torch.cat(score_parts, dim=-1) / math.sqrt(self.head_dim)
             if attn_weights.size() != (bsz, self.num_heads, q_len, cache.total_tokens):
                 raise ValueError(f"segmented PatternKV attention weights shape mismatch: got {attn_weights.size()}, total={cache.total_tokens}")
             if attention_mask is not None:
@@ -964,7 +973,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     raise ValueError(f"Attention mask should be of size {(bsz, 1, q_len, cache.total_tokens)}, but is {attention_mask.size()}")
                 attn_weights = attn_weights + attention_mask
                 attn_weights = torch.max(attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min))
-            attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+            with profile_range("attention_softmax", tokens=int(cache.total_tokens)):
+                attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
             update_value_causal_importance(cache, attn_weights)
 
             offset = 0
@@ -1021,7 +1031,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                         )
                     offset = quant_tokens
                 else:
-                    attn_output = torch.matmul(attn_weights, repeat_kv(cache.pending_v, self.num_key_value_groups))
+                    with profile_range("value_fp16_tail", tokens=int(full_tokens)):
+                        attn_output = torch.matmul(attn_weights, repeat_kv(cache.pending_v, self.num_key_value_groups))
                     offset = full_tokens
             else:
                 for name, length in value_parts:
@@ -1048,22 +1059,25 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                             part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
                     else:
                         source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
-                        part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
+                        with profile_range("value_fp16_tail", tokens=int(length)):
+                            part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
                     attn_output = part if attn_output is None else attn_output + part
                     offset += length
             if cache_validate_enabled() and offset != cache.total_tokens:
                 raise ValueError(f"segmented PatternKV attention consumed {offset} tokens, expected {cache.total_tokens}")
             attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
-            if self.config.pretraining_tp > 1:
-                attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
-                o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
-                attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
-            else:
-                attn_output = self.o_proj(attn_output)
+            with profile_range("output_projection"):
+                if self.config.pretraining_tp > 1:
+                    attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
+                    o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
+                    attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
+                else:
+                    attn_output = self.o_proj(attn_output)
             if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
                 cache.trace_layer_idx = int(self.layer_idx)
-                flush_chunked_buffer(cache)
-                maybe_validate_cache(cache)
+                with profile_range("cache_flush"):
+                    flush_chunked_buffer(cache)
+                    maybe_validate_cache(cache)
             return attn_output, None, serialize_cache(cache) if use_cache else None
         # assert self.num_key_value_groups == 1
         # [bsz, nh, t, hd]
@@ -2101,26 +2115,28 @@ class LlamaForCausalLM_PatternKV(LlamaPreTrainedModel):
         
         
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
-        outputs = self.model(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            position_ids=position_ids,
-            past_key_values=past_key_values,
-            inputs_embeds=inputs_embeds,
-            use_cache=use_cache,
-            output_attentions=output_attentions,
-            output_hidden_states=output_hidden_states,
-            return_dict=return_dict,
-        )
+        with profile_range(f"{phase}_decoder_model_forward"):
+            outputs = self.model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                position_ids=position_ids,
+                past_key_values=past_key_values,
+                inputs_embeds=inputs_embeds,
+                use_cache=use_cache,
+                output_attentions=output_attentions,
+                output_hidden_states=output_hidden_states,
+                return_dict=return_dict,
+            )
 
         hidden_states = outputs[0]
-        if self.config.pretraining_tp > 1:
-            lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
-            logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
-            logits = torch.cat(logits, dim=-1)
-        else:
-            logits = self.lm_head(hidden_states)
-        logits = logits.float()
+        with profile_range(f"{phase}_lm_head"):
+            if self.config.pretraining_tp > 1:
+                lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
+                logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
+                logits = torch.cat(logits, dim=-1)
+            else:
+                logits = self.lm_head(hidden_states)
+            logits = logits.float()
 
         loss = None
         if labels is not None:

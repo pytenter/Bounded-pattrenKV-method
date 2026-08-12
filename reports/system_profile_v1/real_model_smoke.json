@@ -1,0 +1,61 @@
+{
+  "backend": "fused",
+  "base_seed": 42,
+  "counters": {
+    "fused_temp_bytes": 450101248,
+    "mixed_v_fused_calls": 12608,
+    "mixed_v_reference_calls": 0,
+    "v2_tokens_processed": 2482176,
+    "v4_tokens_processed": 827392
+  },
+  "full_aime24_rerun_started": false,
+  "max_new_tokens": 512,
+  "nan_inf": false,
+  "passed": true,
+  "problem_ids": [
+    0
+  ],
+  "profile_components": [
+    "attention_score_concat",
+    "attention_softmax",
+    "cache_append",
+    "cache_cat_events",
+    "cache_cat_largest_bytes",
+    "cache_mutation",
+    "centroid_update",
+    "decode_decoder_model_forward",
+    "decode_lm_head",
+    "importance_update",
+    "mixed_v_fused_attention",
+    "output_projection",
+    "pack_k",
+    "pack_total",
+    "pack_v2",
+    "pack_v4",
+    "pack_window",
+    "pattern_assignment",
+    "prefill_decoder_model_forward",
+    "prefill_lm_head",
+    "qk_fp16_regions",
+    "qk_quantized_history",
+    "rope_position",
+    "selector_gain",
+    "selector_score",
+    "selector_topk",
+    "selector_total",
+    "value_fp16_tail"
+  ],
+  "profile_records_generated": true,
+  "rows": [
+    {
+      "generated_tokens": 512,
+      "is_correct": false,
+      "nan_inf_detected": false,
+      "parsed_answer": "2",
+      "problem_id": 0,
+      "reference_answer": "204",
+      "stop_reason": "length"
+    }
+  ],
+  "runtime_error": null
+}

@@ -36,6 +36,15 @@ historical FP16 Value reconstruction. Keep the current split payload cache ABI:
 Move selector top-k work to GPU while preserving bit-exact selected-token
 identity against the frozen reference.
 
+## Phase S1.5 Profile Finding
+
+Post-S1 decode profiling is observation-only. The controlled profile found that
+the mixed-V fused attention path remains the largest measured fused-backend
+component at 32K context, followed by dynamic cache mutation and QK. Selector,
+causal-importance update, and packing were not dominant. The recorded next
+phase is `PROFILE_INCONCLUSIVE` because the listed S2/S3 options do not directly
+target the largest remaining component.
+
 ## Phase S3
 
 Design a fixed tile ABI for full 128-token tiles with 96 V2 tokens and 32 V4

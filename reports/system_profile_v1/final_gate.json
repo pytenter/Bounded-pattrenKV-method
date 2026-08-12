@@ -1,0 +1,27 @@
+{
+  "aime25_started": false,
+  "algorithm_changed": false,
+  "component_breakdown_completed": true,
+  "context_scaling_completed": true,
+  "contexts_completed": [
+    2048,
+    4096,
+    8192,
+    16384,
+    32768
+  ],
+  "contexts_failed": [],
+  "dominant_bottleneck": "mixed_v",
+  "full_aime24_rerun_started": false,
+  "fused_profile_completed": true,
+  "profiling_overhead_measured": true,
+  "real_model_smoke_completed": true,
+  "real_model_smoke_mixed_v_fused_calls": 12608,
+  "real_model_smoke_mixed_v_reference_calls": 0,
+  "real_model_smoke_profile_records_generated": true,
+  "recommendation_reason": "mixed_v dominates, but this phase did not authorize a matching optimization path",
+  "recommended_next_phase": "PROFILE_INCONCLUSIVE",
+  "reference_profile_completed": true,
+  "sglang_started": false,
+  "vllm_started": false
+}
