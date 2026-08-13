@@ -1,0 +1,92 @@
+{
+  "ANCHOR_ONLY": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "BASELINE_CURRENT": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "CANONICALIZED_0_5XP99": {
+    "canonicalized_k_buffer": true,
+    "extra_k_copy": true,
+    "fp32_workspace": true,
+    "temporary_bytes": 1179648
+  },
+  "CANONICALIZED_2XP99": {
+    "canonicalized_k_buffer": true,
+    "extra_k_copy": true,
+    "fp32_workspace": true,
+    "temporary_bytes": 1179648
+  },
+  "CANONICALIZED_MAX": {
+    "canonicalized_k_buffer": true,
+    "extra_k_copy": true,
+    "fp32_workspace": true,
+    "temporary_bytes": 1179648
+  },
+  "CANONICALIZED_P95": {
+    "canonicalized_k_buffer": true,
+    "extra_k_copy": true,
+    "fp32_workspace": true,
+    "temporary_bytes": 1179648
+  },
+  "CANONICALIZED_P99": {
+    "canonicalized_k_buffer": true,
+    "extra_k_copy": true,
+    "fp32_workspace": true,
+    "temporary_bytes": 1179648
+  },
+  "FIXED_B1_CENTROID_ORACLE": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_1": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_16": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_2": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_30": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_4": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "KMEANS_8": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  },
+  "SERIAL_B1_KPROJ_ORACLE_CURRENT_KMEANS": {
+    "canonicalized_k_buffer": false,
+    "extra_k_copy": false,
+    "fp32_workspace": true,
+    "temporary_bytes": 131072
+  }
+}
