@@ -1532,7 +1532,8 @@ __device__ __forceinline__ const uint8_t* strided_idx_ptr(
 // S5A-1 experimental V2-only reader. This is intentionally a close copy of the
 // production ABLATION_LANE0_TABLE_FULL math path with only historical-cache
 // addressing changed from tight K-derived strides to explicit tensor strides.
-__global__ void battn_v_kernel_with_base_strided_v2(
+template<int BIT>
+__global__ void battn_v_kernel_with_base_strided(
   const half*      __restrict__ _alpha_q,   // [B*nh, K]
   const uint32_t*  __restrict__ _vq,        // [B, nh_kv, K, OC/16] strided
   const half*      __restrict__ _vscale,    // [B, nh_kv, K, OC/group] strided
@@ -1565,9 +1566,9 @@ __global__ void battn_v_kernel_with_base_strided_v2(
   const long long idx_stride_h,
   const long long idx_stride_t)
 {
-  constexpr int BIT = 2;
-  constexpr int PACK = 16;
-  const uint32_t CODE_MASK = 0x3u;
+  static_assert(BIT==2 || BIT==4, "BIT must be 2 or 4");
+  constexpr int PACK = 32 / BIT;
+  const uint32_t CODE_MASK = (1u << BIT) - 1u;
   const int TILE = 128;
 
   const int bnh = blockIdx.x;
@@ -2215,11 +2216,12 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   return _out;
 }
 
-torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
     torch::Tensor _alpha_q,    // [B*nh, 1, K]
-    torch::Tensor _vq,         // [B, nh_kv, K, OC/16], may be strided on K
+    torch::Tensor _vq,         // [B, nh_kv, K, OC/pack], may be strided on K
     torch::Tensor _vscale,     // [B, nh_kv, K, OC/group], may be strided on K
     torch::Tensor _vzero,      // [B, nh_kv, K, OC/group], may be strided on K
+    const int bit,
     const int group_size,
     const int nh,
     const int nh_kv,
@@ -2229,28 +2231,29 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
     torch::Tensor _alpha_f,    // [B*nh, Lf] size=0 allowed
     torch::Tensor _v_full      // [B, nh_kv, Lf, OC] size=0 allowed
 ){
+  TORCH_CHECK(bit==2 || bit==4, "strided Value reader only supports bit=2 or bit=4");
   TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
-  TORCH_CHECK(_vq.dim()==4, "vq must be [B,nh_kv,K,OC/16]");
+  TORCH_CHECK(_vq.dim()==4, "vq must be [B,nh_kv,K,OC/pack]");
   TORCH_CHECK(_vscale.dim()==4 && _vzero.dim()==4, "scale/zero must be [B,nh_kv,K,OC/group]");
   TORCH_CHECK(_mask_q.dim()==3 && _idx_q.dim()==3, "mask/idx must be [B,nh_kv,K]");
   TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
-  TORCH_CHECK(_vq.scalar_type()==torch::kInt32, "strided V2 vq must be int32");
+  TORCH_CHECK(_vq.scalar_type()==torch::kInt32, "strided vq must be int32");
   TORCH_CHECK(_vscale.scalar_type()==torch::kFloat16 && _vzero.scalar_type()==torch::kFloat16,
-              "strided V2 scale/zero must be float16");
-  TORCH_CHECK(_mask_q.scalar_type()==torch::kUInt8, "strided V2 mask must be uint8");
+              "strided scale/zero must be float16");
+  TORCH_CHECK(_mask_q.scalar_type()==torch::kUInt8, "strided mask must be uint8");
   TORCH_CHECK(_idx_q.scalar_type()==torch::kUInt8 || _idx_q.scalar_type()==torch::kInt16 ||
-              _idx_q.scalar_type()==torch::kInt32, "strided V2 idx must be uint8, int16, or int32");
+              _idx_q.scalar_type()==torch::kInt32, "strided idx must be uint8, int16, or int32");
 
   const int B = _vq.size(0);
   const int K = _alpha_q.size(2);
   const int BSnh = _alpha_q.size(0);
   const int OC = _centroids.size(2);
-  const int PACK = 16;
+  const int PACK = 32 / bit;
   const int Mcent = _centroids.size(1);
   TORCH_CHECK(nh % nh_kv == 0, "nh must be divisible by nh_kv");
   TORCH_CHECK(BSnh == B * nh, "alpha_q batch/head mismatch");
   TORCH_CHECK(_vq.size(1)==nh_kv && _vq.size(2)==K && _vq.size(3)*PACK==OC,
-              "vq expected [B,nh_kv,K,OC/16]");
+              "vq expected [B,nh_kv,K,OC/pack]");
   TORCH_CHECK(_vscale.size(0)==B && _vscale.size(1)==nh_kv && _vscale.size(2)==K &&
               _vscale.size(3)==OC/group_size, "vscale expected [B,nh_kv,K,OC/group]");
   TORCH_CHECK(_vzero.size(0)==B && _vzero.size(1)==nh_kv && _vzero.size(2)==K &&
@@ -2288,7 +2291,8 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
       (_idx_q.dtype() == torch::kUInt8) ? 1 :
       (_idx_q.dtype() == torch::kInt16) ? 2 : 4;
 
-  battn_v_kernel_with_base_strided_v2<<<blocks, threads, shmem>>>(
+  if (bit == 2) {
+    battn_v_kernel_with_base_strided<2><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
       K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes,
       _vq.stride(0), _vq.stride(1), _vq.stride(2), _vq.stride(3),
@@ -2296,8 +2300,57 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
       _vzero.stride(0), _vzero.stride(1), _vzero.stride(2), _vzero.stride(3),
       _mask_q.stride(0), _mask_q.stride(1), _mask_q.stride(2),
       _idx_q.stride(0), _idx_q.stride(1), _idx_q.stride(2)
-  );
+    );
+  } else {
+    battn_v_kernel_with_base_strided<4><<<blocks, threads, shmem>>>(
+      alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes,
+      _vq.stride(0), _vq.stride(1), _vq.stride(2), _vq.stride(3),
+      _vscale.stride(0), _vscale.stride(1), _vscale.stride(2), _vscale.stride(3),
+      _vzero.stride(0), _vzero.stride(1), _vzero.stride(2), _vzero.stride(3),
+      _mask_q.stride(0), _mask_q.stride(1), _mask_q.stride(2),
+      _idx_q.stride(0), _idx_q.stride(1), _idx_q.stride(2)
+    );
+  }
   return _out;
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+){
+  return attn_v_forward_cuda_outer_dim_with_base_strided_bit(
+      _alpha_q, _vq, _vscale, _vzero, 2, group_size, nh, nh_kv,
+      _centroids, _mask_q, _idx_q, _alpha_f, _v_full);
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v4(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+){
+  return attn_v_forward_cuda_outer_dim_with_base_strided_bit(
+      _alpha_q, _vq, _vscale, _vzero, 4, group_size, nh, nh_kv,
+      _centroids, _mask_q, _idx_q, _alpha_f, _v_full);
 }
 
 torch::Tensor attn_v_forward_cuda_outer_dim_with_base_paged_v2(

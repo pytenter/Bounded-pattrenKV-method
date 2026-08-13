@@ -1,0 +1,6 @@
+{
+  "mixed_cases": 9,
+  "tests": "pytest covers compact order, metadata, boundaries, and mixed attention",
+  "v4_cases": 4,
+  "v4_passed": 4
+}

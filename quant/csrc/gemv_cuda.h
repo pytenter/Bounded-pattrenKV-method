@@ -140,3 +140,18 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
     torch::Tensor _alpha_f,
     torch::Tensor _v_full
 );
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v4(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+);

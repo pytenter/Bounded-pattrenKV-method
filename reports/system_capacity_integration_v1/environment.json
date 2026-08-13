@@ -1,0 +1,38 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "cuda_visible_devices": "5",
+  "extension_mtime": 1786585795,
+  "extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "extension_sha256": "1db0cfcd6de556426efee92dd1ee27659487c2083ca9e8ccba9d2633af1a9637",
+  "git_log_10": [
+    "5f67a4a perf: add stride-aware PatternKV V2 reader",
+    "551fea5 perf: evaluate contiguous-capacity PatternKV cache",
+    "139d128 perf: reprofile optimized PatternKV decode bottlenecks",
+    "ed4b273 perf: evaluate page-native PatternKV attention reader",
+    "92d74dd perf: add fixed-page PatternKV cache ABI",
+    "54c4172 perf: evaluate GQA-aware PatternKV value kernels",
+    "cf10095 perf: optimize PatternKV centroid table contribution",
+    "274e193 perf: reduce PatternKV centroid histogram contention",
+    "9cda2cc perf: decompose PatternKV centroid attention cost",
+    "da0b6a8 perf: evaluate V2 kernel optimization candidates"
+  ],
+  "has_strided_v4": true,
+  "head_at_report": "5f67a4aade38c573127f83f5413b4b5e86cb3d4b",
+  "nvidia_smi": [
+    "0, NVIDIA GeForce RTX 3090, 580.173.02, 18409, 24576, 0",
+    "1, NVIDIA GeForce RTX 3090, 580.173.02, 22886, 24576, 100",
+    "2, NVIDIA GeForce RTX 3090, 580.173.02, 22885, 24576, 55",
+    "3, NVIDIA GeForce RTX 3090, 580.173.02, 22886, 24576, 100",
+    "4, NVIDIA GeForce RTX 3090, 580.173.02, 22886, 24576, 97",
+    "5, NVIDIA GeForce RTX 3090, 580.173.02, 21, 24576, 0",
+    "6, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0",
+    "7, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0"
+  ],
+  "python": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "remotes": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\nbounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\norigin\thttps://github.com/HCOOOH/PatternKV.git (fetch)\norigin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "repo_root": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "start_head_expected": "5f67a4aade38c573127f83f5413b4b5e86cb3d4b",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "worktree_clean": false
+}

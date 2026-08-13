@@ -60,6 +60,12 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     packed_v4_scale: torch.Tensor | None = None
     packed_v4_zero: torch.Tensor | None = None
     packed_v4_tokens: int = 0
+    v2_pattern_mask: torch.Tensor | None = None
+    v2_assignment_idx: torch.Tensor | None = None
+    v4_pattern_mask: torch.Tensor | None = None
+    v4_assignment_idx: torch.Tensor | None = None
+    capacity_backend: str = "baseline"
+    capacity_buffers: Any | None = None
     v_causal_importance: torch.Tensor | None = None
     v_oracle_importance: torch.Tensor | None = None
 
@@ -650,6 +656,13 @@ def _cat_packed_k(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
 
 
 def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Tensor, zero: torch.Tensor, tokens: int) -> None:
+    if isinstance(cache, PatternQuantizedKVCache) and _capacity_cache_enabled(cache):
+        cache.packed_v = _append_capacity_stream(cache, "packed_v", packed, token_dim=2)
+        cache.packed_v_scale = _append_capacity_stream(cache, "packed_v_scale", scale, token_dim=2)
+        cache.packed_v_zero = _append_capacity_stream(cache, "packed_v_zero", zero, token_dim=2)
+        cache.packed_v_tokens += int(tokens)
+        cache.pack_count_v += 1
+        return
     if cache.packed_v is None:
         cache.packed_v = packed
         cache.packed_v_scale = scale
@@ -668,6 +681,159 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         record_cache_mutation("packed_v2_zero", old_zero, zero, cache.packed_v_zero)
     cache.packed_v_tokens += int(tokens)
     cache.pack_count_v += 1
+
+
+def _capacity_cache_enabled(cache: QuantizedKVCache) -> bool:
+    if not isinstance(cache, PatternQuantizedKVCache):
+        return False
+    backend = normalize_capacity_growth_backend(getattr(cache, "capacity_backend", None))
+    cache.capacity_backend = backend
+    return backend in (CAPACITY_GROWTH_FIXED, CAPACITY_GROWTH_CHUNKED)
+
+
+def _capacity_fixed_tokens() -> int:
+    return int(os.environ.get("PATTERNKV_CACHE_FIXED_CAPACITY_TOKENS", "32768"))
+
+
+def _capacity_chunk_tokens() -> int:
+    return int(os.environ.get("PATTERNKV_CACHE_CHUNK_TOKENS", "4096"))
+
+
+def _capacity_buffer(cache: PatternQuantizedKVCache, stream: str, value: torch.Tensor, *, token_dim: int) -> ContiguousCapacityBuffer:
+    backend = normalize_capacity_growth_backend(getattr(cache, "capacity_backend", None))
+    if cache.capacity_buffers is None:
+        cache.capacity_buffers = {}
+    buffers = cache.capacity_buffers
+    if stream in buffers:
+        return buffers[stream]
+    logical_tokens = int(value.shape[token_dim])
+    shape_except = list(value.shape)
+    del shape_except[token_dim]
+    if backend == CAPACITY_GROWTH_FIXED:
+        capacity = max(_capacity_fixed_tokens(), logical_tokens)
+        chunk = None
+    elif backend == CAPACITY_GROWTH_CHUNKED:
+        capacity = 0
+        chunk = _capacity_chunk_tokens()
+    else:
+        raise RuntimeError("capacity buffer requested for baseline backend")
+    buf = ContiguousCapacityBuffer(
+        stream_name=stream,
+        shape_except_token=tuple(shape_except),
+        token_dim=token_dim,
+        dtype=value.dtype,
+        device=value.device,
+        capacity=capacity,
+        chunk_tokens=chunk,
+    )
+    buffers[stream] = buf
+    return buf
+
+
+def _append_capacity_stream(cache: PatternQuantizedKVCache, stream: str, value: torch.Tensor, *, token_dim: int) -> torch.Tensor:
+    buf = _capacity_buffer(cache, stream, value, token_dim=token_dim)
+    buf.append_block(value)
+    logical = buf.logical_view()
+    if logical is None:
+        raise RuntimeError(f"{stream} capacity stream unexpectedly empty after append")
+    return logical
+
+
+def _cat_v_metadata(cache: PatternQuantizedKVCache, attr: str, value: torch.Tensor, *, category: str, compact_stream: str | None = None) -> torch.Tensor:
+    if _capacity_cache_enabled(cache):
+        stream = compact_stream or attr
+        result = _append_capacity_stream(cache, stream, value, token_dim=2)
+        setattr(cache, attr, result)
+        return result
+    result = _cat_assignment(getattr(cache, attr), value, category=category)
+    setattr(cache, attr, result)
+    return result
+
+
+def _cat_v_precision_mask(cache: PatternQuantizedKVCache, value: torch.Tensor) -> torch.Tensor:
+    if _capacity_cache_enabled(cache):
+        result = _append_capacity_stream(cache, "v_precision_mask", value, token_dim=1)
+        cache.v_precision_mask = result
+        return result
+    if cache.v_precision_mask is None:
+        cache.v_precision_mask = value
+    else:
+        bytes_copied = tensor_bytes(cache.v_precision_mask) + tensor_bytes(value)
+        record_counter("cache_cat_events", bytes_copied=bytes_copied)
+        record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
+        with profile_range("cache_mutation", bytes_copied=bytes_copied):
+            old_mask = cache.v_precision_mask
+            cache.v_precision_mask = torch.cat([old_mask, value], dim=1).contiguous()
+        record_cache_mutation("precision_mask", old_mask, value, cache.v_precision_mask)
+    return cache.v_precision_mask
+
+
+def install_value_capacity_buffers(cache: PatternQuantizedKVCache) -> PatternQuantizedKVCache:
+    """Adopt existing Value history tensors into capacity buffers.
+
+    This is used by synthetic-past profiling helpers that construct a cache
+    directly instead of going through the real quantization flush path.
+    """
+    cache.capacity_backend = normalize_capacity_growth_backend(getattr(cache, "capacity_backend", None))
+    existing = {
+        "packed_v": cache.packed_v,
+        "packed_v_scale": cache.packed_v_scale,
+        "packed_v_zero": cache.packed_v_zero,
+        "packed_v4": cache.packed_v4,
+        "packed_v4_scale": cache.packed_v4_scale,
+        "packed_v4_zero": cache.packed_v4_zero,
+        "v_precision_mask": cache.v_precision_mask,
+        "v_pattern_mask": cache.v_pattern_mask,
+        "v_assignment_idx": cache.v_assignment_idx,
+        "v2_pattern_mask": cache.v2_pattern_mask,
+        "v2_assignment_idx": cache.v2_assignment_idx,
+        "v4_pattern_mask": cache.v4_pattern_mask,
+        "v4_assignment_idx": cache.v4_assignment_idx,
+    }
+    if cache.v_precision_mask is not None and cache.v_pattern_mask is not None and cache.v_assignment_idx is not None:
+        mask = cache.v_precision_mask[:, : cache.packed_v_tokens].bool()
+        low_mask = ~mask[0]
+        high_mask = mask[0]
+        if existing["v2_pattern_mask"] is None and int(low_mask.sum().item()):
+            existing["v2_pattern_mask"] = cache.v_pattern_mask[:, :, low_mask].to(torch.uint8).contiguous()
+            existing["v2_assignment_idx"] = cache.v_assignment_idx[:, :, low_mask].to(torch.int32).contiguous()
+        if existing["v4_pattern_mask"] is None and int(high_mask.sum().item()):
+            existing["v4_pattern_mask"] = cache.v_pattern_mask[:, :, high_mask].to(torch.uint8).contiguous()
+            existing["v4_assignment_idx"] = cache.v_assignment_idx[:, :, high_mask].to(torch.int32).contiguous()
+    if existing["v2_pattern_mask"] is not None:
+        cache.v2_pattern_mask = existing["v2_pattern_mask"]
+    if existing["v2_assignment_idx"] is not None:
+        cache.v2_assignment_idx = existing["v2_assignment_idx"]
+    if existing["v4_pattern_mask"] is not None:
+        cache.v4_pattern_mask = existing["v4_pattern_mask"]
+    if existing["v4_assignment_idx"] is not None:
+        cache.v4_assignment_idx = existing["v4_assignment_idx"]
+    if not _capacity_cache_enabled(cache):
+        validate_cache(cache)
+        return cache
+    stream_dims = {
+        "packed_v": 2,
+        "packed_v_scale": 2,
+        "packed_v_zero": 2,
+        "packed_v4": 2,
+        "packed_v4_scale": 2,
+        "packed_v4_zero": 2,
+        "v_precision_mask": 1,
+        "v_pattern_mask": 2,
+        "v_assignment_idx": 2,
+        "v2_pattern_mask": 2,
+        "v2_assignment_idx": 2,
+        "v4_pattern_mask": 2,
+        "v4_assignment_idx": 2,
+    }
+    for stream, value in existing.items():
+        if torch.is_tensor(value) and int(value.shape[stream_dims[stream]]) > 0:
+            if "assignment_idx" in stream:
+                value = value.to(torch.int32).contiguous()
+            setattr(cache, stream, _append_capacity_stream(cache, stream, value, token_dim=stream_dims[stream]))
+    cache.v_assignments = cache.v_pattern_mask
+    validate_cache(cache)
+    return cache
 
 
 def _cat_v_payload(
@@ -742,6 +908,8 @@ def pattern_gather_centroids(idx: torch.Tensor, centroids: torch.Tensor) -> torc
         raise ValueError(f"centroid head mismatch: idx heads={heads}, centroids={centroids.shape[0]}")
     dim = centroids.shape[-1]
     expanded = centroids.unsqueeze(0).expand(bsz, -1, -1, -1)
+    if idx.dtype != torch.long:
+        idx = idx.long()
     return torch.gather(expanded, 2, idx.unsqueeze(-1).expand(-1, -1, -1, dim))
 
 
@@ -968,47 +1136,64 @@ def select_value_precision_mask(
         return _topk_mask(score, k, tie_break=gain, largest=True)
 
 
-def _cat_mixed_packed_v(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor, precision_mask: torch.Tensor, tokens: int) -> None:
+def _cat_mixed_packed_v(
+    cache: PatternQuantizedKVCache,
+    v_adjusted: torch.Tensor,
+    precision_mask: torch.Tensor,
+    tokens: int,
+    *,
+    v_assignment_idx: torch.Tensor,
+    v_pattern_mask: torch.Tensor,
+) -> None:
     with profile_range("pack_total", tokens=int(tokens)):
         if v_adjusted.shape[0] != 1:
             raise ValueError("mixed Value precision currently requires batch size 1")
         mask = precision_mask[0].bool()
         low = v_adjusted[:, :, ~mask, :].contiguous()
         high = v_adjusted[:, :, mask, :].contiguous()
+        v2_pattern = v_pattern_mask[:, :, ~mask].to(torch.uint8).contiguous()
+        v2_idx = v_assignment_idx[:, :, ~mask].contiguous()
+        v4_pattern = v_pattern_mask[:, :, mask].to(torch.uint8).contiguous()
+        v4_idx = v_assignment_idx[:, :, mask].contiguous()
         if low.shape[2]:
             packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
-            cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(
-                cache.packed_v,
-                cache.packed_v_scale,
-                cache.packed_v_zero,
-                packed2,
-                scale2,
-                zero2,
-                category_prefix="packed_v2",
-            )
+            if _capacity_cache_enabled(cache):
+                cache.packed_v = _append_capacity_stream(cache, "packed_v", packed2, token_dim=2)
+                cache.packed_v_scale = _append_capacity_stream(cache, "packed_v_scale", scale2, token_dim=2)
+                cache.packed_v_zero = _append_capacity_stream(cache, "packed_v_zero", zero2, token_dim=2)
+            else:
+                cache.packed_v, cache.packed_v_scale, cache.packed_v_zero = _cat_v_payload(
+                    cache.packed_v,
+                    cache.packed_v_scale,
+                    cache.packed_v_zero,
+                    packed2,
+                    scale2,
+                    zero2,
+                    category_prefix="packed_v2",
+                )
+            cache.v2_pattern_mask = _cat_v_metadata(cache, "v2_pattern_mask", v2_pattern, category="v2_pattern_mask")
+            cache.v2_assignment_idx = _cat_v_metadata(cache, "v2_assignment_idx", v2_idx, category="v2_assignment_idx")
         if high.shape[2]:
             packed4, scale4, zero4 = quantize_pack_v_reference(high, cache.group_size, 4)
-            cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(
-                cache.packed_v4,
-                cache.packed_v4_scale,
-                cache.packed_v4_zero,
-                packed4,
-                scale4,
-                zero4,
-                category_prefix="packed_v4",
-            )
+            if _capacity_cache_enabled(cache):
+                cache.packed_v4 = _append_capacity_stream(cache, "packed_v4", packed4, token_dim=2)
+                cache.packed_v4_scale = _append_capacity_stream(cache, "packed_v4_scale", scale4, token_dim=2)
+                cache.packed_v4_zero = _append_capacity_stream(cache, "packed_v4_zero", zero4, token_dim=2)
+            else:
+                cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero = _cat_v_payload(
+                    cache.packed_v4,
+                    cache.packed_v4_scale,
+                    cache.packed_v4_zero,
+                    packed4,
+                    scale4,
+                    zero4,
+                    category_prefix="packed_v4",
+                )
+            cache.v4_pattern_mask = _cat_v_metadata(cache, "v4_pattern_mask", v4_pattern, category="v4_pattern_mask")
+            cache.v4_assignment_idx = _cat_v_metadata(cache, "v4_assignment_idx", v4_idx, category="v4_assignment_idx")
             cache.packed_v4_tokens += int(high.shape[2])
         mask_u8 = precision_mask.to(torch.uint8)
-        if cache.v_precision_mask is None:
-            cache.v_precision_mask = mask_u8
-        else:
-            bytes_copied = tensor_bytes(cache.v_precision_mask) + tensor_bytes(mask_u8)
-            record_counter("cache_cat_events", bytes_copied=bytes_copied)
-            record_counter("cache_cat_largest_bytes", calls=0, bytes_copied=bytes_copied)
-            with profile_range("cache_mutation", bytes_copied=bytes_copied):
-                old_mask = cache.v_precision_mask
-                cache.v_precision_mask = torch.cat([old_mask, mask_u8], dim=1).contiguous()
-            record_cache_mutation("precision_mask", old_mask, mask_u8, cache.v_precision_mask)
+        _cat_v_precision_mask(cache, mask_u8)
         cache.packed_v_tokens += int(tokens)
         cache.pack_count_v += 1
 
@@ -1256,6 +1441,7 @@ def _pack_pattern_window_impl(
         v_pattern_mask = v_pattern_mask[:, :, :tokens].contiguous().bool()
     k_residual = k_window - k_centroid_per_token
     v_adjusted = v_window - v_pattern_mask.unsqueeze(-1).to(v_window.dtype) * v_centroid_per_token
+    v_assignment_idx_storage = v_assignment_idx.to(torch.int32).contiguous()
     if getattr(cache, "trace_layer_idx", None) is not None:
         try:
             from bench.patternkv_equivalence_reference import save_assignment_trace
@@ -1280,14 +1466,28 @@ def _pack_pattern_window_impl(
     if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
         absolute_start = tensor_tokens(cache.sink_v) + int(cache.packed_v_tokens)
         precision_mask = select_value_precision_mask(cache, v_window, v_centroid_per_token, v_pattern_mask, absolute_start=absolute_start)
-        _cat_mixed_packed_v(cache, v_adjusted, precision_mask, tokens)
+        _cat_mixed_packed_v(
+            cache,
+            v_adjusted,
+            precision_mask,
+            tokens,
+            v_assignment_idx=v_assignment_idx_storage,
+            v_pattern_mask=v_pattern_mask,
+        )
     else:
         packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
         _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+        mask_u8_compact = v_pattern_mask.to(torch.uint8)
+        cache.v2_pattern_mask = _cat_v_metadata(cache, "v2_pattern_mask", mask_u8_compact, category="v2_pattern_mask")
+        cache.v2_assignment_idx = _cat_v_metadata(cache, "v2_assignment_idx", v_assignment_idx_storage, category="v2_assignment_idx")
     cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments, category="assignments")
-    cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx, category="assignments")
     mask_u8 = v_pattern_mask.to(torch.uint8)
-    cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8, category="pattern_mask")
+    if _capacity_cache_enabled(cache):
+        cache.v_assignment_idx = _cat_v_metadata(cache, "v_assignment_idx", v_assignment_idx_storage, category="assignments")
+        cache.v_pattern_mask = _cat_v_metadata(cache, "v_pattern_mask", mask_u8, category="pattern_mask")
+    else:
+        cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx_storage, category="assignments")
+        cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8, category="pattern_mask")
     cache.v_assignments = cache.v_pattern_mask
     cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
@@ -1405,6 +1605,8 @@ def build_cache_from_prefill(
     cache.pending_k = history_k if history_k.shape[2] else None
     cache.pending_v = history_v if history_v.shape[2] else None
     if isinstance(cache, PatternQuantizedKVCache):
+        cache.capacity_backend = normalize_capacity_growth_backend(None)
+        cache.capacity_buffers = {} if _capacity_cache_enabled(cache) else None
         cache.k_centroids = k_centroids
         cache.v_centroids = v_centroids
         cache.value_objective = normalize_value_objective(value_objective)
@@ -1636,6 +1838,14 @@ def validate_cache(cache: QuantizedKVCache) -> None:
                 raise ValueError(f"V2 payload token mismatch: mask low={v2_tokens}, payload={tensor_tokens(cache.packed_v)}")
             if tensor_tokens(cache.packed_v4) != selected:
                 raise ValueError(f"V4 payload tensor token mismatch: mask selected={selected}, payload={tensor_tokens(cache.packed_v4)}")
+            if cache.v2_pattern_mask is not None and tensor_tokens(cache.v2_pattern_mask) != v2_tokens:
+                raise ValueError(f"V2 compact mask token mismatch: {tensor_tokens(cache.v2_pattern_mask)} != {v2_tokens}")
+            if cache.v2_assignment_idx is not None and tensor_tokens(cache.v2_assignment_idx) != v2_tokens:
+                raise ValueError(f"V2 compact assignment token mismatch: {tensor_tokens(cache.v2_assignment_idx)} != {v2_tokens}")
+            if cache.v4_pattern_mask is not None and tensor_tokens(cache.v4_pattern_mask) != selected:
+                raise ValueError(f"V4 compact mask token mismatch: {tensor_tokens(cache.v4_pattern_mask)} != {selected}")
+            if cache.v4_assignment_idx is not None and tensor_tokens(cache.v4_assignment_idx) != selected:
+                raise ValueError(f"V4 compact assignment token mismatch: {tensor_tokens(cache.v4_assignment_idx)} != {selected}")
         if torch.is_tensor(cache.k_centroids):
             if cache.k_centroids.dim() != 3:
                 raise ValueError(f"K centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.k_centroids.shape)}")
@@ -1701,6 +1911,12 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             int(cache.packed_v4_tokens),
             cache.v_causal_importance,
             cache.v_oracle_importance,
+            cache.v2_pattern_mask,
+            cache.v2_assignment_idx,
+            cache.v4_pattern_mask,
+            cache.v4_assignment_idx,
+            cache.capacity_backend,
+            cache.capacity_buffers,
         )
     return base + (cache.cache_mode, int(cache.chunk_length))
 
@@ -1776,6 +1992,13 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
             cache.packed_v4_tokens = int(value[pattern_offset + 18])
             cache.v_causal_importance = value[pattern_offset + 19]
             cache.v_oracle_importance = value[pattern_offset + 20]
+            if len(value) >= pattern_offset + 27:
+                cache.v2_pattern_mask = value[pattern_offset + 21]
+                cache.v2_assignment_idx = value[pattern_offset + 22]
+                cache.v4_pattern_mask = value[pattern_offset + 23]
+                cache.v4_assignment_idx = value[pattern_offset + 24]
+                cache.capacity_backend = normalize_capacity_growth_backend(value[pattern_offset + 25])
+                cache.capacity_buffers = value[pattern_offset + 26]
     validate_cache(cache)
     return cache
 

@@ -19,6 +19,8 @@ _MIXED_V_COUNTERS = {
 	"fused_temp_bytes": 0,
 	"gqa_v2_calls": 0,
 	"gqa_v2_fallbacks": 0,
+	"baseline_v2_calls": 0,
+	"baseline_v4_calls": 0,
 }
 
 _PAGE_V_READER_COUNTERS = {
@@ -33,6 +35,8 @@ _PAGE_V_READER_COUNTERS = {
 
 _STRIDED_V2_READER_COUNTERS = {
 	"strided_reader_calls": 0,
+	"strided_v2_calls": 0,
+	"strided_v4_calls": 0,
 	"strided_reader_tokens_processed": 0,
 	"strided_reader_materialize_calls": 0,
 	"strided_reader_materialized_bytes": 0,
@@ -87,6 +91,20 @@ def patternkv_page_v_reader_backend() -> str:
 	backend = os.environ.get("PATTERNKV_PAGE_V_READER", "contiguous").strip().lower()
 	if backend not in {"contiguous", "paged_v2"}:
 		raise ValueError("PATTERNKV_PAGE_V_READER must be 'contiguous' or 'paged_v2'")
+	return backend
+
+
+def patternkv_cache_growth_backend() -> str:
+	backend = os.environ.get("PATTERNKV_CACHE_GROWTH_BACKEND", "baseline").strip().lower()
+	aliases = {
+		"fixed": "fixed_capacity",
+		"capacity": "fixed_capacity",
+		"chunked": "chunked_capacity",
+		"grow_by_chunk": "chunked_capacity",
+	}
+	backend = aliases.get(backend, backend)
+	if backend not in {"baseline", "fixed_capacity", "chunked_capacity"}:
+		raise ValueError("PATTERNKV_CACHE_GROWTH_BACKEND must be 'baseline', 'fixed_capacity', or 'chunked_capacity'")
 	return backend
 
 
@@ -528,7 +546,8 @@ def _require_no_history_materializing_cast(name: str, tensor: torch.Tensor, expe
 		raise TypeError(f"{name} must be {expected_dtype} for the strided V2 reader; refusing to materialize/cast historical cache")
 
 
-def cuda_attn_v_fused_with_base_strided_v2(
+def _cuda_attn_v_fused_with_base_strided(
+	bits: int,
 	group_size: int,
 	attn_q: torch.Tensor,
 	vq: torch.Tensor,
@@ -542,19 +561,21 @@ def cuda_attn_v_fused_with_base_strided_v2(
 	attn_f: torch.Tensor | None = None,
 	v_full: torch.Tensor | None = None,
 ) -> torch.Tensor:
-	"""Experimental S5A-1 V2-only reader for capacity-backed strided history.
+	"""Experimental S5A-2 reader for capacity-backed strided V history.
 
 	Historical tensors are consumed with their existing physical strides. This
 	wrapper intentionally refuses dtype/layout casts for vq/scale/zero/mask/idx
 	because those would materialize the historical cache and invalidate the
 	feasibility experiment.
 	"""
+	if bits not in (2, 4):
+		raise ValueError("strided Value reader supports bits=2 or bits=4")
 	assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
 	B, nh_in, _, K = attn_q.shape
 	assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
 	assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
 	OC = int(v_centroids.size(-1))
-	pack = 16
+	pack = 32 // bits
 	group = group_size
 	assert vq.shape == (B, nh_kv, K, OC // pack), f"vq expected [B,{nh_kv},{K},{OC//pack}], got {vq.shape}"
 	assert v_scale.shape == (B, nh_kv, K, OC // group), f"v_scale shape mismatch: {v_scale.shape}"
@@ -585,8 +606,14 @@ def cuda_attn_v_fused_with_base_strided_v2(
 		alpha_f = attn_f.view(-1, Lf).contiguous()
 
 	_STRIDED_V2_READER_COUNTERS["strided_reader_calls"] += 1
+	_STRIDED_V2_READER_COUNTERS["strided_v2_calls" if bits == 2 else "strided_v4_calls"] += 1
 	_STRIDED_V2_READER_COUNTERS["strided_reader_tokens_processed"] += int(K)
-	out16 = patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+	entry = (
+		patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_strided_v2
+		if bits == 2
+		else patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_strided_v4
+	)
+	out16 = entry(
 		alpha_q,
 		vq,
 		v_scale,
@@ -601,6 +628,44 @@ def cuda_attn_v_fused_with_base_strided_v2(
 		v_full_,
 	)
 	return out16.view(B, nh, 1, OC)
+
+
+def cuda_attn_v_fused_with_base_strided_v2(
+	group_size: int,
+	attn_q: torch.Tensor,
+	vq: torch.Tensor,
+	v_scale: torch.Tensor,
+	v_zero: torch.Tensor,
+	v_centroids: torch.Tensor,
+	v_mask_q: torch.Tensor,
+	v_idx_q: torch.Tensor,
+	nh: int,
+	nh_kv: int,
+	attn_f: torch.Tensor | None = None,
+	v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+	return _cuda_attn_v_fused_with_base_strided(
+		2, group_size, attn_q, vq, v_scale, v_zero, v_centroids, v_mask_q, v_idx_q, nh, nh_kv, attn_f=attn_f, v_full=v_full
+	)
+
+
+def cuda_attn_v_fused_with_base_strided_v4(
+	group_size: int,
+	attn_q: torch.Tensor,
+	vq: torch.Tensor,
+	v_scale: torch.Tensor,
+	v_zero: torch.Tensor,
+	v_centroids: torch.Tensor,
+	v_mask_q: torch.Tensor,
+	v_idx_q: torch.Tensor,
+	nh: int,
+	nh_kv: int,
+	attn_f: torch.Tensor | None = None,
+	v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+	return _cuda_attn_v_fused_with_base_strided(
+		4, group_size, attn_q, vq, v_scale, v_zero, v_centroids, v_mask_q, v_idx_q, nh, nh_kv, attn_f=attn_f, v_full=v_full
+	)
 
 
 def _page_token_length(buffer) -> int:
@@ -982,6 +1047,10 @@ def cuda_attn_v_mixed_fused_with_base(
     nh_kv: int,
     attn_f: torch.Tensor | None = None,
     v_full: torch.Tensor | None = None,
+    v2_mask_q: torch.Tensor | None = None,
+    v2_idx_q: torch.Tensor | None = None,
+    v4_mask_q: torch.Tensor | None = None,
+    v4_idx_q: torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Compressed-domain mixed V2/V4 Value attention.
 
@@ -1009,6 +1078,10 @@ def cuda_attn_v_mixed_fused_with_base(
             nh_kv,
             attn_f=attn_f,
             v_full=v_full,
+            v2_mask_q=v2_mask_q,
+            v2_idx_q=v2_idx_q,
+            v4_mask_q=v4_mask_q,
+            v4_idx_q=v4_idx_q,
         )
 
 
@@ -1029,6 +1102,10 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
     nh_kv: int,
     attn_f: torch.Tensor | None = None,
     v_full: torch.Tensor | None = None,
+    v2_mask_q: torch.Tensor | None = None,
+    v2_idx_q: torch.Tensor | None = None,
+    v4_mask_q: torch.Tensor | None = None,
+    v4_idx_q: torch.Tensor | None = None,
 ) -> torch.Tensor:
     assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,T], got {attn_q.shape}"
     B, nh_in, _, total_tokens = attn_q.shape
@@ -1051,6 +1128,8 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
         v2_tokens = int(low_mask.sum().item())
         v4_tokens = int(high_mask.sum().item())
         gqa_backend = patternkv_gqa_v_backend()
+        capacity_backend = patternkv_cache_growth_backend()
+        use_strided_capacity = capacity_backend in {"fixed_capacity", "chunked_capacity"}
     if v2_tokens + v4_tokens != total_tokens:
         raise RuntimeError("precision mask token count mismatch")
 
@@ -1068,29 +1147,52 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
             raise RuntimeError(f"V2 payload token mismatch: payload={vq2.shape[2]} mask={v2_tokens}")
         with profile_range("mixed_v_layout_prepare_v2", tokens=v2_tokens):
             attn2 = attn_q[..., low_mask].contiguous()
-            mask2 = v_mask_q[:, :, low_mask].contiguous()
-            idx2 = v_idx_q[:, :, low_mask].contiguous()
+            if use_strided_capacity:
+                if v2_mask_q is None or v2_idx_q is None:
+                    raise RuntimeError("capacity mixed-V requires compact V2 metadata")
+                mask2 = v2_mask_q
+                idx2 = v2_idx_q
+            else:
+                mask2 = v_mask_q[:, :, low_mask].contiguous()
+                idx2 = v_idx_q[:, :, low_mask].contiguous()
         record_temp_allocation("mixed_v_attn2_compact", attn2)
         record_temp_allocation("mixed_v_mask2_compact", mask2)
         record_temp_allocation("mixed_v_idx2_compact", idx2)
         _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn2) + _tensor_bytes(mask2) + _tensor_bytes(idx2)
         with profile_range("mixed_v_v2_compute", tokens=v2_tokens):
-            v2_fn = cuda_attn_v_fused_with_base_gqa_v2 if gqa_backend == "gqa" else cuda_attn_v_fused_with_base
-            out = v2_fn(
-                group_size,
-                attn2,
-                vq2,
-                v2_scale,
-                v2_zero,
-                2,
-                v_centroids,
-                mask2,
-                idx2,
-                nh=nh,
-                nh_kv=nh_kv,
-                attn_f=attn_f,
-                v_full=v_full,
-            )
+            if use_strided_capacity:
+                out = cuda_attn_v_fused_with_base_strided_v2(
+                    group_size,
+                    attn2,
+                    vq2,
+                    v2_scale,
+                    v2_zero,
+                    v_centroids,
+                    mask2,
+                    idx2,
+                    nh=nh,
+                    nh_kv=nh_kv,
+                    attn_f=attn_f,
+                    v_full=v_full,
+                )
+            else:
+                v2_fn = cuda_attn_v_fused_with_base_gqa_v2 if gqa_backend == "gqa" else cuda_attn_v_fused_with_base
+                _MIXED_V_COUNTERS["baseline_v2_calls"] += 1
+                out = v2_fn(
+                    group_size,
+                    attn2,
+                    vq2,
+                    v2_scale,
+                    v2_zero,
+                    2,
+                    v_centroids,
+                    mask2,
+                    idx2,
+                    nh=nh,
+                    nh_kv=nh_kv,
+                    attn_f=attn_f,
+                    v_full=v_full,
+                )
         full_attached = attn_f is not None and v_full is not None
 
     if v4_tokens:
@@ -1100,28 +1202,51 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
             raise RuntimeError(f"V4 payload token mismatch: payload={vq4.shape[2]} mask={v4_tokens}")
         with profile_range("mixed_v_layout_prepare_v4", tokens=v4_tokens):
             attn4 = attn_q[..., high_mask].contiguous()
-            mask4 = v_mask_q[:, :, high_mask].contiguous()
-            idx4 = v_idx_q[:, :, high_mask].contiguous()
+            if use_strided_capacity:
+                if v4_mask_q is None or v4_idx_q is None:
+                    raise RuntimeError("capacity mixed-V requires compact V4 metadata")
+                mask4 = v4_mask_q
+                idx4 = v4_idx_q
+            else:
+                mask4 = v_mask_q[:, :, high_mask].contiguous()
+                idx4 = v_idx_q[:, :, high_mask].contiguous()
         record_temp_allocation("mixed_v_attn4_compact", attn4)
         record_temp_allocation("mixed_v_mask4_compact", mask4)
         record_temp_allocation("mixed_v_idx4_compact", idx4)
         _MIXED_V_COUNTERS["fused_temp_bytes"] += _tensor_bytes(attn4) + _tensor_bytes(mask4) + _tensor_bytes(idx4)
         with profile_range("mixed_v_v4_compute", tokens=v4_tokens):
-            part4 = cuda_attn_v_fused_with_base(
-                group_size,
-                attn4,
-                vq4,
-                v4_scale,
-                v4_zero,
-                4,
-                v_centroids,
-                mask4,
-                idx4,
-                nh=nh,
-                nh_kv=nh_kv,
-                attn_f=None if full_attached else attn_f,
-                v_full=None if full_attached else v_full,
-            )
+            if use_strided_capacity:
+                part4 = cuda_attn_v_fused_with_base_strided_v4(
+                    group_size,
+                    attn4,
+                    vq4,
+                    v4_scale,
+                    v4_zero,
+                    v_centroids,
+                    mask4,
+                    idx4,
+                    nh=nh,
+                    nh_kv=nh_kv,
+                    attn_f=None if full_attached else attn_f,
+                    v_full=None if full_attached else v_full,
+                )
+            else:
+                _MIXED_V_COUNTERS["baseline_v4_calls"] += 1
+                part4 = cuda_attn_v_fused_with_base(
+                    group_size,
+                    attn4,
+                    vq4,
+                    v4_scale,
+                    v4_zero,
+                    4,
+                    v_centroids,
+                    mask4,
+                    idx4,
+                    nh=nh,
+                    nh_kv=nh_kv,
+                    attn_f=None if full_attached else attn_f,
+                    v_full=None if full_attached else v_full,
+                )
         with profile_range("mixed_v_output_reduce"):
             out = part4 if out is None else out + part4
         full_attached = full_attached or (attn_f is not None and v_full is not None)

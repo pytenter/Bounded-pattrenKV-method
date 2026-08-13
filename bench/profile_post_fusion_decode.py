@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "quant"))
 
 from bench.bench_aime24_patternkv import load_model
-from models.segmented_cache import PatternQuantizedKVCache, serialize_cache, validate_cache
+from models.segmented_cache import PatternQuantizedKVCache, install_value_capacity_buffers, normalize_capacity_growth_backend, serialize_cache, validate_cache
 from quant.matmul import get_patternkv_mixed_v_counters, reset_patternkv_mixed_v_counters
 from quant.patternkv_profile import cache_mutation_snapshot, merge_profile_rows, profile_snapshot, reset_profile, temp_allocation_snapshot
 from scripts.run_aime24_full_causal25_quality import make_worker_args
@@ -162,6 +162,8 @@ def build_layer_cache(layer, *, context_tokens: int, seed: int) -> tuple[Any, ..
     )
     cache.selector_task_key = "phase_s1_5_synthetic"
     cache.selector_layer_idx = int(attn.layer_idx)
+    cache.capacity_backend = normalize_capacity_growth_backend(None)
+    install_value_capacity_buffers(cache)
     validate_cache(cache)
     return serialize_cache(cache)
 

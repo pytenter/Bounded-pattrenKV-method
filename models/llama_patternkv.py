@@ -11,9 +11,11 @@ from torch import nn
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
 from quant.matmul import (
     cuda_attn_v_fused_with_base,
+    cuda_attn_v_fused_with_base_strided_v2,
     cuda_attn_v_mixed_fused_with_base,
     cuda_bmm_fA_qB_outer,
     cuda_bmm_fA_qB_outer_with_base,
+    patternkv_cache_growth_backend,
     record_mixed_v_reference_call,
 )
 from quant.patternkv_profile import profile_range
@@ -68,6 +70,45 @@ def patternkv_mixed_v_backend() -> str:
     return backend
 
 
+def cuda_attn_v_fused_with_base_strided_v2_compat(
+    group_size: int,
+    attn_q: torch.Tensor,
+    vq: torch.Tensor,
+    v_scale: torch.Tensor,
+    v_zero: torch.Tensor,
+    bits: int,
+    v_centroids: torch.Tensor,
+    v_mask_q: torch.Tensor,
+    v_idx_q: torch.Tensor,
+    nh: int,
+    nh_kv: int,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    if int(bits) != 2:
+        raise RuntimeError("capacity strided compat reader currently supports non-mixed V2 only")
+    return cuda_attn_v_fused_with_base_strided_v2(
+        group_size,
+        attn_q,
+        vq,
+        v_scale,
+        v_zero,
+        v_centroids,
+        v_mask_q,
+        v_idx_q,
+        nh=nh,
+        nh_kv=nh_kv,
+        attn_f=attn_f,
+        v_full=v_full,
+    )
+
+
+def patternkv_value_reader_fn(bits: int):
+    if bits == 2 and patternkv_cache_growth_backend() in {"fixed_capacity", "chunked_capacity"}:
+        return cuda_attn_v_fused_with_base_strided_v2_compat
+    return cuda_attn_v_fused_with_base
+
+
 def patternkv_mixed_value_attention(
     module: nn.Module,
     cache: PatternQuantizedKVCache,
@@ -93,7 +134,7 @@ def patternkv_mixed_value_attention(
                 gathered = torch.gather(
                     centroids,
                     2,
-                    cache.v_assignment_idx[:, :, :quant_tokens].unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1]),
+                    cache.v_assignment_idx[:, :, :quant_tokens].long().unsqueeze(-1).expand(-1, -1, -1, packed_v.shape[-1]),
                 ).to(packed_v.dtype)
                 packed_v = packed_v + v_mask[:, :, :quant_tokens].unsqueeze(-1).to(packed_v.dtype) * gathered
             out = torch.matmul(weights, repeat_kv(packed_v, module.num_key_value_groups))
@@ -122,6 +163,10 @@ def patternkv_mixed_value_attention(
         nh_kv=module.num_key_value_heads,
         attn_f=attn_f,
         v_full=v_full,
+        v2_mask_q=getattr(cache, "v2_pattern_mask", None),
+        v2_idx_q=getattr(cache, "v2_assignment_idx", None),
+        v4_mask_q=getattr(cache, "v4_pattern_mask", None),
+        v4_idx_q=getattr(cache, "v4_assignment_idx", None),
     )
 
 
@@ -995,7 +1040,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                             v_full=cache.pending_v,
                         )
                     else:
-                        attn_output = cuda_attn_v_fused_with_base(
+                        v_reader = patternkv_value_reader_fn(self.v_bits)
+                        attn_output = v_reader(
                             self.group_size,
                             attn_weights[:, :, :, :quant_tokens],
                             cache.packed_v,
@@ -1016,7 +1062,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
                         attn_output = patternkv_mixed_value_attention(self, cache, attn_weights, v_mask, quant_tokens)
                     else:
-                        attn_output = cuda_attn_v_fused_with_base(
+                        v_reader = patternkv_value_reader_fn(self.v_bits)
+                        attn_output = v_reader(
                             self.group_size,
                             attn_weights,
                             cache.packed_v,
@@ -1042,7 +1089,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                         if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
                             part = patternkv_mixed_value_attention(self, cache, weights, v_mask, cache.packed_v_tokens)
                         elif cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
-                            part = cuda_attn_v_fused_with_base(
+                            v_reader = patternkv_value_reader_fn(self.v_bits)
+                            part = v_reader(
                                 self.group_size,
                                 weights,
                                 cache.packed_v,
