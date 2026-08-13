@@ -1,0 +1,10 @@
+{
+  "heads": 8,
+  "initial_centroid_value_max_abs": 0.00390625,
+  "initial_indices_equal": true,
+  "initialization_diverges": false,
+  "k": 32,
+  "method": "torch.rand(H,N).topk(k) token indices; data-independent indices, data-dependent initial centroid values",
+  "seed": 0,
+  "tokens": 512
+}

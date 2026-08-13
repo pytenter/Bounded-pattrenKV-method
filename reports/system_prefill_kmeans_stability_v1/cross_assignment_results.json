@@ -1,0 +1,9 @@
+{
+  "b1_k_b1_centroid_raw_vs_ref": 0.0,
+  "b1_k_b2_centroid_aligned_vs_ref": 0.015380859375,
+  "b2_k_b1_centroid_raw_vs_ref": 0.0,
+  "b2_k_b2_centroid_aligned_vs_ref": 0.015380859375,
+  "b2_k_b2_centroid_raw_vs_ref": 0.015380859375,
+  "same_centroid_bank_assignment_difference_rate": 0.0,
+  "same_centroid_bank_question": "Using B1 fixed centroids, compare B1 K vs B2 K assignment difference."
+}

@@ -1,0 +1,14 @@
+name,kind,parameter,selected_centroid_relative_l2,selected_centroid_max_abs
+real_delta_alpha_1,real_delta,1.0,0.08081550151109695,9.6640625
+random_rel_0,random_noise,0.0,0.0,0.0
+random_rel_5e-05,random_noise,5e-05,3.396459578652866e-05,0.0009765625
+random_rel_0.0001,random_noise,0.0001,0.02444632723927498,4.2685546875
+random_rel_0.0002,random_noise,0.0002,0.02085723914206028,4.146484375
+random_rel_0.0005,random_noise,0.0005,0.06273456662893295,6.10546875
+random_rel_0.001,random_noise,0.001,0.07059759646654129,6.162109375
+scaled_real_delta_0,scaled_real_delta,0.0,0.0,0.0
+scaled_real_delta_0.25,scaled_real_delta,0.25,2.3715301722404547e-05,0.0009765625
+scaled_real_delta_0.5,scaled_real_delta,0.5,0.02728240005671978,4.2685546875
+scaled_real_delta_1,scaled_real_delta,1.0,0.08081550151109695,9.6640625
+scaled_real_delta_2,scaled_real_delta,2.0,0.08854182809591293,9.6640625
+scaled_real_delta_4,scaled_real_delta,4.0,0.11174766719341278,9.66796875

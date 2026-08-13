@@ -1,0 +1,14 @@
+name,kind,parameter,raw_assignment_difference_count,raw_assignment_difference_rate,aligned_assignment_difference_count,aligned_assignment_difference_rate,fixed_centroid_assignment_difference_rate
+real_delta_alpha_1,real_delta,1.0,63,0.015380859375,63,0.015380859375,0.0
+random_rel_0,random_noise,0.0,0,0.0,0,0.0,0.0
+random_rel_5e-05,random_noise,5e-05,0,0.0,0,0.0,0.0
+random_rel_0.0001,random_noise,0.0001,11,0.002685546875,11,0.002685546875,0.0
+random_rel_0.0002,random_noise,0.0002,8,0.001953125,8,0.001953125,0.0
+random_rel_0.0005,random_noise,0.0005,68,0.0166015625,68,0.0166015625,0.0
+random_rel_0.001,random_noise,0.001,70,0.01708984375,70,0.01708984375,0.0
+scaled_real_delta_0,scaled_real_delta,0.0,0,0.0,0,0.0,0.0
+scaled_real_delta_0.25,scaled_real_delta,0.25,0,0.0,0,0.0,0.0
+scaled_real_delta_0.5,scaled_real_delta,0.5,14,0.00341796875,14,0.00341796875,0.0
+scaled_real_delta_1,scaled_real_delta,1.0,63,0.015380859375,63,0.015380859375,0.0
+scaled_real_delta_2,scaled_real_delta,2.0,74,0.01806640625,74,0.01806640625,0.0
+scaled_real_delta_4,scaled_real_delta,4.0,137,0.033447265625,137,0.033447265625,0.0
