@@ -175,5 +175,25 @@
     "reorder_view_ok": true,
     "slot_reuse_clean": true,
     "status": "PASS"
-  }
+  },
+  "performance": [
+    {
+      "batch": 2,
+      "latency_us": 75.57119727134705,
+      "status": "PASS",
+      "tokens": 4096
+    },
+    {
+      "batch": 4,
+      "latency_us": 138.64959478378296,
+      "status": "PASS",
+      "tokens": 4096
+    },
+    {
+      "batch": 4,
+      "latency_us": null,
+      "status": "NOT_RUN",
+      "tokens": 16384
+    }
+  ]
 }

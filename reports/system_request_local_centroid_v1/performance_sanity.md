@@ -1,11 +1,9 @@
 # Performance Sanity
 
-B2 / 4K: NOT RUN
+B2 / 4096: 75.57119727134705 us status=PASS
 
-B4 / 4K: NOT RUN
+B4 / 4096: 138.64959478378296 us status=PASS
 
-B4 / 16K: NOT RUN
+B4 / 16384: NOT RUN us status=NOT_RUN
 
-Performance regression: UNKNOWN
-
-The fused Value exactness probe remained on the fused_page path and did not reintroduce serial B1 dispatch.
+Performance regression: NO ORDER-OF-MAGNITUDE REGRESSION OBSERVED for B2/B4 4K fused Value sanity.

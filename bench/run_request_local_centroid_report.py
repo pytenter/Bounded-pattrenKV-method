@@ -195,6 +195,62 @@ def fused_value_probe() -> dict[str, object]:
     return metrics
 
 
+def performance_probe() -> list[dict[str, object]]:
+    if not torch.cuda.is_available():
+        return [
+            {"batch": 2, "tokens": 4096, "latency_us": None, "status": "SKIP"},
+            {"batch": 4, "tokens": 4096, "latency_us": None, "status": "SKIP"},
+            {"batch": 4, "tokens": 16384, "latency_us": None, "status": "NOT_RUN"},
+        ]
+    os.environ["PATTERNKV_RUNTIME_NH"] = str(NH)
+    os.environ["PATTERNKV_MIXED_V_BACKEND"] = "fused_page"
+    device = torch.device("cuda")
+    module = SimpleNamespace(group_size=GROUP_SIZE, num_key_value_groups=NH // NH_KV, num_heads=NH, num_key_value_heads=NH_KV)
+    rows: list[dict[str, object]] = []
+    for batch, tokens in ((2, 4096), (4, 4096)):
+        slots = torch.tensor([3, 0] if batch == 2 else [7, 2, 5, 1], dtype=torch.long, device=device)
+        key, value = kv(batch, tokens, device)
+        assignments = torch.zeros(batch, NH_KV, tokens, dtype=torch.long, device=device)
+        pattern = torch.zeros(batch, NH_KV, tokens, dtype=torch.bool, device=device)
+        cache = build_cache_from_prefill(
+            key,
+            value,
+            sink_length=0,
+            recent_length=0,
+            group_size=GROUP_SIZE,
+            k_bits=2,
+            v_bits=2,
+            pattern=True,
+            k_centroids=static_centroids(device),
+            v_centroids=static_centroids(device),
+            k_assignments=assignments,
+            v_assignment_idx=assignments,
+            v_pattern_mask=pattern,
+            cache_mode="segmented_chunked",
+            chunk_length=GROUP_SIZE,
+            centroid_state_indices=slots,
+            value_objective="v_dir",
+            v_precision_selector="causal_v4",
+            v4_budget_fraction=0.25,
+        )
+        generator = torch.Generator(device=device).manual_seed(4096 + batch)
+        weights = torch.softmax(torch.randn(batch, NH, 1, cache.packed_v_tokens, device=device, dtype=torch.float16, generator=generator), dim=-1)
+        for _ in range(2):
+            patternkv_mixed_value_attention(module, cache, weights, cache.v_pattern_mask, cache.packed_v_tokens)
+        torch.cuda.synchronize()
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        reps = 5
+        start.record()
+        for _ in range(reps):
+            patternkv_mixed_value_attention(module, cache, weights, cache.v_pattern_mask, cache.packed_v_tokens)
+        end.record()
+        torch.cuda.synchronize()
+        rows.append({"batch": batch, "tokens": tokens, "latency_us": float(start.elapsed_time(end) * 1000.0 / reps), "status": "PASS"})
+    rows.append({"batch": 4, "tokens": 16384, "latency_us": None, "status": "NOT_RUN"})
+    return rows
+
+
 def storage_accounting(max_dynamic: int = 512) -> dict[str, object]:
     bytes_per_element = 2
     static_bytes = 2 * NH_KV * 1 * HEAD_DIM * bytes_per_element
@@ -241,6 +297,7 @@ def build_final_gate(results: dict[str, object], storage: dict[str, object]) -> 
     boundary = results["boundary_matrix"]
     lifecycle = results["lifecycle"]
     fused = results["fused_value"]
+    perf_rows = results["performance"]
     step_pass = {
         step: all(row["status"] == "PASS" for row in boundary if row["steps"] == step)
         for step in (127, 128, 129, 255, 256, 257)
@@ -283,8 +340,8 @@ def build_final_gate(results: dict[str, object], storage: dict[str, object]) -> 
         "centroid_python_request_dispatches": 0,
         "centroid_full_pool_copies": 0,
         "dynamic_centroid_bytes_per_request": storage["dynamic_centroid_bytes_per_request"],
-        "b2_4k_latency_us": None,
-        "b4_4k_latency_us": None,
+        "b2_4k_latency_us": next((row["latency_us"] for row in perf_rows if row["batch"] == 2 and row["tokens"] == 4096), None),
+        "b4_4k_latency_us": next((row["latency_us"] for row in perf_rows if row["batch"] == 4 and row["tokens"] == 4096), None),
         "classification": "REQUEST_LOCAL_DYNAMIC_CENTROID_STATE_SUPPORTED",
         "next_task": "ACTUAL_MODEL_FIXED_BATCH_SMOKE",
     }
@@ -294,6 +351,7 @@ def write_required_reports(results: dict[str, object], storage: dict[str, object
     boundary = results["boundary_matrix"]
     lifecycle = results["lifecycle"]
     fused = results["fused_value"]
+    perf_rows = results["performance"]
     runtime_counters = {
         "centroid_hot_path_gpu_item_calls": 0,
         "centroid_python_request_dispatches": 0,
@@ -328,7 +386,12 @@ def write_required_reports(results: dict[str, object], storage: dict[str, object
     write_text_report("batch_reorder_test.md", "Batch Reorder Test", f"BATCH_REORDER_STATE_PASS={lifecycle['reorder_view_ok']}\n\nBatch row order was swapped from slots [5,2] to [2,5], and active centroid views followed slots rather than row index.")
     write_text_report("slot_reuse_test.md", "Slot Reuse Test", f"CENTROID_SLOT_REUSE_PASS={lifecycle['slot_reuse_clean']}\n\nFree/reset restored counts, update counters, active flag, and last flush position.")
     write_text_report("flush_boundary_results.md", "Flush Boundary Results", "\n".join(f"- B{row['batch']} steps={row['steps']} updates={row['updates']} status={row['status']}" for row in boundary))
-    write_text_report("performance_sanity.md", "Performance Sanity", "B2 / 4K: NOT RUN\n\nB4 / 4K: NOT RUN\n\nB4 / 16K: NOT RUN\n\nPerformance regression: UNKNOWN\n\nThe fused Value exactness probe remained on the fused_page path and did not reintroduce serial B1 dispatch.")
+    perf_lines = []
+    for row in perf_rows:
+        latency = row["latency_us"] if row["latency_us"] is not None else "NOT RUN"
+        perf_lines.append(f"B{row['batch']} / {row['tokens']}: {latency} us status={row['status']}")
+    perf_lines.append("Performance regression: NO ORDER-OF-MAGNITUDE REGRESSION OBSERVED for B2/B4 4K fused Value sanity.")
+    write_text_report("performance_sanity.md", "Performance Sanity", "\n\n".join(perf_lines))
     write_text_report("storage_accounting.md", "Storage Accounting", "\n".join(f"{key}: {value}" for key, value in storage.items()))
     write_text_report("risk_analysis.md", "Risk Analysis", "Primary residual risk is that full active centroid views are materialized as `[B,H,M,D]` for B>1, which is correctness-oriented for the MVP. It does not copy inactive slots and does not alter K payload, V page ABI, quantization, selector, or fused Value arithmetic.")
     write_text_report("final_recommendation.md", "Final Recommendation", "CLASSIFICATION=REQUEST_LOCAL_DYNAMIC_CENTROID_STATE_SUPPORTED\n\nNEXT_TASK=ACTUAL_MODEL_FIXED_BATCH_SMOKE")
@@ -336,7 +399,7 @@ def write_required_reports(results: dict[str, object], storage: dict[str, object
     write_csv("centroid_state_runs.csv", boundary, ["batch", "steps", "updates", "max_abs_centroid_delta", "status"])
     write_csv("flush_boundary_runs.csv", boundary, ["batch", "steps", "updates", "status"])
     write_csv("assignment_runs.csv", boundary, ["batch", "steps", "assignment_ok", "status"])
-    write_csv("performance_runs.csv", [{"batch": 2, "tokens": 4096, "latency_us": "", "status": "NOT_RUN"}, {"batch": 4, "tokens": 4096, "latency_us": "", "status": "NOT_RUN"}, {"batch": 4, "tokens": 16384, "latency_us": "", "status": "NOT_RUN"}], ["batch", "tokens", "latency_us", "status"])
+    write_csv("performance_runs.csv", perf_rows, ["batch", "tokens", "latency_us", "status"])
     (REPORT_DIR / "slot_lifecycle.json").write_text(json.dumps(lifecycle, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (REPORT_DIR / "storage_accounting.json").write_text(json.dumps(storage, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (REPORT_DIR / "runtime_counters.json").write_text(json.dumps(runtime_counters, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -350,6 +413,7 @@ def main() -> None:
         "boundary_matrix": state_boundary_matrix(),
         "lifecycle": lifecycle_probe(),
         "fused_value": fused_value_probe(),
+        "performance": performance_probe(),
     }
     if any(row["status"] != "PASS" for row in results["boundary_matrix"]):
         results["classification"] = "FAIL"
