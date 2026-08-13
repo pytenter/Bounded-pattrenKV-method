@@ -1,0 +1,15 @@
+{
+  "correctness_mvp_metadata": {
+    "bits_per_kv_element": 0.0089111328125,
+    "bytes_per_page": 292,
+    "bytes_per_token": 2.28125,
+    "uses_v4_prefix_table": true
+  },
+  "page_size": 128,
+  "target_production_metadata": {
+    "bits_per_kv_element": 0.00103759765625,
+    "bytes_per_page_without_prefix_table": 34,
+    "bytes_per_token": 0.265625,
+    "expected_rank_lookup": "warp/page-local popcount or compressed prefix"
+  }
+}

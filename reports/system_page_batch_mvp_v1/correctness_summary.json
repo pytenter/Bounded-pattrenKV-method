@@ -1,0 +1,8 @@
+{
+  "correctness_passed": true,
+  "inf_count": 0,
+  "max_abs_error": 6.103515625e-05,
+  "max_relative_l2": 0.0005222256877459586,
+  "min_cosine": 0.9999998211860657,
+  "nan_count": 0
+}

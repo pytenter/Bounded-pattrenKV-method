@@ -1,0 +1,97 @@
+{
+  "requests": [
+    {
+      "request": 0,
+      "selected_first16": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21,
+        25,
+        29,
+        33,
+        37,
+        41,
+        45,
+        49,
+        53,
+        57,
+        61
+      ],
+      "selected_hash": "6a8fcb0f638b1640a45c8405596359355e3c7c444e351566a84e869b884423ce",
+      "v4_count": 128
+    },
+    {
+      "request": 1,
+      "selected_first16": [
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185
+      ],
+      "selected_hash": "4d1198f18d67c0be460f4ca2c2b63b831ea0a2ce77a1f63c8d90abbe32e3131f",
+      "v4_count": 128
+    },
+    {
+      "request": 2,
+      "selected_first16": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "selected_hash": "1abb49eec50723c018c1197161b8cc46c61cab2dbfdd96287a7e3e20bbcdcc99",
+      "v4_count": 128
+    },
+    {
+      "request": 3,
+      "selected_first16": [
+        384,
+        385,
+        386,
+        387,
+        388,
+        389,
+        390,
+        391,
+        392,
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399
+      ],
+      "selected_hash": "36b57378e213a52da6c51856b91a0fbcd78a2601558096413a40e9d3bd228e5c",
+      "v4_count": 128
+    }
+  ],
+  "selector_isolation_pass": true
+}

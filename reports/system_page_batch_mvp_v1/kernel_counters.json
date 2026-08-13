@@ -1,0 +1,7 @@
+{
+  "cuda_vmm_used": false,
+  "experimental_gqa_used": false,
+  "historical_v_materialized_bytes": 0,
+  "old_page_native_reader_used": false,
+  "strided_k_used": false
+}

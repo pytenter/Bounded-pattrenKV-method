@@ -1,0 +1,19 @@
+{
+  "independent_v2_v4_affine": true,
+  "page_size": 128,
+  "physical_pools": [
+    "v2_payload",
+    "v2_scale",
+    "v2_zero",
+    "v4_payload",
+    "v4_scale",
+    "v4_zero",
+    "metadata"
+  ],
+  "request_local_v2_v4_counts": true,
+  "request_tables": [
+    "v2_page_table",
+    "v4_page_table",
+    "metadata_page_table"
+  ]
+}

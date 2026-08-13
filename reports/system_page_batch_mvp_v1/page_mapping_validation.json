@@ -1,0 +1,134 @@
+{
+  "mapping_valid": true,
+  "page_size": 128,
+  "pages": [
+    {
+      "ok": true,
+      "page": 0,
+      "request": 0,
+      "v2_count": 96,
+      "v4_count": 32,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 1,
+      "request": 0,
+      "v2_count": 96,
+      "v4_count": 32,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 2,
+      "request": 0,
+      "v2_count": 96,
+      "v4_count": 32,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 3,
+      "request": 0,
+      "v2_count": 96,
+      "v4_count": 32,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 0,
+      "request": 1,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 1,
+      "request": 1,
+      "v2_count": 42,
+      "v4_count": 86,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 2,
+      "request": 1,
+      "v2_count": 86,
+      "v4_count": 42,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 3,
+      "request": 1,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 0,
+      "request": 2,
+      "v2_count": 0,
+      "v4_count": 128,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 1,
+      "request": 2,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 2,
+      "request": 2,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 3,
+      "request": 2,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 0,
+      "request": 3,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 1,
+      "request": 3,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 2,
+      "request": 3,
+      "v2_count": 128,
+      "v4_count": 0,
+      "valid_tokens": 128
+    },
+    {
+      "ok": true,
+      "page": 3,
+      "request": 3,
+      "v2_count": 0,
+      "v4_count": 128,
+      "valid_tokens": 128
+    }
+  ]
+}
