@@ -1,0 +1,76 @@
+
+Fatbin elf code:
+================
+arch = sm_86
+code version = [1,7]
+host = linux
+compile_size = 64bit
+
+Resource usage:
+ Common:
+  GLOBAL:3 CONSTANT[4]:24
+ Function _Z24battn_v_kernel_with_baseILi2ELi6EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:98 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi5EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:103 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi4EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:86 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi3EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:54 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi2EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:70 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi1EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:70 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi0EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:102 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi6EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:72 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi5EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:71 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi4EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:59 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi3EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:40 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi2EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:56 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi1EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:56 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi0EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:64 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z32battn_v_kernel_gqa4_v2_with_baseILi128EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:85 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z32battn_v_kernel_with_base_stridedILi4EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiiixxxxxxxxxxxxxxxxxx:
+  REG:67 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:608 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z32battn_v_kernel_with_base_stridedILi2EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiiixxxxxxxxxxxxxxxxxx:
+  REG:102 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:608 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi2ELi7EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:103 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24battn_v_kernel_with_baseILi4ELi7EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii:
+  REG:71 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:464 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z33battn_v_kernel_with_base_paged_v2PK6__halfPKlS3_S3_S1_S3_S3_S1_S1_PS_iiiiiiiii:
+  REG:102 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:468 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z42bgemv_kernel_outer_dim_with_base_strided_kILi2EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiiilllllllllllllll:
+  REG:63 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z42bgemv_kernel_outer_dim_with_base_strided_kILi4EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiiilllllllllllllll:
+  REG:62 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z38bgemv_kernel_outer_dim_with_base_tiledILi2EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiii:
+  REG:69 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:436 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z38bgemv_kernel_outer_dim_with_base_tiledILi4EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiii:
+  REG:70 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:436 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z23bgemv2_kernel_outer_dimPK6__halfPKjS1_S1_PS_iiiii:
+  REG:58 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:412 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z23bgemv4_kernel_outer_dimPK6__halfPKjS1_S1_PS_iiiii:
+  REG:48 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:412 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z16gemv_kernel_g128PK6float4PKjPK6__halfS6_PS4_ii:
+  REG:27 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:400 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z15gemv_kernel_g64PK6float4PKjPK6__halfS6_PS4_ii:
+  REG:27 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:400 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin ptx code:
+================
+arch = sm_86
+code version = [8,4]
+host = linux
+compile_size = 64bit
+compressed
+ptxasOptions =

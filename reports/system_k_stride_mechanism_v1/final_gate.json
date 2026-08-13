@@ -1,0 +1,22 @@
+{
+  "address_arithmetic_hypothesis": "supported",
+  "algorithm_changed": false,
+  "classification": "K_STRIDE_REGRESSION_PARTIALLY_SUPPORTED",
+  "dominant_mechanism": "ADDRESS_ARITHMETIC_DOMINATED",
+  "k_capacity_reenabled": false,
+  "kernel_math_changed": false,
+  "mechanism_confidence": "MEDIUM",
+  "memory_coalescing_hypothesis": "inconclusive",
+  "ncu_available": false,
+  "nsys_available": false,
+  "observed_overhead_reference": 0.3367768457135559,
+  "occupancy_hypothesis": "rejected",
+  "physical_capacity_scan_hypothesis": "rejected",
+  "production_backend_changed": false,
+  "recommended_next_phase": "V_ONLY_CAPACITY_FINAL_SYSTEM_BENCHMARK",
+  "register_pressure_hypothesis": "rejected",
+  "strided_k_32k_us_reference": 331.2639892101288,
+  "tight_k_32k_us_reference": 247.80799448490143,
+  "value_capacity_path_changed": false,
+  "vector_load_hypothesis": "inconclusive"
+}

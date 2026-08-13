@@ -1,0 +1,2 @@
+status,reason,tight_kernel,strided_kernel
+unavailable,ncu not found in PATH; Nsight Compute profiling was skipped,,

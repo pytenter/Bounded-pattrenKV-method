@@ -1,0 +1,5 @@
+label,function,found,instructions,global_loads,global_stores,integer_add,integer_mul_mad,shift_extract,fma,convert,predicate_select,barrier,constant_load_refs
+tight_k2,_Z38bgemv_kernel_outer_dim_with_base_tiledILi2EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiii,True,3488,126,48,173,486,415,99,122,168,3,217
+strided_k2,_Z42bgemv_kernel_outer_dim_with_base_strided_kILi2EEvPK6__halfPKjS2_S2_S2_PKvPS0_iiiiiiilllllllllllllll,True,5144,142,64,421,918,535,99,138,213,3,609
+v2_tight,_Z24battn_v_kernel_with_baseILi2ELi7EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiii,True,2040,54,16,179,324,318,160,88,191,2,175
+v2_strided,_Z32battn_v_kernel_with_base_stridedILi2EEvPK6__halfPKjS2_S2_S2_PKhPKvS2_S2_PS0_iiiiiiiixxxxxxxxxxxxxxxxxx,True,2120,54,16,180,363,312,160,88,189,2,248

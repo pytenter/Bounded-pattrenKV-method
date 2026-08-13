@@ -1,0 +1,5 @@
+reader,threads_x,threads_y,threads_per_block,warps_per_block,blocks_x_32k,blocks_y_32k,dynamic_smem_bytes,logical_bound
+tight_k2,32,8,256,8,32,256,320,OC from tight padded assignment/output
+strided_k2,32,8,256,8,32,256,320,OC = assignments.size(2)
+v2_tight,32,4,128,4,32,4,256,K attention tokens
+v2_strided,32,4,128,4,32,4,256,K attention tokens
