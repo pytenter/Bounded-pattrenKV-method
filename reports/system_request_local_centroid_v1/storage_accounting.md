@@ -1,0 +1,12 @@
+# Storage Accounting
+
+static_centroid_bytes_shared: 1024
+max_dynamic_centroids: 512
+dynamic_centroid_bytes_per_request: 524288
+counter_metadata_bytes_per_request: 21
+slot_table_bytes_per_request: 4
+b1_total_centroid_runtime_bytes: 525337
+b2_total_centroid_runtime_bytes: 1049650
+b4_total_centroid_runtime_bytes: 2098276
+dynamic_centroid_bytes_per_request_16k: 131072
+dynamic_centroid_bytes_per_request_32k: 262144

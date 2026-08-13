@@ -2711,6 +2711,7 @@ __global__ void page_mixed_pool_value_kernel(
   const int T,
   const int OC,
   const int Mcent,
+  const int Bcent,
   const int N2,
   const int N4,
   const int pages_per_request,
@@ -2752,7 +2753,8 @@ __global__ void page_mixed_pool_value_kernel(
         if (__ldg(v4_pattern + (size_t)hk * N4 + phys)) {
           const int idx = __ldg(v4_assignment + (size_t)hk * N4 + phys);
           if (0 <= idx && idx < Mcent) {
-            value += __half2float(__ldg(centroids + ((size_t)hk * Mcent + idx) * OC + oc));
+            const size_t cent_base = (Bcent == 1) ? ((size_t)hk * Mcent + idx) : (((size_t)b * nh_kv + hk) * Mcent + idx);
+            value += __half2float(__ldg(centroids + cent_base * OC + oc));
           }
         }
         sum += a * value;
@@ -2769,7 +2771,8 @@ __global__ void page_mixed_pool_value_kernel(
         if (__ldg(v2_pattern + (size_t)hk * N2 + phys)) {
           const int idx = __ldg(v2_assignment + (size_t)hk * N2 + phys);
           if (0 <= idx && idx < Mcent) {
-            value += __half2float(__ldg(centroids + ((size_t)hk * Mcent + idx) * OC + oc));
+            const size_t cent_base = (Bcent == 1) ? ((size_t)hk * Mcent + idx) : (((size_t)b * nh_kv + hk) * Mcent + idx);
+            value += __half2float(__ldg(centroids + cent_base * OC + oc));
           }
         }
         sum += a * value;
@@ -2811,9 +2814,10 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
   const int B = _alpha_q.size(0);
   const int T = _alpha_q.size(3);
   TORCH_CHECK(_alpha_q.size(1)==nh, "alpha_q nh mismatch");
-  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
-  const int Mcent = _centroids.size(1);
-  const int OC = _centroids.size(2);
+  TORCH_CHECK((_centroids.dim()==3 && _centroids.size(0)==nh_kv) || (_centroids.dim()==4 && _centroids.size(0)==B && _centroids.size(1)==nh_kv), "centroids must be [nh_kv,M,OC] or [B,nh_kv,M,OC]");
+  const int Bcent = (_centroids.dim()==4) ? B : 1;
+  const int Mcent = (_centroids.dim()==4) ? _centroids.size(2) : _centroids.size(1);
+  const int OC = (_centroids.dim()==4) ? _centroids.size(3) : _centroids.size(2);
   TORCH_CHECK(OC % group_size == 0, "OC must be divisible by group_size");
   TORCH_CHECK(_v2_payload.dim()==3 && _v2_payload.size(0)==nh_kv, "v2 payload must be [nh_kv,N2,OC/16]");
   TORCH_CHECK(_v4_payload.dim()==3 && _v4_payload.size(0)==nh_kv, "v4 payload must be [nh_kv,N4,OC/8]");
@@ -2871,7 +2875,7 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
     reinterpret_cast<const int32_t*>(metadata_page_table.data_ptr<int>()),
     reinterpret_cast<const int16_t*>(v4_prefix_counts.data_ptr<int16_t>()),
     reinterpret_cast<half*>(out.data_ptr<at::Half>()),
-    B, T, OC, Mcent, N2, N4, pages_per_request, group_size, nh, nh_kv, page_size
+    B, T, OC, Mcent, Bcent, N2, N4, pages_per_request, group_size, nh, nh_kv, page_size
   );
   return out;
 }

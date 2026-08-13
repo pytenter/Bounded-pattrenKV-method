@@ -200,8 +200,16 @@ def pack_mixed_v_pages(
             raise ValueError(f"v_pattern_mask must be [B,Hkv,T], got {tuple(v_pattern_mask.shape)}")
         if v_assignment_idx.shape != (bsz, nh_kv, tokens):
             raise ValueError(f"v_assignment_idx must be [B,Hkv,T], got {tuple(v_assignment_idx.shape)}")
-        if centroids.shape[0] != nh_kv or centroids.shape[-1] != head_dim:
-            raise ValueError(f"centroids must be [Hkv,M,D], got {tuple(centroids.shape)}")
+        if centroids.dim() == 3:
+            centroid_heads = int(centroids.shape[0])
+        elif centroids.dim() == 4:
+            if int(centroids.shape[0]) != bsz:
+                raise ValueError(f"request-local centroids batch must match V batch, got {tuple(centroids.shape)}")
+            centroid_heads = int(centroids.shape[1])
+        else:
+            raise ValueError(f"centroids must be [Hkv,M,D] or [B,Hkv,M,D], got {tuple(centroids.shape)}")
+        if centroid_heads != nh_kv or centroids.shape[-1] != head_dim:
+            raise ValueError(f"centroids must be [Hkv,M,D] or [B,Hkv,M,D], got {tuple(centroids.shape)}")
         if head_dim % group_size != 0:
             raise ValueError("head_dim must be divisible by group_size")
 
@@ -588,9 +596,19 @@ def append_operator_ready_page_pools(
         raise ValueError("operator-ready page pool ABI mismatch")
     if existing.metadata.v2_page_table.shape[0] != chunk.metadata.v2_page_table.shape[0]:
         raise ValueError("operator-ready page pool batch mismatch")
-    if existing.centroids.shape[0] != chunk.centroids.shape[0] or existing.centroids.shape[2] != chunk.centroids.shape[2]:
+    def centroid_geometry(centroids: torch.Tensor) -> tuple[int, ...]:
+        if centroids.dim() == 3:
+            return (3, int(centroids.shape[0]), int(centroids.shape[2]))
+        if centroids.dim() == 4:
+            return (4, int(centroids.shape[0]), int(centroids.shape[1]), int(centroids.shape[3]))
+        raise ValueError("operator-ready page pool centroids must be [H,M,D] or [B,H,M,D]")
+
+    def centroid_bank_size(centroids: torch.Tensor) -> int:
+        return int(centroids.shape[1] if centroids.dim() == 3 else centroids.shape[2])
+
+    if centroid_geometry(existing.centroids) != centroid_geometry(chunk.centroids):
         raise ValueError("operator-ready page pool centroid geometry mismatch")
-    if chunk.centroids.shape[1] < existing.centroids.shape[1]:
+    if centroid_bank_size(chunk.centroids) < centroid_bank_size(existing.centroids):
         raise ValueError("operator-ready page pool centroid bank shrank")
 
     old_v2_pages = int(existing.v2_page_offsets.numel())

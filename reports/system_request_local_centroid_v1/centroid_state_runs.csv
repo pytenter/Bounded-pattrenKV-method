@@ -1,0 +1,13 @@
+batch,steps,updates,max_abs_centroid_delta,status
+2,127,0,0.0,PASS
+2,128,1,0.0,PASS
+2,129,1,0.0,PASS
+2,255,1,0.0,PASS
+2,256,2,0.0,PASS
+2,257,2,0.0,PASS
+4,127,0,0.0,PASS
+4,128,1,0.0,PASS
+4,129,1,0.0,PASS
+4,255,1,0.0,PASS
+4,256,2,0.0,PASS
+4,257,2,0.0,PASS

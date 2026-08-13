@@ -69,6 +69,76 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     v_causal_importance: torch.Tensor | None = None
     v_oracle_importance: torch.Tensor | None = None
     operator_ready_page_pools: Any | None = None
+    centroid_state_pool: Any | None = None
+    centroid_state_indices: torch.Tensor | None = None
+    centroid_flush_mask: torch.Tensor | None = None
+
+
+@dataclass
+class PatternKVCentroidStatePool:
+    k_centroid_pool: torch.Tensor
+    v_centroid_pool: torch.Tensor
+    k_counts: torch.Tensor
+    v_counts: torch.Tensor
+    update_counts_k: torch.Tensor
+    update_counts_v: torch.Tensor
+    last_flush_pos: torch.Tensor
+    active: torch.Tensor
+    static_centroid_count: int
+    static_v_centroid_count: int | None = None
+
+    @classmethod
+    def create(
+        cls,
+        k_static: torch.Tensor,
+        v_static: torch.Tensor,
+        *,
+        max_slots: int,
+        max_dynamic_centroids: int,
+    ) -> "PatternKVCentroidStatePool":
+        if k_static.dim() != 3 or v_static.dim() != 3:
+            raise ValueError("static centroid banks must be [H,M,D]")
+        if k_static.shape[0] != v_static.shape[0] or k_static.shape[2] != v_static.shape[2]:
+            raise ValueError("K/V static centroid geometry mismatch")
+        slots = int(max_slots)
+        k_total = int(k_static.shape[1]) + int(max_dynamic_centroids)
+        v_total = int(v_static.shape[1]) + int(max_dynamic_centroids)
+        k_pool = torch.empty((slots, k_static.shape[0], k_total, k_static.shape[2]), dtype=k_static.dtype, device=k_static.device)
+        v_pool = torch.empty((slots, v_static.shape[0], v_total, v_static.shape[2]), dtype=v_static.dtype, device=v_static.device)
+        k_pool[:, :, : k_static.shape[1], :] = k_static.unsqueeze(0)
+        v_pool[:, :, : v_static.shape[1], :] = v_static.unsqueeze(0)
+        k_counts = torch.full((slots,), int(k_static.shape[1]), dtype=torch.int32, device=k_static.device)
+        v_counts = torch.full((slots,), int(v_static.shape[1]), dtype=torch.int32, device=v_static.device)
+        return cls(
+            k_centroid_pool=k_pool,
+            v_centroid_pool=v_pool,
+            k_counts=k_counts,
+            v_counts=v_counts,
+            update_counts_k=torch.zeros(slots, dtype=torch.int32, device=k_static.device),
+            update_counts_v=torch.zeros(slots, dtype=torch.int32, device=v_static.device),
+            last_flush_pos=torch.zeros(slots, dtype=torch.int32, device=k_static.device),
+            active=torch.zeros(slots, dtype=torch.bool, device=k_static.device),
+            static_centroid_count=int(k_static.shape[1]),
+            static_v_centroid_count=int(v_static.shape[1]),
+        )
+
+    def allocate(self, slots: torch.Tensor) -> None:
+        self.active[slots.long()] = True
+
+    def free(self, slots: torch.Tensor) -> None:
+        slots = slots.long()
+        self.k_counts[slots] = int(self.static_centroid_count)
+        self.v_counts[slots] = int(self.static_v_centroid_count or self.static_centroid_count)
+        self.update_counts_k[slots] = 0
+        self.update_counts_v[slots] = 0
+        self.last_flush_pos[slots] = 0
+        self.active[slots] = False
+
+    def current_k(self, slots: torch.Tensor) -> torch.Tensor:
+        return self.k_centroid_pool[slots.long()]
+
+    def current_v(self, slots: torch.Tensor) -> torch.Tensor:
+        return self.v_centroid_pool[slots.long()]
 
 
 CHUNKED_CACHE_MODE = "segmented_chunked"
@@ -914,6 +984,41 @@ def pattern_gather_centroids(idx: torch.Tensor, centroids: torch.Tensor) -> torc
     return torch.gather(expanded, 2, idx.unsqueeze(-1).expand(-1, -1, -1, dim))
 
 
+def pattern_gather_request_centroids(idx: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
+    if idx.dim() != 3 or centroids.dim() != 4:
+        raise ValueError(f"expected idx [B,H,T] and centroids [B,H,M,D], got {tuple(idx.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens = idx.shape
+    if centroids.shape[0] != bsz or centroids.shape[1] != heads:
+        raise ValueError(f"request centroid shape mismatch: idx={tuple(idx.shape)} centroids={tuple(centroids.shape)}")
+    dim = centroids.shape[-1]
+    if idx.dtype != torch.long:
+        idx = idx.long()
+    return torch.gather(centroids, 2, idx.unsqueeze(-1).expand(-1, -1, -1, dim))
+
+
+def _assign_minmax_bhnk(x: torch.Tensor, centroids: torch.Tensor, block_k: int = 256, counts: torch.Tensor | None = None) -> torch.Tensor:
+    if x.dim() != 4 or centroids.dim() != 4:
+        raise ValueError(f"expected x [B,H,T,D] and centroids [B,H,M,D], got {tuple(x.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens, dim = x.shape
+    if centroids.shape[0] != bsz or centroids.shape[1] != heads or centroids.shape[-1] != dim:
+        raise ValueError(f"centroid shape mismatch: x={tuple(x.shape)} centroids={tuple(centroids.shape)}")
+    best_dist = torch.full((bsz, heads, tokens), float("inf"), device=x.device, dtype=x.dtype)
+    best_idx = torch.zeros((bsz, heads, tokens), device=x.device, dtype=torch.long)
+    for start in range(0, centroids.shape[2], block_k):
+        stop = min(start + block_k, centroids.shape[2])
+        diff = x.unsqueeze(3) - centroids[:, :, start:stop, :].unsqueeze(2)
+        distance = diff.amax(dim=-1) - diff.amin(dim=-1)
+        if counts is not None:
+            positions = torch.arange(start, stop, dtype=counts.dtype, device=counts.device)
+            valid = positions.unsqueeze(0) < counts.to(counts.device).unsqueeze(1)
+            distance = torch.where(valid[:, None, None, :], distance, torch.full_like(distance, float("inf")))
+        cand, idx = distance.min(dim=-1)
+        better = cand < best_dist
+        best_dist[better] = cand[better]
+        best_idx[better] = (start + idx)[better]
+    return best_idx.contiguous()
+
+
 def pattern_nearest_v_centroid(x: torch.Tensor, centroids: torch.Tensor) -> torch.Tensor:
     if x.dim() != 4 or centroids.dim() != 3:
         raise ValueError(f"expected x [B,H,T,D] and centroids [H,M,D], got {tuple(x.shape)} {tuple(centroids.shape)}")
@@ -923,6 +1028,10 @@ def pattern_nearest_v_centroid(x: torch.Tensor, centroids: torch.Tensor) -> torc
     diff = x.unsqueeze(2) - centroids.unsqueeze(0).unsqueeze(3)
     distance = diff.amax(dim=-1) - diff.amin(dim=-1)
     return distance.argmin(dim=2).contiguous()
+
+
+def pattern_nearest_request_v_centroid(x: torch.Tensor, centroids: torch.Tensor, counts: torch.Tensor | None = None) -> torch.Tensor:
+    return _assign_minmax_bhnk(x, centroids, counts=counts)
 
 
 def normalize_value_objective(value_objective: str | None) -> str:
@@ -1014,6 +1123,28 @@ def pattern_v_candidate_reconstructions(
     expanded_x = x.unsqueeze(2)
     expanded_c = centroids.unsqueeze(0).unsqueeze(3)
     _, mask = pattern_v_threshold_and_mask(expanded_x.expand(-1, -1, centroids.shape[1], -1, -1), expanded_c.expand(bsz, -1, -1, tokens, -1))
+    adjusted = expanded_x - mask.unsqueeze(-1).to(x.dtype) * expanded_c
+    dequant = affine_dequantize_last_dim_reference(adjusted.contiguous(), group_size, bits)
+    restored = dequant + mask.unsqueeze(-1).to(x.dtype) * expanded_c
+    base_score = (expanded_x - expanded_c).amax(dim=-1) - (expanded_x - expanded_c).amin(dim=-1)
+    return restored, mask, base_score
+
+
+def pattern_request_v_candidate_reconstructions(
+    x: torch.Tensor,
+    centroids: torch.Tensor,
+    *,
+    group_size: int,
+    bits: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    if x.dim() != 4 or centroids.dim() != 4:
+        raise ValueError(f"expected x [B,H,T,D] and centroids [B,H,M,D], got {tuple(x.shape)} {tuple(centroids.shape)}")
+    bsz, heads, tokens, dim = x.shape
+    if centroids.shape[0] != bsz or centroids.shape[1] != heads or centroids.shape[-1] != dim:
+        raise ValueError(f"centroid shape mismatch: x={tuple(x.shape)} centroids={tuple(centroids.shape)}")
+    expanded_x = x.unsqueeze(2)
+    expanded_c = centroids.unsqueeze(3)
+    _, mask = pattern_v_threshold_and_mask(expanded_x.expand(-1, -1, centroids.shape[2], -1, -1), expanded_c.expand(-1, -1, -1, tokens, -1))
     adjusted = expanded_x - mask.unsqueeze(-1).to(x.dtype) * expanded_c
     dequant = affine_dequantize_last_dim_reference(adjusted.contiguous(), group_size, bits)
     restored = dequant + mask.unsqueeze(-1).to(x.dtype) * expanded_c
@@ -1304,6 +1435,59 @@ def pattern_select_v_candidate(
     return idx, mask, {"score": score, "direction": direction, "nre": nre, "base_score": base_score}
 
 
+def pattern_select_request_v_candidate(
+    x: torch.Tensor,
+    centroids: torch.Tensor,
+    *,
+    value_objective: str,
+    group_size: int,
+    bits: int,
+    centroid_counts: torch.Tensor | None = None,
+    tie_atol: float = 1e-7,
+    block_tokens: int = 128,
+) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
+    objective = normalize_value_objective(value_objective)
+    if objective == "base":
+        idx = pattern_nearest_request_v_centroid(x, centroids, counts=centroid_counts).to(torch.long)
+        selected = pattern_gather_request_centroids(idx, centroids).to(x.dtype)
+        _, mask = pattern_v_threshold_and_mask(x, selected)
+        return idx, mask, {"base_score": torch.empty(0, device=x.device, dtype=x.dtype)}
+    if x.shape[2] > block_tokens:
+        idx_parts = []
+        mask_parts = []
+        for start in range(0, x.shape[2], block_tokens):
+            stop = min(start + block_tokens, x.shape[2])
+            idx_part, mask_part, _ = pattern_select_request_v_candidate(
+                x[:, :, start:stop, :].contiguous(),
+                centroids,
+                value_objective=objective,
+                group_size=group_size,
+                bits=bits,
+                centroid_counts=centroid_counts,
+                tie_atol=tie_atol,
+                block_tokens=block_tokens,
+            )
+            idx_parts.append(idx_part)
+            mask_parts.append(mask_part)
+        return torch.cat(idx_parts, dim=2), torch.cat(mask_parts, dim=2), {"score": torch.empty(0, device=x.device, dtype=torch.float32)}
+    restored, masks, base_score = pattern_request_v_candidate_reconstructions(x, centroids, group_size=group_size, bits=bits)
+    expanded_x = x.unsqueeze(2).expand_as(restored)
+    direction = _vector_direction_error(expanded_x, restored)
+    nre = _vector_nre(expanded_x, restored)
+    score = direction if objective == "v_dir" else direction + nre
+    if centroid_counts is not None:
+        positions = torch.arange(centroids.shape[2], dtype=centroid_counts.dtype, device=centroid_counts.device)
+        valid = positions.unsqueeze(0) < centroid_counts.to(centroid_counts.device).unsqueeze(1)
+        score = torch.where(valid[:, None, :, None], score, torch.full_like(score, float("inf")))
+        base_score = torch.where(valid[:, None, :, None], base_score, torch.full_like(base_score, float("inf")))
+    best = score.min(dim=2).values
+    eligible = score <= best.unsqueeze(2) + float(tie_atol)
+    masked_base = torch.where(eligible, base_score.float(), torch.full_like(base_score.float(), float("inf")))
+    idx = masked_base.argmin(dim=2).contiguous().to(torch.long)
+    mask = torch.gather(masks, 2, idx.unsqueeze(2)).squeeze(2).contiguous()
+    return idx, mask, {"score": score, "direction": direction, "nre": nre, "base_score": base_score}
+
+
 def quantize_pack_k_reference(k: torch.Tensor, group_size: int, bits: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     with profile_range("pack_k", tokens=int(k.shape[2])):
         if k.shape[2] % group_size != 0:
@@ -1382,17 +1566,100 @@ def _pack_raw_pending(cache: QuantizedKVCache, tokens: int) -> None:
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
 
 
+def _default_centroid_slots(bsz: int, device: torch.device) -> torch.Tensor:
+    return torch.arange(int(bsz), dtype=torch.int64, device=device)
+
+
+def _ensure_centroid_state_pool(cache: PatternQuantizedKVCache, bsz: int) -> PatternKVCentroidStatePool | None:
+    if cache.k_centroids is None or cache.v_centroids is None:
+        return None
+    if cache.centroid_state_pool is None:
+        max_slots = max(int(os.environ.get("PATTERNKV_CENTROID_MAX_SLOTS", "16")), int(bsz))
+        max_dynamic = int(os.environ.get("PATTERNKV_CENTROID_MAX_DYNAMIC", "512"))
+        k_static = cache.k_centroids[0] if cache.k_centroids.dim() == 4 else cache.k_centroids
+        v_static = cache.v_centroids[0] if cache.v_centroids.dim() == 4 else cache.v_centroids
+        cache.centroid_state_pool = PatternKVCentroidStatePool.create(
+            k_static,
+            v_static,
+            max_slots=max_slots,
+            max_dynamic_centroids=max_dynamic,
+        )
+    if cache.centroid_state_indices is None:
+        cache.centroid_state_indices = _default_centroid_slots(bsz, cache.centroid_state_pool.k_centroid_pool.device)
+    cache.centroid_state_pool.allocate(cache.centroid_state_indices)
+    return cache.centroid_state_pool
+
+
+def _active_request_centroids(cache: PatternQuantizedKVCache, *, stream: str) -> torch.Tensor:
+    pool = _ensure_centroid_state_pool(cache, int(cache.centroid_state_indices.numel()) if cache.centroid_state_indices is not None else 1)
+    if pool is None or cache.centroid_state_indices is None:
+        value = cache.k_centroids if stream == "k" else cache.v_centroids
+        if value is None:
+            raise ValueError(f"{stream} centroids are missing")
+        return value
+    slots = cache.centroid_state_indices.long()
+    source = pool.k_centroid_pool if stream == "k" else pool.v_centroid_pool
+    if slots.numel() == 1:
+        updates = int(cache.centroid_updates_k if stream == "k" else cache.centroid_updates_v)
+        static_count = int(pool.static_centroid_count if stream == "k" else (pool.static_v_centroid_count or pool.static_centroid_count))
+        max_count = int(static_count + updates)
+        centroids = source[slots, :, :max_count, :].contiguous()
+        return centroids[0]
+    return source[slots].contiguous()
+
+
+def _active_centroid_counts(cache: PatternQuantizedKVCache, *, stream: str) -> torch.Tensor | None:
+    pool = cache.centroid_state_pool
+    if pool is None or cache.centroid_state_indices is None:
+        return None
+    counts = pool.k_counts if stream == "k" else pool.v_counts
+    return counts[cache.centroid_state_indices.long()]
+
+
+def _sync_cache_centroid_views(cache: PatternQuantizedKVCache) -> None:
+    if cache.centroid_state_pool is None or cache.centroid_state_indices is None:
+        return
+    cache.k_centroids = _active_request_centroids(cache, stream="k")
+    cache.v_centroids = _active_request_centroids(cache, stream="v")
+
+
 def _append_dynamic_centroids(cache: PatternQuantizedKVCache, k_window: torch.Tensor, v_window: torch.Tensor) -> None:
     with profile_range("centroid_update", tokens=int(k_window.shape[2])):
         bsz, heads, tokens, dim = k_window.shape
-        xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
-        xv = v_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
-        k_centroid = pattern_chebyshev_center_per_head(xk).to(cache.k_centroids.dtype)
-        v_centroid = pattern_chebyshev_center_per_head(xv).to(cache.v_centroids.dtype)
-        cache.k_centroids = torch.cat([cache.k_centroids, k_centroid], dim=1).contiguous()
-        cache.v_centroids = torch.cat([cache.v_centroids, v_centroid], dim=1).contiguous()
+        pool = _ensure_centroid_state_pool(cache, bsz)
+        if pool is None or cache.centroid_state_indices is None:
+            xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+            xv = v_window.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
+            k_centroid = pattern_chebyshev_center_per_head(xk).to(cache.k_centroids.dtype)
+            v_centroid = pattern_chebyshev_center_per_head(xv).to(cache.v_centroids.dtype)
+            cache.k_centroids = torch.cat([cache.k_centroids, k_centroid], dim=1).contiguous()
+            cache.v_centroids = torch.cat([cache.v_centroids, v_centroid], dim=1).contiguous()
+            cache.centroid_updates_k += 1
+            cache.centroid_updates_v += 1
+            return
+        flush_mask = cache.centroid_flush_mask
+        if flush_mask is None:
+            active_rows = torch.ones(bsz, dtype=torch.bool, device=k_window.device)
+        else:
+            active_rows = flush_mask.to(device=k_window.device, dtype=torch.bool)
+        slots = cache.centroid_state_indices.to(device=k_window.device, dtype=torch.long)
+        update_slots = slots[active_rows]
+        if update_slots.numel() == 0:
+            return
+        k_centroid = ((k_window.amin(dim=2, keepdim=True) + k_window.amax(dim=2, keepdim=True)) * 0.5).to(pool.k_centroid_pool.dtype)
+        v_centroid = ((v_window.amin(dim=2, keepdim=True) + v_window.amax(dim=2, keepdim=True)) * 0.5).to(pool.v_centroid_pool.dtype)
+        k_pos = pool.k_counts[update_slots].long()
+        v_pos = pool.v_counts[update_slots].long()
+        pool.k_centroid_pool[update_slots, :, k_pos, :] = k_centroid[active_rows, :, 0, :]
+        pool.v_centroid_pool[update_slots, :, v_pos, :] = v_centroid[active_rows, :, 0, :]
+        pool.k_counts[update_slots] += 1
+        pool.v_counts[update_slots] += 1
+        pool.update_counts_k[update_slots] += 1
+        pool.update_counts_v[update_slots] += 1
+        pool.last_flush_pos[update_slots] = int(cache.packed_k_tokens + tokens)
         cache.centroid_updates_k += 1
         cache.centroid_updates_v += 1
+        _sync_cache_centroid_views(cache)
 
 
 def _pack_pattern_window(
@@ -1431,30 +1698,54 @@ def _pack_pattern_window_impl(
         return
     k_window = cache.pending_k[:, :, :tokens, :].contiguous()
     v_window = cache.pending_v[:, :, :tokens, :].contiguous()
+    _ensure_centroid_state_pool(cache, int(k_window.shape[0]))
     if dynamic_update:
         _append_dynamic_centroids(cache, k_window, v_window)
     bsz, heads, window_tokens, dim = k_window.shape
+    k_centroids_active = _active_request_centroids(cache, stream="k")
+    v_centroids_active = _active_request_centroids(cache, stream="v")
+    k_counts_active = _active_centroid_counts(cache, stream="k")
+    v_counts_active = _active_centroid_counts(cache, stream="v")
     if k_assignments is None:
-        xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * window_tokens, dim).contiguous()
-        assign_hn = _assign_minmax_hnk(xk, cache.k_centroids)
-        k_assignments = assign_hn.view(heads, bsz, window_tokens).permute(1, 0, 2).contiguous().to(torch.long)
+        if k_centroids_active.dim() == 4:
+            k_assignments = _assign_minmax_bhnk(k_window, k_centroids_active, counts=k_counts_active).to(torch.long)
+        else:
+            xk = k_window.permute(1, 0, 2, 3).reshape(heads, bsz * window_tokens, dim).contiguous()
+            assign_hn = _assign_minmax_hnk(xk, k_centroids_active)
+            k_assignments = assign_hn.view(heads, bsz, window_tokens).permute(1, 0, 2).contiguous().to(torch.long)
     else:
         k_assignments = k_assignments[:, :, :tokens].contiguous().to(torch.long)
     if v_assignment_idx is None:
         with profile_range("pattern_assignment", tokens=int(tokens)):
-            v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_v_candidate(
-                v_window,
-                cache.v_centroids,
-                value_objective=getattr(cache, "value_objective", "base"),
-                group_size=cache.group_size,
-                bits=cache.v_bits,
-            )
+            if v_centroids_active.dim() == 4:
+                v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_request_v_candidate(
+                    v_window,
+                    v_centroids_active,
+                    value_objective=getattr(cache, "value_objective", "base"),
+                    group_size=cache.group_size,
+                    bits=cache.v_bits,
+                    centroid_counts=v_counts_active,
+                )
+            else:
+                v_assignment_idx, inferred_v_pattern_mask, _ = pattern_select_v_candidate(
+                    v_window,
+                    v_centroids_active,
+                    value_objective=getattr(cache, "value_objective", "base"),
+                    group_size=cache.group_size,
+                    bits=cache.v_bits,
+                )
         if v_pattern_mask is None:
             v_pattern_mask = inferred_v_pattern_mask
     else:
         v_assignment_idx = v_assignment_idx[:, :, :tokens].contiguous().to(torch.long)
-    k_centroid_per_token = pattern_gather_centroids(k_assignments, cache.k_centroids).to(k_window.dtype)
-    v_centroid_per_token = pattern_gather_centroids(v_assignment_idx, cache.v_centroids).to(v_window.dtype)
+    if k_centroids_active.dim() == 4:
+        k_centroid_per_token = pattern_gather_request_centroids(k_assignments, k_centroids_active).to(k_window.dtype)
+    else:
+        k_centroid_per_token = pattern_gather_centroids(k_assignments, k_centroids_active).to(k_window.dtype)
+    if v_centroids_active.dim() == 4:
+        v_centroid_per_token = pattern_gather_request_centroids(v_assignment_idx, v_centroids_active).to(v_window.dtype)
+    else:
+        v_centroid_per_token = pattern_gather_centroids(v_assignment_idx, v_centroids_active).to(v_window.dtype)
     if v_pattern_mask is None:
         _, v_pattern_mask = pattern_v_threshold_and_mask(v_window, v_centroid_per_token)
     else:
@@ -1600,6 +1891,8 @@ def build_cache_from_prefill(
     selector_layer_idx: int | None = None,
     v_causal_importance: torch.Tensor | None = None,
     v_oracle_importance: torch.Tensor | None = None,
+    centroid_state_indices: torch.Tensor | None = None,
+    centroid_flush_mask: torch.Tensor | None = None,
 ) -> QuantizedKVCache:
     cache_mode = normalize_cache_mode(cache_mode)
     cache_cls = PatternQuantizedKVCache if pattern else QuantizedKVCache
@@ -1629,6 +1922,10 @@ def build_cache_from_prefill(
         cache.capacity_buffers = {} if _capacity_cache_enabled(cache) else None
         cache.k_centroids = k_centroids
         cache.v_centroids = v_centroids
+        cache.centroid_state_indices = centroid_state_indices.to(dtype=torch.int64, device=key_states.device).contiguous() if centroid_state_indices is not None else _default_centroid_slots(key_states.shape[0], key_states.device)
+        cache.centroid_flush_mask = centroid_flush_mask.to(dtype=torch.bool, device=key_states.device).contiguous() if centroid_flush_mask is not None else None
+        _ensure_centroid_state_pool(cache, int(key_states.shape[0]))
+        _sync_cache_centroid_views(cache)
         cache.value_objective = normalize_value_objective(value_objective)
         cache.v_precision_selector = normalize_value_precision_selector(v_precision_selector)
         cache.v4_budget_fraction = float(v4_budget_fraction)
@@ -1872,18 +2169,22 @@ def validate_cache(cache: QuantizedKVCache) -> None:
             if cache.v4_assignment_idx is not None and tensor_tokens(cache.v4_assignment_idx) != selected:
                 raise ValueError(f"V4 compact assignment token mismatch: {tensor_tokens(cache.v4_assignment_idx)} != {selected}")
         if torch.is_tensor(cache.k_centroids):
-            if cache.k_centroids.dim() != 3:
-                raise ValueError(f"K centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.k_centroids.shape)}")
-            if cache.k_assignments is not None and cache.k_assignments.shape[1] != cache.k_centroids.shape[0]:
+            if cache.k_centroids.dim() not in (3, 4):
+                raise ValueError(f"K centroids must be [kv_heads, centroids, head_dim] or [B,kv_heads,centroids,head_dim], got {tuple(cache.k_centroids.shape)}")
+            k_head_dim = 0 if cache.k_centroids.dim() == 3 else 1
+            k_count_dim = 1 if cache.k_centroids.dim() == 3 else 2
+            if cache.k_assignments is not None and cache.k_assignments.shape[1] != cache.k_centroids.shape[k_head_dim]:
                 raise ValueError("K assignment KV heads must match K centroid heads")
-            if cache.k_assignments is not None and cache.k_assignments.numel() and int(cache.k_assignments.max().item()) >= cache.k_centroids.shape[1]:
+            if cache.k_assignments is not None and cache.k_assignments.numel() and int(cache.k_assignments.max().item()) >= cache.k_centroids.shape[k_count_dim]:
                 raise ValueError("K assignment index exceeds K centroid bank")
         if torch.is_tensor(cache.v_centroids):
-            if cache.v_centroids.dim() != 3:
-                raise ValueError(f"V centroids must be [kv_heads, centroids, head_dim], got {tuple(cache.v_centroids.shape)}")
-            if cache.v_assignment_idx is not None and cache.v_assignment_idx.shape[1] != cache.v_centroids.shape[0]:
+            if cache.v_centroids.dim() not in (3, 4):
+                raise ValueError(f"V centroids must be [kv_heads, centroids, head_dim] or [B,kv_heads,centroids,head_dim], got {tuple(cache.v_centroids.shape)}")
+            v_head_dim = 0 if cache.v_centroids.dim() == 3 else 1
+            v_count_dim = 1 if cache.v_centroids.dim() == 3 else 2
+            if cache.v_assignment_idx is not None and cache.v_assignment_idx.shape[1] != cache.v_centroids.shape[v_head_dim]:
                 raise ValueError("V assignment KV heads must match V centroid heads")
-            if cache.v_assignment_idx is not None and cache.v_assignment_idx.numel() and int(cache.v_assignment_idx.max().item()) >= cache.v_centroids.shape[1]:
+            if cache.v_assignment_idx is not None and cache.v_assignment_idx.numel() and int(cache.v_assignment_idx.max().item()) >= cache.v_centroids.shape[v_count_dim]:
                 raise ValueError("V assignment index exceeds V centroid bank")
 
 
@@ -1943,6 +2244,9 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             cache.capacity_backend,
             cache.capacity_buffers,
             cache.operator_ready_page_pools,
+            cache.centroid_state_pool,
+            cache.centroid_state_indices,
+            cache.centroid_flush_mask,
         )
     return base + (cache.cache_mode, int(cache.chunk_length))
 
@@ -2027,6 +2331,10 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
                 cache.capacity_buffers = value[pattern_offset + 26]
             if len(value) >= pattern_offset + 28:
                 cache.operator_ready_page_pools = value[pattern_offset + 27]
+            if len(value) >= pattern_offset + 31:
+                cache.centroid_state_pool = value[pattern_offset + 28]
+                cache.centroid_state_indices = value[pattern_offset + 29]
+                cache.centroid_flush_mask = value[pattern_offset + 30]
     validate_cache(cache)
     return cache
 

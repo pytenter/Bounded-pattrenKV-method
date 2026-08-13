@@ -1,0 +1,13 @@
+batch,steps,assignment_ok,status
+2,127,True,PASS
+2,128,True,PASS
+2,129,True,PASS
+2,255,True,PASS
+2,256,True,PASS
+2,257,True,PASS
+4,127,True,PASS
+4,128,True,PASS
+4,129,True,PASS
+4,255,True,PASS
+4,256,True,PASS
+4,257,True,PASS

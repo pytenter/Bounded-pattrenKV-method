@@ -1,0 +1,179 @@
+{
+  "boundary_matrix": [
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 127,
+      "updates": 0
+    },
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 128,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 129,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 255,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 256,
+      "updates": 2
+    },
+    {
+      "assignment_ok": true,
+      "batch": 2,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        3,
+        0
+      ],
+      "status": "PASS",
+      "steps": 257,
+      "updates": 2
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 127,
+      "updates": 0
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 128,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 129,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 255,
+      "updates": 1
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 256,
+      "updates": 2
+    },
+    {
+      "assignment_ok": true,
+      "batch": 4,
+      "max_abs_centroid_delta": 0.0,
+      "slots": [
+        7,
+        2,
+        5,
+        1
+      ],
+      "status": "PASS",
+      "steps": 257,
+      "updates": 2
+    }
+  ],
+  "classification": "REQUEST_LOCAL_DYNAMIC_CENTROID_STATE_SUPPORTED",
+  "fused_value": {
+    "cosine": 0.9999998807907104,
+    "exact": true,
+    "inf": 0,
+    "max_abs": 0.0,
+    "nan": 0,
+    "relative_l2": 0.0,
+    "status": "PASS"
+  },
+  "lifecycle": {
+    "flush_mask_counts": [
+      2,
+      1
+    ],
+    "reorder_view_ok": true,
+    "slot_reuse_clean": true,
+    "status": "PASS"
+  }
+}
