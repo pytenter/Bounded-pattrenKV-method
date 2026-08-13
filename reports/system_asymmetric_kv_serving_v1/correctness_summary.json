@@ -1,0 +1,7 @@
+{
+  "inf": null,
+  "nan": null,
+  "passed": null,
+  "reason": "Mixed V2/V4 cache packing and fused mixed-V attention are B=1-only under the frozen causal_v4 25% split ABI.",
+  "status": "BLOCKED_NOT_RUN"
+}

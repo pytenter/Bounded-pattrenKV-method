@@ -1,0 +1,51 @@
+{
+  "algorithm_changed": false,
+  "architecture": "ASYMMETRIC_KV_RUNTIME",
+  "baseline_max_concurrency_16k": null,
+  "baseline_max_concurrency_32k": null,
+  "baseline_max_concurrency_8k": null,
+  "blocker": "Mixed V2/V4 cache packing and fused mixed-V attention are B=1-only under the frozen causal_v4 25% split ABI.",
+  "cache_isolation_passed": null,
+  "chunked_capacity_utilization_16k": null,
+  "chunked_capacity_utilization_32k": null,
+  "chunked_max_concurrency_16k": null,
+  "chunked_max_concurrency_32k": null,
+  "chunked_max_concurrency_8k": null,
+  "classification": "CONCURRENCY_RUNTIME_BLOCKED",
+  "correctness_passed": null,
+  "cuda_vmm_used": false,
+  "experimental_gqa_used": false,
+  "k_layout": "tight",
+  "model_copies_per_run": 1,
+  "page_native_used": false,
+  "recommended_next_phase": "BATCH_SAFE_RUNTIME_FEASIBILITY",
+  "selector_isolation_passed": null,
+  "serial_pseudo_concurrency_used": false,
+  "serving_throughput_gain": "BLOCKED",
+  "strided_k_used": false,
+  "throughput_gain_16k_high_common": null,
+  "throughput_gain_32k_high_common": null,
+  "tpot_gain_16k_high_common": null,
+  "tpot_gain_32k_high_common": null,
+  "true_shared_model_concurrency": false,
+  "v_historical_materialized_bytes": null,
+  "v_layout": "chunked_capacity",
+  "validation": {
+    "compileall": {
+      "passed": true,
+      "returncode": 0,
+      "tail": "Listing 'bench'...\nCompiling 'bench/bench_asymmetric_kv_serving.py'...\nListing 'bench/longbench_config'...\nListing 'models'...\nListing 'quant'...\nListing 'quant/build'...\nListing 'quant/build/lib.linux-x86_64-cpython-310'...\nListing 'quant/build/temp.linux-x86_64-cpython-310'...\nListing 'quant/build/temp.linux-x86_64-cpython-310/csrc'...\nListing 'quant/csrc'...\nListing 'scripts'...\nListing 'tests'..."
+    },
+    "diff_check": {
+      "passed": true,
+      "returncode": 0,
+      "tail": ""
+    },
+    "pytest": {
+      "passed": true,
+      "returncode": 0,
+      "tail": "........................................................................ [ 11%]\n........................................................................ [ 22%]\n........................................................................ [ 33%]\n........................................................................ [ 44%]\n........................................................................ [ 55%]\n........................................................................ [ 66%]\n........................................................................ [ 77%]\n........................................................................ [ 88%]\n........................................................................ [ 99%]\n......                                                                   [100%]\n654 passed in 12.35s"
+    }
+  },
+  "vmm_priority": "MEDIUM"
+}

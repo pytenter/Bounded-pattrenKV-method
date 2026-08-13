@@ -1,0 +1,5 @@
+{
+  "passed": null,
+  "reason": "Selector scoring is batch-shaped, but mixed-V compact packing uses request-0 precision mask, so isolation cannot be claimed.",
+  "status": "BLOCKED_NOT_RUN"
+}

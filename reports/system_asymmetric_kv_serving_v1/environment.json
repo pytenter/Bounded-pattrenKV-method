@@ -1,0 +1,46 @@
+{
+  "backend_env": {
+    "PATTERNKV_CACHE_GROWTH_BACKEND_MAIN": "baseline,chunked_capacity",
+    "PATTERNKV_GQA_V_BACKEND": "baseline",
+    "PATTERNKV_MIXED_V_BACKEND": "fused",
+    "PATTERNKV_PAGE_V_READER": "contiguous"
+  },
+  "bounded_remote": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)",
+  "cuda_visible_devices": "1",
+  "current_branch": "sys/causal-v4-25-kernel-v1",
+  "dtype": "float16",
+  "extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "extension_sha256": "c725036c10ef700c5c668d320934adb366e0069d44cefc0dab6a5c77fc7aa31e",
+  "git_log_10": [
+    "f27e4e0 perf: characterize asymmetric PatternKV runtime",
+    "7844c86 perf: diagnose PatternKV K stride regression",
+    "5b13e3a perf: evaluate stride-aware PatternKV K reader",
+    "aaa1f4b perf: integrate contiguous-capacity PatternKV value cache",
+    "5f67a4a perf: add stride-aware PatternKV V2 reader",
+    "551fea5 perf: evaluate contiguous-capacity PatternKV cache",
+    "139d128 perf: reprofile optimized PatternKV decode bottlenecks",
+    "ed4b273 perf: evaluate page-native PatternKV attention reader",
+    "92d74dd perf: add fixed-page PatternKV cache ABI",
+    "54c4172 perf: evaluate GQA-aware PatternKV value kernels"
+  ],
+  "head_at_start": "f27e4e04e6cfd8c9cd7be71ae726380b6fb5d1c7",
+  "model_path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "nvidia_smi": [
+    "0, NVIDIA GeForce RTX 3090, 580.173.02, 18409, 24576, 0, 27",
+    "1, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 32",
+    "2, NVIDIA GeForce RTX 3090, 580.173.02, 17, 24576, 0, 31",
+    "3, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 31",
+    "4, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 31",
+    "5, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 28",
+    "6, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 30",
+    "7, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 31"
+  ],
+  "origin_remote": "origin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "python": "3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]",
+  "python_executable": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "repo_root": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "start_head_expected": "f27e4e04e6cfd8c9cd7be71ae726380b6fb5d1c7",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "worktree_clean_at_start": false
+}

@@ -1,0 +1,5 @@
+{
+  "passed": null,
+  "reason": "True B>1 mixed-V cache construction is blocked before cache isolation can be benchmarked.",
+  "status": "BLOCKED_NOT_RUN"
+}

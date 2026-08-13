@@ -1,0 +1,17 @@
+{
+  "cases": [
+    {
+      "exception_type": "ValueError",
+      "message": "mixed Value precision currently requires batch size 1",
+      "name": "build_cache_from_prefill_batch2_mixed",
+      "status": "EXPECTED_BLOCKED"
+    },
+    {
+      "exception_type": "RuntimeError",
+      "message": "Phase S1 mixed fused Value attention currently supports B=1, matching frozen mixed cache packing",
+      "name": "mixed_v_fused_kernel_entry_batch2",
+      "status": "EXPECTED_BLOCKED"
+    }
+  ],
+  "cuda_available": true
+}
