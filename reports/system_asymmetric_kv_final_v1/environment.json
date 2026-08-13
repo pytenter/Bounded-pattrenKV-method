@@ -1,0 +1,50 @@
+{
+  "backend_env": {
+    "PATTERNKV_CACHE_CHUNK_TOKENS": "4096",
+    "PATTERNKV_CACHE_FIXED_CAPACITY_TOKENS": "33792",
+    "PATTERNKV_CACHE_GROWTH_BACKEND": "varies: baseline,fixed_capacity,chunked_capacity",
+    "PATTERNKV_GQA_V_BACKEND": "baseline",
+    "PATTERNKV_MIXED_V_BACKEND": "fused",
+    "PATTERNKV_PAGE_V_READER": "contiguous"
+  },
+  "batch_size": 1,
+  "bounded_remote": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)",
+  "cuda_visible_devices_at_snapshot": "5",
+  "current_branch": "sys/causal-v4-25-kernel-v1",
+  "dtype": "float16",
+  "extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "extension_sha256": "c725036c10ef700c5c668d320934adb366e0069d44cefc0dab6a5c77fc7aa31e",
+  "git_log_10": [
+    "7844c86 perf: diagnose PatternKV K stride regression",
+    "5b13e3a perf: evaluate stride-aware PatternKV K reader",
+    "aaa1f4b perf: integrate contiguous-capacity PatternKV value cache",
+    "5f67a4a perf: add stride-aware PatternKV V2 reader",
+    "551fea5 perf: evaluate contiguous-capacity PatternKV cache",
+    "139d128 perf: reprofile optimized PatternKV decode bottlenecks",
+    "ed4b273 perf: evaluate page-native PatternKV attention reader",
+    "92d74dd perf: add fixed-page PatternKV cache ABI",
+    "54c4172 perf: evaluate GQA-aware PatternKV value kernels",
+    "cf10095 perf: optimize PatternKV centroid table contribution"
+  ],
+  "head_at_start": "7844c86dd5e8e25a7176539665445dba0a3d5f67",
+  "model_path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "nvidia_smi": [
+    "0, NVIDIA GeForce RTX 3090, 580.173.02, 18409, 24576, 0, 27",
+    "1, NVIDIA GeForce RTX 3090, 580.173.02, 6978, 24576, 0, 55",
+    "2, NVIDIA GeForce RTX 3090, 580.173.02, 15871, 24576, 22, 49",
+    "3, NVIDIA GeForce RTX 3090, 580.173.02, 15872, 24576, 0, 49",
+    "4, NVIDIA GeForce RTX 3090, 580.173.02, 23544, 24576, 0, 52",
+    "5, NVIDIA GeForce RTX 3090, 580.173.02, 21, 24576, 0, 29",
+    "6, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 30",
+    "7, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0, 31"
+  ],
+  "origin_remote": "origin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "physical_gpu_id": "5",
+  "python": "3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]",
+  "python_executable": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "repo_root": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "start_head_expected": "7844c86dd5e8e25a7176539665445dba0a3d5f67",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "worktree_clean_at_start": false
+}

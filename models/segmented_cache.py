@@ -1480,13 +1480,13 @@ def _pack_pattern_window_impl(
         mask_u8_compact = v_pattern_mask.to(torch.uint8)
         cache.v2_pattern_mask = _cat_v_metadata(cache, "v2_pattern_mask", mask_u8_compact, category="v2_pattern_mask")
         cache.v2_assignment_idx = _cat_v_metadata(cache, "v2_assignment_idx", v_assignment_idx_storage, category="v2_assignment_idx")
-    cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments, category="assignments")
+    cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments, category="k_assignments")
     mask_u8 = v_pattern_mask.to(torch.uint8)
     if _capacity_cache_enabled(cache):
         cache.v_assignment_idx = _cat_v_metadata(cache, "v_assignment_idx", v_assignment_idx_storage, category="assignments")
         cache.v_pattern_mask = _cat_v_metadata(cache, "v_pattern_mask", mask_u8, category="pattern_mask")
     else:
-        cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx_storage, category="assignments")
+        cache.v_assignment_idx = _cat_assignment(cache.v_assignment_idx, v_assignment_idx_storage, category="v_assignment_idx")
         cache.v_pattern_mask = _cat_assignment(cache.v_pattern_mask, mask_u8, category="pattern_mask")
     cache.v_assignments = cache.v_pattern_mask
     cache.pending_k = cache.pending_k[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_k) > tokens else None
