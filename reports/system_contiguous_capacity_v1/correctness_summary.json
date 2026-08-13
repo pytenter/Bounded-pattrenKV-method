@@ -1,0 +1,9 @@
+{
+  "attention_output_correctness": true,
+  "cache_tensor_correctness": true,
+  "capacity_buffer_correctness": true,
+  "decode_smoke_completed": false,
+  "decode_smoke_reason": "production integration blocked by non-contiguous logical views",
+  "passed": true,
+  "reader_compatible_without_materialization": false
+}

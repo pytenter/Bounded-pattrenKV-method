@@ -1,0 +1,16 @@
+context_tokens,backend,historical_old_bytes_copied_per_token,new_bytes_written_per_token,torch_cat_events_per_token,realloc_events_per_token
+2048,baseline,64638.0,4617.0,0.1015625,0.1015625
+2048,fixed_capacity,0.0,4617.0,0.0,0.0
+2048,chunked_capacity,0.0,4617.0,0.0,0.0
+4096,baseline,138510.0,4617.0,0.1015625,0.1015625
+4096,fixed_capacity,0.0,4617.0,0.0,0.0
+4096,chunked_capacity,0.0,4617.0,0.0,0.0
+8192,baseline,286254.0,4617.0,0.1015625,0.1015625
+8192,fixed_capacity,0.0,4617.0,0.0,0.0
+8192,chunked_capacity,0.0,4617.0,0.0,0.0
+16384,baseline,581742.0,4617.0,0.1015625,0.1015625
+16384,fixed_capacity,0.0,4617.0,0.0,0.0
+16384,chunked_capacity,0.0,4617.0,0.0,0.0
+32768,baseline,1172718.0,4617.0,0.1015625,0.1015625
+32768,fixed_capacity,0.0,4617.0,0.0,0.0
+32768,chunked_capacity,0.0,4617.0,0.0,0.0

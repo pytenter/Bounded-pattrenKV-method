@@ -1,0 +1,2 @@
+status,reason
+not_run,logical capacity views are non-contiguous with slack; production wrappers would materialize

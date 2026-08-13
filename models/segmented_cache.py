@@ -69,6 +69,48 @@ ROLLING_CACHE_MODE = "segmented_rolling"
 CONTIGUOUS_CACHE_BACKEND = "contiguous"
 FIXED_PAGE_CACHE_BACKEND = "paged"
 DEFAULT_PAGE_SIZE = 128
+CAPACITY_GROWTH_BASELINE = "baseline"
+CAPACITY_GROWTH_FIXED = "fixed_capacity"
+CAPACITY_GROWTH_CHUNKED = "chunked_capacity"
+
+
+_CAPACITY_COUNTERS = {
+    "historical_append_calls": 0,
+    "historical_torch_cat_calls": 0,
+    "historical_realloc_events": 0,
+    "historical_old_bytes_copied": 0,
+    "historical_new_bytes_written": 0,
+    "capacity_growth_events": 0,
+    "capacity_growth_old_bytes_copied": 0,
+    "reserved_capacity_bytes": 0,
+    "logical_valid_bytes": 0,
+    "unused_capacity_bytes": 0,
+    "historical_materialization_calls": 0,
+    "historical_materialized_bytes": 0,
+}
+
+
+def reset_capacity_cache_counters() -> None:
+    for key in _CAPACITY_COUNTERS:
+        _CAPACITY_COUNTERS[key] = 0
+
+
+def get_capacity_cache_counters() -> dict[str, int]:
+    return dict(_CAPACITY_COUNTERS)
+
+
+def normalize_capacity_growth_backend(value: str | None = None) -> str:
+    backend = str(value or os.environ.get("PATTERNKV_CACHE_GROWTH_BACKEND", CAPACITY_GROWTH_BASELINE)).strip().lower()
+    aliases = {
+        "fixed": CAPACITY_GROWTH_FIXED,
+        "capacity": CAPACITY_GROWTH_FIXED,
+        "chunked": CAPACITY_GROWTH_CHUNKED,
+        "grow_by_chunk": CAPACITY_GROWTH_CHUNKED,
+    }
+    backend = aliases.get(backend, backend)
+    if backend not in (CAPACITY_GROWTH_BASELINE, CAPACITY_GROWTH_FIXED, CAPACITY_GROWTH_CHUNKED):
+        raise ValueError("PATTERNKV_CACHE_GROWTH_BACKEND must be 'baseline', 'fixed_capacity', or 'chunked_capacity'")
+    return backend
 
 
 @dataclass(frozen=True)
@@ -391,6 +433,139 @@ def normalize_cache_backend(cache_backend: str | None) -> str:
     if backend not in (CONTIGUOUS_CACHE_BACKEND, FIXED_PAGE_CACHE_BACKEND):
         raise ValueError("PATTERNKV_CACHE_BACKEND must be 'contiguous' or 'paged'")
     return backend
+
+
+class ContiguousCapacityBuffer:
+    """Preallocated contiguous storage for one logical token stream.
+
+    Appends copy only new tokens while capacity is sufficient. `logical_view`
+    returns a narrow view into storage and never calls `.contiguous()`.
+    """
+
+    def __init__(
+        self,
+        *,
+        stream_name: str,
+        shape_except_token: tuple[int, ...],
+        token_dim: int,
+        dtype: torch.dtype,
+        device: torch.device | str,
+        capacity: int = 0,
+        chunk_tokens: int | None = None,
+    ) -> None:
+        if token_dim < 0:
+            token_dim += len(shape_except_token) + 1
+        if token_dim < 0 or token_dim > len(shape_except_token):
+            raise ValueError(f"token_dim out of range: {token_dim}")
+        self.stream_name = str(stream_name)
+        self.shape_except_token = tuple(int(x) for x in shape_except_token)
+        self.token_dim = int(token_dim)
+        self.dtype = dtype
+        self.device = torch.device(device)
+        self.length = 0
+        self._capacity = 0
+        self.chunk_tokens = int(chunk_tokens or 0)
+        self.storage: torch.Tensor | None = None
+        if capacity:
+            self.reserve(int(capacity))
+
+    def capacity(self) -> int:
+        return int(self._capacity)
+
+    def logical_length(self) -> int:
+        return int(self.length)
+
+    def remaining_capacity(self) -> int:
+        return max(self.capacity() - self.logical_length(), 0)
+
+    def _shape(self, tokens: int) -> tuple[int, ...]:
+        shape = list(self.shape_except_token)
+        shape.insert(self.token_dim, int(tokens))
+        return tuple(shape)
+
+    def _token_count(self, value: torch.Tensor) -> int:
+        dim = self.token_dim if self.token_dim >= 0 else value.dim() + self.token_dim
+        return int(value.shape[dim])
+
+    def reserve(self, required_capacity: int) -> None:
+        required_capacity = int(required_capacity)
+        if required_capacity <= self._capacity:
+            return
+        old = self.storage
+        old_bytes = tensor_bytes(old.narrow(self.token_dim, 0, self.length)) if old is not None and self.length else 0
+        new_storage = torch.empty(self._shape(required_capacity), dtype=self.dtype, device=self.device)
+        if old is not None and self.length:
+            new_storage.narrow(self.token_dim, 0, self.length).copy_(old.narrow(self.token_dim, 0, self.length))
+            _CAPACITY_COUNTERS["historical_old_bytes_copied"] += int(old_bytes)
+            _CAPACITY_COUNTERS["capacity_growth_old_bytes_copied"] += int(old_bytes)
+        self.storage = new_storage
+        self._capacity = required_capacity
+        _CAPACITY_COUNTERS["historical_realloc_events"] += 1
+        _CAPACITY_COUNTERS["capacity_growth_events"] += 1
+
+    def _grow_for(self, required: int) -> None:
+        if required <= self._capacity:
+            return
+        if self.chunk_tokens > 0:
+            new_capacity = ((required + self.chunk_tokens - 1) // self.chunk_tokens) * self.chunk_tokens
+            self.reserve(new_capacity)
+            return
+        raise RuntimeError(f"{self.stream_name} capacity overflow: required={required}, capacity={self._capacity}")
+
+    def append(self, value: torch.Tensor) -> None:
+        self.append_block(value)
+
+    def append_block(self, value: torch.Tensor) -> None:
+        if not torch.is_tensor(value):
+            raise TypeError("ContiguousCapacityBuffer.append_block expects a tensor")
+        tokens = self._token_count(value)
+        if tokens == 0:
+            return
+        expected = self._shape(tokens)
+        if tuple(value.shape) != expected:
+            raise ValueError(f"{self.stream_name} append shape mismatch: expected tokenized shape {expected}, got {tuple(value.shape)}")
+        if value.dtype != self.dtype or value.device != self.device:
+            value = value.to(device=self.device, dtype=self.dtype)
+        required = self.length + tokens
+        self._grow_for(required)
+        if self.storage is None:
+            raise RuntimeError("capacity storage was not allocated")
+        dst = self.storage.narrow(self.token_dim, self.length, tokens)
+        dst.copy_(value.contiguous())
+        self.length = required
+        new_bytes = tensor_bytes(value)
+        _CAPACITY_COUNTERS["historical_append_calls"] += 1
+        _CAPACITY_COUNTERS["historical_new_bytes_written"] += int(new_bytes)
+
+    def logical_view(self) -> torch.Tensor | None:
+        if self.storage is None:
+            return None
+        return self.storage.narrow(self.token_dim, 0, self.length)
+
+    def reset(self) -> None:
+        self.length = 0
+
+    def stats(self) -> dict[str, int | str | bool]:
+        logical = self.logical_view()
+        reserved = tensor_bytes(self.storage)
+        valid = tensor_bytes(logical)
+        unused = max(reserved - valid, 0)
+        _CAPACITY_COUNTERS["reserved_capacity_bytes"] += int(reserved)
+        _CAPACITY_COUNTERS["logical_valid_bytes"] += int(valid)
+        _CAPACITY_COUNTERS["unused_capacity_bytes"] += int(unused)
+        return {
+            "stream": self.stream_name,
+            "length": self.logical_length(),
+            "capacity": self.capacity(),
+            "remaining_capacity": self.remaining_capacity(),
+            "token_dim": self.token_dim,
+            "reserved_capacity_bytes": reserved,
+            "logical_valid_bytes": valid,
+            "unused_capacity_bytes": unused,
+            "logical_is_contiguous": bool(logical.is_contiguous()) if logical is not None else True,
+            "storage_offset": int(logical.storage_offset()) if logical is not None else 0,
+            "stride": str(tuple(logical.stride())) if logical is not None else "",
+        }
 
 
 def normalize_cache_mode(cache_mode: str | None) -> str:

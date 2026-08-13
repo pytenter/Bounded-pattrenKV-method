@@ -1,0 +1,18 @@
+{
+  "BOUNDED_REMOTE": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)",
+  "CURRENT_BRANCH": "sys/causal-v4-25-kernel-v1",
+  "ORIGIN_REMOTE": "origin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "REPO_ROOT": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "START_HEAD": "139d1285037b23aefa234fb1eab8ab8fc40f5c28",
+  "WORKTREE_CLEAN": false,
+  "git_log_8": [
+    "139d128 perf: reprofile optimized PatternKV decode bottlenecks",
+    "ed4b273 perf: evaluate page-native PatternKV attention reader",
+    "92d74dd perf: add fixed-page PatternKV cache ABI",
+    "54c4172 perf: evaluate GQA-aware PatternKV value kernels",
+    "cf10095 perf: optimize PatternKV centroid table contribution",
+    "274e193 perf: reduce PatternKV centroid histogram contention",
+    "9cda2cc perf: decompose PatternKV centroid attention cost",
+    "da0b6a8 perf: evaluate V2 kernel optimization candidates"
+  ]
+}
