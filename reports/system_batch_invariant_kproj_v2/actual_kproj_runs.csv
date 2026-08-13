@@ -1,0 +1,4 @@
+case,exact,max_abs,mean_abs,relative_l2,cosine
+layer0_requestA_b2,True,0.0,0.0,0.0,1.0
+layer0_requestA_b4,True,0.0,0.0,0.0,1.0
+layer0_requestB_b2,True,0.0,0.0,0.0,0.9999999403953552

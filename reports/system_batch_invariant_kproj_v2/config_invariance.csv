@@ -1,0 +1,6 @@
+config,block_m,block_n,block_k,group_m,num_warps,num_stages,exact_all,max_v2_vs_fp32_relative_l2
+A,128,256,64,8,8,3,True,9.759594831848517e-05
+B,128,128,64,8,8,3,True,9.759594831848517e-05
+C,64,128,64,8,4,3,True,9.759594831848517e-05
+D,64,256,64,8,8,3,True,9.759594831848517e-05
+E,32,128,64,8,4,3,True,9.759594831848517e-05

@@ -1,0 +1,11 @@
+{
+  "bi_kproj_calls": 744,
+  "bi_kproj_fallback_calls": 0,
+  "bi_kproj_input_copy_bytes": 0,
+  "bi_kproj_kernel_launches": 744,
+  "bi_kproj_rows": 2169856,
+  "bi_kproj_serial_request_dispatches": 0,
+  "bi_kproj_v1_calls": 360,
+  "bi_kproj_v2_calls": 384,
+  "bi_kproj_weight_copy_bytes": 0
+}

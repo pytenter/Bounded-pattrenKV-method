@@ -1,0 +1,20 @@
+{
+  "best_config": {
+    "b2_t512_v2_us": 144.84479427337646,
+    "block_k": 64,
+    "block_m": 128,
+    "block_n": 128,
+    "config": "B",
+    "exact_all": true,
+    "group_m": 8,
+    "max_v2_vs_fp32_relative_l2": 9.759594831848517e-05,
+    "num_stages": 3,
+    "num_warps": 8
+  },
+  "input_copy_bytes": 0,
+  "kernel_launches_per_projection": 1,
+  "num_sms": 82,
+  "output_bytes_b2_t512": 2097152,
+  "persistent_grid_used": true,
+  "weight_transpose_copy_bytes": 0
+}

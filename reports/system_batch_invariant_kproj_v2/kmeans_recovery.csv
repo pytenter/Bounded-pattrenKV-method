@@ -1,0 +1,10 @@
+case,centroid_relative_l2,assignment_difference_rate,reconstructed_k_batch_relative_l2,qk_batch_relative_l2,qk_batch_max_abs,qk_batch_cosine
+layer0_requestA_b2,0.0,0.0,0.0,0.0,0.0,1.0
+layer0_request0,0.0,0.0,0.0,0.0,0.0,1.0
+layer0_request1,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+layer8_request0,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+layer8_request1,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+layer16_request0,0.0,0.0,0.0,0.0,0.0,0.9999999403953552
+layer16_request1,0.0,0.0,0.0,0.0,0.0,1.0
+layer31_request0,0.0,0.0,0.0,0.0,0.0,0.9999999403953552
+layer31_request1,0.0,0.0,0.0,0.0,0.0,1.0

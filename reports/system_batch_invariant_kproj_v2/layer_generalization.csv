@@ -1,0 +1,9 @@
+layer,request,pass,case,exact,max_abs,mean_abs,relative_l2,cosine,recovery_centroid_relative_l2,recovery_assignment_difference_rate,recovery_reconstructed_k_batch_relative_l2,recovery_qk_batch_relative_l2,recovery_qk_batch_max_abs,recovery_qk_batch_cosine
+0,0,True,layer0_request0,True,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0
+0,1,True,layer0_request1,True,0.0,0.0,0.0,0.9999999403953552,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+8,0,True,layer8_request0,True,0.0,0.0,0.0,1.0000001192092896,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+8,1,True,layer8_request1,True,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.9999998807907104
+16,0,True,layer16_request0,True,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.9999999403953552
+16,1,True,layer16_request1,True,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0
+31,0,True,layer31_request0,True,0.0,0.0,0.0,0.9999998807907104,0.0,0.0,0.0,0.0,0.0,0.9999999403953552
+31,1,True,layer31_request1,True,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0
