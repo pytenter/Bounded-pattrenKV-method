@@ -3,5 +3,18 @@
   "experimental_gqa_used": false,
   "historical_v_materialized_bytes": 0,
   "old_page_native_reader_used": false,
+  "page_batch_counters": {
+    "historical_v_materialization_bytes": 0,
+    "logical_pages_processed": 406,
+    "page_batch_decode_calls": 12,
+    "page_batch_pack_calls": 12,
+    "page_value_materialization_calls": 593,
+    "page_value_materialized_bytes": 105979904,
+    "python_serial_b1_dispatches": 0,
+    "v2_pages_processed": 356,
+    "v2_tokens_processed": 38555,
+    "v4_pages_processed": 237,
+    "v4_tokens_processed": 13193
+  },
   "strided_k_used": false
 }

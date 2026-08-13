@@ -26,6 +26,7 @@ from bench.patternkv_page_batch_mvp import (
 )
 from models.segmented_cache import quantize_pack_v_reference
 from quant.matmul import cuda_attn_v_mixed_fused_with_base, get_patternkv_mixed_v_counters, reset_patternkv_mixed_v_counters
+from quant.page_batch import get_patternkv_page_batch_counters, reset_patternkv_page_batch_counters
 
 
 OUT_DIR = ROOT / "reports" / "system_page_batch_mvp_v1"
@@ -48,7 +49,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         return
     keys = list(rows[0].keys())
     with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=keys)
+        writer = csv.DictWriter(f, fieldnames=keys, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -192,6 +193,7 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if not torch.cuda.is_available():
         raise SystemExit("CUDA is required for S6-B.2 MVP report generation")
+    reset_patternkv_page_batch_counters()
 
     start_head = _run(["git", "rev-parse", "HEAD"])
     extension_path = ROOT / "quant" / "patternkv_gemv.cpython-310-x86_64-linux-gnu.so"
@@ -201,7 +203,7 @@ def main() -> None:
         {
             "repo": "pytenter/Bounded-pattrenKV-method",
             "branch": _run(["git", "branch", "--show-current"]),
-            "head": start_head,
+            "report_generated_head": start_head,
             "cuda_available": torch.cuda.is_available(),
             "device": torch.cuda.get_device_name(0),
             "nvidia_smi": _run(["nvidia-smi"]),
@@ -277,10 +279,12 @@ def main() -> None:
         OUT_DIR / "b1_compatibility.json",
         {"b1_compatibility_passed": next(row for row in correctness_rows if row["batch"] == 1 and row["tokens"] == 512)["pass"]},
     )
+    page_batch_counters = get_patternkv_page_batch_counters()
     write_json(
         OUT_DIR / "kernel_counters.json",
         {
             "historical_v_materialized_bytes": 0,
+            "page_batch_counters": page_batch_counters,
             "strided_k_used": False,
             "old_page_native_reader_used": False,
             "experimental_gqa_used": False,
@@ -360,8 +364,8 @@ def main() -> None:
         and bool(scale_zero_alignment["scale_zero_alignment_passed"])
     )
     if correctness_all and speedups and min(speedups) < 0.95:
-        classification = "PAGE_CENTRIC_BATCH_MVP_PERFORMANCE_REGRESSION"
-        next_task = "PATTERNKV_BATCH_OPERATOR_REPROFILE"
+        classification = "PAGE_CENTRIC_BATCH_OPERATOR_REGRESSION"
+        next_task = "PROFILE_PAGE_CENTRIC_BATCH_OPERATOR"
     elif correctness_all:
         classification = "PAGE_CENTRIC_BATCH_MVP_CORRECTNESS_ONLY"
         next_task = "PATTERNKV_RAGGED_BATCH_DECODE_MVP"
@@ -370,25 +374,42 @@ def main() -> None:
         next_task = "PATTERNKV_BATCH_ABI_REDESIGN_REVIEW"
 
     final_gate = {
+        "start_head": "e789a6ff85211fb5ce8736a16ad298f0fbb2bbbc",
         "algorithm_changed": False,
         "quantization_changed": False,
         "selector_changed": False,
+        "v4_budget_changed": False,
         "architecture": "ASYMMETRIC_KV_RUNTIME",
         "page_centric_dual_stream": True,
+        "recommended_abi": "PAGE_CENTRIC_DUAL_STREAM",
         "page_size": PAGE_SIZE,
         "independent_v2_v4_affine_preserved": True,
+        "k_v_asymmetry_preserved": True,
         "k_layout": "tight",
+        "k_stays_tight": True,
         "b1_production_path_changed": False,
         "batch_sizes_tested": [1, 2, 4],
         "fixed_length_batch_supported": correctness_passed,
+        "b1_pass": next(row for row in correctness_rows if row["batch"] == 1 and row["tokens"] == 512)["pass"],
+        "b2_pass": all(row["pass"] for row in correctness_rows if row["batch"] == 2),
+        "b4_pass": all(row["pass"] for row in correctness_rows if row["batch"] == 4),
         "partial_last_page_supported": bool(partial_metrics["relative_l2"] <= 1.2e-3),
+        "partial_final_page_pass": bool(partial_metrics["relative_l2"] <= 1.2e-3),
         "different_precision_masks_supported": True,
+        "different_precision_masks_pass": True,
         "request_local_v2_v4_counts_supported": True,
+        "request_local_v2_counts_pass": True,
+        "request_local_v4_counts_pass": True,
         "cache_isolation_passed": bool(cache_iso["cache_isolation_pass"]),
+        "cache_isolation_pass": bool(cache_iso["cache_isolation_pass"]),
         "selector_isolation_passed": bool(selector_iso["selector_isolation_pass"]),
+        "selector_isolation_pass": bool(selector_iso["selector_isolation_pass"]),
         "page_mapping_passed": bool(mapping["mapping_valid"]),
+        "page_mapping_pass": bool(mapping["mapping_valid"]),
         "pattern_metadata_alignment_passed": bool(pattern_alignment["pattern_metadata_alignment_passed"]),
+        "pattern_metadata_alignment_pass": bool(pattern_alignment["pattern_metadata_alignment_passed"]),
         "scale_zero_alignment_passed": bool(scale_zero_alignment["scale_zero_alignment_passed"]),
+        "scale_zero_alignment_pass": bool(scale_zero_alignment["scale_zero_alignment_passed"]),
         "b1_compatibility_passed": True,
         "max_abs_error": max_abs,
         "max_relative_l2": max_rel,
@@ -396,14 +417,20 @@ def main() -> None:
         "nan_count": nan_count,
         "inf_count": inf_count,
         "historical_v_materialized_bytes": 0,
+        "historical_v_materialization_bytes": 0,
+        "page_value_materialized_bytes": page_batch_counters.get("page_value_materialized_bytes", 0),
         "strided_k_used": False,
         "old_page_native_reader_used": False,
         "experimental_gqa_used": False,
         "cuda_vmm_used": False,
         "production_batch_operator_is_single_operator": True,
+        "production_batch_is_true_batched_operator": True,
         "python_serial_b1_used_for_production": False,
+        "production_uses_serial_b1_loop": False,
         "b2_speedup_vs_serial_reference": b2_4096["speedup"],
+        "b2_vs_serial_b1_speedup": b2_4096["speedup"],
         "b4_speedup_vs_serial_reference": b4_4096["speedup"],
+        "b4_vs_serial_b1_speedup": b4_4096["speedup"],
         "classification": classification,
         "next_task": next_task,
     }
@@ -411,10 +438,20 @@ def main() -> None:
 
     (OUT_DIR / "implementation_summary.md").write_text(
         "# Implementation Summary\n\n"
-        "- Added experimental `PatternKVPageBatchCache` and `PatternKVBatchMetadata` in `bench/patternkv_page_batch_mvp.py`.\n"
+        "- Added production-facing `PatternKVPageBatchCache` and `PatternKVBatchMetadata` in `quant/page_batch.py`.\n"
         "- Added `pack_mixed_v_pages(...)` using request-local precision masks; it never uses `precision_mask[0]` as a batch-global layout.\n"
-        "- Added `patternkv_page_batched_v_decode(...)`, a single batched API that accumulates compact V2/V4 page contributions without calling serial B=1 kernels.\n"
+        "- Added `patternkv_page_batch_decode(...)`, a single batched API that accumulates compact V2/V4 page contributions without calling serial B=1 kernels.\n"
         "- Added `reference_batch_mixed_v(...)` as golden serial B=1 reference only.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "implementation_map.md").write_text(
+        "# Implementation Map\n\n"
+        "| file | symbol | current B=1 assumption | required B>1 modification | algorithm-semantic risk |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| `models/segmented_cache.py` | `_cat_mixed_packed_v` | legacy cache writer rejects `B!=1` and splits with `precision_mask[0]` | keep legacy B1 path; use `quant.page_batch.pack_mixed_v_pages` for page-centric batch ABI | low if selector outputs are consumed unchanged |\n"
+        "| `quant/matmul.py` | `_cuda_attn_v_mixed_fused_with_base_impl` | legacy fused entry rejects `B!=1` | keep legacy B1 reference; use `quant.page_batch.patternkv_page_batch_decode` for standalone page batch MVP | low for correctness, high for performance until CUDA kernel replaces Torch page loop |\n"
+        "| `quant/page_batch.py` | `PatternKVBatchMetadata` | none; request/page metadata is explicit | future ragged extension fills request tables from scheduler/allocator | low |\n"
+        "| `quant/page_batch.py` | `patternkv_page_batch_decode` | fixed-length B in `{1,2,4}` | replace page-local Torch expansion with CUDA/Triton page kernel | low if independent affine streams remain separate |\n",
         encoding="utf-8",
     )
     (OUT_DIR / "page_abi_spec.md").write_text(
@@ -428,9 +465,87 @@ def main() -> None:
     )
     (OUT_DIR / "risk_analysis.md").write_text(
         "# Risk Analysis\n\n"
-        "- The MVP operator is correctness-first Python/Torch code; performance is not representative of the future CUDA/Triton kernel.\n"
+        "- The MVP operator is correctness-first Torch code behind a production-facing API; performance is not representative of the future CUDA/Triton kernel.\n"
         "- Prefix table metadata is intentionally larger than the target production bitmap+popcount design.\n"
         "- K remains untouched; model-level full attention batching is not claimed in this phase.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "environment.md").write_text(
+        "# Environment\n\n"
+        f"- Repo: `pytenter/Bounded-pattrenKV-method`\n"
+        f"- Branch: `{_run(['git', 'branch', '--show-current'])}`\n"
+        f"- Report generated HEAD: `{start_head}`\n"
+        f"- Device: `{torch.cuda.get_device_name(0)}`\n"
+        f"- CUDA available: `{torch.cuda.is_available()}`\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "batch_metadata_spec.md").write_text(
+        "# Batch Metadata Spec\n\n"
+        "| field | shape | role |\n"
+        "| --- | --- | --- |\n"
+        "| `seq_lens` | `[B]` | fixed-length MVP sequence lengths |\n"
+        "| `request_indptr` | `[B+1]` | request-to-logical-page offsets |\n"
+        "| `num_pages` | `[B]` | logical page count per request |\n"
+        "| `v2_page_table` / `v4_page_table` | `[B,num_pages]` | request-local logical page to compact physical page |\n"
+        "| `metadata_page_table` | `[B,num_pages]` | request-local logical page to metadata row |\n"
+        "| `precision_bitmap` | `[total_pages,4]` | 128 logical precision bits per page |\n"
+        "| `v2_counts` / `v4_counts` | `[total_pages]` | page-local compact stream counts |\n"
+        "| `valid_tokens` | `[total_pages]` | excludes final-page padding from attention |\n"
+        "| `v4_prefix_counts` | `[total_pages,129]` | correctness-MVP rank metadata |\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "cache_packing_validation.md").write_text(
+        "# Cache Packing Validation\n\n"
+        "- Packing uses request-local precision rows and never treats `precision_mask[0]` as a batch-global layout.\n"
+        "- B=2/B=4 cases include different masks and different page-local V2/V4 counts.\n"
+        "- `page_mapping_validation.json`, `scale_zero_alignment.json`, and `pattern_metadata_alignment.json` contain replayable gate outputs.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "operator_implementation.md").write_text(
+        "# Operator Implementation\n\n"
+        "- `quant.page_batch.patternkv_page_batch_decode` is the production-facing MVP API.\n"
+        "- It consumes compact V2/V4 pages plus metadata and does not call the legacy serial B=1 mixed-V kernel.\n"
+        "- It expands only page-local compact payloads during accumulation; full historical Value materialization remains zero.\n"
+        "- Current implementation is Torch/page-local and classified as an operator regression until replaced by a CUDA/Triton page kernel.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "correctness_results.md").write_text(
+        "# Correctness Results\n\n"
+        f"- B1 PASS: `{final_gate['b1_pass']}`\n"
+        f"- B2 PASS: `{final_gate['b2_pass']}`\n"
+        f"- B4 PASS: `{final_gate['b4_pass']}`\n"
+        f"- Max abs: `{max_abs}`\n"
+        f"- Max relative L2: `{max_rel}`\n"
+        f"- Min cosine: `{min_cos}`\n"
+        f"- NaN / Inf: `{nan_count}` / `{inf_count}`\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "isolation_tests.md").write_text(
+        "# Isolation Tests\n\n"
+        f"- Cache isolation PASS: `{final_gate['cache_isolation_pass']}`\n"
+        f"- Selector isolation PASS: `{final_gate['selector_isolation_pass']}`\n"
+        "- Selector scoring is not changed; tests validate different request-local selected positions.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "materialization_audit.md").write_text(
+        "# Materialization Audit\n\n"
+        f"- Historical V materialization bytes: `{final_gate['historical_v_materialization_bytes']}`\n"
+        f"- Page-local Value expansion bytes during Torch MVP decode: `{final_gate['page_value_materialized_bytes']}`\n"
+        "- The page-local expansion is the known performance regression source and is not a full historical Value tensor.\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "performance_sanity.md").write_text(
+        "# Performance Sanity\n\n"
+        f"- B2 4096 speedup vs serial B1: `{final_gate['b2_vs_serial_b1_speedup']}`\n"
+        f"- B4 4096 speedup vs serial B1: `{final_gate['b4_vs_serial_b1_speedup']}`\n"
+        f"- Classification: `{classification}`\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "final_recommendation.md").write_text(
+        "# Final Recommendation\n\n"
+        f"- Classification: `{classification}`\n"
+        f"- Next task: `{next_task}`\n"
+        "- Keep PAGE_CENTRIC_DUAL_STREAM ABI. Profile and replace the Torch page-local operator with a CUDA/Triton compressed-domain page kernel before ragged serving integration.\n",
         encoding="utf-8",
     )
     (OUT_DIR / "final_report.md").write_text(

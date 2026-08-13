@@ -1,7 +1,7 @@
 # Final Report
 
-- Classification: `PAGE_CENTRIC_BATCH_MVP_PERFORMANCE_REGRESSION`
-- Next task: `PATTERNKV_BATCH_OPERATOR_REPROFILE`
+- Classification: `PAGE_CENTRIC_BATCH_OPERATOR_REGRESSION`
+- Next task: `PROFILE_PAGE_CENTRIC_BATCH_OPERATOR`
 - Correctness passed: `True`
 - Max abs: `6.103515625e-05`
 - Max relative L2: `0.0005222256877459586`

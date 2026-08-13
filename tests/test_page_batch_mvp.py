@@ -1,16 +1,18 @@
 import pytest
 import torch
 
-from bench.patternkv_page_batch_mvp import (
+from quant.page_batch import (
     PAGE_SIZE,
     cache_isolation_summary,
     correctness_metrics,
+    get_patternkv_page_batch_counters,
     pack_mixed_v_pages,
     patternkv_page_batched_v_decode,
-    reference_batch_mixed_v,
+    reset_patternkv_page_batch_counters,
     selector_isolation_summary,
     validate_page_mapping,
 )
+from bench.patternkv_page_batch_mvp import reference_batch_mixed_v
 
 
 pytestmark = pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA page batch MVP tests require a GPU")
@@ -215,7 +217,13 @@ def test_page_batch_scale_zero_alignment():
 
 def test_page_batch_no_v_materialization():
     case = _build_case(4, 512, "strong")
+    reset_patternkv_page_batch_counters()
     _candidate, cache = _page_output(case)
+    counters = get_patternkv_page_batch_counters()
+    assert counters["page_batch_decode_calls"] == 1
+    assert counters["python_serial_b1_dispatches"] == 0
+    assert counters["historical_v_materialization_bytes"] == 0
+    assert counters["page_value_materialized_bytes"] > 0
     assert cache.historical_materialization_calls == 0
     assert cache.historical_materialized_bytes == 0
 
