@@ -961,12 +961,12 @@ __global__ void bgemv_kernel_outer_dim_with_base_tiled(
   const uint32_t* __restrict__ _weight,  // [B*nh_kv, OC/pack, IC]，每个uint32包含 pack 个量化权值的若干子位
   const half* __restrict__ _zeros,       // [B*nh_kv, OC/group, IC]
   const half* __restrict__ _scale,       // [B*nh_kv, OC/group, IC]
-  const half* __restrict__ _centroids,   // [nh_kv, M, IC]
+  const half* __restrict__ _centroids,   // [nh_kv, M, IC] or [B, nh_kv, M, IC]
   const void* __restrict__ _assign,      // [B, nh_kv, OC] (u8/u16/i32)
   half* __restrict__ _outputs,           // [B*nh, OC]
   const int IC, const int OC,
   const int group_size, const int nh, const int nh_kv,
-  const int M_centroids, const int assign_bytes
+  const int M_centroids, const int B_centroids, const int assign_bytes
 ){
   constexpr int pack_factor = 32 / Bit;   // 4-bit: 8  /  2-bit: 16
   constexpr int TILE_DIM    = 128;        // **统一设为 128（修复 2-bit 版本）**
@@ -989,8 +989,11 @@ __global__ void bgemv_kernel_outer_dim_with_base_tiled(
   const half*     scale   = _scale  + (size_t)batch_kv_flat * (OC * IC / group_size);
   const half*     zeros   = _zeros  + (size_t)batch_kv_flat * (OC * IC / group_size);
 
-  // centroids: [nh_kv, M, IC]
-  const half* cbase = _centroids + (size_t)kv * (M_centroids * IC);
+  // centroids: [nh_kv, M, IC] or [B, nh_kv, M, IC]
+  const size_t c_offset = (B_centroids == 1)
+                        ? ((size_t)kv * M_centroids * IC)
+                        : (((size_t)b * nh_kv + kv) * M_centroids * IC);
+  const half* cbase = _centroids + c_offset;
   // assignments: [B, nh_kv, OC] （与 OC 对齐）
   const char* arow  = reinterpret_cast<const char*>(_assign)
                     + ((size_t)b * nh_kv + kv) * (size_t)OC * assign_bytes;
@@ -1147,7 +1150,7 @@ torch::Tensor gemv_forward_cuda_outer_dim_with_base(
     const int group_size,
     const int nh,
     const int nh_kv,
-    torch::Tensor _centroids,         // [nh_kv, M, K]
+    torch::Tensor _centroids,         // [nh_kv, M, K] or [B, nh_kv, M, K]
     torch::Tensor _assignments        // [B, nh_kv, N] (u8/u16/i32)
 ){
   TORCH_CHECK(_in_feats.dim()==3 && _in_feats.size(1)==1, "in_feats must be [B*nh,1,K]");
@@ -1166,10 +1169,15 @@ torch::Tensor gemv_forward_cuda_outer_dim_with_base(
   const half* zptr    = reinterpret_cast<const half*>(_zeros.data_ptr<at::Half>());
   const half* sptr    = reinterpret_cast<const half*>(_scaling_factors.data_ptr<at::Half>());
 
-  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv && _centroids.size(2)==IC,
-              "centroids must be [nh_kv, M, IC]");
-  const int M_cent = _centroids.size(1);
-  const half* cptr = reinterpret_cast<const half*>(_centroids.data_ptr<at::Half>());
+  const int B = BS_nh / nh;
+  TORCH_CHECK(
+      (_centroids.dim()==3 && _centroids.size(0)==nh_kv && _centroids.size(2)==IC) ||
+      (_centroids.dim()==4 && _centroids.size(0)==B && _centroids.size(1)==nh_kv && _centroids.size(3)==IC),
+      "centroids must be [nh_kv, M, IC] or [B, nh_kv, M, IC]");
+  const int B_cent = (_centroids.dim()==4) ? B : 1;
+  const int M_cent = (_centroids.dim()==4) ? _centroids.size(2) : _centroids.size(1);
+  auto centroids = _centroids.to(torch::kFloat16).contiguous();
+  const half* cptr = reinterpret_cast<const half*>(centroids.data_ptr<at::Half>());
 
   TORCH_CHECK(_assignments.dim()==3 && _assignments.size(2)==OC,
               "assignments must be [B, nh_kv, OC]");
@@ -1200,13 +1208,13 @@ torch::Tensor gemv_forward_cuda_outer_dim_with_base(
     bgemv_kernel_outer_dim_with_base_tiled<4>
       <<<num_blocks, num_threads, smem_bytes>>>(
         in_ptr, wptr, zptr, sptr, cptr, aptr, out_ptr,
-        IC, OC, group_size, nh, nh_kv, M_cent, assign_bytes
+        IC, OC, group_size, nh, nh_kv, M_cent, B_cent, assign_bytes
       );
   } else { // bit == 2
     bgemv_kernel_outer_dim_with_base_tiled<2>
       <<<num_blocks, num_threads, smem_bytes>>>(
         in_ptr, wptr, zptr, sptr, cptr, aptr, out_ptr,
-        IC, OC, group_size, nh, nh_kv, M_cent, assign_bytes
+        IC, OC, group_size, nh, nh_kv, M_cent, B_cent, assign_bytes
       );
   }
 

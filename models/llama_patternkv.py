@@ -33,7 +33,9 @@ from models.segmented_cache import (
     maybe_validate_cache,
     normalize_value_objective,
     normalize_value_precision_selector,
+    pattern_gather_request_centroids,
     pattern_select_v_candidate,
+    pattern_select_request_v_candidate,
     reconstruct_packed_v,
     serialize_cache,
     tensor_tokens,
@@ -1576,32 +1578,48 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             
             bz, n_kv, seq_len, hd = key_states.shape
    
-            key_states_means = key_states.mean(dim=0, keepdim=True)
-  
-            Xmk = key_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
-            Xk = key_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
-            assign_k, k_centroids = batched_kmeans_fast_compiled(Xmk, k=self.num_k_bases, iters=30, tol=1e-4, seed=0)
-
-            assign_k = batched_assign_compiled(Xk, k_centroids)
-
-            assignments = assign_k.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
-            self.k_base = k_centroids.to(key_states.dtype)
+            if bz == 1:
+                key_states_means = key_states.mean(dim=0, keepdim=True)
+                Xmk = key_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
+                Xk = key_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
+                assign_k, k_centroids = batched_kmeans_fast_compiled(Xmk, k=self.num_k_bases, iters=30, tol=1e-4, seed=0)
+                assign_k = batched_assign_compiled(Xk, k_centroids)
+                assignments = assign_k.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
+                self.k_base = k_centroids.to(key_states.dtype)
+            else:
+                k_bases = []
+                assignment_rows = []
+                for req_idx in range(bz):
+                    Xmk = key_states[req_idx : req_idx + 1].permute(1, 0, 2, 3).reshape(n_kv, seq_len, hd).to(torch.float32)
+                    _assign_seed, k_centroids = batched_kmeans_fast_compiled(Xmk, k=self.num_k_bases, iters=30, tol=1e-4, seed=0)
+                    assign_k = batched_assign_compiled(Xmk, k_centroids)
+                    assignment_rows.append(assign_k.view(n_kv, 1, seq_len).permute(1, 0, 2).contiguous().to(torch.long))
+                    k_bases.append(k_centroids.to(key_states.dtype))
+                assignments = torch.cat(assignment_rows, dim=0)
+                self.k_base = torch.stack(k_bases, dim=0).contiguous()
 
             
             bz, n_kv, seq_len, hd = value_states.shape
             
-            value_states_means = value_states.mean(dim=0, keepdim=True)
-            
-            Xm = value_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
-            X = value_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
-            assign, centroids = batched_kmeans_fast_compiled(Xm, k=self.num_v_bases, iters=30, tol=1e-4, seed=0)
-
-            assign = batched_assign_compiled(X, centroids)
-
-            v_assignments_idx_all = assign.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
-            v_centroids = centroids.to(value_states.dtype)                                                        # [n_kv, num_v_bases, hd]
-
-            self.v_centroids = v_centroids
+            if bz == 1:
+                value_states_means = value_states.mean(dim=0, keepdim=True)
+                Xm = value_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
+                X = value_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
+                assign, centroids = batched_kmeans_fast_compiled(Xm, k=self.num_v_bases, iters=30, tol=1e-4, seed=0)
+                assign = batched_assign_compiled(X, centroids)
+                v_assignments_idx_all = assign.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
+                self.v_centroids = centroids.to(value_states.dtype)                                                        # [n_kv, num_v_bases, hd]
+            else:
+                v_bases = []
+                v_assignment_rows = []
+                for req_idx in range(bz):
+                    Xm = value_states[req_idx : req_idx + 1].permute(1, 0, 2, 3).reshape(n_kv, seq_len, hd).to(torch.float32)
+                    _assign_seed, centroids = batched_kmeans_fast_compiled(Xm, k=self.num_v_bases, iters=30, tol=1e-4, seed=0)
+                    assign = batched_assign_compiled(Xm, centroids)
+                    v_assignment_rows.append(assign.view(n_kv, 1, seq_len).permute(1, 0, 2).contiguous().to(torch.long))
+                    v_bases.append(centroids.to(value_states.dtype))
+                v_assignments_idx_all = torch.cat(v_assignment_rows, dim=0)
+                self.v_centroids = torch.stack(v_bases, dim=0).contiguous()
 
             if key_states.shape[-2] % self.residual_length != 0:
                 if key_states.shape[-2] < self.residual_length:
@@ -1620,24 +1638,28 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # assignments: [bsz, n_kv, seq_len]
                 # centroids: [n_kv, num_k_bases, hd]
                 # gather to [bsz, n_kv, seq_len, hd]
-                k_base_per_pos = self.k_base.unsqueeze(0).expand(bsz, -1, -1, -1)
-                # index along num_k_bases dim via assignments
-                k_base_per_pos = torch.gather(
-                    k_base_per_pos,
-                    2,
-                    assignments.unsqueeze(-1).expand(-1, -1, -1, hd)
-                )  # [bsz, n_kv, seq_len, hd]
+                if self.k_base.dim() == 4:
+                    k_base_per_pos = pattern_gather_request_centroids(assignments, self.k_base)
+                else:
+                    k_base_per_pos = self.k_base.unsqueeze(0).expand(bsz, -1, -1, -1)
+                    # index along num_k_bases dim via assignments
+                    k_base_per_pos = torch.gather(
+                        k_base_per_pos,
+                        2,
+                        assignments.unsqueeze(-1).expand(-1, -1, -1, hd)
+                    )  # [bsz, n_kv, seq_len, hd]
                 key_states_quant = key_states_quant - k_base_per_pos
-                record_prefill_k_metrics(
-                    key_states=key_states,
-                    key_states_quant=key_states_quant,
-                    assignments=assignments,
-                    k_base=self.k_base,
-                    key_states_full=key_states_quant + k_base_per_pos,
-                    layer_idx=self.layer_idx,
-                    bits=self.k_bits,
-                    group_size=self.group_size,
-                )
+                if self.k_base.dim() == 3:
+                    record_prefill_k_metrics(
+                        key_states=key_states,
+                        key_states_quant=key_states_quant,
+                        assignments=assignments,
+                        k_base=self.k_base,
+                        key_states_full=key_states_quant + k_base_per_pos,
+                        layer_idx=self.layer_idx,
+                        bits=self.k_bits,
+                        group_size=self.group_size,
+                    )
                 key_states_quant_trans, key_scale_trans, key_mn_trans = triton_quantize_and_pack_along_last_dim(key_states_quant.transpose(2, 3).contiguous(), self.group_size, self.k_bits)
             else:
                 key_states_quant_trans = None
@@ -1665,14 +1687,24 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     idx_q = v_assignments_idx_all[:, :, :qlen]                     # [bz, n_kv, qlen]
 
                 
-                idx_q, v_mask_q, _ = pattern_select_v_candidate(
-                    value_states_quant,
-                    self.v_centroids,
-                    value_objective=self.value_objective,
-                    group_size=self.group_size,
-                    bits=self.v_bits,
-                )
-                v_cent_per_pos_q = self._gather_centroids(idx_q, self.v_centroids)  # [bz, n_kv, qlen, hd]
+                if self.v_centroids.dim() == 4:
+                    idx_q, v_mask_q, _ = pattern_select_request_v_candidate(
+                        value_states_quant,
+                        self.v_centroids,
+                        value_objective=self.value_objective,
+                        group_size=self.group_size,
+                        bits=self.v_bits,
+                    )
+                    v_cent_per_pos_q = pattern_gather_request_centroids(idx_q, self.v_centroids)
+                else:
+                    idx_q, v_mask_q, _ = pattern_select_v_candidate(
+                        value_states_quant,
+                        self.v_centroids,
+                        value_objective=self.value_objective,
+                        group_size=self.group_size,
+                        bits=self.v_bits,
+                    )
+                    v_cent_per_pos_q = self._gather_centroids(idx_q, self.v_centroids)  # [bz, n_kv, qlen, hd]
 
                 # 用已选 candidate 的生产阈值/掩码
                 T1, _ = self._v_threshold_and_mask(value_states_quant, base_override=v_cent_per_pos_q)
@@ -1682,17 +1714,18 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 # 条件性减质心（做残差化）
                 _insight_value_states_quant_raw = value_states_quant
                 value_states_quant = value_states_quant - v_mask_q.unsqueeze(-1).to(value_states.dtype) * v_cent_per_pos_q
-                record_prefill_v_metrics(
-                    value_states_quant=value_states_quant,
-                    idx_q=idx_q,
-                    v_centroids=self.v_centroids,
-                    v_mask_q=v_mask_q,
-                    value_states_full=_insight_value_states_quant_raw,
-                    layer_idx=self.layer_idx,
-                    bits=self.v_bits,
-                    group_size=self.group_size,
-                    rho=T1,
-                )
+                if self.v_centroids.dim() == 3:
+                    record_prefill_v_metrics(
+                        value_states_quant=value_states_quant,
+                        idx_q=idx_q,
+                        v_centroids=self.v_centroids,
+                        v_mask_q=v_mask_q,
+                        value_states_full=_insight_value_states_quant_raw,
+                        layer_idx=self.layer_idx,
+                        bits=self.v_bits,
+                        group_size=self.group_size,
+                        rho=T1,
+                    )
 
                 # 量化 pack（沿最后一维）
                 value_states_quant, value_scale, value_mn = triton_quantize_and_pack_along_last_dim(

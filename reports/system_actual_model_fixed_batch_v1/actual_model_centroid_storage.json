@@ -1,0 +1,11 @@
+{
+  "b1_total": 2228245,
+  "b2_total": 4456490,
+  "b4_total": 8912980,
+  "counter_metadata_bytes_per_request": 21,
+  "dynamic_centroid_bytes_per_request": 2097152,
+  "projected_16k_dynamic_per_request": 524288,
+  "projected_32k_dynamic_per_request": 1048576,
+  "projected_4k_dynamic_per_request": 131072,
+  "static_centroid_bytes_per_request": 131072
+}

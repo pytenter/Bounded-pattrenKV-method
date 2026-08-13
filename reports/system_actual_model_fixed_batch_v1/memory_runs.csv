@@ -1,0 +1,3 @@
+case,batch,context,decode,peak_memory_allocated,peak_memory_reserved
+b1_ctx512_d1,1,512,1,19381266432,19541262336
+b2_ctx512_d1,2,512,1,21566304256,22510829568

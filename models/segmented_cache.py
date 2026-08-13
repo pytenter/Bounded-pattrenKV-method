@@ -95,20 +95,44 @@ class PatternKVCentroidStatePool:
         *,
         max_slots: int,
         max_dynamic_centroids: int,
+        initial_slots: torch.Tensor | None = None,
     ) -> "PatternKVCentroidStatePool":
-        if k_static.dim() != 3 or v_static.dim() != 3:
-            raise ValueError("static centroid banks must be [H,M,D]")
-        if k_static.shape[0] != v_static.shape[0] or k_static.shape[2] != v_static.shape[2]:
+        if k_static.dim() not in (3, 4) or v_static.dim() not in (3, 4):
+            raise ValueError("static centroid banks must be [H,M,D] or [B,H,M,D]")
+        if k_static.dim() != v_static.dim():
+            raise ValueError("K/V static centroid rank mismatch")
+        k_head_dim = 0 if k_static.dim() == 3 else 1
+        k_count_dim = 1 if k_static.dim() == 3 else 2
+        v_head_dim = 0 if v_static.dim() == 3 else 1
+        v_count_dim = 1 if v_static.dim() == 3 else 2
+        if k_static.shape[k_head_dim] != v_static.shape[v_head_dim] or k_static.shape[-1] != v_static.shape[-1]:
             raise ValueError("K/V static centroid geometry mismatch")
+        if k_static.dim() == 4 and k_static.shape[0] != v_static.shape[0]:
+            raise ValueError("K/V request-local static centroid batch mismatch")
         slots = int(max_slots)
-        k_total = int(k_static.shape[1]) + int(max_dynamic_centroids)
-        v_total = int(v_static.shape[1]) + int(max_dynamic_centroids)
-        k_pool = torch.empty((slots, k_static.shape[0], k_total, k_static.shape[2]), dtype=k_static.dtype, device=k_static.device)
-        v_pool = torch.empty((slots, v_static.shape[0], v_total, v_static.shape[2]), dtype=v_static.dtype, device=v_static.device)
-        k_pool[:, :, : k_static.shape[1], :] = k_static.unsqueeze(0)
-        v_pool[:, :, : v_static.shape[1], :] = v_static.unsqueeze(0)
-        k_counts = torch.full((slots,), int(k_static.shape[1]), dtype=torch.int32, device=k_static.device)
-        v_counts = torch.full((slots,), int(v_static.shape[1]), dtype=torch.int32, device=v_static.device)
+        k_static_count = int(k_static.shape[k_count_dim])
+        v_static_count = int(v_static.shape[v_count_dim])
+        heads = int(k_static.shape[k_head_dim])
+        dim = int(k_static.shape[-1])
+        k_total = k_static_count + int(max_dynamic_centroids)
+        v_total = v_static_count + int(max_dynamic_centroids)
+        k_pool = torch.empty((slots, heads, k_total, dim), dtype=k_static.dtype, device=k_static.device)
+        v_pool = torch.empty((slots, heads, v_total, dim), dtype=v_static.dtype, device=v_static.device)
+        k_counts = torch.full((slots,), k_static_count, dtype=torch.int32, device=k_static.device)
+        v_counts = torch.full((slots,), v_static_count, dtype=torch.int32, device=v_static.device)
+        if k_static.dim() == 3:
+            k_pool[:, :, :k_static_count, :] = k_static.unsqueeze(0)
+            v_pool[:, :, :v_static_count, :] = v_static.unsqueeze(0)
+        else:
+            if initial_slots is None:
+                initial_slots = torch.arange(int(k_static.shape[0]), dtype=torch.long, device=k_static.device)
+            initial_slots = initial_slots.to(device=k_static.device, dtype=torch.long)
+            if int(initial_slots.numel()) != int(k_static.shape[0]):
+                raise ValueError("request-local static centroid slots must match static centroid batch")
+            k_pool[:, :, :k_static_count, :] = k_static[0].unsqueeze(0)
+            v_pool[:, :, :v_static_count, :] = v_static[0].unsqueeze(0)
+            k_pool[initial_slots, :, :k_static_count, :] = k_static
+            v_pool[initial_slots, :, :v_static_count, :] = v_static
         return cls(
             k_centroid_pool=k_pool,
             v_centroid_pool=v_pool,
@@ -118,8 +142,8 @@ class PatternKVCentroidStatePool:
             update_counts_v=torch.zeros(slots, dtype=torch.int32, device=v_static.device),
             last_flush_pos=torch.zeros(slots, dtype=torch.int32, device=k_static.device),
             active=torch.zeros(slots, dtype=torch.bool, device=k_static.device),
-            static_centroid_count=int(k_static.shape[1]),
-            static_v_centroid_count=int(v_static.shape[1]),
+            static_centroid_count=k_static_count,
+            static_v_centroid_count=v_static_count,
         )
 
     def allocate(self, slots: torch.Tensor) -> None:
@@ -1573,19 +1597,21 @@ def _default_centroid_slots(bsz: int, device: torch.device) -> torch.Tensor:
 def _ensure_centroid_state_pool(cache: PatternQuantizedKVCache, bsz: int) -> PatternKVCentroidStatePool | None:
     if cache.k_centroids is None or cache.v_centroids is None:
         return None
+    device = cache.k_centroids.device
+    if cache.centroid_state_indices is None:
+        cache.centroid_state_indices = _default_centroid_slots(bsz, device)
     if cache.centroid_state_pool is None:
         max_slots = max(int(os.environ.get("PATTERNKV_CENTROID_MAX_SLOTS", "16")), int(bsz))
         max_dynamic = int(os.environ.get("PATTERNKV_CENTROID_MAX_DYNAMIC", "512"))
-        k_static = cache.k_centroids[0] if cache.k_centroids.dim() == 4 else cache.k_centroids
-        v_static = cache.v_centroids[0] if cache.v_centroids.dim() == 4 else cache.v_centroids
+        k_static = cache.k_centroids
+        v_static = cache.v_centroids
         cache.centroid_state_pool = PatternKVCentroidStatePool.create(
             k_static,
             v_static,
             max_slots=max_slots,
             max_dynamic_centroids=max_dynamic,
+            initial_slots=cache.centroid_state_indices,
         )
-    if cache.centroid_state_indices is None:
-        cache.centroid_state_indices = _default_centroid_slots(bsz, cache.centroid_state_pool.k_centroid_pool.device)
     cache.centroid_state_pool.allocate(cache.centroid_state_indices)
     return cache.centroid_state_pool
 

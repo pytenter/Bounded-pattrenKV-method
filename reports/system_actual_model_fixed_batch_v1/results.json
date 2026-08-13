@@ -1,0 +1,2141 @@
+{
+  "actual_model_loaded": true,
+  "cases": [
+    {
+      "aggregate_tokens_s": 0.8998265268110726,
+      "argmax_token_match_rate": 1.0,
+      "cache_summary": {
+        "layers": [
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 0,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 1,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 2,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 3,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 4,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 5,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 6,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 7,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 8,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 9,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 10,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 11,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 12,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 13,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 14,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 15,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 16,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 17,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 18,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 19,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 20,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 21,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 22,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 23,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 24,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 25,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 26,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 27,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 28,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 29,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 30,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          },
+          {
+            "centroid_state_indices": [
+              0
+            ],
+            "k_counts": [
+              32
+            ],
+            "layer": 31,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 64,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0
+            ],
+            "update_counts_v": [
+              0
+            ],
+            "v_counts": [
+              32
+            ],
+            "v_precision_mask_shape": [
+              1,
+              256
+            ],
+            "v_precision_v4": 64
+          }
+        ]
+      },
+      "case": {
+        "batch": 1,
+        "context": 512,
+        "decode": 1,
+        "kind": "stage1",
+        "name": "b1_ctx512_d1"
+      },
+      "elapsed_s": 1.111325316829607,
+      "hard_counters_ok": true,
+      "max_hidden_relative_l2": 0.0,
+      "max_logit_relative_l2": 0.0,
+      "min_logit_cosine": 1.0,
+      "numerical_rows": [
+        {
+          "batch": 1,
+          "batched_token": 374,
+          "case": "b1_ctx512_d1",
+          "hidden_relative_l2": 0.0,
+          "logit_cosine": 1.0000001192092896,
+          "logit_max_abs": 0.0,
+          "logit_relative_l2": 0.0,
+          "phase": "prefill",
+          "ref_token": 374,
+          "row": 0,
+          "step": 0,
+          "token_match": true
+        },
+        {
+          "batch": 1,
+          "batched_token": 70003,
+          "case": "b1_ctx512_d1",
+          "hidden_relative_l2": 0.0,
+          "logit_cosine": 1.0,
+          "logit_max_abs": 0.0,
+          "logit_relative_l2": 0.0,
+          "phase": "decode",
+          "ref_token": 70003,
+          "row": 0,
+          "step": 1,
+          "token_match": true
+        }
+      ],
+      "page_counters": {
+        "accumulate_calls": 0,
+        "attention_slice_calls": 0,
+        "gpu_tensor_item_calls": 0,
+        "historical_v_materialization_bytes": 0,
+        "host_sync_item_calls": 0,
+        "logical_pages_processed": 0,
+        "matmul_calls": 0,
+        "page_batch_decode_calls": 0,
+        "page_batch_pack_calls": 32,
+        "page_value_materialization_calls": 0,
+        "page_value_materialized_bytes": 0,
+        "python_serial_b1_dispatches": 0,
+        "repeat_kv_calls": 0,
+        "v2_pages_processed": 0,
+        "v2_tokens_processed": 0,
+        "v4_pages_processed": 0,
+        "v4_tokens_processed": 0
+      },
+      "pass": true,
+      "peak_memory_allocated": 19381266432,
+      "peak_memory_reserved": 19541262336,
+      "real_counters": {
+        "fused_page_operator_calls": 32,
+        "gpu_tensor_item_calls_hot_path": 0,
+        "historical_v_materialization_bytes": 0,
+        "legacy_mixed_v_operator_calls": 0,
+        "new_pages_allocated": 64,
+        "operator_ready_pool_full_rebuilds": 0,
+        "operator_ready_pool_incremental_updates": 32,
+        "page_value_materialization_bytes": 0,
+        "python_page_dispatches": 0,
+        "real_decode_steps": 32,
+        "serial_b1_dispatches": 0
+      },
+      "state_ok": true,
+      "state_reason": "",
+      "tpot_ms": 1111.325316829607,
+      "true_batch_ok": true
+    },
+    {
+      "aggregate_tokens_s": 1.060054535524291,
+      "argmax_token_match_rate": 1.0,
+      "cache_summary": {
+        "layers": [
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 0,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 1,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 2,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 3,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 4,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 5,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 6,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 7,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 8,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 9,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 10,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 11,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 12,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 13,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 14,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 15,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 16,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 17,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 18,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 19,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 20,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 21,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 22,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 23,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 24,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 25,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 26,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 27,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 28,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 29,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 30,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          },
+          {
+            "centroid_state_indices": [
+              0,
+              1
+            ],
+            "k_counts": [
+              32,
+              32
+            ],
+            "layer": 31,
+            "packed_k_tokens": 256,
+            "packed_v4_tokens": 128,
+            "packed_v_tokens": 256,
+            "total_tokens": 513,
+            "update_counts_k": [
+              0,
+              0
+            ],
+            "update_counts_v": [
+              0,
+              0
+            ],
+            "v_counts": [
+              32,
+              32
+            ],
+            "v_precision_mask_shape": [
+              2,
+              256
+            ],
+            "v_precision_v4": 128
+          }
+        ]
+      },
+      "case": {
+        "batch": 2,
+        "context": 512,
+        "decode": 1,
+        "kind": "stage1",
+        "name": "b2_ctx512_d1"
+      },
+      "elapsed_s": 1.886695384979248,
+      "hard_counters_ok": true,
+      "max_hidden_relative_l2": 0.06721913069486618,
+      "max_logit_relative_l2": 0.03150010108947754,
+      "min_logit_cosine": 0.9995428323745728,
+      "numerical_rows": [
+        {
+          "batch": 2,
+          "batched_token": 374,
+          "case": "b2_ctx512_d1",
+          "hidden_relative_l2": 0.002233276143670082,
+          "logit_cosine": 0.9999996423721313,
+          "logit_max_abs": 0.0234375,
+          "logit_relative_l2": 0.0008865426061674953,
+          "phase": "prefill",
+          "ref_token": 374,
+          "row": 0,
+          "step": 0,
+          "token_match": true
+        },
+        {
+          "batch": 2,
+          "batched_token": 70003,
+          "case": "b2_ctx512_d1",
+          "hidden_relative_l2": 0.025293802842497826,
+          "logit_cosine": 0.9999525547027588,
+          "logit_max_abs": 0.2109375,
+          "logit_relative_l2": 0.009808696806430817,
+          "phase": "decode",
+          "ref_token": 70003,
+          "row": 0,
+          "step": 1,
+          "token_match": true
+        },
+        {
+          "batch": 2,
+          "batched_token": 426,
+          "case": "b2_ctx512_d1",
+          "hidden_relative_l2": 0.002629835857078433,
+          "logit_cosine": 0.9999997019767761,
+          "logit_max_abs": 0.0234375,
+          "logit_relative_l2": 0.0009906415361911058,
+          "phase": "prefill",
+          "ref_token": 426,
+          "row": 1,
+          "step": 0,
+          "token_match": true
+        },
+        {
+          "batch": 2,
+          "batched_token": 25,
+          "case": "b2_ctx512_d1",
+          "hidden_relative_l2": 0.06721913069486618,
+          "logit_cosine": 0.9995428323745728,
+          "logit_max_abs": 0.626953125,
+          "logit_relative_l2": 0.03150010108947754,
+          "phase": "decode",
+          "ref_token": 25,
+          "row": 1,
+          "step": 1,
+          "token_match": true
+        }
+      ],
+      "page_counters": {
+        "accumulate_calls": 0,
+        "attention_slice_calls": 0,
+        "gpu_tensor_item_calls": 0,
+        "historical_v_materialization_bytes": 0,
+        "host_sync_item_calls": 0,
+        "logical_pages_processed": 0,
+        "matmul_calls": 0,
+        "page_batch_decode_calls": 0,
+        "page_batch_pack_calls": 32,
+        "page_value_materialization_calls": 0,
+        "page_value_materialized_bytes": 0,
+        "python_serial_b1_dispatches": 0,
+        "repeat_kv_calls": 0,
+        "v2_pages_processed": 0,
+        "v2_tokens_processed": 0,
+        "v4_pages_processed": 0,
+        "v4_tokens_processed": 0
+      },
+      "pass": false,
+      "peak_memory_allocated": 21566304256,
+      "peak_memory_reserved": 22510829568,
+      "real_counters": {
+        "fused_page_operator_calls": 32,
+        "gpu_tensor_item_calls_hot_path": 0,
+        "historical_v_materialization_bytes": 0,
+        "legacy_mixed_v_operator_calls": 0,
+        "new_pages_allocated": 128,
+        "operator_ready_pool_full_rebuilds": 0,
+        "operator_ready_pool_incremental_updates": 32,
+        "page_value_materialization_bytes": 0,
+        "python_page_dispatches": 0,
+        "real_decode_steps": 32,
+        "serial_b1_dispatches": 0
+      },
+      "state_ok": false,
+      "state_reason": "row=0 layer=0 k_assignments differ",
+      "tpot_ms": 1886.695384979248,
+      "true_batch_ok": true
+    }
+  ],
+  "centroid_state_architecture_changed": true,
+  "centroid_storage": {
+    "b1_total": 2228245,
+    "b2_total": 4456490,
+    "b4_total": 8912980,
+    "counter_metadata_bytes_per_request": 21,
+    "dynamic_centroid_bytes_per_request": 2097152,
+    "projected_16k_dynamic_per_request": 524288,
+    "projected_32k_dynamic_per_request": 1048576,
+    "projected_4k_dynamic_per_request": 131072,
+    "static_centroid_bytes_per_request": 131072
+  },
+  "failure": "row=0 layer=0 k_assignments differ",
+  "first_divergence_component": "UNKNOWN",
+  "first_divergence_step": 1,
+  "model_config": {
+    "group_size": 128,
+    "head_dim": 128,
+    "hidden_size": 4096,
+    "k_bits": 2,
+    "max_position_embeddings": 131072,
+    "num_attention_heads": 32,
+    "num_hidden_layers": 32,
+    "num_k_base": 32,
+    "num_key_value_heads": 8,
+    "num_v_base": 32,
+    "recent_length": 128,
+    "residual_length": 128,
+    "rope_scaling": {
+      "factor": 8.0,
+      "high_freq_factor": 4.0,
+      "low_freq_factor": 1.0,
+      "original_max_position_embeddings": 8192,
+      "rope_type": "llama3"
+    },
+    "rope_theta": 500000.0,
+    "sink_length": 16,
+    "torch_dtype": "float16",
+    "v_bits": 2,
+    "vocab_size": 128256
+  },
+  "synthetic_model_used_for_primary_evidence": false
+}

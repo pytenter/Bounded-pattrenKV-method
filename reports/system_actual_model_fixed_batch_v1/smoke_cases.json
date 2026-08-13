@@ -1,0 +1,18 @@
+[
+  {
+    "batch": 1,
+    "context": 512,
+    "decode": 1,
+    "kind": "stage1",
+    "name": "b1_ctx512_d1",
+    "pass": true
+  },
+  {
+    "batch": 2,
+    "context": 512,
+    "decode": 1,
+    "kind": "stage1",
+    "name": "b2_ctx512_d1",
+    "pass": false
+  }
+]

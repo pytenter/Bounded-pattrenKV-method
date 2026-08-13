@@ -13,6 +13,7 @@ from models.segmented_cache import (
     build_cache_from_prefill,
     validate_cache,
 )
+from quant.matmul import cuda_bmm_fA_qB_outer_with_base
 
 
 GROUP_SIZE = 128
@@ -182,5 +183,48 @@ def test_fused_page_value_uses_request_local_centroids(monkeypatch) -> None:
         )
         _append_tokens(ref, key[row : row + 1], value[row : row + 1], GROUP_SIZE)
         refs.append(patternkv_mixed_value_attention(module, ref, weights[row : row + 1], ref.v_pattern_mask, ref.packed_v_tokens))
+    ref_out = torch.cat(refs, dim=0)
+    torch.testing.assert_close(got, ref_out, rtol=0, atol=0)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="request-local fused K test requires a GPU")
+def test_fused_k_qk_uses_request_local_centroids() -> None:
+    device = torch.device("cuda")
+    slots = torch.tensor([3, 0], dtype=torch.long, device=device)
+    key, value = _kv(2, GROUP_SIZE, head_dim=FUSED_HEAD_DIM, device=device)
+    cache = _empty_cache(2, slots, head_dim=FUSED_HEAD_DIM, device=device)
+    _append_tokens(cache, key, value, GROUP_SIZE)
+    generator = torch.Generator(device=device).manual_seed(128)
+    query = torch.randn(2, NH, 1, FUSED_HEAD_DIM, dtype=torch.float16, device=device, generator=generator)
+    got = cuda_bmm_fA_qB_outer_with_base(
+        GROUP_SIZE,
+        query,
+        cache.packed_k,
+        cache.packed_k_scale,
+        cache.packed_k_zero,
+        2,
+        cache.k_centroids,
+        cache.k_assignments[:, :, : cache.packed_k_tokens],
+        NH,
+        NH_KV,
+    )
+    refs = []
+    for row in range(2):
+        ref = _empty_cache(1, torch.tensor([0], dtype=torch.long, device=device), head_dim=FUSED_HEAD_DIM, device=device)
+        _append_tokens(ref, key[row : row + 1], value[row : row + 1], GROUP_SIZE)
+        refs.append(
+            cuda_bmm_fA_qB_outer_with_base(
+                GROUP_SIZE,
+                query[row : row + 1],
+                ref.packed_k,
+                ref.packed_k_scale,
+                ref.packed_k_zero,
+                2,
+                ref.k_centroids,
+                ref.k_assignments[:, :, : ref.packed_k_tokens],
+                NH,
+                NH_KV,
+            )
+        )
     ref_out = torch.cat(refs, dim=0)
     torch.testing.assert_close(got, ref_out, rtol=0, atol=0)
