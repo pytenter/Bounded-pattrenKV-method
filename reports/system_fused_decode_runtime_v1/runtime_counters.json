@@ -1,0 +1,13 @@
+{
+  "fused_page_operator_calls": 1,
+  "gpu_tensor_item_calls_hot_path": 0,
+  "historical_v_materialization_bytes": 0,
+  "legacy_mixed_v_operator_calls": 0,
+  "new_pages_allocated": 128,
+  "operator_ready_pool_full_rebuilds": 0,
+  "operator_ready_pool_incremental_updates": 32,
+  "page_value_materialization_bytes": 0,
+  "python_page_dispatches": 0,
+  "real_decode_steps": 1,
+  "serial_b1_dispatches": 0
+}

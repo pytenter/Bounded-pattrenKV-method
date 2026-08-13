@@ -18,6 +18,7 @@ from quant.matmul import (
     patternkv_cache_growth_backend,
     record_mixed_v_reference_call,
 )
+from quant.page_batch import patternkv_fused_page_batch_decode, record_patternkv_real_decode_counter
 from quant.patternkv_profile import profile_range
 from models.segmented_cache import (
     CHUNKED_CACHE_MODE,
@@ -65,8 +66,8 @@ _CONFIG_FOR_DOC = "LlamaConfig"
 
 def patternkv_mixed_v_backend() -> str:
     backend = os.environ.get("PATTERNKV_MIXED_V_BACKEND", "fused").strip().lower()
-    if backend not in {"fused", "reference"}:
-        raise ValueError("PATTERNKV_MIXED_V_BACKEND must be 'fused' or 'reference'")
+    if backend not in {"fused", "reference", "fused_page"}:
+        raise ValueError("PATTERNKV_MIXED_V_BACKEND must be 'fused', 'fused_page', or 'reference'")
     return backend
 
 
@@ -146,6 +147,17 @@ def patternkv_mixed_value_attention(
         raise RuntimeError("fused mixed Value path requires Pattern centroid, assignment, and mask metadata")
     if cache.v_precision_mask is None:
         raise RuntimeError("fused mixed Value path requires v_precision_mask")
+    if backend == "fused_page":
+        pools = getattr(cache, "operator_ready_page_pools", None)
+        if pools is None:
+            raise RuntimeError("fused page Value path requires operator-ready page pools")
+        record_patternkv_real_decode_counter("real_decode_steps", 1)
+        out = patternkv_fused_page_batch_decode(weights, pools)
+        if attn_f is not None and v_full is not None:
+            with profile_range("value_fp16_tail", tokens=int(v_full.shape[2])):
+                out = out + torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+        return out
+    record_patternkv_real_decode_counter("legacy_mixed_v_operator_calls", 1)
     return cuda_attn_v_mixed_fused_with_base(
         module.group_size,
         weights,

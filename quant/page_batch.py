@@ -32,6 +32,20 @@ _PAGE_BATCH_COUNTERS = {
     "repeat_kv_calls": 0,
 }
 
+_REAL_DECODE_COUNTERS = {
+    "real_decode_steps": 0,
+    "fused_page_operator_calls": 0,
+    "legacy_mixed_v_operator_calls": 0,
+    "serial_b1_dispatches": 0,
+    "operator_ready_pool_full_rebuilds": 0,
+    "operator_ready_pool_incremental_updates": 0,
+    "new_pages_allocated": 0,
+    "page_value_materialization_bytes": 0,
+    "historical_v_materialization_bytes": 0,
+    "gpu_tensor_item_calls_hot_path": 0,
+    "python_page_dispatches": 0,
+}
+
 
 def reset_patternkv_page_batch_counters() -> None:
     for key in _PAGE_BATCH_COUNTERS:
@@ -40,6 +54,21 @@ def reset_patternkv_page_batch_counters() -> None:
 
 def get_patternkv_page_batch_counters() -> dict[str, int]:
     return dict(_PAGE_BATCH_COUNTERS)
+
+
+def reset_patternkv_real_decode_counters() -> None:
+    for key in _REAL_DECODE_COUNTERS:
+        _REAL_DECODE_COUNTERS[key] = 0
+
+
+def get_patternkv_real_decode_counters() -> dict[str, int]:
+    return dict(_REAL_DECODE_COUNTERS)
+
+
+def record_patternkv_real_decode_counter(key: str, amount: int = 1) -> None:
+    if key not in _REAL_DECODE_COUNTERS:
+        raise KeyError(f"unknown real decode counter: {key}")
+    _REAL_DECODE_COUNTERS[key] += int(amount)
 
 
 @dataclass
@@ -542,11 +571,88 @@ def build_operator_ready_page_pools(cache: PatternKVPageBatchCache) -> PatternKV
     )
 
 
+def append_operator_ready_page_pools(
+    existing: PatternKVOperatorReadyPagePools | None,
+    chunk: PatternKVOperatorReadyPagePools,
+) -> PatternKVOperatorReadyPagePools:
+    """Append newly packed page pools without rebuilding previous pages."""
+
+    if existing is None:
+        record_patternkv_real_decode_counter("operator_ready_pool_incremental_updates", 1)
+        record_patternkv_real_decode_counter("new_pages_allocated", int(chunk.metadata.v4_prefix_counts.shape[0]))
+        return chunk
+
+    if existing.nh != chunk.nh or existing.nh_kv != chunk.nh_kv or existing.head_dim != chunk.head_dim:
+        raise ValueError("operator-ready page pool geometry mismatch")
+    if existing.group_size != chunk.group_size or existing.page_size != chunk.page_size:
+        raise ValueError("operator-ready page pool ABI mismatch")
+    if existing.metadata.v2_page_table.shape[0] != chunk.metadata.v2_page_table.shape[0]:
+        raise ValueError("operator-ready page pool batch mismatch")
+    if existing.centroids.shape[0] != chunk.centroids.shape[0] or existing.centroids.shape[2] != chunk.centroids.shape[2]:
+        raise ValueError("operator-ready page pool centroid geometry mismatch")
+    if chunk.centroids.shape[1] < existing.centroids.shape[1]:
+        raise ValueError("operator-ready page pool centroid bank shrank")
+
+    old_v2_pages = int(existing.v2_page_offsets.numel())
+    old_v4_pages = int(existing.v4_page_offsets.numel())
+    old_meta_pages = int(existing.metadata.v4_prefix_counts.shape[0])
+    old_v2_tokens = int(existing.v2_payload_pool.shape[1])
+    old_v4_tokens = int(existing.v4_payload_pool.shape[1])
+    pages_per_request = int(existing.metadata.v2_page_table.shape[1] + chunk.metadata.v2_page_table.shape[1])
+    bsz = int(existing.metadata.v2_page_table.shape[0])
+
+    def shift_table(table: torch.Tensor, delta: int) -> torch.Tensor:
+        delta_t = torch.tensor(delta, dtype=table.dtype, device=table.device)
+        return torch.where(table >= 0, table + delta_t, table)
+
+    def shift_offsets(offsets: torch.Tensor, delta: int) -> torch.Tensor:
+        delta_t = torch.tensor(delta, dtype=offsets.dtype, device=offsets.device)
+        return torch.where(offsets >= 0, offsets + delta_t, offsets)
+
+    metadata = PatternKVBatchMetadata(
+        request_indptr=torch.arange(0, (bsz + 1) * pages_per_request, pages_per_request, dtype=torch.int32, device=existing.metadata.request_indptr.device),
+        seq_lens=existing.metadata.seq_lens + chunk.metadata.seq_lens,
+        num_pages=existing.metadata.num_pages + chunk.metadata.num_pages,
+        v2_page_table=torch.cat([existing.metadata.v2_page_table, shift_table(chunk.metadata.v2_page_table, old_v2_pages)], dim=1).contiguous(),
+        v4_page_table=torch.cat([existing.metadata.v4_page_table, shift_table(chunk.metadata.v4_page_table, old_v4_pages)], dim=1).contiguous(),
+        metadata_page_table=torch.cat([existing.metadata.metadata_page_table, shift_table(chunk.metadata.metadata_page_table, old_meta_pages)], dim=1).contiguous(),
+        precision_bitmap=torch.cat([existing.metadata.precision_bitmap, chunk.metadata.precision_bitmap], dim=0).contiguous(),
+        v2_counts=torch.cat([existing.metadata.v2_counts, chunk.metadata.v2_counts], dim=0).contiguous(),
+        v4_counts=torch.cat([existing.metadata.v4_counts, chunk.metadata.v4_counts], dim=0).contiguous(),
+        valid_tokens=torch.cat([existing.metadata.valid_tokens, chunk.metadata.valid_tokens], dim=0).contiguous(),
+        v4_prefix_counts=torch.cat([existing.metadata.v4_prefix_counts, chunk.metadata.v4_prefix_counts], dim=0).contiguous(),
+    )
+    record_patternkv_real_decode_counter("operator_ready_pool_incremental_updates", 1)
+    record_patternkv_real_decode_counter("new_pages_allocated", int(chunk.metadata.v4_prefix_counts.shape[0]))
+    return PatternKVOperatorReadyPagePools(
+        v2_payload_pool=torch.cat([existing.v2_payload_pool, chunk.v2_payload_pool], dim=1).contiguous(),
+        v4_payload_pool=torch.cat([existing.v4_payload_pool, chunk.v4_payload_pool], dim=1).contiguous(),
+        v2_scale_pool=torch.cat([existing.v2_scale_pool, chunk.v2_scale_pool], dim=1).contiguous(),
+        v2_zero_pool=torch.cat([existing.v2_zero_pool, chunk.v2_zero_pool], dim=1).contiguous(),
+        v4_scale_pool=torch.cat([existing.v4_scale_pool, chunk.v4_scale_pool], dim=1).contiguous(),
+        v4_zero_pool=torch.cat([existing.v4_zero_pool, chunk.v4_zero_pool], dim=1).contiguous(),
+        v2_pattern_pool=torch.cat([existing.v2_pattern_pool, chunk.v2_pattern_pool], dim=1).contiguous(),
+        v4_pattern_pool=torch.cat([existing.v4_pattern_pool, chunk.v4_pattern_pool], dim=1).contiguous(),
+        v2_assignment_pool=torch.cat([existing.v2_assignment_pool, chunk.v2_assignment_pool], dim=1).contiguous(),
+        v4_assignment_pool=torch.cat([existing.v4_assignment_pool, chunk.v4_assignment_pool], dim=1).contiguous(),
+        v2_page_offsets=torch.cat([existing.v2_page_offsets, shift_offsets(chunk.v2_page_offsets, old_v2_tokens)], dim=0).contiguous(),
+        v4_page_offsets=torch.cat([existing.v4_page_offsets, shift_offsets(chunk.v4_page_offsets, old_v4_tokens)], dim=0).contiguous(),
+        metadata=metadata,
+        centroids=chunk.centroids,
+        group_size=existing.group_size,
+        nh=existing.nh,
+        nh_kv=existing.nh_kv,
+        head_dim=existing.head_dim,
+        page_size=existing.page_size,
+    )
+
+
 def patternkv_fused_page_batch_decode(attn: torch.Tensor, pools: PatternKVOperatorReadyPagePools) -> torch.Tensor:
     """Single-launch fused page-centric mixed-V Value operator MVP."""
 
     from quant.matmul import patternkv_gemv
 
+    record_patternkv_real_decode_counter("fused_page_operator_calls", 1)
     out = patternkv_gemv.attn_v_forward_cuda_page_mixed_pool(
         attn.to(torch.float16).contiguous(),
         pools.v2_payload_pool,

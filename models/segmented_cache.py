@@ -68,6 +68,7 @@ class PatternQuantizedKVCache(QuantizedKVCache):
     capacity_buffers: Any | None = None
     v_causal_importance: torch.Tensor | None = None
     v_oracle_importance: torch.Tensor | None = None
+    operator_ready_page_pools: Any | None = None
 
 
 CHUNKED_CACHE_MODE = "segmented_chunked"
@@ -1146,8 +1147,27 @@ def _cat_mixed_packed_v(
     v_pattern_mask: torch.Tensor,
 ) -> None:
     with profile_range("pack_total", tokens=int(tokens)):
+        from quant.page_batch import append_operator_ready_page_pools, build_operator_ready_page_pools, pack_mixed_v_pages
+
+        chunk_page_cache = pack_mixed_v_pages(
+            v_adjusted,
+            precision_mask.bool().contiguous(),
+            v_pattern_mask.to(torch.uint8).contiguous(),
+            v_assignment_idx.contiguous(),
+            cache.v_centroids,
+            group_size=cache.group_size,
+            nh=int(os.environ.get("PATTERNKV_RUNTIME_NH", "32")),
+        )
+        chunk_pools = build_operator_ready_page_pools(chunk_page_cache)
+        cache.operator_ready_page_pools = append_operator_ready_page_pools(getattr(cache, "operator_ready_page_pools", None), chunk_pools)
+
         if v_adjusted.shape[0] != 1:
-            raise ValueError("mixed Value precision currently requires batch size 1")
+            cache.v_precision_mask = _cat_v_precision_mask(cache, precision_mask.to(torch.uint8))
+            cache.packed_v_tokens += int(tokens)
+            cache.packed_v4_tokens += int(precision_mask.bool().sum().item())
+            cache.pack_count_v += 1
+            return
+
         mask = precision_mask[0].bool()
         low = v_adjusted[:, :, ~mask, :].contiguous()
         high = v_adjusted[:, :, mask, :].contiguous()
@@ -1833,6 +1853,11 @@ def validate_cache(cache: QuantizedKVCache) -> None:
             selected = int(cache.v_precision_mask.bool().sum().item())
             if selected != int(cache.packed_v4_tokens):
                 raise ValueError(f"V4 payload token mismatch: mask selected={selected}, payload={cache.packed_v4_tokens}")
+            if cache.v_precision_mask.shape[0] > 1 and getattr(cache, "operator_ready_page_pools", None) is not None:
+                pools = cache.operator_ready_page_pools
+                if int(pools.metadata.seq_lens.min().item()) != cache.packed_v_tokens or int(pools.metadata.seq_lens.max().item()) != cache.packed_v_tokens:
+                    raise ValueError("operator-ready page pool sequence length mismatch")
+                return
             v2_tokens = cache.packed_v_tokens - selected
             if tensor_tokens(cache.packed_v) != v2_tokens:
                 raise ValueError(f"V2 payload token mismatch: mask low={v2_tokens}, payload={tensor_tokens(cache.packed_v)}")
@@ -1917,6 +1942,7 @@ def serialize_cache(cache: QuantizedKVCache) -> tuple[Any, ...]:
             cache.v4_assignment_idx,
             cache.capacity_backend,
             cache.capacity_buffers,
+            cache.operator_ready_page_pools,
         )
     return base + (cache.cache_mode, int(cache.chunk_length))
 
@@ -1999,6 +2025,8 @@ def deserialize_cache(value: Any, *, pattern: bool = False) -> QuantizedKVCache:
                 cache.v4_assignment_idx = value[pattern_offset + 24]
                 cache.capacity_backend = normalize_capacity_growth_backend(value[pattern_offset + 25])
                 cache.capacity_buffers = value[pattern_offset + 26]
+            if len(value) >= pattern_offset + 28:
+                cache.operator_ready_page_pools = value[pattern_offset + 27]
     validate_cache(cache)
     return cache
 

@@ -1,0 +1,7 @@
+component,us_per_token
+cache_update,0.0
+selector,0.0
+qk,
+softmax,
+fused_value,210.94399690628052
+other,

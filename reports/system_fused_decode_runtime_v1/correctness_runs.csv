@@ -1,0 +1,8 @@
+batch,tokens,label,value_max_abs,value_relative_l2,value_cosine,hidden_max_abs,hidden_relative_l2,hidden_cosine,logit_max_abs,logit_relative_l2,logit_cosine,nan,inf,pass
+1,2048,one_step_decode,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.9999999403953552,0,0,True
+2,2048,one_step_decode,0.0,0.0,0.9999999403953552,0.0,0.0,1.0000001192092896,0.0,0.0,1.0000001192092896,0,0,True
+4,2048,one_step_decode,0.0,0.0,1.0,0.0,0.0,1.000000238418579,0.0,0.0,1.0,0,0,True
+2,2051,one_step_decode,0.0,0.0,0.9999998807907104,0.0,0.0,0.9999999403953552,0.0,0.0,1.0000001192092896,0,0,True
+2,4096,one_step_decode,0.0,0.0,1.0,0.0,0.0,1.0000001192092896,0.0,0.0,1.0,0,0,True
+4,4096,one_step_decode,0.0,0.0,0.9999998807907104,0.0,0.0,1.0,0.0,0.0,0.9999999403953552,0,0,True
+4,8192,one_step_decode,0.0,0.0,1.0000001192092896,0.0,0.0,1.0,0.0,0.0,0.9999999403953552,0,0,True
