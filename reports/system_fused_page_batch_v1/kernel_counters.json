@@ -1,0 +1,9 @@
+{
+  "fused_gpu_tensor_item_calls": 0,
+  "fused_matmul_calls": 0,
+  "fused_operator_launches_per_decode": 1,
+  "fused_page_value_materialized_bytes": 0,
+  "fused_python_page_dispatches": 0,
+  "historical_v_materialized_bytes": 0,
+  "workspace_bytes": 0
+}

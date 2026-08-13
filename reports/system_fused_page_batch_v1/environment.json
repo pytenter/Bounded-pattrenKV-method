@@ -1,0 +1,8 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "cuda_available": true,
+  "device": "NVIDIA GeForce RTX 3090",
+  "extension_sha256": "cb44757e5c2040af881363df5d74385d0843e914f142d98a9ab67353ad816ebd  /data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "repo": "pytenter/Bounded-pattrenKV-method",
+  "report_generated_head": "98ac299979d52988235ff5a5ad9e3fd4f31e8329"
+}

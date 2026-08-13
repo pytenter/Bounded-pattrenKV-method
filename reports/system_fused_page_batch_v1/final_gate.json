@@ -1,0 +1,31 @@
+{
+  "algorithm_changed": false,
+  "batches_tested": [
+    1,
+    2,
+    4
+  ],
+  "classification": "FUSED_PAGE_CENTRIC_BATCH_OPERATOR_SUPPORTED",
+  "correctness_pass": true,
+  "fused_gpu_tensor_item_calls": 0,
+  "fused_matmul_calls": 0,
+  "fused_operator_launches_per_decode": 1,
+  "fused_page_value_materialized_bytes": 0,
+  "independent_v2_v4_affine_preserved": true,
+  "inf_count": 0,
+  "k_layout_changed": false,
+  "max_abs_error": 6.103515625e-05,
+  "max_relative_l2": 0.0003499358717817813,
+  "min_cosine": 0.9999998807907104,
+  "min_fused_vs_page_torch_speedup": 78.92307588980484,
+  "min_fused_vs_serial_speedup": 1.4607918989399338,
+  "nan_count": 0,
+  "next_task": "INTEGRATE_FUSED_PAGE_OPERATOR_IN_DECODE_RUNTIME",
+  "page_size_changed": false,
+  "partial_last_page_tested": true,
+  "phase_a_classification": "OPERATOR_READY_PAGE_POOL_SUPPORTED",
+  "selector_changed": false,
+  "sink_recent_residual_changed": false,
+  "v4_budget_changed": false,
+  "workspace_bytes": 0
+}

@@ -2669,6 +2669,213 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_paged_v2(
   return _out;
 }
 
+template<int BIT>
+__device__ __forceinline__ float page_pool_block_reduce_sum_f32(float v) {
+  __shared__ float shared[8];
+  const int lane = threadIdx.x & 31;
+  const int warp = threadIdx.x >> 5;
+  v = warp_reduce_sum_f32(v);
+  if (lane == 0) {
+    shared[warp] = v;
+  }
+  __syncthreads();
+  v = (threadIdx.x < (blockDim.x >> 5)) ? shared[lane] : 0.0f;
+  if (warp == 0) {
+    v = warp_reduce_sum_f32(v);
+  }
+  return v;
+}
+
+template<int BIT>
+__global__ void page_mixed_pool_value_kernel(
+  const half* __restrict__ alpha,          // [B, nh, 1, T]
+  const uint32_t* __restrict__ v2_payload, // [nh_kv, N2, OC/16]
+  const uint32_t* __restrict__ v4_payload, // [nh_kv, N4, OC/8]
+  const half* __restrict__ v2_scale,       // [nh_kv, N2, OC/group]
+  const half* __restrict__ v2_zero,
+  const half* __restrict__ v4_scale,
+  const half* __restrict__ v4_zero,
+  const uint8_t* __restrict__ v2_pattern,  // [nh_kv, N2]
+  const uint8_t* __restrict__ v4_pattern,
+  const int32_t* __restrict__ v2_assignment,
+  const int32_t* __restrict__ v4_assignment,
+  const half* __restrict__ centroids,      // [nh_kv, M, OC]
+  const int32_t* __restrict__ v2_page_offsets,
+  const int32_t* __restrict__ v4_page_offsets,
+  const int32_t* __restrict__ v2_page_table,
+  const int32_t* __restrict__ v4_page_table,
+  const int32_t* __restrict__ metadata_page_table,
+  const int16_t* __restrict__ v4_prefix_counts,
+  half* __restrict__ out,                  // [B, nh, 1, OC]
+  const int B,
+  const int T,
+  const int OC,
+  const int Mcent,
+  const int N2,
+  const int N4,
+  const int pages_per_request,
+  const int group_size,
+  const int nh,
+  const int nh_kv,
+  const int page_size)
+{
+  const int bnh = blockIdx.x;
+  const int oc = blockIdx.y;
+  if (oc >= OC) return;
+  const int b = bnh / nh;
+  const int hq = bnh - b * nh;
+  const int ratio = nh / nh_kv;
+  const int hk = hq / ratio;
+  const int tid = threadIdx.x;
+  const int oc_group = oc / group_size;
+
+  float sum = 0.0f;
+  for (int t = tid; t < T; t += blockDim.x) {
+    const int logical_page = t / page_size;
+    const int page_off = t - logical_page * page_size;
+    const int table_off = b * pages_per_request + logical_page;
+    const int metadata_page = __ldg(metadata_page_table + table_off);
+    const int16_t* prefix = v4_prefix_counts + (size_t)metadata_page * (page_size + 1);
+    const int v4_before = (int)__ldg(prefix + page_off);
+    const int v4_after = (int)__ldg(prefix + page_off + 1);
+    const bool is_v4 = v4_after > v4_before;
+    const float a = __half2float(__ldg(alpha + ((size_t)bnh * T + t)));
+    if (is_v4) {
+      const int page_id = __ldg(v4_page_table + table_off);
+      if (page_id >= 0) {
+        const int phys = __ldg(v4_page_offsets + page_id) + v4_before;
+        const size_t payload_off = ((size_t)hk * N4 + phys) * (OC / 8) + (oc / 8);
+        uint32_t word = __ldg(v4_payload + payload_off);
+        const float code = (float)((word >> ((oc & 7) * 4)) & 0xFu);
+        const size_t affine_off = ((size_t)hk * N4 + phys) * (OC / group_size) + oc_group;
+        float value = __half2float(__ldg(v4_scale + affine_off)) * code + __half2float(__ldg(v4_zero + affine_off));
+        if (__ldg(v4_pattern + (size_t)hk * N4 + phys)) {
+          const int idx = __ldg(v4_assignment + (size_t)hk * N4 + phys);
+          if (0 <= idx && idx < Mcent) {
+            value += __half2float(__ldg(centroids + ((size_t)hk * Mcent + idx) * OC + oc));
+          }
+        }
+        sum += a * value;
+      }
+    } else {
+      const int page_id = __ldg(v2_page_table + table_off);
+      if (page_id >= 0) {
+        const int phys = __ldg(v2_page_offsets + page_id) + (page_off - v4_before);
+        const size_t payload_off = ((size_t)hk * N2 + phys) * (OC / 16) + (oc / 16);
+        uint32_t word = __ldg(v2_payload + payload_off);
+        const float code = (float)((word >> ((oc & 15) * 2)) & 0x3u);
+        const size_t affine_off = ((size_t)hk * N2 + phys) * (OC / group_size) + oc_group;
+        float value = __half2float(__ldg(v2_scale + affine_off)) * code + __half2float(__ldg(v2_zero + affine_off));
+        if (__ldg(v2_pattern + (size_t)hk * N2 + phys)) {
+          const int idx = __ldg(v2_assignment + (size_t)hk * N2 + phys);
+          if (0 <= idx && idx < Mcent) {
+            value += __half2float(__ldg(centroids + ((size_t)hk * Mcent + idx) * OC + oc));
+          }
+        }
+        sum += a * value;
+      }
+    }
+  }
+
+  sum = page_pool_block_reduce_sum_f32<BIT>(sum);
+  if (tid == 0) {
+    out[((size_t)bnh * OC) + oc] = __float2half(sum);
+  }
+}
+
+torch::Tensor attn_v_forward_cuda_page_mixed_pool(
+    torch::Tensor _alpha_q,
+    torch::Tensor _v2_payload,
+    torch::Tensor _v4_payload,
+    torch::Tensor _v2_scale,
+    torch::Tensor _v2_zero,
+    torch::Tensor _v4_scale,
+    torch::Tensor _v4_zero,
+    torch::Tensor _v2_pattern,
+    torch::Tensor _v4_pattern,
+    torch::Tensor _v2_assignment,
+    torch::Tensor _v4_assignment,
+    torch::Tensor _centroids,
+    torch::Tensor _v2_page_offsets,
+    torch::Tensor _v4_page_offsets,
+    torch::Tensor _v2_page_table,
+    torch::Tensor _v4_page_table,
+    torch::Tensor _metadata_page_table,
+    torch::Tensor _v4_prefix_counts,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    const int page_size)
+{
+  TORCH_CHECK(_alpha_q.dim()==4 && _alpha_q.size(2)==1, "alpha_q must be [B,nh,1,T]");
+  const int B = _alpha_q.size(0);
+  const int T = _alpha_q.size(3);
+  TORCH_CHECK(_alpha_q.size(1)==nh, "alpha_q nh mismatch");
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  const int Mcent = _centroids.size(1);
+  const int OC = _centroids.size(2);
+  TORCH_CHECK(OC % group_size == 0, "OC must be divisible by group_size");
+  TORCH_CHECK(_v2_payload.dim()==3 && _v2_payload.size(0)==nh_kv, "v2 payload must be [nh_kv,N2,OC/16]");
+  TORCH_CHECK(_v4_payload.dim()==3 && _v4_payload.size(0)==nh_kv, "v4 payload must be [nh_kv,N4,OC/8]");
+  const int N2 = _v2_payload.size(1);
+  const int N4 = _v4_payload.size(1);
+  TORCH_CHECK(_v2_payload.size(2) * 16 == OC, "v2 payload pack mismatch");
+  TORCH_CHECK(_v4_payload.size(2) * 8 == OC, "v4 payload pack mismatch");
+  TORCH_CHECK(_v2_scale.sizes()==torch::IntArrayRef({_v2_payload.size(0), _v2_payload.size(1), OC / group_size}), "v2 scale shape mismatch");
+  TORCH_CHECK(_v4_scale.sizes()==torch::IntArrayRef({_v4_payload.size(0), _v4_payload.size(1), OC / group_size}), "v4 scale shape mismatch");
+  TORCH_CHECK(_v2_page_table.dim()==2 && _v2_page_table.size(0)==B, "v2 page table must be [B,pages]");
+  const int pages_per_request = _v2_page_table.size(1);
+  TORCH_CHECK(_v4_page_table.sizes()==_v2_page_table.sizes(), "v4 page table mismatch");
+  TORCH_CHECK(_metadata_page_table.sizes()==_v2_page_table.sizes(), "metadata page table mismatch");
+  TORCH_CHECK(_v4_prefix_counts.dim()==2 && _v4_prefix_counts.size(1)==page_size+1, "v4 prefix must be [pages,page_size+1]");
+
+  auto alpha = _alpha_q.to(torch::kFloat16).contiguous();
+  auto centroids = _centroids.to(torch::kFloat16).contiguous();
+  auto v2_payload = _v2_payload.contiguous();
+  auto v4_payload = _v4_payload.contiguous();
+  auto v2_scale = _v2_scale.to(torch::kFloat16).contiguous();
+  auto v2_zero = _v2_zero.to(torch::kFloat16).contiguous();
+  auto v4_scale = _v4_scale.to(torch::kFloat16).contiguous();
+  auto v4_zero = _v4_zero.to(torch::kFloat16).contiguous();
+  auto v2_pattern = _v2_pattern.to(torch::kUInt8).contiguous();
+  auto v4_pattern = _v4_pattern.to(torch::kUInt8).contiguous();
+  auto v2_assignment = _v2_assignment.to(torch::kInt32).contiguous();
+  auto v4_assignment = _v4_assignment.to(torch::kInt32).contiguous();
+  auto v2_page_offsets = _v2_page_offsets.to(torch::kInt32).contiguous();
+  auto v4_page_offsets = _v4_page_offsets.to(torch::kInt32).contiguous();
+  auto v2_page_table = _v2_page_table.to(torch::kInt32).contiguous();
+  auto v4_page_table = _v4_page_table.to(torch::kInt32).contiguous();
+  auto metadata_page_table = _metadata_page_table.to(torch::kInt32).contiguous();
+  auto v4_prefix_counts = _v4_prefix_counts.to(torch::kInt16).contiguous();
+
+  auto out = torch::empty({B, nh, 1, OC}, alpha.options());
+  dim3 blocks(B * nh, OC, 1);
+  dim3 threads(256, 1, 1);
+  page_mixed_pool_value_kernel<2><<<blocks, threads>>>(
+    reinterpret_cast<const half*>(alpha.data_ptr<at::Half>()),
+    reinterpret_cast<const uint32_t*>(v2_payload.data_ptr<int>()),
+    reinterpret_cast<const uint32_t*>(v4_payload.data_ptr<int>()),
+    reinterpret_cast<const half*>(v2_scale.data_ptr<at::Half>()),
+    reinterpret_cast<const half*>(v2_zero.data_ptr<at::Half>()),
+    reinterpret_cast<const half*>(v4_scale.data_ptr<at::Half>()),
+    reinterpret_cast<const half*>(v4_zero.data_ptr<at::Half>()),
+    reinterpret_cast<const uint8_t*>(v2_pattern.data_ptr<uint8_t>()),
+    reinterpret_cast<const uint8_t*>(v4_pattern.data_ptr<uint8_t>()),
+    reinterpret_cast<const int32_t*>(v2_assignment.data_ptr<int>()),
+    reinterpret_cast<const int32_t*>(v4_assignment.data_ptr<int>()),
+    reinterpret_cast<const half*>(centroids.data_ptr<at::Half>()),
+    reinterpret_cast<const int32_t*>(v2_page_offsets.data_ptr<int>()),
+    reinterpret_cast<const int32_t*>(v4_page_offsets.data_ptr<int>()),
+    reinterpret_cast<const int32_t*>(v2_page_table.data_ptr<int>()),
+    reinterpret_cast<const int32_t*>(v4_page_table.data_ptr<int>()),
+    reinterpret_cast<const int32_t*>(metadata_page_table.data_ptr<int>()),
+    reinterpret_cast<const int16_t*>(v4_prefix_counts.data_ptr<int16_t>()),
+    reinterpret_cast<half*>(out.data_ptr<at::Half>()),
+    B, T, OC, Mcent, N2, N4, pages_per_request, group_size, nh, nh_kv, page_size
+  );
+  return out;
+}
+
 torch::Tensor attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
     torch::Tensor _alpha_q,
     torch::Tensor _vq,

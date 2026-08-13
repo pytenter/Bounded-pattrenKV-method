@@ -1,0 +1,20 @@
+{
+  "fixed_length_mvp": true,
+  "flat_pools": {
+    "assignment_pools": "[nh_kv,total_stream_tokens] int32",
+    "pattern_pools": "[nh_kv,total_stream_tokens] uint8",
+    "v2_payload_pool": "[nh_kv,total_v2_tokens,head_dim/16] int32",
+    "v2_scale_pool/v2_zero_pool": "[nh_kv,total_v2_tokens,head_dim/group_size] fp16",
+    "v4_payload_pool": "[nh_kv,total_v4_tokens,head_dim/8] int32",
+    "v4_scale_pool/v4_zero_pool": "[nh_kv,total_v4_tokens,head_dim/group_size] fp16"
+  },
+  "independent_v2_v4_affine_streams": true,
+  "k_layout_changed": false,
+  "page_offsets": "int32 offsets from physical page id to stream-token offset; -1 for empty stream",
+  "page_size": 128,
+  "request_tables": [
+    "v2_page_table",
+    "v4_page_table",
+    "metadata_page_table"
+  ]
+}

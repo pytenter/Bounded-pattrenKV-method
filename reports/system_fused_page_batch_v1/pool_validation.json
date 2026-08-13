@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "v2_assignment": true,
+    "v2_pattern": true,
+    "v2_payload": true,
+    "v2_scale": true,
+    "v2_zero": true,
+    "v4_assignment": true,
+    "v4_pattern": true,
+    "v4_payload": true,
+    "v4_scale": true,
+    "v4_zero": true
+  },
+  "gpu_tensor_item_calls": 0,
+  "historical_materialized_bytes": 0,
+  "operator_ready_page_pool_supported": true,
+  "page_value_materialized_bytes": 0,
+  "v2_tokens": 12288,
+  "v4_tokens": 4096
+}

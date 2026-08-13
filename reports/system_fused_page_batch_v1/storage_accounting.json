@@ -1,0 +1,14 @@
+{
+  "metadata_tables": 37376,
+  "total_bytes": 6459904,
+  "v2_assignment": 393216,
+  "v2_pattern": 98304,
+  "v2_payload": 3145728,
+  "v2_scale": 196608,
+  "v2_zero": 196608,
+  "v4_assignment": 131072,
+  "v4_pattern": 32768,
+  "v4_payload": 2097152,
+  "v4_scale": 65536,
+  "v4_zero": 65536
+}

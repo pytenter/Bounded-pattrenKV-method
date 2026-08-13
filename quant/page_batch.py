@@ -80,6 +80,33 @@ class PatternKVPageBatchCache:
     historical_materialized_bytes: int = 0
 
 
+@dataclass
+class PatternKVOperatorReadyPagePools:
+    v2_payload_pool: torch.Tensor
+    v4_payload_pool: torch.Tensor
+    v2_scale_pool: torch.Tensor
+    v2_zero_pool: torch.Tensor
+    v4_scale_pool: torch.Tensor
+    v4_zero_pool: torch.Tensor
+    v2_pattern_pool: torch.Tensor
+    v4_pattern_pool: torch.Tensor
+    v2_assignment_pool: torch.Tensor
+    v4_assignment_pool: torch.Tensor
+    v2_page_offsets: torch.Tensor
+    v4_page_offsets: torch.Tensor
+    metadata: PatternKVBatchMetadata
+    centroids: torch.Tensor
+    group_size: int
+    nh: int
+    nh_kv: int
+    head_dim: int
+    page_size: int = PAGE_SIZE
+    historical_materialized_bytes: int = 0
+    page_value_materialized_bytes: int = 0
+    python_page_dispatches: int = 0
+    gpu_tensor_item_calls: int = 0
+
+
 def _tensor_bytes(value: torch.Tensor | None) -> int:
     return 0 if value is None else int(value.numel() * value.element_size())
 
@@ -405,6 +432,146 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
 
 def patternkv_page_batched_v_decode(attn: torch.Tensor, cache: PatternKVPageBatchCache) -> torch.Tensor:
     return patternkv_page_batch_decode(attn, cache)
+
+
+def _cat_existing_pages(pages: list[torch.Tensor | None], *, stream: str, nh_kv: int, tail: int, dtype: torch.dtype, device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
+    offsets: list[int] = []
+    live_pages: list[torch.Tensor] = []
+    cursor = 0
+    for page in pages:
+        if page is None:
+            offsets.append(-1)
+            continue
+        if page.shape[0] != 1 or page.shape[1] != nh_kv or page.shape[-1] != tail:
+            raise ValueError(f"{stream} page shape mismatch: got {tuple(page.shape)}")
+        offsets.append(cursor)
+        live_pages.append(page.squeeze(0).contiguous())
+        cursor += int(page.shape[2])
+    if live_pages:
+        pool = torch.cat(live_pages, dim=1).contiguous()
+    else:
+        pool = torch.empty((nh_kv, 0, tail), dtype=dtype, device=device)
+    return pool, torch.tensor(offsets, dtype=torch.int32, device=device)
+
+
+def _cat_existing_metadata_pages(pages: list[torch.Tensor | None], *, stream: str, nh_kv: int, dtype: torch.dtype, device: torch.device) -> torch.Tensor:
+    live_pages: list[torch.Tensor] = []
+    for page in pages:
+        if page is None:
+            continue
+        if page.shape[0] != 1 or page.shape[1] != nh_kv:
+            raise ValueError(f"{stream} metadata page shape mismatch: got {tuple(page.shape)}")
+        live_pages.append(page.squeeze(0).contiguous())
+    if live_pages:
+        return torch.cat(live_pages, dim=1).contiguous().to(dtype)
+    return torch.empty((nh_kv, 0), dtype=dtype, device=device)
+
+
+def build_operator_ready_page_pools(cache: PatternKVPageBatchCache) -> PatternKVOperatorReadyPagePools:
+    """Create flat GPU pools suitable for a single page-aware operator launch."""
+
+    device = cache.centroids.device
+    v2_payload_pool, v2_offsets = _cat_existing_pages(
+        cache.v2_payload,
+        stream="v2_payload",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // 16,
+        dtype=torch.int32,
+        device=device,
+    )
+    v4_payload_pool, v4_offsets = _cat_existing_pages(
+        cache.v4_payload,
+        stream="v4_payload",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // 8,
+        dtype=torch.int32,
+        device=device,
+    )
+    v2_scale_pool, _ = _cat_existing_pages(
+        cache.v2_scale,
+        stream="v2_scale",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // cache.group_size,
+        dtype=cache.centroids.dtype,
+        device=device,
+    )
+    v2_zero_pool, _ = _cat_existing_pages(
+        cache.v2_zero,
+        stream="v2_zero",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // cache.group_size,
+        dtype=cache.centroids.dtype,
+        device=device,
+    )
+    v4_scale_pool, _ = _cat_existing_pages(
+        cache.v4_scale,
+        stream="v4_scale",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // cache.group_size,
+        dtype=cache.centroids.dtype,
+        device=device,
+    )
+    v4_zero_pool, _ = _cat_existing_pages(
+        cache.v4_zero,
+        stream="v4_zero",
+        nh_kv=cache.nh_kv,
+        tail=cache.head_dim // cache.group_size,
+        dtype=cache.centroids.dtype,
+        device=device,
+    )
+    return PatternKVOperatorReadyPagePools(
+        v2_payload_pool=v2_payload_pool,
+        v4_payload_pool=v4_payload_pool,
+        v2_scale_pool=v2_scale_pool,
+        v2_zero_pool=v2_zero_pool,
+        v4_scale_pool=v4_scale_pool,
+        v4_zero_pool=v4_zero_pool,
+        v2_pattern_pool=_cat_existing_metadata_pages(cache.v2_pattern_mask, stream="v2_pattern", nh_kv=cache.nh_kv, dtype=torch.uint8, device=device),
+        v4_pattern_pool=_cat_existing_metadata_pages(cache.v4_pattern_mask, stream="v4_pattern", nh_kv=cache.nh_kv, dtype=torch.uint8, device=device),
+        v2_assignment_pool=_cat_existing_metadata_pages(cache.v2_assignment_idx, stream="v2_assignment", nh_kv=cache.nh_kv, dtype=torch.int32, device=device),
+        v4_assignment_pool=_cat_existing_metadata_pages(cache.v4_assignment_idx, stream="v4_assignment", nh_kv=cache.nh_kv, dtype=torch.int32, device=device),
+        v2_page_offsets=v2_offsets,
+        v4_page_offsets=v4_offsets,
+        metadata=cache.metadata,
+        centroids=cache.centroids,
+        group_size=cache.group_size,
+        nh=cache.nh,
+        nh_kv=cache.nh_kv,
+        head_dim=cache.head_dim,
+        page_size=cache.page_size,
+    )
+
+
+def patternkv_fused_page_batch_decode(attn: torch.Tensor, pools: PatternKVOperatorReadyPagePools) -> torch.Tensor:
+    """Single-launch fused page-centric mixed-V Value operator MVP."""
+
+    from quant.matmul import patternkv_gemv
+
+    out = patternkv_gemv.attn_v_forward_cuda_page_mixed_pool(
+        attn.to(torch.float16).contiguous(),
+        pools.v2_payload_pool,
+        pools.v4_payload_pool,
+        pools.v2_scale_pool,
+        pools.v2_zero_pool,
+        pools.v4_scale_pool,
+        pools.v4_zero_pool,
+        pools.v2_pattern_pool,
+        pools.v4_pattern_pool,
+        pools.v2_assignment_pool,
+        pools.v4_assignment_pool,
+        pools.centroids,
+        pools.v2_page_offsets,
+        pools.v4_page_offsets,
+        pools.metadata.v2_page_table,
+        pools.metadata.v4_page_table,
+        pools.metadata.metadata_page_table,
+        pools.metadata.v4_prefix_counts,
+        int(pools.group_size),
+        int(pools.nh),
+        int(pools.nh_kv),
+        int(pools.page_size),
+    )
+    return out.to(attn.dtype)
 
 
 def validate_page_mapping(cache: PatternKVPageBatchCache) -> dict[str, Any]:

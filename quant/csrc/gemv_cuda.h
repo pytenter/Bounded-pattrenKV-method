@@ -171,3 +171,28 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v4(
     torch::Tensor _alpha_f,
     torch::Tensor _v_full
 );
+
+torch::Tensor attn_v_forward_cuda_page_mixed_pool(
+    torch::Tensor _alpha_q,
+    torch::Tensor _v2_payload,
+    torch::Tensor _v4_payload,
+    torch::Tensor _v2_scale,
+    torch::Tensor _v2_zero,
+    torch::Tensor _v4_scale,
+    torch::Tensor _v4_zero,
+    torch::Tensor _v2_pattern,
+    torch::Tensor _v4_pattern,
+    torch::Tensor _v2_assignment,
+    torch::Tensor _v4_assignment,
+    torch::Tensor _centroids,
+    torch::Tensor _v2_page_offsets,
+    torch::Tensor _v4_page_offsets,
+    torch::Tensor _v2_page_table,
+    torch::Tensor _v4_page_table,
+    torch::Tensor _metadata_page_table,
+    torch::Tensor _v4_prefix_counts,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    const int page_size
+);
