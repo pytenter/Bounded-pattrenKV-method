@@ -1,0 +1,17 @@
+{
+  "fixed_centroid_assignment_difference_rate": 0.0,
+  "fixed_centroid_mask_difference_rate": 0.0,
+  "fixed_centroid_residualized_v_relative_l2": 7245284352.0,
+  "fixed_centroid_selected_relative_l2": 0.0,
+  "packed_v4_payload_difference_rate": 1.0,
+  "packed_v4_scale_relative_l2": 156763264.0,
+  "packed_v4_zero_relative_l2": 1181669888.0,
+  "packed_v_payload_difference_rate": 1.0,
+  "packed_v_scale_relative_l2": 1361264640.0,
+  "packed_v_zero_relative_l2": 2010160896.0,
+  "v2_stream_tokens_got": 192,
+  "v2_stream_tokens_ref": 192,
+  "v4_stream_tokens_got": 64,
+  "v4_stream_tokens_ref": 64,
+  "v_precision_mask_difference_rate": 0.0
+}

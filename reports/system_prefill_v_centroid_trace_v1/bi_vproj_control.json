@@ -1,0 +1,40 @@
+{
+  "bi_vproj_assignment_difference_rate": 0.0,
+  "bi_vproj_b1_b2_exact": true,
+  "bi_vproj_b1_b4_assignment_difference_rate": 0.0,
+  "bi_vproj_b1_b4_exact": true,
+  "bi_vproj_b1_b4_mask_difference_rate": 0.0,
+  "bi_vproj_b1_b4_packed_v_difference_rate": 0.0,
+  "bi_vproj_b1_b4_v_centroid_relative_l2": 0.0,
+  "bi_vproj_b4_packed": {
+    "packed_v4_payload_difference_rate": 0.0,
+    "packed_v4_scale_relative_l2": 0.0,
+    "packed_v4_zero_relative_l2": 0.0,
+    "packed_v_payload_difference_rate": 0.0,
+    "packed_v_scale_relative_l2": 0.0,
+    "packed_v_zero_relative_l2": 0.0,
+    "v2_stream_tokens_got": 192,
+    "v2_stream_tokens_ref": 192,
+    "v4_stream_tokens_got": 64,
+    "v4_stream_tokens_ref": 64,
+    "v_precision_mask_difference_rate": 0.0
+  },
+  "bi_vproj_mask_difference_rate": 0.0,
+  "bi_vproj_packed": {
+    "packed_v4_payload_difference_rate": 0.0,
+    "packed_v4_scale_relative_l2": 0.0,
+    "packed_v4_zero_relative_l2": 0.0,
+    "packed_v_payload_difference_rate": 0.0,
+    "packed_v_scale_relative_l2": 0.0,
+    "packed_v_zero_relative_l2": 0.0,
+    "v2_stream_tokens_got": 192,
+    "v2_stream_tokens_ref": 192,
+    "v4_stream_tokens_got": 64,
+    "v4_stream_tokens_ref": 64,
+    "v_precision_mask_difference_rate": 0.0
+  },
+  "bi_vproj_packed_v_difference_rate": 0.0,
+  "bi_vproj_residualized_v_relative_l2": 0.0,
+  "bi_vproj_v_centroid_relative_l2": 0.0,
+  "uses_existing_v2_kernel": true
+}

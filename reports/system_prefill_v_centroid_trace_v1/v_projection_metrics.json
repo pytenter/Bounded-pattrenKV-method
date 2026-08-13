@@ -1,0 +1,30 @@
+{
+  "hidden": {
+    "cosine": 1.0,
+    "exact": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "relative_l2": 0.0
+  },
+  "normal_kproj": {
+    "cosine": 1.0,
+    "exact": false,
+    "max_abs": 0.00390625,
+    "mean_abs": 8.36402177810669e-05,
+    "relative_l2": 0.00021680643840227276
+  },
+  "normal_vproj": {
+    "cosine": 0.9999999403953552,
+    "exact": false,
+    "max_abs": 0.000244140625,
+    "mean_abs": 3.18998809234472e-06,
+    "relative_l2": 0.00027434263029135764
+  },
+  "v_kmeans_input": {
+    "cosine": 0.9999999403953552,
+    "exact": false,
+    "max_abs": 0.000244140625,
+    "mean_abs": 3.18998809234472e-06,
+    "relative_l2": 0.00027434263029135764
+  }
+}
