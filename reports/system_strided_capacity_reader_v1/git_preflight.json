@@ -1,0 +1,18 @@
+{
+  "repo_root": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "head": "551fea52b546a5120f75e36fb4ba2007e489dd8d",
+  "worktree_clean": false,
+  "status_short": "M quant/csrc/gemv_cuda.cu\n M quant/csrc/gemv_cuda.h\n M quant/csrc/pybind.cpp\n M quant/matmul.py\n?? bench/bench_strided_capacity_reader.py\n?? tests/test_strided_capacity_value_reader.py",
+  "remotes": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\nbounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\norigin\thttps://github.com/HCOOOH/PatternKV.git (fetch)\norigin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "log_8": [
+    "551fea5 perf: evaluate contiguous-capacity PatternKV cache",
+    "139d128 perf: reprofile optimized PatternKV decode bottlenecks",
+    "ed4b273 perf: evaluate page-native PatternKV attention reader",
+    "92d74dd perf: add fixed-page PatternKV cache ABI",
+    "54c4172 perf: evaluate GQA-aware PatternKV value kernels",
+    "cf10095 perf: optimize PatternKV centroid table contribution",
+    "274e193 perf: reduce PatternKV centroid histogram contention",
+    "9cda2cc perf: decompose PatternKV centroid attention cost"
+  ]
+}

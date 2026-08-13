@@ -1515,6 +1515,218 @@ __device__ __forceinline__ const uint32_t* page_ptr_u32(const int64_t* ptrs, int
   return reinterpret_cast<const uint32_t*>(static_cast<uintptr_t>(ptrs[page_id]));
 }
 
+__device__ __forceinline__ const uint8_t* strided_idx_ptr(
+    const void* base,
+    const long long b_stride,
+    const long long h_stride,
+    const long long token_stride,
+    const int b,
+    const int hk,
+    const int t,
+    const int idx_bytes) {
+  const long long elem_offset =
+      (long long)b * b_stride + (long long)hk * h_stride + (long long)t * token_stride;
+  return reinterpret_cast<const uint8_t*>(base) + elem_offset * idx_bytes;
+}
+
+// S5A-1 experimental V2-only reader. This is intentionally a close copy of the
+// production ABLATION_LANE0_TABLE_FULL math path with only historical-cache
+// addressing changed from tight K-derived strides to explicit tensor strides.
+__global__ void battn_v_kernel_with_base_strided_v2(
+  const half*      __restrict__ _alpha_q,   // [B*nh, K]
+  const uint32_t*  __restrict__ _vq,        // [B, nh_kv, K, OC/16] strided
+  const half*      __restrict__ _vscale,    // [B, nh_kv, K, OC/group] strided
+  const half*      __restrict__ _vzero,     // [B, nh_kv, K, OC/group] strided
+  const half*      __restrict__ _centroids, // [nh_kv, Mcent, OC]
+  const uint8_t*   __restrict__ _mask_q,    // [B, nh_kv, K] strided
+  const void*      __restrict__ _idx_q,     // [B, nh_kv, K] strided
+  const half*      __restrict__ _alpha_f,   // [B*nh, Lf] (可空)
+  const half*      __restrict__ _v_full,    // [B, nh_kv, Lf, OC] (可空)
+  half*            __restrict__ _out,       // [B*nh, OC]
+  const int K, const int OC, const int Lf,
+  const int group_size, const int nh, const int nh_kv,
+  const int Mcent, const int idx_bytes,
+  const long long vq_stride_b,
+  const long long vq_stride_h,
+  const long long vq_stride_t,
+  const long long vq_stride_pack,
+  const long long vscale_stride_b,
+  const long long vscale_stride_h,
+  const long long vscale_stride_t,
+  const long long vscale_stride_group,
+  const long long vzero_stride_b,
+  const long long vzero_stride_h,
+  const long long vzero_stride_t,
+  const long long vzero_stride_group,
+  const long long mask_stride_b,
+  const long long mask_stride_h,
+  const long long mask_stride_t,
+  const long long idx_stride_b,
+  const long long idx_stride_h,
+  const long long idx_stride_t)
+{
+  constexpr int BIT = 2;
+  constexpr int PACK = 16;
+  const uint32_t CODE_MASK = 0x3u;
+  const int TILE = 128;
+
+  const int bnh = blockIdx.x;
+  const int wy  = threadIdx.y;
+  const int lane= threadIdx.x;
+
+  const int packed_oc_idx = blockIdx.y * blockDim.y + wy;
+  const int oc_start = packed_oc_idx * PACK;
+  if (oc_start >= OC) return;
+
+  const int ratio = nh / nh_kv;
+  const int b  = bnh / nh;
+  const int hq = bnh % nh;
+  const int hk = hq / ratio;
+
+  const half* alpha_q = _alpha_q + (size_t)bnh * K;
+  half* out_row = _out + (size_t)bnh * OC;
+
+  const uint32_t* vq_bh = _vq + (long long)b * vq_stride_b + (long long)hk * vq_stride_h;
+  const half* vsc_bh = _vscale + (long long)b * vscale_stride_b + (long long)hk * vscale_stride_h;
+  const half* vzr_bh = _vzero + (long long)b * vzero_stride_b + (long long)hk * vzero_stride_h;
+  const uint8_t* mask_bh = _mask_q + (long long)b * mask_stride_b + (long long)hk * mask_stride_h;
+  const half* C = _centroids + (size_t)hk * (size_t)Mcent * OC;
+
+  extern __shared__ float s_Sacc[];
+  const int sacc_rows = blockDim.y;
+  const int sacc_elems = Mcent * sacc_rows;
+  for (int c = wy * blockDim.x + lane; c < sacc_elems; c += blockDim.x * blockDim.y)
+    s_Sacc[c] = 0.f;
+  __syncthreads();
+
+  float psum[PACK];
+  #pragma unroll
+  for (int p=0; p<PACK; ++p) psum[p] = 0.f;
+
+  const int oc_group = oc_start / group_size;
+  const uint32_t* vq_pack_row = vq_bh + (long long)packed_oc_idx * vq_stride_pack;
+  const half* vsc_group_row = vsc_bh + (long long)oc_group * vscale_stride_group;
+  const half* vzr_group_row = vzr_bh + (long long)oc_group * vzero_stride_group;
+
+  for (int kt = 0; kt < (K + TILE - 1) / TILE; ++kt) {
+    const int t_base = kt * TILE + lane * 4;
+
+    half a4[4] = {__float2half(0.f),__float2half(0.f),__float2half(0.f),__float2half(0.f)};
+    #pragma unroll
+    for (int i=0;i<4;++i) {
+      const int t = t_base + i;
+      if (t < K) a4[i] = __ldg(alpha_q + t);
+    }
+
+    const int t_hist = kt * TILE + wy * blockDim.x + lane;
+    if (t_hist < K) {
+      const uint8_t m = __ldg(mask_bh + (long long)t_hist * mask_stride_t);
+      if (m) {
+        int idx;
+        const uint8_t* ip = strided_idx_ptr(
+            _idx_q, idx_stride_b, idx_stride_h, idx_stride_t, b, hk, t_hist, idx_bytes);
+        if (idx_bytes==1)      idx = *((const uint8_t *)(ip));
+        else if (idx_bytes==2) idx = *((const uint16_t*)(ip));
+        else                   idx = *((const int32_t *)(ip));
+        if (0 <= idx && idx < Mcent) {
+          atomicAdd(&s_Sacc[wy * Mcent + idx], __half2float(__ldg(alpha_q + t_hist)));
+        }
+      }
+    }
+
+    uint32_t qw[4] = {0,0,0,0};
+    half sc4[4] = {__float2half(0.f),__float2half(0.f),__float2half(0.f),__float2half(0.f)};
+    half zr4[4] = {__float2half(0.f),__float2half(0.f),__float2half(0.f),__float2half(0.f)};
+
+    #pragma unroll
+    for (int i=0;i<4;++i) {
+      const int t = t_base + i;
+      if (t < K) {
+        qw[i]  = __ldg(vq_pack_row + (long long)t * vq_stride_t);
+        sc4[i] = __ldg(vsc_group_row + (long long)t * vscale_stride_t);
+        zr4[i] = __ldg(vzr_group_row + (long long)t * vzero_stride_t);
+      }
+    }
+
+    #pragma unroll
+    for (int j=0;j<4;++j) {
+      const float a = __half2float(a4[j]);
+      uint32_t cur = qw[j];
+      const float s = __half2float(sc4[j]);
+      const float z = __half2float(zr4[j]);
+
+      #pragma unroll
+      for (int p=0;p<PACK;++p) {
+        const int oc = oc_start + p;
+        if (oc < OC) {
+          const float code = float(cur & CODE_MASK);
+          psum[p] += (s * code + z) * a;
+        }
+        cur >>= BIT;
+      }
+    }
+  }
+  __syncthreads();
+
+  float add_base[PACK];
+  #pragma unroll
+  for (int p=0;p<PACK;++p) add_base[p] = 0.f;
+
+  if (lane == 0) {
+    for (int c=0; c<Mcent; ++c) {
+      float s = 0.f;
+      #pragma unroll
+      for (int w=0; w<4; ++w) {
+        if (w < blockDim.y) s += s_Sacc[w * Mcent + c];
+      }
+      if (s != 0.f) {
+        const half* crow = C + (size_t)c * OC + oc_start;
+        #pragma unroll
+        for (int p=0;p<PACK;++p) {
+          const int oc = oc_start + p;
+          if (oc < OC) add_base[p] += s * __half2float(__ldg(crow + p));
+        }
+      }
+    }
+  }
+
+  float add_full[PACK];
+  #pragma unroll
+  for (int p=0;p<PACK;++p) add_full[p] = 0.f;
+
+  if (Lf > 0 && _alpha_f && _v_full) {
+    const half* aF = _alpha_f + (size_t)bnh * Lf;
+    const half* vF = _v_full  + ((size_t)b * nh_kv + hk) * (size_t)Lf * OC;
+    for (int t = lane; t < Lf; t += blockDim.x) {
+      const float a = __half2float(__ldg(aF + t));
+      const half* row = vF + (size_t)t * OC + oc_start;
+      #pragma unroll
+      for (int p=0;p<PACK;++p) {
+        const int oc = oc_start + p;
+        if (oc < OC) add_full[p] += a * __half2float(__ldg(row + p));
+      }
+    }
+    #pragma unroll
+    for (int p=0;p<PACK;++p) {
+      float v = add_full[p];
+      v = warp_reduce_sum_f32(v);
+      if (lane == 0) add_full[p] = v;
+    }
+  }
+
+  #pragma unroll
+  for (int p=0;p<PACK;++p) {
+    const int oc = oc_start + p;
+    if (oc < OC) {
+      float vqsum = warp_reduce_sum_f32(psum[p]);
+      if (lane == 0) {
+        const float val = vqsum + add_base[p] + add_full[p];
+        out_row[oc] = __float2half(val);
+      }
+    }
+  }
+}
+
 __device__ __forceinline__ const half* page_ptr_half(const int64_t* ptrs, int page_id) {
   return reinterpret_cast<const half*>(static_cast<uintptr_t>(ptrs[page_id]));
 }
@@ -2000,6 +2212,91 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
   }
+  return _out;
+}
+
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+    torch::Tensor _alpha_q,    // [B*nh, 1, K]
+    torch::Tensor _vq,         // [B, nh_kv, K, OC/16], may be strided on K
+    torch::Tensor _vscale,     // [B, nh_kv, K, OC/group], may be strided on K
+    torch::Tensor _vzero,      // [B, nh_kv, K, OC/group], may be strided on K
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,  // [nh_kv, Mcent, OC]
+    torch::Tensor _mask_q,     // [B, nh_kv, K] uint8, may be strided on K
+    torch::Tensor _idx_q,      // [B, nh_kv, K] u8/i16/i32, may be strided on K
+    torch::Tensor _alpha_f,    // [B*nh, Lf] size=0 allowed
+    torch::Tensor _v_full      // [B, nh_kv, Lf, OC] size=0 allowed
+){
+  TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
+  TORCH_CHECK(_vq.dim()==4, "vq must be [B,nh_kv,K,OC/16]");
+  TORCH_CHECK(_vscale.dim()==4 && _vzero.dim()==4, "scale/zero must be [B,nh_kv,K,OC/group]");
+  TORCH_CHECK(_mask_q.dim()==3 && _idx_q.dim()==3, "mask/idx must be [B,nh_kv,K]");
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  TORCH_CHECK(_vq.scalar_type()==torch::kInt32, "strided V2 vq must be int32");
+  TORCH_CHECK(_vscale.scalar_type()==torch::kFloat16 && _vzero.scalar_type()==torch::kFloat16,
+              "strided V2 scale/zero must be float16");
+  TORCH_CHECK(_mask_q.scalar_type()==torch::kUInt8, "strided V2 mask must be uint8");
+  TORCH_CHECK(_idx_q.scalar_type()==torch::kUInt8 || _idx_q.scalar_type()==torch::kInt16 ||
+              _idx_q.scalar_type()==torch::kInt32, "strided V2 idx must be uint8, int16, or int32");
+
+  const int B = _vq.size(0);
+  const int K = _alpha_q.size(2);
+  const int BSnh = _alpha_q.size(0);
+  const int OC = _centroids.size(2);
+  const int PACK = 16;
+  const int Mcent = _centroids.size(1);
+  TORCH_CHECK(nh % nh_kv == 0, "nh must be divisible by nh_kv");
+  TORCH_CHECK(BSnh == B * nh, "alpha_q batch/head mismatch");
+  TORCH_CHECK(_vq.size(1)==nh_kv && _vq.size(2)==K && _vq.size(3)*PACK==OC,
+              "vq expected [B,nh_kv,K,OC/16]");
+  TORCH_CHECK(_vscale.size(0)==B && _vscale.size(1)==nh_kv && _vscale.size(2)==K &&
+              _vscale.size(3)==OC/group_size, "vscale expected [B,nh_kv,K,OC/group]");
+  TORCH_CHECK(_vzero.size(0)==B && _vzero.size(1)==nh_kv && _vzero.size(2)==K &&
+              _vzero.size(3)==OC/group_size, "vzero expected [B,nh_kv,K,OC/group]");
+  TORCH_CHECK(_mask_q.size(0)==B && _mask_q.size(1)==nh_kv && _mask_q.size(2)==K,
+              "mask expected [B,nh_kv,K]");
+  TORCH_CHECK(_idx_q.size(0)==B && _idx_q.size(1)==nh_kv && _idx_q.size(2)==K,
+              "idx expected [B,nh_kv,K]");
+
+  const int Lf = (_alpha_f.numel()==0 || _v_full.numel()==0) ? 0 : _alpha_f.size(1);
+  if (Lf > 0) {
+    TORCH_CHECK(_v_full.dim()==4 && _v_full.size(0)==B && _v_full.size(1)==nh_kv &&
+                _v_full.size(2)==Lf && _v_full.size(3)==OC, "v_full must be [B,nh_kv,Lf,OC]");
+  }
+
+  auto options = torch::TensorOptions().dtype(_alpha_q.dtype()).device(_alpha_q.device());
+  at::Tensor _out = torch::empty({BSnh, 1, OC}, options);
+
+  const half*      alpha_q = reinterpret_cast<const half*     >(_alpha_q.data_ptr<at::Half>());
+  const uint32_t*  vq      = reinterpret_cast<const uint32_t* >(_vq      .data_ptr<int>());
+  const half*      vsc     = reinterpret_cast<const half*     >(_vscale  .data_ptr<at::Half>());
+  const half*      vzr     = reinterpret_cast<const half*     >(_vzero   .data_ptr<at::Half>());
+  const half*      cent    = reinterpret_cast<const half*     >(_centroids.data_ptr<at::Half>());
+  const uint8_t*   mask    = reinterpret_cast<const uint8_t*  >(_mask_q  .data_ptr<uint8_t>());
+  const void*      idx     = static_cast<const void*>(_idx_q.data_ptr());
+  const half*      alpha_f = (_alpha_f.numel()==0) ? nullptr : reinterpret_cast<const half*>(_alpha_f.data_ptr<at::Half>());
+  const half*      v_full  = (_v_full .numel()==0) ? nullptr : reinterpret_cast<const half*>(_v_full .data_ptr<at::Half>());
+  half*            outp    = reinterpret_cast<half*>(_out.data_ptr<at::Half>());
+
+  dim3 threads(32, 4, 1);
+  dim3 blocks(BSnh, (OC / PACK + threads.y - 1) / threads.y, 1);
+  size_t shmem = (size_t)Mcent * 4 * sizeof(float);
+
+  const int idx_bytes =
+      (_idx_q.dtype() == torch::kUInt8) ? 1 :
+      (_idx_q.dtype() == torch::kInt16) ? 2 : 4;
+
+  battn_v_kernel_with_base_strided_v2<<<blocks, threads, shmem>>>(
+      alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes,
+      _vq.stride(0), _vq.stride(1), _vq.stride(2), _vq.stride(3),
+      _vscale.stride(0), _vscale.stride(1), _vscale.stride(2), _vscale.stride(3),
+      _vzero.stride(0), _vzero.stride(1), _vzero.stride(2), _vzero.stride(3),
+      _mask_q.stride(0), _mask_q.stride(1), _mask_q.stride(2),
+      _idx_q.stride(0), _idx_q.stride(1), _idx_q.stride(2)
+  );
   return _out;
 }
 

@@ -31,6 +31,14 @@ _PAGE_V_READER_COUNTERS = {
 	"page_table_bytes_uploaded": 0,
 }
 
+_STRIDED_V2_READER_COUNTERS = {
+	"strided_reader_calls": 0,
+	"strided_reader_tokens_processed": 0,
+	"strided_reader_materialize_calls": 0,
+	"strided_reader_materialized_bytes": 0,
+	"strided_reader_torch_cat_calls": 0,
+}
+
 
 def reset_patternkv_mixed_v_counters() -> None:
 	for key in _MIXED_V_COUNTERS:
@@ -48,6 +56,15 @@ def reset_patternkv_page_v_reader_counters() -> None:
 
 def get_patternkv_page_v_reader_counters() -> dict:
 	return dict(_PAGE_V_READER_COUNTERS)
+
+
+def reset_patternkv_strided_v2_reader_counters() -> None:
+	for key in _STRIDED_V2_READER_COUNTERS:
+		_STRIDED_V2_READER_COUNTERS[key] = 0
+
+
+def get_patternkv_strided_v2_reader_counters() -> dict:
+	return dict(_STRIDED_V2_READER_COUNTERS)
 
 
 def record_mixed_v_reference_call(tokens: int = 0) -> None:
@@ -504,6 +521,86 @@ def cuda_attn_v_fused_with_base(
 
     return out16.view(B, nh, 1, OC) 
     # return c
+
+
+def _require_no_history_materializing_cast(name: str, tensor: torch.Tensor, expected_dtype: torch.dtype) -> None:
+	if tensor.dtype != expected_dtype:
+		raise TypeError(f"{name} must be {expected_dtype} for the strided V2 reader; refusing to materialize/cast historical cache")
+
+
+def cuda_attn_v_fused_with_base_strided_v2(
+	group_size: int,
+	attn_q: torch.Tensor,
+	vq: torch.Tensor,
+	v_scale: torch.Tensor,
+	v_zero: torch.Tensor,
+	v_centroids: torch.Tensor,
+	v_mask_q: torch.Tensor,
+	v_idx_q: torch.Tensor,
+	nh: int,
+	nh_kv: int,
+	attn_f: torch.Tensor | None = None,
+	v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+	"""Experimental S5A-1 V2-only reader for capacity-backed strided history.
+
+	Historical tensors are consumed with their existing physical strides. This
+	wrapper intentionally refuses dtype/layout casts for vq/scale/zero/mask/idx
+	because those would materialize the historical cache and invalidate the
+	feasibility experiment.
+	"""
+	assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
+	B, nh_in, _, K = attn_q.shape
+	assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
+	assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
+	OC = int(v_centroids.size(-1))
+	pack = 16
+	group = group_size
+	assert vq.shape == (B, nh_kv, K, OC // pack), f"vq expected [B,{nh_kv},{K},{OC//pack}], got {vq.shape}"
+	assert v_scale.shape == (B, nh_kv, K, OC // group), f"v_scale shape mismatch: {v_scale.shape}"
+	assert v_zero.shape == (B, nh_kv, K, OC // group), f"v_zero shape mismatch: {v_zero.shape}"
+	assert v_mask_q.shape == (B, nh_kv, K), f"v_mask_q shape mismatch: {v_mask_q.shape}"
+	assert v_idx_q.shape == (B, nh_kv, K), f"v_idx_q shape mismatch: {v_idx_q.shape}"
+	_require_no_history_materializing_cast("vq", vq, torch.int32)
+	_require_no_history_materializing_cast("v_scale", v_scale, torch.float16)
+	_require_no_history_materializing_cast("v_zero", v_zero, torch.float16)
+	_require_no_history_materializing_cast("v_mask_q", v_mask_q, torch.uint8)
+	if v_idx_q.dtype not in (torch.uint8, torch.int16, torch.int32):
+		raise TypeError("v_idx_q must be uint8, int16, or int32 for the strided V2 reader")
+
+	# Attention weights and centroid tables are not historical growing cache
+	# streams, so keeping the existing tight ABI for them is acceptable here.
+	attn_q = attn_q.to(torch.float16).contiguous()
+	v_centroids = v_centroids.to(torch.float16).contiguous()
+	alpha_q = attn_q.view(-1, 1, K).contiguous()
+
+	if (attn_f is None) or (v_full is None):
+		alpha_f = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+		v_full_ = torch.empty(0, device=attn_q.device, dtype=attn_q.dtype)
+	else:
+		attn_f = attn_f.to(torch.float16).contiguous()
+		v_full_ = v_full.to(torch.float16).contiguous()
+		Lf = attn_f.shape[-1] if attn_f.size(-2) == 1 else attn_f.size(-2)
+		assert v_full_.size(2) == Lf and v_full_.size(-1) == OC, f"v_full shape mismatch: {v_full.shape}, Lf={Lf}, OC={OC}"
+		alpha_f = attn_f.view(-1, Lf).contiguous()
+
+	_STRIDED_V2_READER_COUNTERS["strided_reader_calls"] += 1
+	_STRIDED_V2_READER_COUNTERS["strided_reader_tokens_processed"] += int(K)
+	out16 = patternkv_gemv.attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+		alpha_q,
+		vq,
+		v_scale,
+		v_zero,
+		int(group_size),
+		int(nh),
+		int(nh_kv),
+		v_centroids,
+		v_mask_q,
+		v_idx_q,
+		alpha_f,
+		v_full_,
+	)
+	return out16.view(B, nh, 1, OC)
 
 
 def _page_token_length(buffer) -> int:

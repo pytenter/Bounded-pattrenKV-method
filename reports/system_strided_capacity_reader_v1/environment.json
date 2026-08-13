@@ -1,0 +1,21 @@
+{
+  "cuda_visible_devices": "1",
+  "torch": "2.4.1+cu124",
+  "torch_cuda": "12.4",
+  "python": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+  "nvidia_smi": [
+    "0, NVIDIA GeForce RTX 3090, 580.173.02, 18409, 24576, 0",
+    "1, NVIDIA GeForce RTX 3090, 580.173.02, 22884, 24576, 100",
+    "2, NVIDIA GeForce RTX 3090, 580.173.02, 22883, 24576, 100",
+    "3, NVIDIA GeForce RTX 3090, 580.173.02, 22884, 24576, 66",
+    "4, NVIDIA GeForce RTX 3090, 580.173.02, 22884, 24576, 100",
+    "5, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0",
+    "6, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0",
+    "7, NVIDIA GeForce RTX 3090, 580.173.02, 18, 24576, 0"
+  ],
+  "loaded_extension_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "loaded_extension_mtime": 1786584370,
+  "loaded_extension_sha256": "e6aa20c011a4a100d07abd3656dc21677bdc3122d38c158188ff56608b7eec36",
+  "has_strided_entry": true
+}

@@ -122,3 +122,21 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
     torch::Tensor _alpha_f,
     torch::Tensor _v_full
 );
+
+// Experimental S5A-1 V2-only strided-capacity Value reader. It preserves the
+// production fused V2 math path while reading historical cache tensors through
+// their physical strides instead of requiring tight contiguous K strides.
+torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_v2(
+    torch::Tensor _alpha_q,
+    torch::Tensor _vq,
+    torch::Tensor _vscale,
+    torch::Tensor _vzero,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _mask_q,
+    torch::Tensor _idx_q,
+    torch::Tensor _alpha_f,
+    torch::Tensor _v_full
+);

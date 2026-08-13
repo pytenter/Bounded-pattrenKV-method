@@ -1,0 +1,12 @@
+{
+  "total_cases": 14,
+  "passed": 14,
+  "all_passed": true,
+  "max_abs": 0.0,
+  "mean_abs_max": 0.0,
+  "relative_l2_max": 0.0,
+  "cosine_min": 0.9999998807907104,
+  "nan_total": 0,
+  "inf_total": 0,
+  "slack_sentinel_test": "PASS"
+}

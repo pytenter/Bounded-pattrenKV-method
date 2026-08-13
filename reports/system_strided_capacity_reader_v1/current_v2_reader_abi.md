@@ -1,0 +1,21 @@
+# Current V2 Reader ABI
+
+- Production Python entry: `quant.matmul.cuda_attn_v_fused_with_base`.
+- C++ binding: `attn_v_forward_cuda_outer_dim_with_base`.
+- CUDA kernel: `battn_v_kernel_with_base<2, ABLATION_LANE0_TABLE_FULL>`.
+- Packed V2 logical input shape at Python boundary: `[B, nh_kv, K, OC/16]` int32.
+- Packed V2 C++ kernel shape after wrapper materialization: `[B*nh_kv, OC/16, K]`.
+- Scale/zero Python shape: `[B, nh_kv, K, OC/group]` fp16 after wrapper cast.
+- Scale/zero C++ kernel shape after wrapper materialization: `[B*nh_kv, OC/group, K]`.
+- Mask shape: `[B, nh_kv, K]` uint8.
+- Assignment shape: `[B, nh_kv, K]` uint8/int16/int32.
+- Centroid shape: `[nh_kv, Mcent, OC]`; not a historical capacity stream.
+- Attention weight shape: `[B, nh, 1, K]`; not a historical cache stream.
+- Current CUDA vq equation: `vq_base + packed_oc_idx * K + t`.
+- Current CUDA scale/zero equation: `scale_base + oc_group * K + t`.
+- Current CUDA mask equation: `mask_base + bkv * K + t`.
+- Current CUDA assignment equation: `idx_base + (bkv * K + t) * idx_bytes`.
+- Hidden tight-contiguous assumption: all historical token-axis strides are derived from logical `K`.
+- Python wrapper forced materialization points: `vq.contiguous()`, `v_scale.to(...).contiguous()`, `v_zero.to(...).contiguous()`, `v_mask_q.to(...).contiguous()`, `v_idx_q.contiguous()`, plus transposed packed views.
+- C++ binding checks shapes but does not enforce `is_contiguous()`.
+- Required explicit strides for capacity support: vq B/H/token/pack, scale B/H/token/group, zero B/H/token/group, mask B/H/token, idx B/H/token.
