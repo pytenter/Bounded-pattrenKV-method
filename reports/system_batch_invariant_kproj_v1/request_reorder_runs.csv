@@ -1,0 +1,5 @@
+case,exact,max_abs,mean_abs,relative_l2,cosine
+row0_ab,True,0.0,0.0,0.0,0.9999998807907104
+row1_ba,True,0.0,0.0,0.0,0.9999998807907104
+row2_cdab,True,0.0,0.0,0.0,0.9999998807907104
+row3_bcda,True,0.0,0.0,0.0,0.9999998807907104

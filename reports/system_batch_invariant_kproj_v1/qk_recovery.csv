@@ -1,0 +1,11 @@
+case,qk_batch_relative_l2,qk_batch_max_abs,qk_batch_cosine
+layer0_requestA_b2,0.0,0.0,1.0
+layer0_requestA_b4,0.0,0.0,1.0
+layer0_request0,0.0,0.0,1.0
+layer0_request1,0.0,0.0,1.0000001192092896
+layer8_request0,0.0,0.0,1.0
+layer8_request1,0.0,0.0,1.0
+layer16_request0,0.0,0.0,1.0
+layer16_request1,0.0,0.0,1.0000001192092896
+layer31_request0,0.0,0.0,0.9999999403953552
+layer31_request1,0.0,0.0,0.9999999403953552
