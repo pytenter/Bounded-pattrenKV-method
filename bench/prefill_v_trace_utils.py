@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import copy
+from dataclasses import replace
 from types import SimpleNamespace
 from typing import Any
 
@@ -14,15 +16,19 @@ from bench.run_prefill_kmeans_stability import (
     relative_l2,
     remap_assignments_to_ref,
 )
-from models.llama_patternkv import batched_assign_compiled, batched_kmeans_fast_compiled
+from models.llama_patternkv import batched_assign_compiled, batched_kmeans_fast_compiled, repeat_kv
 from models.segmented_cache import (
     ROLLING_CACHE_MODE,
     build_cache_from_prefill,
+    pattern_gather_centroids,
     pattern_gather_request_centroids,
     pattern_select_v_candidate,
     quantize_pack_v_reference,
+    reconstruct_full_v,
+    reconstruct_packed_v,
 )
 from quant.batch_invariant_kproj import batch_invariant_k_projection_v2
+from quant.page_batch import patternkv_fused_page_batch_decode
 
 
 TRACE_ITERS = (0, 1, 2, 4, 8, 16, 30)
@@ -36,6 +42,18 @@ def tensor_metric_dict(got: torch.Tensor, ref: torch.Tensor) -> dict[str, Any]:
         "relative_l2": relative_l2(got, ref),
         "cosine": cosine(got, ref),
     }
+
+
+def semantic_impact_level(value_output_relative_l2: float | None, post_o_proj_relative_l2: float | None = None) -> str:
+    values = [value for value in (value_output_relative_l2, post_o_proj_relative_l2) if value is not None]
+    if not values:
+        return "UNKNOWN"
+    score = max(values)
+    if score <= 1e-4:
+        return "NEGLIGIBLE"
+    if score <= 1e-3:
+        return "SMALL"
+    return "MEANINGFUL"
 
 
 def element_difference_rate(got: torch.Tensor | None, ref: torch.Tensor | None) -> float | None:
@@ -230,6 +248,115 @@ def packed_v_metrics(got_cache: Any, ref_cache: Any) -> dict[str, Any]:
         "v2_stream_tokens_got": int(got_cache.packed_v_tokens - (got_cache.v_precision_mask.bool().sum().item() if got_cache.v_precision_mask is not None else 0)),
         "v4_stream_tokens_ref": int(ref_cache.v_precision_mask.bool().sum().item()) if ref_cache.v_precision_mask is not None else 0,
         "v4_stream_tokens_got": int(got_cache.v_precision_mask.bool().sum().item()) if got_cache.v_precision_mask is not None else 0,
+    }
+
+
+def reconstructed_v_metrics(got_cache: Any, ref_cache: Any) -> dict[str, Any]:
+    got = reconstruct_full_v(got_cache)
+    ref = reconstruct_full_v(ref_cache)
+    if got is None or ref is None:
+        raise RuntimeError("reconstruct_full_v returned None")
+    return tensor_metric_dict(got, ref) | {"got": got, "ref": ref}
+
+
+def reconstruct_packed_pattern_v(cache: Any) -> torch.Tensor:
+    packed_v = reconstruct_packed_v(cache)
+    if packed_v is None:
+        raise RuntimeError("reconstruct_packed_v returned None")
+    packed_v = packed_v[:, :, : cache.packed_v_tokens, :].contiguous()
+    if cache.v_centroids is not None and cache.v_assignment_idx is not None:
+        mask = cache.v_pattern_mask if cache.v_pattern_mask is not None else cache.v_assignments
+        if mask is not None:
+            centroids = pattern_gather_centroids(cache.v_assignment_idx[:, :, : cache.packed_v_tokens], cache.v_centroids).to(packed_v.dtype)
+            packed_v = packed_v + mask[:, :, : cache.packed_v_tokens].unsqueeze(-1).to(packed_v.dtype) * centroids
+    return packed_v.contiguous()
+
+
+def reconstructed_packed_v_metrics(got_cache: Any, ref_cache: Any) -> dict[str, Any]:
+    got = reconstruct_packed_pattern_v(got_cache)
+    ref = reconstruct_packed_pattern_v(ref_cache)
+    return tensor_metric_dict(got, ref) | {"got": got, "ref": ref}
+
+
+def clone_cache_with_v_centroids(cache: Any, centroids: torch.Tensor) -> Any:
+    cloned = copy.copy(cache)
+    cloned.v_centroids = centroids
+    pools = getattr(cache, "operator_ready_page_pools", None)
+    if pools is not None:
+        cloned.operator_ready_page_pools = replace(pools, centroids=centroids)
+    return cloned
+
+
+def centroid_only_counterfactual_metrics(ref_cache: Any, test_centroids: torch.Tensor) -> dict[str, Any]:
+    mutated = clone_cache_with_v_centroids(ref_cache, test_centroids)
+    metrics = reconstructed_v_metrics(mutated, ref_cache)
+    return {
+        "centroid_only_reconstructed_v_exact": metrics["exact"],
+        "centroid_only_reconstructed_v_relative_l2": metrics["relative_l2"],
+        "centroid_only_reconstructed_v_max_abs": metrics["max_abs"],
+        "centroid_only_reconstructed_v_cosine": metrics["cosine"],
+    }
+
+
+def same_attention_value_output(attn: torch.Tensor, reconstructed_v: torch.Tensor, num_key_value_groups: int) -> torch.Tensor:
+    return torch.matmul(attn, repeat_kv(reconstructed_v, num_key_value_groups))
+
+
+def same_attention_value_metrics(attn: torch.Tensor, got_v: torch.Tensor, ref_v: torch.Tensor, num_key_value_groups: int) -> dict[str, Any]:
+    got = same_attention_value_output(attn, got_v, num_key_value_groups)
+    ref = same_attention_value_output(attn, ref_v, num_key_value_groups)
+    return tensor_metric_dict(got, ref) | {"got": got, "ref": ref}
+
+
+def fused_value_metrics(attn: torch.Tensor, got_cache: Any, ref_cache: Any) -> dict[str, Any]:
+    got = patternkv_fused_page_batch_decode(attn, got_cache.operator_ready_page_pools)
+    ref = patternkv_fused_page_batch_decode(attn, ref_cache.operator_ready_page_pools)
+    return tensor_metric_dict(got, ref) | {"got": got, "ref": ref}
+
+
+def semantic_state_comparator(ref_cache: Any, got_cache: Any, *, centroid_relative_l2_tolerance: float = 1e-3) -> dict[str, Any]:
+    packed = packed_v_metrics(got_cache, ref_cache)
+    assignment_diff = element_difference_rate(got_cache.v_assignment_idx, ref_cache.v_assignment_idx)
+    mask_diff = element_difference_rate(got_cache.v_pattern_mask, ref_cache.v_pattern_mask)
+    precision_diff = element_difference_rate(got_cache.v_precision_mask, ref_cache.v_precision_mask)
+    exact_counts = (
+        int(got_cache.total_tokens) == int(ref_cache.total_tokens)
+        and int(got_cache.packed_v_tokens) == int(ref_cache.packed_v_tokens)
+        and int(getattr(got_cache, "packed_v4_tokens", 0)) == int(getattr(ref_cache, "packed_v4_tokens", 0))
+    )
+    centroid_metrics = tensor_metric_dict(got_cache.v_centroids, ref_cache.v_centroids)
+    scale_rel = max(
+        value
+        for value in (
+            packed.get("packed_v_scale_relative_l2") or 0.0,
+            packed.get("packed_v_zero_relative_l2") or 0.0,
+            packed.get("packed_v4_scale_relative_l2") or 0.0,
+            packed.get("packed_v4_zero_relative_l2") or 0.0,
+        )
+    )
+    physical_diff = any(
+        (packed.get(key) or 0.0) != 0.0
+        for key in ("packed_v_payload_difference_rate", "packed_v4_payload_difference_rate")
+    )
+    structural_diff = (not exact_counts) or any((value or 0.0) != 0.0 for value in (assignment_diff, mask_diff, precision_diff))
+    if structural_diff:
+        status = "STRUCTURAL_FAIL"
+    elif physical_diff:
+        status = "PHYSICAL_FAIL"
+    elif centroid_metrics["relative_l2"] > centroid_relative_l2_tolerance or scale_rel > centroid_relative_l2_tolerance:
+        status = "NUMERICAL_FAIL"
+    elif not centroid_metrics["exact"] or scale_rel != 0.0:
+        status = "NUMERICAL_ONLY_DIFFERENCE"
+    else:
+        status = "PASS"
+    return {
+        "status": status,
+        "token_counts_exact": exact_counts,
+        "assignment_difference_rate": assignment_diff,
+        "mask_difference_rate": mask_diff,
+        "precision_mask_difference_rate": precision_diff,
+        "centroid": {k: v for k, v in centroid_metrics.items() if k not in {"got", "ref"}},
+        **packed,
     }
 
 

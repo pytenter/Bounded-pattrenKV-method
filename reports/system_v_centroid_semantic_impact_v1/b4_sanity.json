@@ -1,0 +1,9 @@
+{
+  "bi_vproj_b1_b4_reconstructed_v_relative_l2": 0.0,
+  "bi_vproj_b1_b4_same_attn_value_output_relative_l2": 0.0,
+  "bi_vproj_reconstructed_v_relative_l2": 0.0,
+  "bi_vproj_same_attn_value_output_relative_l2": 0.0,
+  "normal_b1_b4_reconstructed_v_relative_l2": 0.0003610451240092516,
+  "normal_b1_b4_same_attn_value_output_relative_l2": 0.0004786191857419908,
+  "normal_b1_b4_v_centroid_relative_l2": 0.0003547366941347718
+}
