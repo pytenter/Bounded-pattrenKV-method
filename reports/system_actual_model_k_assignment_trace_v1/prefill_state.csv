@@ -1,0 +1,37 @@
+phase,request_row,field,b2,b1,pass
+PREFILL,0,centroid_state_indices,[0],[0],True
+PREFILL,0,k_assignment_hash,"""2e7e670782f5c9e2e86c1210268ad3f56497e4c82a6026db7fc2ca156f8cef30""","""a96398c0240af5ebbee576b8e81affad900a5aaea2940da50d592efe753e32a3""",False
+PREFILL,0,k_assignment_shape,"[1, 8, 256]","[1, 8, 256]",True
+PREFILL,0,k_counts,[32],[32],True
+PREFILL,0,packed_k_tokens,256,256,True
+PREFILL,0,packed_v_tokens,256,256,True
+PREFILL,0,pending_k_tokens,112,112,True
+PREFILL,0,pending_v_tokens,112,112,True
+PREFILL,0,recent_k_tokens,128,128,True
+PREFILL,0,recent_v_tokens,128,128,True
+PREFILL,0,total_tokens,512,512,True
+PREFILL,0,update_counts_k,[0],[0],True
+PREFILL,0,update_counts_v,[0],[0],True
+PREFILL,0,v_assignment_hash,"""6bf0d906a08dd648e401572dca59779fab0ff1093896b39b449783daa2281a19""","""6bf0d906a08dd648e401572dca59779fab0ff1093896b39b449783daa2281a19""",True
+PREFILL,0,v_assignment_shape,"[1, 8, 256]","[1, 8, 256]",True
+PREFILL,0,v_counts,[32],[32],True
+PREFILL,0,v_precision_hash,"""b8a63a62f6097f15c8e3345e42bc482129e8df77fbc8e7393435006f9352f641""","""b8a63a62f6097f15c8e3345e42bc482129e8df77fbc8e7393435006f9352f641""",True
+PREFILL,0,v_precision_shape,"[1, 256]","[1, 256]",True
+PREFILL,1,centroid_state_indices,[1],[0],False
+PREFILL,1,k_assignment_hash,"""e20802b9f29864cb6e5d2feba110a30c0ea214b44d051c15bca326eafed669a8""","""b3064929716a71ec68293e5eccdaab6cec4623d2dec76f13f1de405bc0e89141""",False
+PREFILL,1,k_assignment_shape,"[1, 8, 256]","[1, 8, 256]",True
+PREFILL,1,k_counts,[32],[32],True
+PREFILL,1,packed_k_tokens,256,256,True
+PREFILL,1,packed_v_tokens,256,256,True
+PREFILL,1,pending_k_tokens,112,112,True
+PREFILL,1,pending_v_tokens,112,112,True
+PREFILL,1,recent_k_tokens,128,128,True
+PREFILL,1,recent_v_tokens,128,128,True
+PREFILL,1,total_tokens,512,512,True
+PREFILL,1,update_counts_k,[0],[0],True
+PREFILL,1,update_counts_v,[0],[0],True
+PREFILL,1,v_assignment_hash,"""28f3f3ff4ba96a3aa8e1b48e96f3af610eb880b50bd4a00a869f1df02d1f1239""","""28f3f3ff4ba96a3aa8e1b48e96f3af610eb880b50bd4a00a869f1df02d1f1239""",True
+PREFILL,1,v_assignment_shape,"[1, 8, 256]","[1, 8, 256]",True
+PREFILL,1,v_counts,[32],[32],True
+PREFILL,1,v_precision_hash,"""b8a63a62f6097f15c8e3345e42bc482129e8df77fbc8e7393435006f9352f641""","""b8a63a62f6097f15c8e3345e42bc482129e8df77fbc8e7393435006f9352f641""",True
+PREFILL,1,v_precision_shape,"[1, 256]","[1, 256]",True

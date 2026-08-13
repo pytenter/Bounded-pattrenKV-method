@@ -1,0 +1,15 @@
+{
+  "assignment_difference_count": 79,
+  "assignment_difference_rate": 0.0096435546875,
+  "assignment_margin_median": 0.2109375,
+  "assignment_margin_min": 0.0,
+  "component": "K_PROJ",
+  "continuous_tensor_max_abs": 0.00390625,
+  "continuous_tensor_relative_l2": 0.00021680643840227276,
+  "kv_head": 0,
+  "layer": 0,
+  "phase": "PREFILL",
+  "request_row": 0,
+  "root_cause_class": "UPSTREAM_K_NUMERICAL_DIVERGENCE",
+  "token_index": 39
+}
