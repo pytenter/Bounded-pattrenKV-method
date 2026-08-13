@@ -43,6 +43,14 @@ _STRIDED_V2_READER_COUNTERS = {
 	"strided_reader_torch_cat_calls": 0,
 }
 
+_STRIDED_K_READER_COUNTERS = {
+	"strided_k_reader_calls": 0,
+	"strided_k_tokens_processed": 0,
+	"strided_k_materialize_calls": 0,
+	"strided_k_materialized_bytes": 0,
+	"strided_k_torch_cat_calls": 0,
+}
+
 
 def reset_patternkv_mixed_v_counters() -> None:
 	for key in _MIXED_V_COUNTERS:
@@ -69,6 +77,15 @@ def reset_patternkv_strided_v2_reader_counters() -> None:
 
 def get_patternkv_strided_v2_reader_counters() -> dict:
 	return dict(_STRIDED_V2_READER_COUNTERS)
+
+
+def reset_patternkv_strided_k_reader_counters() -> None:
+	for key in _STRIDED_K_READER_COUNTERS:
+		_STRIDED_K_READER_COUNTERS[key] = 0
+
+
+def get_patternkv_strided_k_reader_counters() -> dict:
+	return dict(_STRIDED_K_READER_COUNTERS)
 
 
 def record_mixed_v_reference_call(tokens: int = 0) -> None:
@@ -446,6 +463,66 @@ def cuda_bmm_fA_qB_outer_with_base(
         )  # [B*nh, 1, N]
 
         return out.view(B, nh, 1, N)
+
+
+def cuda_bmm_fA_qB_outer_with_base_strided_k(
+	group_size: int,
+	fA: torch.FloatTensor,
+	qB: torch.IntTensor,
+	scales: torch.FloatTensor,
+	zeros: torch.FloatTensor,
+	bits: int,
+	centroids: torch.FloatTensor,
+	assignments: torch.Tensor,
+	nh: int,
+	nh_kv: int,
+) -> torch.FloatTensor:
+	"""Experimental S5A-3 Pattern K/QK reader for capacity-backed history.
+
+	Historical K tensors are consumed directly with their physical tensor strides:
+	qB [B, nh_kv, head_dim, ceil(N/pack)], scale/zero [B, nh_kv, head_dim,
+	ceil(N/group)], assignments [B, nh_kv, N]. This wrapper intentionally refuses
+	casts or `.contiguous()` on those historical streams.
+	"""
+	with profile_range("qk_quantized_history_strided_k"):
+		assert fA.dim() == 4 and fA.size(2) == 1, f"fA must be [B,nh,1,K], got {fA.shape}"
+		B, nh_in, _, K = fA.shape
+		assert nh_in == nh, f"nh mismatch: fA has {nh_in}, arg nh={nh}"
+		assert bits in (2, 4), f"bits must be 2/4, got {bits}"
+		assert qB.dim() == 4 and qB.size(0) == B and qB.size(1) == nh_kv and qB.size(2) == K
+		assert scales.dim() == 4 and scales.shape[:3] == (B, nh_kv, K)
+		assert zeros.dim() == 4 and zeros.shape[:3] == (B, nh_kv, K)
+		assert assignments.dim() == 3 and assignments.shape[:2] == (B, nh_kv)
+		OC = int(assignments.shape[-1])
+		pack = 32 // bits
+		assert qB.shape[-1] * pack >= OC, f"qB has only {qB.shape[-1] * pack} logical slots for OC={OC}"
+		assert scales.shape[-1] * group_size >= OC, f"scales has only {scales.shape[-1] * group_size} slots for OC={OC}"
+		assert zeros.shape[-1] * group_size >= OC, f"zeros has only {zeros.shape[-1] * group_size} slots for OC={OC}"
+		assert centroids.shape == (nh_kv, centroids.shape[1], K), f"centroids shape mismatch: {centroids.shape}"
+		_require_no_history_materializing_cast("qB", qB, torch.int32)
+		_require_no_history_materializing_cast("scales", scales, torch.float16)
+		_require_no_history_materializing_cast("zeros", zeros, torch.float16)
+		if assignments.dtype not in (torch.uint8, torch.int16, torch.int32, torch.int64):
+			raise TypeError("assignments must be uint8, int16, int32, or int64 for the strided K reader")
+
+		# Q and centroid tables are not historical growing cache streams.
+		fA_ = fA.to(torch.float16).view(-1, 1, K).contiguous()
+		centroids_ = centroids.to(torch.float16).contiguous()
+		_STRIDED_K_READER_COUNTERS["strided_k_reader_calls"] += 1
+		_STRIDED_K_READER_COUNTERS["strided_k_tokens_processed"] += int(OC)
+		out = patternkv_gemv.gemv_forward_cuda_outer_dim_with_base_strided_k(
+			fA_,
+			qB,
+			scales,
+			zeros,
+			int(bits),
+			int(group_size),
+			int(nh),
+			int(nh_kv),
+			centroids_,
+			assignments,
+		)
+		return out.view(B, nh, 1, OC)
 
 def cuda_attn_v_fused_with_base(
     group_size: int,

@@ -1,0 +1,19 @@
+{
+  "cosine_min": 0.9999998807907104,
+  "counters": {
+    "strided_k_materialize_calls": 0,
+    "strided_k_materialized_bytes": 0,
+    "strided_k_reader_calls": 13,
+    "strided_k_tokens_processed": 62080,
+    "strided_k_torch_cat_calls": 0
+  },
+  "inf_total": 0,
+  "logical_tokens_only": true,
+  "max_abs_max": 0.0,
+  "nan_total": 0,
+  "passed": 13,
+  "passed_bool": true,
+  "relative_l2_max": 0.0,
+  "slack_sentinel_passed": true,
+  "total_cases": 13
+}

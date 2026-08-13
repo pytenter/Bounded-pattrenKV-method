@@ -1214,6 +1214,244 @@ torch::Tensor gemv_forward_cuda_outer_dim_with_base(
   return _out;
 }
 
+template<int Bit>
+__global__ void bgemv_kernel_outer_dim_with_base_strided_k(
+  const half* __restrict__ _inputs,      // [B*nh, IC]
+  const uint32_t* __restrict__ _weight,  // [B, nh_kv, IC, ceil(OC/pack)]
+  const half* __restrict__ _zeros,       // [B, nh_kv, IC, ceil(OC/group)]
+  const half* __restrict__ _scale,       // [B, nh_kv, IC, ceil(OC/group)]
+  const half* __restrict__ _centroids,   // [nh_kv, M, IC]
+  const void* __restrict__ _assign,      // [B, nh_kv, OC]
+  half* __restrict__ _outputs,           // [B*nh, OC]
+  const int IC, const int OC,
+  const int group_size, const int nh, const int nh_kv,
+  const int M_centroids, const int assign_bytes,
+  const int64_t w_s0, const int64_t w_s1, const int64_t w_s2, const int64_t w_s3,
+  const int64_t sc_s0, const int64_t sc_s1, const int64_t sc_s2, const int64_t sc_s3,
+  const int64_t z_s0, const int64_t z_s1, const int64_t z_s2, const int64_t z_s3,
+  const int64_t a_s0, const int64_t a_s1, const int64_t a_s2
+){
+  constexpr int pack_factor = 32 / Bit;
+  constexpr int TILE_DIM    = 128;
+  const uint32_t mask = (1u << Bit) - 1u;
+
+  const int batch_idx = blockIdx.x;
+  const int ratio = nh / nh_kv;
+  const int b  = batch_idx / nh;
+  const int hq = batch_idx % nh;
+  const int kv = hq / ratio;
+
+  const half* inputs = _inputs  + (size_t)batch_idx * IC;
+  half* outputs      = _outputs + (size_t)batch_idx * OC;
+  const half* cbase  = _centroids + (size_t)kv * (M_centroids * IC);
+
+  extern __shared__ unsigned char smem_raw[];
+  float* s_qC = reinterpret_cast<float*>(smem_raw);
+  half*  s_in = reinterpret_cast<half*>(s_qC + M_centroids);
+
+  {
+    const int lane = threadIdx.x & (WARP_SIZE - 1);
+    const int warp = (threadIdx.y * blockDim.x + threadIdx.x) / WARP_SIZE;
+    const int warps_per_CTA = (blockDim.x * blockDim.y) / WARP_SIZE;
+    for (int m = warp; m < M_centroids; m += warps_per_CTA) {
+      float acc = 0.f;
+      for (int k = lane; k < IC; k += WARP_SIZE) {
+        acc += __half2float(inputs[k]) * __half2float(cbase[(size_t)m * IC + k]);
+      }
+      acc = warp_reduce_sum_local(acc);
+      if (lane == 0) s_qC[m] = acc;
+    }
+    __syncthreads();
+  }
+
+  const int nPacked = ceil_div(OC, pack_factor);
+  const int start_packed = blockIdx.y * blockDim.y + threadIdx.y;
+  const int stride_packed = gridDim.y * blockDim.y;
+
+  for (int packed = start_packed; packed < nPacked; packed += stride_packed) {
+    const int oc_start = packed * pack_factor;
+    if (oc_start >= OC) continue;
+    const int group_idx = oc_start / group_size;
+
+    float psum[pack_factor];
+    #pragma unroll
+    for (int i = 0; i < pack_factor; ++i) psum[i] = 0.f;
+
+    float beta_acc = 0.f;
+    const int nKTiles = ceil_div(IC, TILE_DIM);
+
+    for (int kt = 0; kt < nKTiles; ++kt) {
+      const int k_base = kt * TILE_DIM;
+      if (threadIdx.y == 0) {
+        const int in_off = k_base + threadIdx.x * 4;
+        half v0 = __float2half(0.f), v1 = __float2half(0.f),
+             v2 = __float2half(0.f), v3 = __float2half(0.f);
+        if (in_off + 0 < IC) v0 = inputs[in_off + 0];
+        if (in_off + 1 < IC) v1 = inputs[in_off + 1];
+        if (in_off + 2 < IC) v2 = inputs[in_off + 2];
+        if (in_off + 3 < IC) v3 = inputs[in_off + 3];
+        const int loc = threadIdx.x * 4;
+        s_in[loc + 0] = v0;
+        s_in[loc + 1] = v1;
+        s_in[loc + 2] = v2;
+        s_in[loc + 3] = v3;
+      }
+      __syncthreads();
+
+      uint32_t qw[4] = {0, 0, 0, 0};
+      half sc4[4] = {__float2half(0.f), __float2half(0.f), __float2half(0.f), __float2half(0.f)};
+      half ze4[4] = {__float2half(0.f), __float2half(0.f), __float2half(0.f), __float2half(0.f)};
+      const int k0 = k_base + threadIdx.x * 4;
+      #pragma unroll
+      for (int t = 0; t < 4; ++t) {
+        const int kk = k0 + t;
+        if (kk < IC) {
+          qw[t] = _weight[(int64_t)b * w_s0 + (int64_t)kv * w_s1 + (int64_t)kk * w_s2 + (int64_t)packed * w_s3];
+          sc4[t] = _scale[(int64_t)b * sc_s0 + (int64_t)kv * sc_s1 + (int64_t)kk * sc_s2 + (int64_t)group_idx * sc_s3];
+          ze4[t] = _zeros[(int64_t)b * z_s0 + (int64_t)kv * z_s1 + (int64_t)kk * z_s2 + (int64_t)group_idx * z_s3];
+        }
+      }
+
+      const int loc = threadIdx.x * 4;
+      #pragma unroll
+      for (int t = 0; t < 4; ++t) {
+        const int k_local = loc + t;
+        if (k_base + k_local >= IC) break;
+        const float cur_inp   = __half2float(s_in[k_local]);
+        const float cur_scale = __half2float(sc4[t]);
+        const float cur_zero  = __half2float(ze4[t]);
+        const float alpha = cur_scale * cur_inp;
+        beta_acc += cur_zero * cur_inp;
+        const uint32_t q = qw[t];
+        #pragma unroll
+        for (int i = 0; i < pack_factor; ++i) {
+          const int wi = (q >> (i * Bit)) & mask;
+          psum[i] = fmaf(static_cast<float>(wi), alpha, psum[i]);
+        }
+      }
+      __syncthreads();
+    }
+
+    beta_acc = warp_reduce_sum_local(beta_acc);
+    #pragma unroll
+    for (int i = 0; i < pack_factor; ++i) {
+      const int oc = oc_start + i;
+      if (oc < OC) {
+        float v = warp_reduce_sum_local(psum[i]);
+        if (threadIdx.x == 0) {
+          const char* abase = reinterpret_cast<const char*>(_assign);
+          const int64_t elem_off = (int64_t)b * a_s0 + (int64_t)kv * a_s1 + (int64_t)oc * a_s2;
+          int aidx;
+          if (assign_bytes == 1)      aidx = *((const uint8_t *)(abase + elem_off));
+          else if (assign_bytes == 2) aidx = *((const int16_t *)(abase + elem_off * 2));
+          else if (assign_bytes == 4) aidx = *((const int32_t *)(abase + elem_off * 4));
+          else                        aidx = static_cast<int>(*((const int64_t *)(abase + elem_off * 8)));
+          const float add = (aidx >= 0 && aidx < M_centroids) ? s_qC[aidx] : 0.f;
+          outputs[oc] = __float2half(v + beta_acc + add);
+        }
+      }
+    }
+  }
+}
+
+torch::Tensor gemv_forward_cuda_outer_dim_with_base_strided_k(
+    torch::Tensor _in_feats,
+    torch::Tensor _kernel,
+    torch::Tensor _scaling_factors,
+    torch::Tensor _zeros,
+    const int bit,
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,
+    torch::Tensor _assignments
+){
+  TORCH_CHECK(_in_feats.dim()==3 && _in_feats.size(1)==1, "in_feats must be [B*nh,1,K]");
+  TORCH_CHECK(_kernel.dim()==4, "kernel must be [B,nh_kv,K,ceil(N/pack)]");
+  TORCH_CHECK(_scaling_factors.dim()==4 && _zeros.dim()==4, "scale/zero must be [B,nh_kv,K,ceil(N/group)]");
+  TORCH_CHECK(_assignments.dim()==3, "assignments must be [B,nh_kv,N]");
+  TORCH_CHECK(bit==2 || bit==4, "only 2/4 bit supported");
+  TORCH_CHECK(_in_feats.scalar_type()==torch::kFloat16, "in_feats must be float16");
+  TORCH_CHECK(_kernel.scalar_type()==torch::kInt32, "kernel must be int32");
+  TORCH_CHECK(_scaling_factors.scalar_type()==torch::kFloat16 && _zeros.scalar_type()==torch::kFloat16,
+              "scale/zero must be float16");
+  TORCH_CHECK(_centroids.scalar_type()==torch::kFloat16, "centroids must be float16");
+  TORCH_CHECK(_assignments.scalar_type()==torch::kUInt8 || _assignments.scalar_type()==torch::kInt16 ||
+              _assignments.scalar_type()==torch::kInt32 || _assignments.scalar_type()==torch::kInt64,
+              "assignments must be uint8, int16, int32, or int64");
+
+  const int B = _kernel.size(0);
+  const int IC = _in_feats.size(2);
+  const int BS_nh = _in_feats.size(0);
+  const int OC = _assignments.size(2);
+  const int pack_factor = 32 / bit;
+  const int nPacked = (OC + pack_factor - 1) / pack_factor;
+  const int nGroups = (OC + group_size - 1) / group_size;
+  TORCH_CHECK(nh % nh_kv == 0, "nh must be divisible by nh_kv");
+  TORCH_CHECK(BS_nh == B * nh, "in_feats batch/head mismatch");
+  TORCH_CHECK(_kernel.size(1)==nh_kv && _kernel.size(2)==IC && _kernel.size(3) >= nPacked,
+              "kernel expected [B,nh_kv,K,ceil(N/pack)]");
+  TORCH_CHECK(_scaling_factors.size(0)==B && _scaling_factors.size(1)==nh_kv &&
+              _scaling_factors.size(2)==IC && _scaling_factors.size(3) >= nGroups,
+              "scale expected [B,nh_kv,K,ceil(N/group)]");
+  TORCH_CHECK(_zeros.size(0)==B && _zeros.size(1)==nh_kv &&
+              _zeros.size(2)==IC && _zeros.size(3) >= nGroups,
+              "zero expected [B,nh_kv,K,ceil(N/group)]");
+  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv && _centroids.size(2)==IC,
+              "centroids must be [nh_kv,M,IC]");
+  TORCH_CHECK(_assignments.size(0)==B && _assignments.size(1)==nh_kv,
+              "assignments expected [B,nh_kv,N]");
+
+  auto options = torch::TensorOptions().dtype(_in_feats.dtype()).device(_in_feats.device());
+  at::Tensor _out = torch::empty({BS_nh, 1, OC}, options);
+
+  const half* in_ptr = reinterpret_cast<const half*>(_in_feats.data_ptr<at::Half>());
+  const uint32_t* wptr = reinterpret_cast<const uint32_t*>(_kernel.data_ptr<int>());
+  const half* zptr = reinterpret_cast<const half*>(_zeros.data_ptr<at::Half>());
+  const half* sptr = reinterpret_cast<const half*>(_scaling_factors.data_ptr<at::Half>());
+  const half* cptr = reinterpret_cast<const half*>(_centroids.data_ptr<at::Half>());
+  const void* aptr = static_cast<const void*>(_assignments.data_ptr());
+  half* out_ptr = reinterpret_cast<half*>(_out.data_ptr<at::Half>());
+
+  const int M_cent = _centroids.size(1);
+  const int assign_bytes =
+    (_assignments.dtype()==torch::kUInt8) ? 1 :
+    (_assignments.dtype()==torch::kInt16) ? 2 :
+    (_assignments.dtype()==torch::kInt32) ? 4 : 8;
+
+  constexpr int TILE_DIM = 128;
+  dim3 num_threads(32, 8, 1);
+  const int blocks_y_i = std::max(
+    1,
+    (nPacked + static_cast<int>(num_threads.y) - 1) / static_cast<int>(num_threads.y)
+  );
+  dim3 num_blocks(BS_nh, static_cast<unsigned int>(blocks_y_i), 1);
+  size_t smem_bytes = (size_t)M_cent * sizeof(float) + (size_t)TILE_DIM * sizeof(half);
+
+  if (bit == 4) {
+    bgemv_kernel_outer_dim_with_base_strided_k<4>
+      <<<num_blocks, num_threads, smem_bytes>>>(
+        in_ptr, wptr, zptr, sptr, cptr, aptr, out_ptr,
+        IC, OC, group_size, nh, nh_kv, M_cent, assign_bytes,
+        _kernel.stride(0), _kernel.stride(1), _kernel.stride(2), _kernel.stride(3),
+        _scaling_factors.stride(0), _scaling_factors.stride(1), _scaling_factors.stride(2), _scaling_factors.stride(3),
+        _zeros.stride(0), _zeros.stride(1), _zeros.stride(2), _zeros.stride(3),
+        _assignments.stride(0), _assignments.stride(1), _assignments.stride(2)
+      );
+  } else {
+    bgemv_kernel_outer_dim_with_base_strided_k<2>
+      <<<num_blocks, num_threads, smem_bytes>>>(
+        in_ptr, wptr, zptr, sptr, cptr, aptr, out_ptr,
+        IC, OC, group_size, nh, nh_kv, M_cent, assign_bytes,
+        _kernel.stride(0), _kernel.stride(1), _kernel.stride(2), _kernel.stride(3),
+        _scaling_factors.stride(0), _scaling_factors.stride(1), _scaling_factors.stride(2), _scaling_factors.stride(3),
+        _zeros.stride(0), _zeros.stride(1), _zeros.stride(2), _zeros.stride(3),
+        _assignments.stride(0), _assignments.stride(1), _assignments.stride(2)
+      );
+  }
+  return _out;
+}
+
 // 需要的 warp 规约工具
 __device__ __forceinline__ float warp_reduce_sum_f32(float v) {
   #pragma unroll

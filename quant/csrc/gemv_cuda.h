@@ -49,6 +49,22 @@ torch::Tensor gemv_forward_cuda_outer_dim_with_base(
     torch::Tensor _assignments      // [B, nh_kv, N] (u8/u16/i32)
 );
 
+// Experimental S5A-3 stride-aware Pattern K/QK reader. It preserves the
+// production Pattern K math and consumes historical K tensors through their
+// physical tensor strides instead of requiring a tight transposed copy.
+torch::Tensor gemv_forward_cuda_outer_dim_with_base_strided_k(
+    torch::Tensor _in_feats,        // [B*nh, 1, K]
+    torch::Tensor _kernel,          // [B, nh_kv, K, ceil(N/pack)], may be strided
+    torch::Tensor _scaling_factors, // [B, nh_kv, K, ceil(N/group)], may be strided
+    torch::Tensor _zeros,           // [B, nh_kv, K, ceil(N/group)], may be strided
+    const int bit,                  // 2 or 4
+    const int group_size,
+    const int nh,
+    const int nh_kv,
+    torch::Tensor _centroids,       // [nh_kv, M, K]
+    torch::Tensor _assignments      // [B, nh_kv, N] (u8/i16/i32/i64), may be strided
+);
+
 // 融合: attn_q @ V_quant(outer-dim dequant) + 基向量补偿 (+ 可选的 attn_f @ V_full)
 torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
     torch::Tensor _alpha_q,

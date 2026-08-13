@@ -1,0 +1,21 @@
+# Current K Reader ABI
+
+- Production Python entry: `quant.matmul.cuda_bmm_fA_qB_outer_with_base`.
+- Production C++ binding: `gemv_forward_cuda_outer_dim_with_base`.
+- Production CUDA kernel: `bgemv_kernel_outer_dim_with_base_tiled<2>` for frozen INT2 Pattern K.
+- Packed K Python shape: `[B, nh_kv, head_dim, ceil(tokens / 16)]`, dtype `int32`.
+- Packed K token dimension: Python dim 3 after INT2 packing; each `int32` stores 16 logical tokens for a head-dim lane.
+- Packed K C++ tight shape after wrapper transpose: `[B * nh_kv, ceil(tokens / 16), head_dim]`.
+- K scale/zero Python shape: `[B, nh_kv, head_dim, ceil(tokens / group_size)]`, dtype `float16`.
+- K scale/zero C++ tight shape after wrapper transpose: `[B * nh_kv, ceil(tokens / group_size), head_dim]`.
+- K Pattern assignment shape: `[B, nh_kv, tokens]`; production wrapper materializes unsupported dtypes to `int16`.
+- K centroids shape: `[nh_kv, centroid_count, head_dim]`, contiguous, not a growing historical stream.
+- Sink K FP16 layout: `[B, nh_kv, sink_tokens, head_dim]`, handled by existing FP16 matmul.
+- Recent/pending K FP16 layout: `[B, nh_kv, tokens, head_dim]`, handled by existing FP16 matmul.
+- Q layout: `[B, nh, 1, head_dim]`; wrapper flattens to `[B * nh, 1, head_dim]`.
+- QK output layout: `[B, nh, 1, tokens]`.
+- Current wrapper `.contiguous()` points: Q flatten, packed K transpose, scale transpose, zero transpose, assignment dtype/layout, centroids.
+- Current tight K equation: `weight[(b * nh_kv + kv) * (OC * IC / pack) + packed * IC + k]`.
+- Current assignment equation: `assign[((b * nh_kv + kv) * OC + oc) * assign_bytes]`.
+- Current scale/zero equation: `scale[(b * nh_kv + kv) * (OC * IC / group) + group_idx * IC + k]`.
+- Future capacity-sensitive historical K inputs: packed K, K scale, K zero, K assignments.
