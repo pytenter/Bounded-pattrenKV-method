@@ -24,6 +24,13 @@ class BatchInvariantKProjCounters:
     fallback_calls: int = 0
     weight_copy_bytes: int = 0
     input_copy_bytes: int = 0
+    prefill_calls: int = 0
+    prefill_rows: int = 0
+    prefill_kernel_launches: int = 0
+    decode_calls: int = 0
+    normal_decode_calls: int = 0
+    prefill_serial_dispatches: int = 0
+    prefill_fallback_calls: int = 0
 
     def as_dict(self) -> dict[str, int]:
         return {
@@ -36,6 +43,13 @@ class BatchInvariantKProjCounters:
             "bi_kproj_fallback_calls": self.fallback_calls,
             "bi_kproj_weight_copy_bytes": self.weight_copy_bytes,
             "bi_kproj_input_copy_bytes": self.input_copy_bytes,
+            "bi_prefill_kproj_calls": self.prefill_calls,
+            "bi_prefill_kproj_rows": self.prefill_rows,
+            "bi_prefill_kproj_kernel_launches": self.prefill_kernel_launches,
+            "bi_decode_kproj_calls": self.decode_calls,
+            "normal_decode_kproj_calls": self.normal_decode_calls,
+            "bi_prefill_serial_dispatches": self.prefill_serial_dispatches,
+            "bi_prefill_fallback_calls": self.prefill_fallback_calls,
         }
 
 
@@ -52,10 +66,31 @@ def reset_batch_invariant_kproj_counters() -> None:
     COUNTERS.fallback_calls = 0
     COUNTERS.weight_copy_bytes = 0
     COUNTERS.input_copy_bytes = 0
+    COUNTERS.prefill_calls = 0
+    COUNTERS.prefill_rows = 0
+    COUNTERS.prefill_kernel_launches = 0
+    COUNTERS.decode_calls = 0
+    COUNTERS.normal_decode_calls = 0
+    COUNTERS.prefill_serial_dispatches = 0
+    COUNTERS.prefill_fallback_calls = 0
 
 
 def batch_invariant_kproj_counters() -> dict[str, int]:
     return COUNTERS.as_dict()
+
+
+def record_bi_prefill_kproj(rows: int, kernel_launches: int = 1) -> None:
+    COUNTERS.prefill_calls += 1
+    COUNTERS.prefill_rows += int(rows)
+    COUNTERS.prefill_kernel_launches += int(kernel_launches)
+
+
+def record_bi_decode_kproj_call() -> None:
+    COUNTERS.decode_calls += 1
+
+
+def record_normal_decode_kproj_call() -> None:
+    COUNTERS.normal_decode_calls += 1
 
 
 def batch_invariant_kproj_available() -> bool:
@@ -300,3 +335,8 @@ def batch_invariant_k_projection(
 def flag_enabled(env: dict[str, str] | None = None) -> bool:
     source: Any = env if env is not None else __import__("os").environ
     return str(source.get("PATTERNKV_BATCH_INVARIANT_KPROJ", "0")).strip() == "1"
+
+
+def selected_backend(env: dict[str, str] | None = None) -> str:
+    source: Any = env if env is not None else __import__("os").environ
+    return str(source.get("PATTERNKV_BI_KPROJ_BACKEND", "v2")).strip().lower()

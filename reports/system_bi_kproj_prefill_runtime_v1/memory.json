@@ -1,0 +1,44 @@
+{
+  "b1_ctx2048": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b1_ctx4096": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b1_ctx512": {
+    "baseline": 17339148288,
+    "bi": 17339148288
+  },
+  "b2_ctx2048": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b2_ctx4096": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b2_ctx512": {
+    "baseline": 17610070528,
+    "bi": 17610070528
+  },
+  "b4_ctx2048": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b4_ctx4096": {
+    "baseline": null,
+    "bi": null,
+    "status": "not_sampled_in_this_run"
+  },
+  "b4_ctx512": {
+    "baseline": 18040318976,
+    "bi": 18040318976
+  }
+}

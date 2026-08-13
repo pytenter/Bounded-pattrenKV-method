@@ -1,0 +1,10 @@
+batch,context,warmup,reps,baseline_ms,bi_ms,ratio_bi_over_baseline,status
+1,512,3,10,982.721902593039,977.9424134176224,0.995136478425071,sampled
+1,2048,3,10,,,,not_sampled_in_this_run
+1,4096,3,10,,,,not_sampled_in_this_run
+2,512,3,10,1718.2562317000702,1722.6308069191873,1.002545938806105,sampled
+2,2048,3,10,,,,not_sampled_in_this_run
+2,4096,3,10,,,,not_sampled_in_this_run
+4,512,3,10,3313.2260396843776,3300.1347169978544,0.9960487686231724,sampled
+4,2048,3,10,,,,not_sampled_in_this_run
+4,4096,3,10,,,,not_sampled_in_this_run
