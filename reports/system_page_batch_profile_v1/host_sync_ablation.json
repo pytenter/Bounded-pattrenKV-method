@@ -1,0 +1,8 @@
+{
+  "gpu_item_calls_original": 771,
+  "host_metadata_correct": true,
+  "item_calls_original": 771,
+  "speedup": 1.404905035323374,
+  "variant_a_original_wall_median_us": 194667.2594640404,
+  "variant_b_host_metadata_wall_median_us": 138562.57509905845
+}

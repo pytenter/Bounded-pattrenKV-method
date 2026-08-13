@@ -1,0 +1,404 @@
+{
+  "b2_t2048": {
+    "approx_cuda_launches": 3372,
+    "available": true,
+    "label": "b2_t2048",
+    "top_cpu": [
+      {
+        "count": 3372,
+        "cpu_us": 23444.58500000056,
+        "cuda_us": 0.0,
+        "name": "cudaLaunchKernel",
+        "self_cpu_us": 23444.58500000056,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 200,
+        "cpu_us": 19482.931000000022,
+        "cuda_us": 0.0,
+        "name": "aten::nonzero",
+        "self_cpu_us": 9240.64200000076,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 779,
+        "cpu_us": 7554.674999999861,
+        "cuda_us": 0.0,
+        "name": "cudaMemcpyAsync",
+        "self_cpu_us": 7554.674999999861,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1656,
+        "cpu_us": 7902.019999999911,
+        "cuda_us": 0.0,
+        "name": "aten::slice",
+        "self_cpu_us": 6650.36799999966,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 978,
+        "cpu_us": 14135.516000000316,
+        "cuda_us": 0.0,
+        "name": "aten::copy_",
+        "self_cpu_us": 6254.6570000004795,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 250,
+        "cpu_us": 28452.7870000001,
+        "cuda_us": 0.0,
+        "name": "aten::index",
+        "self_cpu_us": 5391.5629999998855,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 791,
+        "cpu_us": 4715.996999999979,
+        "cuda_us": 0.0,
+        "name": "aten::empty",
+        "self_cpu_us": 4474.119999999972,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1260,
+        "cpu_us": 3693.992000000215,
+        "cuda_us": 0.0,
+        "name": "cudaEventRecord",
+        "self_cpu_us": 3693.992000000215,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 873,
+        "cpu_us": 4022.574000000008,
+        "cuda_us": 0.0,
+        "name": "aten::select",
+        "self_cpu_us": 3403.0159999998104,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3891,
+        "cpu_us": 3067.2600000005714,
+        "cuda_us": 0.0,
+        "name": "aten::as_strided",
+        "self_cpu_us": 3067.2600000005714,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 178,
+        "cpu_us": 4059.921000000002,
+        "cuda_us": 0.0,
+        "name": "aten::bitwise_and",
+        "self_cpu_us": 2910.8670000000966,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 494,
+        "cpu_us": 2890.523999999983,
+        "cuda_us": 0.0,
+        "name": "aten::empty_strided",
+        "self_cpu_us": 2890.523999999983,
+        "self_cuda_us": 0.0
+      }
+    ],
+    "top_cuda": [
+      {
+        "count": 12,
+        "cpu_us": 14.927000000001499,
+        "cuda_us": 0.0,
+        "name": "cudaStreamIsCapturing",
+        "self_cpu_us": 14.927000000001499,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3,
+        "cpu_us": 243.158999999996,
+        "cuda_us": 0.0,
+        "name": "aten::randn",
+        "self_cpu_us": 79.5159999999978,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 791,
+        "cpu_us": 4715.996999999979,
+        "cuda_us": 0.0,
+        "name": "aten::empty",
+        "self_cpu_us": 4474.119999999972,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3,
+        "cpu_us": 120.28299999999945,
+        "cuda_us": 0.0,
+        "name": "aten::normal_",
+        "self_cpu_us": 60.98700000000099,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3372,
+        "cpu_us": 23444.58500000056,
+        "cuda_us": 0.0,
+        "name": "cudaLaunchKernel",
+        "self_cpu_us": 23444.58500000056,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3,
+        "cpu_us": 0.0,
+        "cuda_us": 0.0,
+        "name": "void at::native::(anonymous namespace)::distribution_elementwise_grid_stride_kernel<float, 4, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2}, at::native::(anonymous namespace)::distribution_nullary_kernel<c10::Half, float, 4, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2}, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2} const&, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(int, float)#1}>(int, at::PhiloxCudaState, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2}, at::native::(anonymous namespace)::distribution_nullary_kernel<c10::Half, float, 4, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2}, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_and_transform<c10::Half, float, 4ul, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::CUDAGeneratorImpl*, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(curandStatePhilox4_32_10*)#2} const&, at::native::templates::cuda::normal_kernel<at::CUDAGeneratorImpl*>(at::TensorBase const&, double, double, at::CUDAGeneratorImpl*)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(float)#1})::{lambda(int, float)#1})",
+        "self_cpu_us": 0.0,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 152,
+        "cpu_us": 2788.739999999818,
+        "cuda_us": 0.0,
+        "name": "aten::mul",
+        "self_cpu_us": 1809.4579999996622,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 2,
+        "cpu_us": 0.0,
+        "cuda_us": 0.0,
+        "name": "void at::native::vectorized_elementwise_kernel<4, at::native::AUnaryFunctor<c10::Half, c10::Half, c10::Half, at::native::binary_internal::MulFunctor<float> >, at::detail::Array<char*, 2> >(int, at::native::AUnaryFunctor<c10::Half, c10::Half, c10::Half, at::native::binary_internal::MulFunctor<float> >, at::detail::Array<char*, 2>)",
+        "self_cpu_us": 0.0,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 172,
+        "cpu_us": 5055.027999999944,
+        "cuda_us": 0.0,
+        "name": "aten::zeros",
+        "self_cpu_us": 693.268999999982,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 172,
+        "cpu_us": 3141.1700000000164,
+        "cuda_us": 0.0,
+        "name": "aten::zero_",
+        "self_cpu_us": 583.5490000000573,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 176,
+        "cpu_us": 2632.749999999958,
+        "cuda_us": 0.0,
+        "name": "aten::fill_",
+        "self_cpu_us": 1102.08499999993,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 2,
+        "cpu_us": 0.0,
+        "cuda_us": 0.0,
+        "name": "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<bool>, at::detail::Array<char*, 1> >(int, at::native::FillFunctor<bool>, at::detail::Array<char*, 1>)",
+        "self_cpu_us": 0.0,
+        "self_cuda_us": 0.0
+      }
+    ]
+  },
+  "b4_t4096": {
+    "approx_cuda_launches": 4449,
+    "available": true,
+    "label": "b4_t4096",
+    "top_cpu": [
+      {
+        "count": 4449,
+        "cpu_us": 32965.77599999853,
+        "cuda_us": 0.0,
+        "name": "cudaLaunchKernel",
+        "self_cpu_us": 32965.77599999853,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 3942,
+        "cpu_us": 10955.344000000545,
+        "cuda_us": 0.0,
+        "name": "cudaEventRecord",
+        "self_cpu_us": 10955.344000000545,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 2712,
+        "cpu_us": 12383.08499999894,
+        "cuda_us": 0.0,
+        "name": "aten::slice",
+        "self_cpu_us": 10231.012999998638,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1135,
+        "cpu_us": 16503.94999999986,
+        "cuda_us": 0.0,
+        "name": "aten::copy_",
+        "self_cpu_us": 8549.677000000103,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 162,
+        "cpu_us": 16705.718999999845,
+        "cuda_us": 0.0,
+        "name": "aten::nonzero",
+        "self_cpu_us": 8004.438999999149,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 933,
+        "cpu_us": 7566.827000000036,
+        "cuda_us": 0.0,
+        "name": "cudaMemcpyAsync",
+        "self_cpu_us": 7566.827000000036,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 162,
+        "cpu_us": 8549.178000000207,
+        "cuda_us": 0.0,
+        "name": "aten::bmm",
+        "self_cpu_us": 6827.28800000057,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 324,
+        "cpu_us": 27698.24699999999,
+        "cuda_us": 0.0,
+        "name": "aten::index",
+        "self_cpu_us": 6719.268999999657,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 486,
+        "cpu_us": 8489.539999999985,
+        "cuda_us": 0.0,
+        "name": "aten::mul",
+        "self_cpu_us": 5486.244999999834,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 975,
+        "cpu_us": 5347.62699999966,
+        "cuda_us": 0.0,
+        "name": "aten::empty",
+        "self_cpu_us": 5347.62699999966,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 811,
+        "cpu_us": 4928.020000000062,
+        "cuda_us": 0.0,
+        "name": "aten::empty_strided",
+        "self_cpu_us": 4928.020000000062,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 6365,
+        "cpu_us": 4922.835000000862,
+        "cuda_us": 0.0,
+        "name": "aten::as_strided",
+        "self_cpu_us": 4922.835000000862,
+        "self_cuda_us": 0.0
+      }
+    ],
+    "top_cuda": [
+      {
+        "count": 3942,
+        "cpu_us": 10955.344000000545,
+        "cuda_us": 0.0,
+        "name": "cudaEventRecord",
+        "self_cpu_us": 10955.344000000545,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1,
+        "cpu_us": 158.67500000000007,
+        "cuda_us": 0.0,
+        "name": "aten::max",
+        "self_cpu_us": 77.207,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 975,
+        "cpu_us": 5347.62699999966,
+        "cuda_us": 0.0,
+        "name": "aten::empty",
+        "self_cpu_us": 5347.62699999966,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 6365,
+        "cpu_us": 4922.835000000862,
+        "cuda_us": 0.0,
+        "name": "aten::as_strided",
+        "self_cpu_us": 4922.835000000862,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 4449,
+        "cpu_us": 32965.77599999853,
+        "cuda_us": 0.0,
+        "name": "cudaLaunchKernel",
+        "self_cpu_us": 32965.77599999853,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1,
+        "cpu_us": 0.0,
+        "cuda_us": 0.0,
+        "name": "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<int, at::native::func_wrapper_t<int, at::native::MaxNanFunctor<int> >, unsigned int, int, 4> >(at::native::ReduceOp<int, at::native::func_wrapper_t<int, at::native::MaxNanFunctor<int> >, unsigned int, int, 4>)",
+        "self_cpu_us": 0.0,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 771,
+        "cpu_us": 13926.763000000214,
+        "cuda_us": 0.0,
+        "name": "aten::item",
+        "self_cpu_us": 967.2500000006564,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 771,
+        "cpu_us": 12959.512999999559,
+        "cuda_us": 0.0,
+        "name": "aten::_local_scalar_dense",
+        "self_cpu_us": 4149.69100000071,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 933,
+        "cpu_us": 7566.827000000036,
+        "cuda_us": 0.0,
+        "name": "cudaMemcpyAsync",
+        "self_cpu_us": 7566.827000000036,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 771,
+        "cpu_us": 0.0,
+        "cuda_us": 0.0,
+        "name": "Memcpy DtoH (Device -> Pinned)",
+        "self_cpu_us": 0.0,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 933,
+        "cpu_us": 4497.602999999184,
+        "cuda_us": 0.0,
+        "name": "cudaStreamSynchronize",
+        "self_cpu_us": 4497.602999999184,
+        "self_cuda_us": 0.0
+      },
+      {
+        "count": 1,
+        "cpu_us": 76.73399999999992,
+        "cuda_us": 0.0,
+        "name": "aten::min",
+        "self_cpu_us": 44.978000000000065,
+        "self_cuda_us": 0.0
+      }
+    ]
+  }
+}

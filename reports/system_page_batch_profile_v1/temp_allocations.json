@@ -1,0 +1,66 @@
+[
+  {
+    "bytes": 26738688,
+    "bytes_per_decode_token": 26738688.0,
+    "calls": 68,
+    "dtype": "torch.float16",
+    "shape": "1x32x1x6144",
+    "tensor": "mixed_v_attn2_compact"
+  },
+  {
+    "bytes": 8912896,
+    "bytes_per_decode_token": 8912896.0,
+    "calls": 68,
+    "dtype": "torch.float16",
+    "shape": "1x32x1x2048",
+    "tensor": "mixed_v_attn4_compact"
+  },
+  {
+    "bytes": 26738688,
+    "bytes_per_decode_token": 26738688.0,
+    "calls": 68,
+    "dtype": "torch.int64",
+    "shape": "1x8x6144",
+    "tensor": "mixed_v_idx2_compact"
+  },
+  {
+    "bytes": 8912896,
+    "bytes_per_decode_token": 8912896.0,
+    "calls": 68,
+    "dtype": "torch.int64",
+    "shape": "1x8x2048",
+    "tensor": "mixed_v_idx4_compact"
+  },
+  {
+    "bytes": 3342336,
+    "bytes_per_decode_token": 3342336.0,
+    "calls": 68,
+    "dtype": "torch.uint8",
+    "shape": "1x8x6144",
+    "tensor": "mixed_v_mask2_compact"
+  },
+  {
+    "bytes": 1114112,
+    "bytes_per_decode_token": 1114112.0,
+    "calls": 68,
+    "dtype": "torch.uint8",
+    "shape": "1x8x2048",
+    "tensor": "mixed_v_mask4_compact"
+  },
+  {
+    "bytes": 861929472,
+    "bytes_per_decode_token": 861929472.0,
+    "calls": 3599,
+    "dtype": "torch.float16",
+    "shape": "1x8x96x128",
+    "tensor": "page_batch_v2_page_values"
+  },
+  {
+    "bytes": 287309824,
+    "bytes_per_decode_token": 287309824.0,
+    "calls": 1959,
+    "dtype": "torch.float16",
+    "shape": "1x8x32x128",
+    "tensor": "page_batch_v4_page_values"
+  }
+]

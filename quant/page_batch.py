@@ -24,6 +24,12 @@ _PAGE_BATCH_COUNTERS = {
     "page_value_materialized_bytes": 0,
     "historical_v_materialization_bytes": 0,
     "python_serial_b1_dispatches": 0,
+    "host_sync_item_calls": 0,
+    "gpu_tensor_item_calls": 0,
+    "matmul_calls": 0,
+    "accumulate_calls": 0,
+    "attention_slice_calls": 0,
+    "repeat_kv_calls": 0,
 }
 
 
@@ -76,6 +82,15 @@ class PatternKVPageBatchCache:
 
 def _tensor_bytes(value: torch.Tensor | None) -> int:
     return 0 if value is None else int(value.numel() * value.element_size())
+
+
+def _item_int(value: torch.Tensor, component: str) -> int:
+    _PAGE_BATCH_COUNTERS["host_sync_item_calls"] += 1
+    if value.is_cuda:
+        _PAGE_BATCH_COUNTERS["gpu_tensor_item_calls"] += 1
+    record_counter("page_batch_item_calls", calls=1)
+    record_counter(f"{component}_item_calls", calls=1)
+    return int(value.item())
 
 
 def _pack_precision_bitmap(mask: torch.Tensor, *, page_size: int = PAGE_SIZE) -> torch.Tensor:
@@ -249,11 +264,13 @@ def pack_mixed_v_pages(
 
 
 def _repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
-    if n_rep == 1:
-        return hidden_states
-    bsz, num_key_value_heads, slen, head_dim = hidden_states.shape
-    hidden_states = hidden_states[:, :, None, :, :].expand(bsz, num_key_value_heads, n_rep, slen, head_dim)
-    return hidden_states.reshape(bsz, num_key_value_heads * n_rep, slen, head_dim)
+    _PAGE_BATCH_COUNTERS["repeat_kv_calls"] += 1
+    with profile_range("page_batch_repeat_kv"):
+        if n_rep == 1:
+            return hidden_states
+        bsz, num_key_value_heads, slen, head_dim = hidden_states.shape
+        hidden_states = hidden_states[:, :, None, :, :].expand(bsz, num_key_value_heads, n_rep, slen, head_dim)
+        return hidden_states.reshape(bsz, num_key_value_heads * n_rep, slen, head_dim)
 
 
 def _restore_page_values(
@@ -267,14 +284,19 @@ def _restore_page_values(
     bits: int,
     group_size: int,
 ) -> torch.Tensor:
-    values = dequantize_v_reference(payload, scale, zero, group_size, bits)
-    if values is None:
-        raise RuntimeError("missing page payload")
-    _PAGE_BATCH_COUNTERS["page_value_materialization_calls"] += 1
-    _PAGE_BATCH_COUNTERS["page_value_materialized_bytes"] += _tensor_bytes(values)
-    record_temp_allocation(f"page_batch_v{bits}_page_values", values)
-    gathered = pattern_gather_centroids(assignment_idx.to(torch.long), centroids).to(values.dtype)
-    return values + pattern_mask.unsqueeze(-1).to(values.dtype) * gathered
+    with profile_range(f"v{bits}_page_restore"):
+        with profile_range(f"v{bits}_dequant"):
+            values = dequantize_v_reference(payload, scale, zero, group_size, bits)
+        if values is None:
+            raise RuntimeError("missing page payload")
+        _PAGE_BATCH_COUNTERS["page_value_materialization_calls"] += 1
+        _PAGE_BATCH_COUNTERS["page_value_materialized_bytes"] += _tensor_bytes(values)
+        with profile_range("page_temp_allocation", bytes_copied=_tensor_bytes(values)):
+            record_temp_allocation(f"page_batch_v{bits}_page_values", values)
+        with profile_range(f"v{bits}_centroid_gather"):
+            gathered = pattern_gather_centroids(assignment_idx.to(torch.long), centroids).to(values.dtype)
+        with profile_range(f"v{bits}_restore_combine"):
+            return values + pattern_mask.unsqueeze(-1).to(values.dtype) * gathered
 
 
 def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCache) -> torch.Tensor:
@@ -286,7 +308,7 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
     expanded for the page-local accumulation step.
     """
 
-    with profile_range("page_batch_decode"):
+    with profile_range("page_batch_decode_total"):
         if attn.dim() != 4 or attn.shape[2] != 1:
             raise ValueError(f"attn must be [B,Hq,1,T], got {tuple(attn.shape)}")
         bsz, nh, _q, tokens = attn.shape
@@ -294,40 +316,46 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
             raise ValueError("S6-B.2 MVP only supports B=1, B=2, and B=4")
         if nh != cache.nh:
             raise ValueError(f"attention heads mismatch: {nh} != {cache.nh}")
-        if int(cache.metadata.seq_lens.max().item()) != tokens or int(cache.metadata.seq_lens.min().item()) != tokens:
+        max_len = _item_int(cache.metadata.seq_lens.max(), "metadata_seq_lens")
+        min_len = _item_int(cache.metadata.seq_lens.min(), "metadata_seq_lens")
+        if max_len != tokens or min_len != tokens:
             raise ValueError("S6-B.2 MVP requires equal sequence lengths matching attention width")
 
         _PAGE_BATCH_COUNTERS["page_batch_decode_calls"] += 1
         record_counter("page_batch_decode_calls", calls=1)
         out = torch.zeros((bsz, nh, 1, cache.head_dim), dtype=torch.float32, device=attn.device)
         n_rep = cache.nh // cache.nh_kv
-        num_pages = int(cache.metadata.num_pages[0].item())
+        num_pages = _item_int(cache.metadata.num_pages[0], "metadata_num_pages")
         metadata_pages = cache.metadata.metadata_page_table.reshape(-1)
         v2_pages = cache.metadata.v2_page_table.reshape(-1)
         v4_pages = cache.metadata.v4_page_table.reshape(-1)
         total_pages = int(metadata_pages.numel())
         for flat_page in range(total_pages):
-            b = flat_page // num_pages
-            page = flat_page - b * num_pages
-            metadata_page = int(metadata_pages[flat_page].item())
-            valid = int(cache.metadata.valid_tokens[metadata_page].item())
+            with profile_range("page_metadata_lookup"):
+                b = flat_page // num_pages
+                page = flat_page - b * num_pages
+                metadata_page = _item_int(metadata_pages[flat_page], "metadata_page")
+                valid = _item_int(cache.metadata.valid_tokens[metadata_page], "metadata_valid_tokens")
             if valid <= 0:
                 continue
             start = page * cache.page_size
             stop = start + valid
-            v2_page_id = int(v2_pages[flat_page].item())
-            v4_page_id = int(v4_pages[flat_page].item())
-            v2_count = int(cache.metadata.v2_counts[metadata_page].item())
-            v4_count = int(cache.metadata.v4_counts[metadata_page].item())
+            with profile_range("page_metadata_lookup"):
+                v2_page_id = _item_int(v2_pages[flat_page], "metadata_v2_page")
+                v4_page_id = _item_int(v4_pages[flat_page], "metadata_v4_page")
+                v2_count = _item_int(cache.metadata.v2_counts[metadata_page], "metadata_v2_count")
+                v4_count = _item_int(cache.metadata.v4_counts[metadata_page], "metadata_v4_count")
             if v2_count + v4_count != valid:
                 raise RuntimeError("invalid page counts")
 
             _PAGE_BATCH_COUNTERS["logical_pages_processed"] += 1
             _PAGE_BATCH_COUNTERS["v2_tokens_processed"] += v2_count
             _PAGE_BATCH_COUNTERS["v4_tokens_processed"] += v4_count
-            prefix = cache.metadata.v4_prefix_counts[metadata_page]
-            page_precision = (prefix[1 : valid + 1] > prefix[:valid]).bool()
-            page_attn = attn[b : b + 1, :, :, start:stop]
+            with profile_range("page_precision_reconstruct"):
+                prefix = cache.metadata.v4_prefix_counts[metadata_page]
+                page_precision = (prefix[1 : valid + 1] > prefix[:valid]).bool()
+            with profile_range("page_attn_slice"):
+                page_attn = attn[b : b + 1, :, :, start:stop]
             if v2_count:
                 _PAGE_BATCH_COUNTERS["v2_pages_processed"] += 1
                 v2_values = _restore_page_values(
@@ -340,8 +368,16 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
                     bits=2,
                     group_size=cache.group_size,
                 )
-                attn2 = page_attn[:, :, :, ~page_precision].contiguous()
-                out[b : b + 1] += torch.matmul(attn2, _repeat_kv(v2_values, n_rep)).float()
+                with profile_range("v2_attn_slice"):
+                    _PAGE_BATCH_COUNTERS["attention_slice_calls"] += 1
+                    attn2 = page_attn[:, :, :, ~page_precision].contiguous()
+                v2_repeated = _repeat_kv(v2_values, n_rep)
+                with profile_range("v2_matmul"):
+                    _PAGE_BATCH_COUNTERS["matmul_calls"] += 1
+                    part2 = torch.matmul(attn2, v2_repeated).float()
+                with profile_range("v2_accumulate"):
+                    _PAGE_BATCH_COUNTERS["accumulate_calls"] += 1
+                    out[b : b + 1] += part2
             if v4_count:
                 _PAGE_BATCH_COUNTERS["v4_pages_processed"] += 1
                 v4_values = _restore_page_values(
@@ -354,8 +390,16 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
                     bits=4,
                     group_size=cache.group_size,
                 )
-                attn4 = page_attn[:, :, :, page_precision].contiguous()
-                out[b : b + 1] += torch.matmul(attn4, _repeat_kv(v4_values, n_rep)).float()
+                with profile_range("v4_attn_slice"):
+                    _PAGE_BATCH_COUNTERS["attention_slice_calls"] += 1
+                    attn4 = page_attn[:, :, :, page_precision].contiguous()
+                v4_repeated = _repeat_kv(v4_values, n_rep)
+                with profile_range("v4_matmul"):
+                    _PAGE_BATCH_COUNTERS["matmul_calls"] += 1
+                    part4 = torch.matmul(attn4, v4_repeated).float()
+                with profile_range("v4_accumulate"):
+                    _PAGE_BATCH_COUNTERS["accumulate_calls"] += 1
+                    out[b : b + 1] += part4
         return out.to(attn.dtype)
 
 

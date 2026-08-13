@@ -1,0 +1,19 @@
+{
+  "accumulate_calls": 162,
+  "attention_slice_calls": 162,
+  "gpu_tensor_item_calls": 771,
+  "historical_v_materialization_bytes": 0,
+  "host_sync_item_calls": 771,
+  "logical_pages_processed": 128,
+  "matmul_calls": 162,
+  "page_batch_decode_calls": 1,
+  "page_batch_pack_calls": 0,
+  "page_value_materialization_calls": 162,
+  "page_value_materialized_bytes": 33554432,
+  "python_serial_b1_dispatches": 0,
+  "repeat_kv_calls": 162,
+  "v2_pages_processed": 105,
+  "v2_tokens_processed": 12288,
+  "v4_pages_processed": 57,
+  "v4_tokens_processed": 4096
+}

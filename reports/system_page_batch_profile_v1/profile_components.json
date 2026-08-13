@@ -1,0 +1,212 @@
+{
+  "metadata_num_pages_item_calls": {
+    "bytes": 0.0,
+    "calls": 1.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_page_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_seq_lens_item_calls": {
+    "bytes": 0.0,
+    "calls": 2.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_v2_count_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_v2_page_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_v4_count_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_v4_page_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "metadata_valid_tokens_item_calls": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "page_attn_slice": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 24.232000287156552,
+    "tokens": 0.0,
+    "total_us": 3101.6960367560387
+  },
+  "page_batch_decode_calls": {
+    "bytes": 0.0,
+    "calls": 1.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "page_batch_decode_total": {
+    "bytes": 0.0,
+    "calls": 1.0,
+    "mean_us": 202562.56103515625,
+    "tokens": 0.0,
+    "total_us": 202562.56103515625
+  },
+  "page_batch_item_calls": {
+    "bytes": 0.0,
+    "calls": 771.0,
+    "mean_us": 0.0,
+    "tokens": 0.0,
+    "total_us": 0.0
+  },
+  "page_batch_repeat_kv": {
+    "bytes": 0.0,
+    "calls": 162.0,
+    "mean_us": 61.161877127525244,
+    "tokens": 0.0,
+    "total_us": 9908.22409465909
+  },
+  "page_metadata_lookup": {
+    "bytes": 0.0,
+    "calls": 256.0,
+    "mean_us": 80.88712525204755,
+    "tokens": 0.0,
+    "total_us": 20707.104064524174
+  },
+  "page_precision_reconstruct": {
+    "bytes": 0.0,
+    "calls": 128.0,
+    "mean_us": 46.32075014524162,
+    "tokens": 0.0,
+    "total_us": 5929.056018590927
+  },
+  "page_temp_allocation": {
+    "bytes": 33554432.0,
+    "calls": 162.0,
+    "mean_us": 20.587456332128724,
+    "tokens": 0.0,
+    "total_us": 3335.1679258048534
+  },
+  "v2_accumulate": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 40.54064764862969,
+    "tokens": 0.0,
+    "total_us": 4256.768003106117
+  },
+  "v2_attn_slice": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 115.72175260101046,
+    "tokens": 0.0,
+    "total_us": 12150.784023106098
+  },
+  "v2_centroid_gather": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 70.23664748384839,
+    "tokens": 0.0,
+    "total_us": 7374.847985804081
+  },
+  "v2_dequant": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 274.64655155227297,
+    "tokens": 0.0,
+    "total_us": 28837.887912988663
+  },
+  "v2_matmul": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 84.65066594736916,
+    "tokens": 0.0,
+    "total_us": 8888.319924473763
+  },
+  "v2_page_restore": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 536.6930288927896,
+    "tokens": 0.0,
+    "total_us": 56352.768033742905
+  },
+  "v2_restore_combine": {
+    "bytes": 0.0,
+    "calls": 105.0,
+    "mean_us": 57.509790680238176,
+    "tokens": 0.0,
+    "total_us": 6038.528021425009
+  },
+  "v4_accumulate": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 40.61866675813993,
+    "tokens": 0.0,
+    "total_us": 2315.264005213976
+  },
+  "v4_attn_slice": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 98.8070194919904,
+    "tokens": 0.0,
+    "total_us": 5632.000111043453
+  },
+  "v4_centroid_gather": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 66.88336805816283,
+    "tokens": 0.0,
+    "total_us": 3812.351979315281
+  },
+  "v4_dequant": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 254.76041932900748,
+    "tokens": 0.0,
+    "total_us": 14521.343901753426
+  },
+  "v4_matmul": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 81.84813943348433,
+    "tokens": 0.0,
+    "total_us": 4665.343947708607
+  },
+  "v4_page_restore": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 509.7184552435289,
+    "tokens": 0.0,
+    "total_us": 29053.95194888115
+  },
+  "v4_restore_combine": {
+    "bytes": 0.0,
+    "calls": 57.0,
+    "mean_us": 58.116491361145385,
+    "tokens": 0.0,
+    "total_us": 3312.640007585287
+  }
+}
