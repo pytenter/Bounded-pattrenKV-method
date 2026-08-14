@@ -1,0 +1,70 @@
+{
+  "centroid_state_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "last_page_valid_tokens": [
+    128,
+    128,
+    128,
+    128
+  ],
+  "packed_k_tokens": [
+    128,
+    256,
+    384,
+    512
+  ],
+  "packed_v4_tokens": [
+    32,
+    64,
+    96,
+    128
+  ],
+  "packed_v_tokens": [
+    128,
+    256,
+    384,
+    512
+  ],
+  "page_counts": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "page_indptr": [
+    0,
+    1,
+    3,
+    6,
+    10
+  ],
+  "position_ids": [
+    384,
+    513,
+    642,
+    771
+  ],
+  "request_count": 4,
+  "request_ids": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "seq_lens": [
+    384,
+    513,
+    642,
+    771
+  ],
+  "total_tokens": [
+    384,
+    513,
+    642,
+    771
+  ]
+}

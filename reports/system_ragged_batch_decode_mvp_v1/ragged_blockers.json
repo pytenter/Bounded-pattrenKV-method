@@ -1,0 +1,15 @@
+{
+  "evidence": [
+    "PatternQuantizedKVCache.total_tokens is serialized as a batch-global scalar.",
+    "LlamaModel_PatternKV derives decode position_ids from the first layer cache length.",
+    "Segmented PatternKV attention validates [B,H,Q,cache.total_tokens] with one global cache length.",
+    "quant.page_batch patternkv_page_batch_decode currently requires equal seq_lens."
+  ],
+  "first_ragged_blocker": "RAGGED_CACHE_ASSEMBLY_UNSUPPORTED",
+  "secondary_blockers": [
+    "RAGGED_POSITION_IDS_UNSUPPORTED",
+    "RAGGED_K_LENGTH_UNSUPPORTED",
+    "RAGGED_V_PAGE_METADATA_UNSUPPORTED",
+    "RAGGED_ATTENTION_MASK_UNSUPPORTED"
+  ]
+}
