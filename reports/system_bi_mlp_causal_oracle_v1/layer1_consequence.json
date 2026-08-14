@@ -1,0 +1,96 @@
+{
+  "K_CENTROID": {
+    "comparable": true,
+    "cosine": 0.9999984502792358,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      8,
+      32,
+      128
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      8,
+      32,
+      128
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "K_PROJ": {
+    "comparable": true,
+    "cosine": 0.9999950528144836,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      1024
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      1024
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "LAYER_INPUT": {
+    "comparable": true,
+    "cosine": 1.0001168251037598,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      4096
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      4096
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "V_CENTROID": {
+    "comparable": true,
+    "cosine": 0.9999979138374329,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      8,
+      32,
+      128
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      8,
+      32,
+      128
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "V_PROJ": {
+    "comparable": true,
+    "cosine": 0.9999982714653015,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      1024
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      1024
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  }
+}

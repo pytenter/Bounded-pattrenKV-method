@@ -385,6 +385,33 @@ def batch_invariant_k_projection(
     raise ValueError(f"Unsupported batch-invariant K projection backend: {backend!r}")
 
 
+def batch_invariant_linear_projection(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    bias: torch.Tensor | None = None,
+    *,
+    backend: str = "v2",
+    block_k: int = 64,
+    block_m: int = 128,
+    block_n: int = 128,
+    group_m: int = 8,
+    num_warps: int = 8,
+    num_stages: int = 3,
+) -> torch.Tensor:
+    return batch_invariant_k_projection(
+        x,
+        weight,
+        bias,
+        backend=backend,
+        block_k=block_k,
+        block_m=block_m,
+        block_n=block_n,
+        group_m=group_m,
+        num_warps=num_warps,
+        num_stages=num_stages,
+    )
+
+
 def flag_enabled(env: dict[str, str] | None = None) -> bool:
     source: Any = env if env is not None else __import__("os").environ
     return str(source.get("PATTERNKV_BATCH_INVARIANT_KPROJ", "0")).strip() == "1"

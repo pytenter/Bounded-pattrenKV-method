@@ -1,0 +1,20 @@
+{
+  "down_proj": {
+    "K": 14336,
+    "M": "batch*tokens",
+    "N": 4096
+  },
+  "gate_proj": {
+    "K": 4096,
+    "M": "batch*tokens",
+    "N": 14336
+  },
+  "hidden_size": 4096,
+  "intermediate_size": 14336,
+  "oracle_backend": "v2",
+  "up_proj": {
+    "K": 4096,
+    "M": "batch*tokens",
+    "N": 14336
+  }
+}

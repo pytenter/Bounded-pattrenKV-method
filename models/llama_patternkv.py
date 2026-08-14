@@ -13,6 +13,7 @@ from quant.batch_invariant_kproj import (
     BI_KV_PREFILL_PROJ_MODE,
     BI_K_PREFILL_PROJ_MODE,
     batch_invariant_k_projection,
+    batch_invariant_linear_projection,
     prefill_proj_mode,
     record_bi_prefill_kproj,
     record_bi_prefill_vproj,
@@ -88,6 +89,14 @@ def patternkv_mixed_v_backend() -> str:
 
 _PREFILL_PROJ_TRACE: list[dict[str, torch.Tensor | int]] = []
 _P2_FIRST_DIVERGENCE_TRACE: list[dict[str, torch.Tensor | int | str | tuple[int, ...]]] = []
+_BI_MLP_ORACLE_COUNTERS = {
+    "bi_mlp_gate_calls": 0,
+    "bi_mlp_up_calls": 0,
+    "bi_mlp_down_calls": 0,
+    "normal_mlp_gate_calls": 0,
+    "normal_mlp_up_calls": 0,
+    "normal_mlp_down_calls": 0,
+}
 
 
 def reset_patternkv_prefill_proj_trace() -> None:
@@ -104,6 +113,75 @@ def reset_patternkv_p2_first_divergence_trace() -> None:
 
 def patternkv_p2_first_divergence_trace_records() -> list[dict[str, torch.Tensor | int | str | tuple[int, ...]]]:
     return list(_P2_FIRST_DIVERGENCE_TRACE)
+
+
+def reset_patternkv_bi_mlp_oracle_counters() -> None:
+    for key in _BI_MLP_ORACLE_COUNTERS:
+        _BI_MLP_ORACLE_COUNTERS[key] = 0
+
+
+def patternkv_bi_mlp_oracle_counters() -> dict[str, int]:
+    return dict(_BI_MLP_ORACLE_COUNTERS)
+
+
+def patternkv_bi_mlp_oracle_enabled(layer_idx: int | None) -> bool:
+    if os.environ.get("PATTERNKV_BI_MLP_ORACLE", "0") != "1":
+        return False
+    if layer_idx is None:
+        return False
+    return int(layer_idx) == int(os.environ.get("PATTERNKV_BI_MLP_ORACLE_LAYER", "0"))
+
+
+def patternkv_bi_mlp_oracle_components() -> set[str]:
+    raw = os.environ.get("PATTERNKV_BI_MLP_ORACLE_COMPONENTS", "gate,up,down")
+    return {item.strip().lower() for item in raw.split(",") if item.strip()}
+
+
+def patternkv_bi_mlp_oracle_backend() -> str:
+    return os.environ.get("PATTERNKV_BI_MLP_ORACLE_BACKEND", "v2").strip().lower()
+
+
+def _record_bi_mlp_trace(layer_idx: int | None, component: str, value: torch.Tensor) -> None:
+    if os.environ.get("PATTERNKV_BI_MLP_TRACE", "0") != "1":
+        return
+    _record_p2_first_divergence_trace(layer_idx, component, value)
+
+
+def patternkv_mlp_oracle_forward(layer: nn.Module, hidden_states: torch.Tensor, layer_idx: int | None) -> torch.Tensor:
+    mlp = layer.mlp
+    enabled = patternkv_bi_mlp_oracle_enabled(layer_idx)
+    components = patternkv_bi_mlp_oracle_components() if enabled else set()
+    backend = patternkv_bi_mlp_oracle_backend()
+
+    if enabled and "gate" in components:
+        gate = batch_invariant_linear_projection(hidden_states, mlp.gate_proj.weight, getattr(mlp.gate_proj, "bias", None), backend=backend)
+        _BI_MLP_ORACLE_COUNTERS["bi_mlp_gate_calls"] += 1
+    else:
+        gate = mlp.gate_proj(hidden_states)
+        _BI_MLP_ORACLE_COUNTERS["normal_mlp_gate_calls"] += 1
+    _record_bi_mlp_trace(layer_idx, "MLP_GATE_PROJ", gate)
+
+    if enabled and "up" in components:
+        up = batch_invariant_linear_projection(hidden_states, mlp.up_proj.weight, getattr(mlp.up_proj, "bias", None), backend=backend)
+        _BI_MLP_ORACLE_COUNTERS["bi_mlp_up_calls"] += 1
+    else:
+        up = mlp.up_proj(hidden_states)
+        _BI_MLP_ORACLE_COUNTERS["normal_mlp_up_calls"] += 1
+    _record_bi_mlp_trace(layer_idx, "MLP_UP_PROJ", up)
+
+    activated_gate = mlp.act_fn(gate)
+    _record_bi_mlp_trace(layer_idx, "MLP_ACTIVATED_GATE", activated_gate)
+    product = activated_gate * up
+    _record_bi_mlp_trace(layer_idx, "MLP_PRODUCT", product)
+
+    if enabled and "down" in components:
+        out = batch_invariant_linear_projection(product, mlp.down_proj.weight, getattr(mlp.down_proj, "bias", None), backend=backend)
+        _BI_MLP_ORACLE_COUNTERS["bi_mlp_down_calls"] += 1
+    else:
+        out = mlp.down_proj(product)
+        _BI_MLP_ORACLE_COUNTERS["normal_mlp_down_calls"] += 1
+    _record_bi_mlp_trace(layer_idx, "MLP_DOWN_PROJ", out)
+    return out
 
 
 def _p2_first_divergence_trace_enabled() -> bool:
@@ -2112,7 +2190,7 @@ class LlamaDecoderLayer_PatternKV(nn.Module):
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
         _record_p2_first_divergence_trace(layer_idx, "POST_ATTENTION_RMSNORM", hidden_states)
-        hidden_states = self.mlp(hidden_states)
+        hidden_states = patternkv_mlp_oracle_forward(self, hidden_states, layer_idx)
         _record_p2_first_divergence_trace(layer_idx, "MLP_OUTPUT", hidden_states)
         hidden_states = residual + hidden_states
         _record_p2_first_divergence_trace(layer_idx, "LAYER_OUTPUT", hidden_states)

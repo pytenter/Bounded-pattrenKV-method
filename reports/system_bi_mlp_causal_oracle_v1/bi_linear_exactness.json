@@ -1,0 +1,56 @@
+{
+  "down": {
+    "comparable": true,
+    "cosine": 1.0001609325408936,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      4096
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      4096
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "gate": {
+    "comparable": true,
+    "cosine": 1.0005698204040527,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      14336
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      14336
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  },
+  "up": {
+    "comparable": true,
+    "cosine": 1.000443696975708,
+    "difference_rate": 0.0,
+    "exact": true,
+    "got_shape": [
+      512,
+      14336
+    ],
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "ref_shape": [
+      512,
+      14336
+    ],
+    "relative_l2": 0.0,
+    "shape_equal": true
+  }
+}
