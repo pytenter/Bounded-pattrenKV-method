@@ -14,11 +14,12 @@ if str(ROOT) not in sys.path:
 from bench._longbench_scorer import score_subtask
 from bench.longbench_config import METRIC_NAMES, SUBTASKS, expected_samples
 
-METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
+METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper", "causal_v4_25")
 METHOD_LABELS = {
     "fp16": "FP16",
     "kivi_paper_g128": "KIVI",
     "patternkv_paper": "PatternKV",
+    "causal_v4_25": "CAUSAL_V4_25",
 }
 TASK_CATEGORIES = {
     "narrativeqa": "SQA",
@@ -49,6 +50,7 @@ PAPER_TABLE1_LLAMA31_8B = {
     "fp16": {"MQA": 36.63, "SQA": 46.56, "Summ.": 25.54, "Few-shot": 61.16, "Synth.": 59.99, "Code": 59.42, "Avg": 46.59},
     "kivi_paper_g128": {"MQA": 34.86, "SQA": 43.96, "Summ.": 24.98, "Few-shot": 60.35, "Synth.": 54.43, "Code": 55.53, "Avg": 44.33},
     "patternkv_paper": {"MQA": 35.49, "SQA": 45.08, "Summ.": 25.12, "Few-shot": 60.58, "Synth.": 57.89, "Code": 56.55, "Avg": 45.33},
+    "causal_v4_25": {"MQA": None, "SQA": None, "Summ.": None, "Few-shot": None, "Synth.": None, "Code": None, "Avg": None},
 }
 
 
@@ -138,7 +140,7 @@ def summarize(base: Path, sample_limit_per_task: int | None = None) -> dict:
             key: {
                 "local_21x50_8k": local.get(key),
                 "paper_table1": paper.get(key),
-                "delta_local_minus_paper": (local.get(key) - paper.get(key)) if local.get(key) is not None else None,
+                "delta_local_minus_paper": (local.get(key) - paper.get(key)) if local.get(key) is not None and paper.get(key) is not None else None,
             }
             for key in ("MQA", "SQA", "Summ.", "Few-shot", "Synth.", "Code", "Avg")
         }
@@ -150,6 +152,8 @@ def summarize(base: Path, sample_limit_per_task: int | None = None) -> dict:
             "patternkv_minus_kivi": (macro["patternkv_paper"] - macro["kivi_paper_g128"]) if macro["patternkv_paper"] is not None and macro["kivi_paper_g128"] is not None else None,
             "patternkv_minus_fp16": (macro["patternkv_paper"] - macro["fp16"]) if macro["patternkv_paper"] is not None and macro["fp16"] is not None else None,
             "kivi_minus_fp16": (macro["kivi_paper_g128"] - macro["fp16"]) if macro["kivi_paper_g128"] is not None and macro["fp16"] is not None else None,
+            "causal_minus_patternkv": (macro["causal_v4_25"] - macro["patternkv_paper"]) if macro["causal_v4_25"] is not None and macro["patternkv_paper"] is not None else None,
+            "causal_minus_fp16": (macro["causal_v4_25"] - macro["fp16"]) if macro["causal_v4_25"] is not None and macro["fp16"] is not None else None,
         },
         "planned_total": sum(min(expected_samples(t), sample_limit_per_task) if sample_limit_per_task else expected_samples(t) for t in SUBTASKS) * len(METHODS),
         "completed_total": sum(r["completed"] for r in task_rows),

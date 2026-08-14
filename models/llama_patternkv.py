@@ -2459,12 +2459,21 @@ class LlamaForCausalLM_PatternKV(LlamaPreTrainedModel):
 
         hidden_states = outputs[0]
         with profile_range(f"{phase}_lm_head"):
+            logits_hidden_states = hidden_states
+            if (
+                labels is None
+                and use_cache
+                and not self.training
+                and hidden_states.shape[1] > 1
+                and os.environ.get("PATTERNKV_FULL_PREFILL_LOGITS", "0") != "1"
+            ):
+                logits_hidden_states = hidden_states[:, -1:, :]
             if self.config.pretraining_tp > 1:
                 lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
-                logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
+                logits = [F.linear(logits_hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
                 logits = torch.cat(logits, dim=-1)
             else:
-                logits = self.lm_head(hidden_states)
+                logits = self.lm_head(logits_hidden_states)
             logits = logits.float()
 
         loss = None

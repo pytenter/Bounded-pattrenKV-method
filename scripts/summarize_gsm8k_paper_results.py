@@ -92,7 +92,10 @@ def main():
     args = p.parse_args()
     rows = {m: read_method(args.results_dir, m) for m in args.methods}
     summary = {"results_dir": str(args.results_dir), "methods": {m: summarize(v) for m, v in rows.items()}, "paired": []}
-    for a, b in [("patternkv_paper", "kivi_paper_g128"), ("patternkv_paper", "fp16"), ("kivi_paper_g128", "fp16")]:
+    pairs = [("patternkv_paper", "kivi_paper_g128"), ("patternkv_paper", "fp16"), ("kivi_paper_g128", "fp16")]
+    if "causal_v4_25" in rows:
+        pairs.extend([("causal_v4_25", "fp16"), ("causal_v4_25", "patternkv_paper"), ("causal_v4_25", "kivi_paper_g128")])
+    for a, b in pairs:
         if a in rows and b in rows:
             summary["paired"].append(paired(rows[a], rows[b], a, b))
     args.report_json.parent.mkdir(parents=True, exist_ok=True)

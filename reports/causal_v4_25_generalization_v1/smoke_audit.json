@@ -1,0 +1,185 @@
+{
+  "BASELINE_REUSE_STATUS": "SAFE_TO_REUSE",
+  "GSM8K_SMOKE": {
+    "accuracy": 75.0,
+    "avg_generated_tokens": 299.1,
+    "avg_wall_time": 25.961,
+    "completed": 20,
+    "config_hashes": [
+      "f4bc6231cd989167"
+    ],
+    "correct": 15,
+    "eos_count": 20,
+    "error": 0,
+    "length_truncation_count": 0,
+    "max_new_tokens": [
+      2048
+    ],
+    "model_path": [
+      "/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct"
+    ],
+    "oom": 0,
+    "p95_generated_tokens": 539,
+    "p95_wall_time": 50.946,
+    "paired_vs_fp16": {
+      "both_correct": 13,
+      "both_wrong": 5,
+      "causal_correct_baseline_wrong": 2,
+      "causal_wrong_baseline_correct": 0,
+      "paired_accuracy_difference": 0.1,
+      "paired_n": 20
+    },
+    "paired_vs_kivi_paper_g128": {
+      "both_correct": 11,
+      "both_wrong": 4,
+      "causal_correct_baseline_wrong": 4,
+      "causal_wrong_baseline_correct": 1,
+      "paired_accuracy_difference": 0.15,
+      "paired_n": 20
+    },
+    "paired_vs_patternkv_paper": {
+      "both_correct": 13,
+      "both_wrong": 3,
+      "causal_correct_baseline_wrong": 2,
+      "causal_wrong_baseline_correct": 2,
+      "paired_accuracy_difference": 0.0,
+      "paired_n": 20
+    },
+    "parse_success_rate": 100.0,
+    "peak_gpu_memory_reserved_bytes": 17725128704,
+    "planned": 20,
+    "prompt_protocol": [
+      "zero-shot-cot"
+    ],
+    "selector_task_keys_present": 20,
+    "status": "PASS"
+  },
+  "LONGBENCH_SMOKE": {
+    "completed": 15,
+    "planned": 15,
+    "status": "FAIL_OOM",
+    "tasks": {
+      "lcc": {
+        "completed": 5,
+        "config_hashes": [
+          "8b0c361c11503aeec7e455ed3e7d7cef6f2ac9b12b2e4b45d5be5800628a66d6"
+        ],
+        "eos": 0,
+        "error": 0,
+        "length": 4,
+        "max_gen": [
+          64
+        ],
+        "max_input_length": [
+          8192
+        ],
+        "model_config_sha256": [
+          "29e4c210b0d6ac178b16b2a255a568bdb23b581e50ca1ef6a6d071dd85704e6e"
+        ],
+        "oom": 1,
+        "peak_memory_reserved_bytes": 20591935488,
+        "planned": 5,
+        "score_mean_success_rows": 68.25,
+        "success": 4,
+        "tokenizer_config_sha256": [
+          "177c7b61e616fecb84c17ce0591acb92c6c4d60e9ac5ababfb940ff23bbcd424"
+        ]
+      },
+      "passage_retrieval_en": {
+        "completed": 5,
+        "config_hashes": [
+          "8b0c361c11503aeec7e455ed3e7d7cef6f2ac9b12b2e4b45d5be5800628a66d6"
+        ],
+        "eos": 0,
+        "error": 0,
+        "length": 0,
+        "max_gen": [
+          32
+        ],
+        "max_input_length": [
+          8192
+        ],
+        "model_config_sha256": [
+          "29e4c210b0d6ac178b16b2a255a568bdb23b581e50ca1ef6a6d071dd85704e6e"
+        ],
+        "oom": 5,
+        "peak_memory_reserved_bytes": 0,
+        "planned": 5,
+        "score_mean_success_rows": null,
+        "success": 0,
+        "tokenizer_config_sha256": [
+          "177c7b61e616fecb84c17ce0591acb92c6c4d60e9ac5ababfb940ff23bbcd424"
+        ]
+      },
+      "qasper": {
+        "completed": 5,
+        "config_hashes": [
+          "8b0c361c11503aeec7e455ed3e7d7cef6f2ac9b12b2e4b45d5be5800628a66d6"
+        ],
+        "eos": 5,
+        "error": 0,
+        "length": 0,
+        "max_gen": [
+          128
+        ],
+        "max_input_length": [
+          8192
+        ],
+        "model_config_sha256": [
+          "29e4c210b0d6ac178b16b2a255a568bdb23b581e50ca1ef6a6d071dd85704e6e"
+        ],
+        "oom": 0,
+        "peak_memory_reserved_bytes": 22355640320,
+        "planned": 5,
+        "score_mean_success_rows": 40.69,
+        "success": 5,
+        "tokenizer_config_sha256": [
+          "177c7b61e616fecb84c17ce0591acb92c6c4d60e9ac5ababfb940ff23bbcd424"
+        ]
+      }
+    }
+  },
+  "decision": "DO_NOT_START_FULL: LongBench smoke has OOM under frozen CAUSAL_V4_25 at 8K cap",
+  "effective_bitwidth": {
+    "causal_v4_25": {
+      "K_bits": 2,
+      "V4_ratio": 0.25,
+      "V_bit_distribution": "75% V2 / 25% V4 in full V windows",
+      "group_size": 128,
+      "level_a_effective_budget_from_release": "2.50048828125 bit/element including INT2/INT4 payload, FP16 scale/min, mixed V2/V4 precision metadata; excludes sink/recent FP16, centroids, assignment tensors, allocator overhead",
+      "metadata_dtype": "V precision gate observed as torch.uint8 in smoke records; assignments torch.int64 in Python tensors",
+      "physical_storage_note": "smoke records include packed_payload_bytes, scale_min_bytes, fp16_residual_bytes, assignment_bytes, mask_bytes, centroid_bytes; allocator-level full physical bitwidth not finalized",
+      "raw_payload_bits": "K payload 2; V average payload 2*0.75 + 4*0.25 = 2.5; combined K/V payload average = 2.25 bit/scalar",
+      "recent": 128,
+      "residual_length": 128,
+      "selector": "causal_v4",
+      "sink": 16
+    },
+    "fp16": {
+      "K_bits": 16,
+      "V_bits": "16",
+      "effective_quantized_region_bits": "16.0 payload; no quant metadata",
+      "payload_bits_per_KV_scalar": 16.0,
+      "residual_sink_recent": "not applicable"
+    },
+    "kivi_paper_g128": {
+      "K_bits": 2,
+      "V_bits": "2",
+      "group_size": 128,
+      "residual_length": 128,
+      "scale_zero_metadata": "FP16 scale + FP16 min/zero per group",
+      "theoretical_quantized_region_bits": "2 + 32/128 = 2.25 bit/scalar"
+    },
+    "patternkv_paper": {
+      "K_bits": 2,
+      "V_bits": "2",
+      "group_size": 128,
+      "num_k_base": 32,
+      "num_v_base": 32,
+      "pattern_group": 128,
+      "residual_length": 128,
+      "scale_zero_metadata": "FP16 scale + FP16 min/zero per group plus pattern assignments/centroids in implementation",
+      "theoretical_quantized_region_bits": "2 + 32/128 = 2.25 bit/scalar before pattern assignment/centroid physical overhead"
+    }
+  }
+}

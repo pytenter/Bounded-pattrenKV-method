@@ -1,0 +1,153 @@
+{
+  "cuda_visible_devices": "5",
+  "decode_cache_stats": {
+    "assignment_actual_python_tensor_bits": 97517568,
+    "assignment_bytes": 12189696,
+    "assignment_dtype": "torch.int64",
+    "cache_segment_stats": {
+      "k_assignment_tokens": 3968,
+      "packed_history_tokens": 3968,
+      "pending_history_tokens": 66,
+      "recent_tokens": 128,
+      "sink_tokens": 0,
+      "total_tokens": 4162,
+      "v_assignment_tokens": 3968
+    },
+    "centroid_bytes": 8519680,
+    "dynamic_pattern_count_k": 0,
+    "dynamic_pattern_count_v": 0,
+    "fp16_residual_bytes": 25427968,
+    "fp16_residual_tokens": 128,
+    "initial_pattern_count": 32,
+    "k_assignment_theoretical_compact_bits": 6094848,
+    "k_centroid_bytes": 2162688,
+    "mask_bytes": 1015808,
+    "mask_dtype": "torch.uint8",
+    "packed_payload_bytes": 65011712,
+    "persistent_key_heads": null,
+    "persistent_value_heads": null,
+    "python_tensor_storage_bytes": 120291328,
+    "quantized_region_theoretical_bits_per_scalar": 2.25,
+    "quantized_tokens": 4034,
+    "scale_min_bytes": 8126464,
+    "total_cached_tokens": 4162,
+    "v_assignment_theoretical_compact_bits": 6094848,
+    "v_centroid_bytes": 2162688,
+    "v_gate_actual_python_tensor_bits": 8126464,
+    "v_gate_theoretical_compact_bits": 1015808
+  },
+  "decode_seconds": 8.8581,
+  "error": null,
+  "events": {
+    "after_decode": {
+      "allocated": 17336612352,
+      "reserved": 18178113536
+    },
+    "after_model_load": {
+      "allocated": 16060538880,
+      "reserved": 16196304896
+    },
+    "after_prefill": {
+      "allocated": 17329058304,
+      "reserved": 18589155328
+    },
+    "before_decode": {
+      "allocated": 17329058304,
+      "reserved": 18060673024
+    },
+    "before_model": {
+      "allocated": 0,
+      "reserved": 0
+    },
+    "before_prefill": {
+      "allocated": 16060604416,
+      "reserved": 16196304896
+    },
+    "peak_during_decode": {
+      "allocated": 17457325056,
+      "reserved": 18178113536
+    },
+    "peak_during_prefill": {
+      "allocated": 17991553024,
+      "reserved": 18589155328
+    }
+  },
+  "generated_tokens": 128,
+  "generated_tokens_before_oom": 0,
+  "gpu": {
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "gpu_uuid": "GPU-0c785495-3462-4b7f-5ee1-0d3ab8fe53bc"
+  },
+  "max_new_tokens": 128,
+  "method": "patternkv_paper",
+  "official_max_new_tokens": 128,
+  "oom_stage": null,
+  "prefill_cache_stats": {
+    "assignment_actual_python_tensor_bits": 94371840,
+    "assignment_bytes": 11796480,
+    "assignment_dtype": "torch.int64",
+    "cache_segment_stats": {
+      "k_assignment_tokens": 3840,
+      "packed_history_tokens": 3840,
+      "pending_history_tokens": 66,
+      "recent_tokens": 128,
+      "sink_tokens": 0,
+      "total_tokens": 4034,
+      "v_assignment_tokens": 3840
+    },
+    "centroid_bytes": 8388608,
+    "dynamic_pattern_count_k": 0,
+    "dynamic_pattern_count_v": 0,
+    "fp16_residual_bytes": 25427968,
+    "fp16_residual_tokens": 128,
+    "initial_pattern_count": 32,
+    "k_assignment_theoretical_compact_bits": 4915200,
+    "k_centroid_bytes": 2097152,
+    "mask_bytes": 983040,
+    "mask_dtype": "torch.uint8",
+    "packed_payload_bytes": 62914560,
+    "persistent_key_heads": null,
+    "persistent_value_heads": null,
+    "python_tensor_storage_bytes": 117374976,
+    "quantized_region_theoretical_bits_per_scalar": 2.25,
+    "quantized_tokens": 3906,
+    "scale_min_bytes": 7864320,
+    "total_cached_tokens": 4034,
+    "v_assignment_theoretical_compact_bits": 4915200,
+    "v_centroid_bytes": 2097152,
+    "v_gate_actual_python_tensor_bits": 7864320,
+    "v_gate_theoretical_compact_bits": 983040
+  },
+  "prefill_seconds": 3.4676,
+  "prompt_truncated_to_max_input": false,
+  "quantization_config": {
+    "asym": true,
+    "backend_method": "patternkv",
+    "cache_mode": "",
+    "compact_kernel_storage_note": "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes.",
+    "group_size": 128,
+    "initial_pattern_count": 32,
+    "k_bits": 2,
+    "key_quant_axis": "per-channel: quantize transposed K along token axis",
+    "kivi_quantized_region_theoretical_bits": null,
+    "method": "patternkv_paper",
+    "mixed_key_int4_ratio": 0.0,
+    "mixed_key_mask_path": "",
+    "pattern_group": 128,
+    "pattern_selection_position": "post-RoPE key/value states",
+    "patternkv_cache_path": "",
+    "quantized_region_affine_bits": 2.25,
+    "recent_length": 128,
+    "residual_length": 128,
+    "sink_length": 0,
+    "v4_budget_fraction": null,
+    "v_bits": 2,
+    "value_precision_selector": null,
+    "value_quant_axis": "per-token: quantize V residual/centroids along head_dim axis"
+  },
+  "raw_input_tokens": 3999,
+  "sample_id": "qasper:3ac3eef636db11635a21a61804cb28e92c546a5686dd1e12",
+  "sample_index": 0,
+  "task": "qasper",
+  "tokenized_input_length": 4034
+}

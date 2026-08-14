@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import gc
 import hashlib
 import json
@@ -34,10 +35,12 @@ from bench.bench_longbench_patternkv import (
 )
 from bench.longbench_config import LONGBENCH_PIN, MAX_NEW_TOKENS, METRIC_NAMES, PROMPT_TEMPLATES, SUBTASKS, expected_samples
 from bench.paper_config import apply_method_defaults, cache_storage_summary, method_config_dict
+from models.llama_patternkv import reset_patternkv_runtime_state
 
 EXPERIMENT_NAME = "longbench_paper_v2_8k_single4090"
 EXPERIMENT_ID = "paper_v2_8k_single4090"
-METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
+BASELINE_METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
+METHODS = BASELINE_METHODS + ("causal_v4_25",)
 CONFIG_PATH = ROOT / "configs/longbench_paper_v2_8k_single4090.yaml"
 PROMPT_PATH = ROOT / "bench/longbench_config/dataset2prompt.json"
 MAXLEN_PATH = ROOT / "bench/longbench_config/dataset2maxlen.json"
@@ -80,7 +83,7 @@ def config_hash(max_input_length: int) -> str:
     payload = {
         "experiment_name": EXPERIMENT_NAME,
         "max_input_length": max_input_length,
-        "methods": METHODS,
+        "methods": BASELINE_METHODS,
         "tasks": SUBTASKS,
         "prompt_sha256": sha256_file(PROMPT_PATH),
         "maxlen_sha256": sha256_file(MAXLEN_PATH),
@@ -116,17 +119,21 @@ def read_jsonl_safely(path: Path) -> tuple[list[dict], int]:
 
 def atomic_append_jsonl(path: Path, record: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    rows, bad = read_jsonl_safely(path)
-    if bad:
-        raise RuntimeError(f"{path} has {bad} damaged JSON line(s); refusing to rewrite it")
-    rows.append(record)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    with tmp.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-        f.flush()
-        os.fsync(f.fileno())
-    tmp.replace(path)
+    lock_path = path.with_suffix(path.suffix + ".lock")
+    with lock_path.open("w", encoding="utf-8") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        rows, bad = read_jsonl_safely(path)
+        if bad:
+            raise RuntimeError(f"{path} has {bad} damaged JSON line(s); refusing to rewrite it")
+        rows.append(record)
+        tmp = path.with_suffix(path.suffix + f".{os.getpid()}.tmp")
+        with tmp.open("w", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+        tmp.replace(path)
+        fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
 def row_is_complete(row: dict, cfg_hash: str) -> bool:
@@ -213,9 +220,24 @@ def method_args(method: str, model_path: str, max_input_length: int, output_dir:
     return args
 
 
+def set_selector_task_context(model, selector_task_key: str) -> None:
+    reset_patternkv_runtime_state(model)
+    if hasattr(model, "config"):
+        model.config.patternkv_selector_task_key = selector_task_key
+    for layer in getattr(getattr(model, "model", None), "layers", []):
+        attn = getattr(layer, "self_attn", None)
+        if attn is None:
+            continue
+        attn.selector_task_key = selector_task_key
+        attn.v_causal_importance = None
+        attn.v_oracle_importance = None
+
+
 @torch.no_grad()
 def run_one(model, tokenizer, args: Namespace, task: str, index: int, ex: dict, dataset_size: int, hashes: dict, cfg_hash: str, gpu: dict) -> dict:
     sid = sample_id(task, index, ex)
+    if getattr(args, "patternkv_v_precision_selector", None) == "causal_v4":
+        set_selector_task_context(model, sid)
     t0 = time.perf_counter()
     last_op = "encode_prompt"
     prompt_info = {}
@@ -258,7 +280,7 @@ def run_one(model, tokenizer, args: Namespace, task: str, index: int, ex: dict, 
             residual_length=args.residual_length,
         )
         runtime_evidence = {}
-        if args.method == "patternkv_paper":
+        if args.method in ("patternkv_paper", "causal_v4_25"):
             runtime_evidence["patternkv_runtime_evidence"] = patternkv_evidence(model, getattr(output, "past_key_values", None))
         if args.method == "kivi_paper_g128":
             runtime_evidence["kivi_runtime_evidence"] = {
@@ -345,7 +367,8 @@ def base_record(args, task: str, sid: str, index: int, dataset_size: int, hashes
         "metric_name": METRIC_NAMES[task],
         "metric": METRIC_NAMES[task],
         "quantization_config": method_cfg,
-        "patternkv_config": method_cfg if args.method == "patternkv_paper" else None,
+        "patternkv_config": method_cfg if args.method in ("patternkv_paper", "causal_v4_25") else None,
+        "selector_task_key": sid if getattr(args, "patternkv_v_precision_selector", None) == "causal_v4" else None,
         "paper_config_snapshot": method_cfg,
         "cache_bitwidth_stats": None,
         "timestamp": utc_now(),
@@ -446,8 +469,9 @@ def write_status(path: Path, status: dict) -> None:
 
 
 def run(args) -> None:
-    if os.environ.get("CUDA_VISIBLE_DEVICES") != "0":
-        raise SystemExit("This runner requires CUDA_VISIBLE_DEVICES=0")
+    visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES")
+    if not visible_devices or "," in visible_devices:
+        raise SystemExit("This runner requires exactly one visible CUDA device; the model uses cuda:0 inside the process")
     if args.max_input_length != 8192:
         raise SystemExit("MAX_INPUT_LENGTH must be 8192 for this 8K experiment")
     random.seed(args.seed)

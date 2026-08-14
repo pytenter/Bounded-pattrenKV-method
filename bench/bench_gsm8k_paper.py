@@ -26,6 +26,7 @@ from bench.gsm8k_paper_utils import (
     write_json_atomic,
 )
 from bench.paper_config import apply_method_defaults, cache_storage_summary, method_config_dict
+from models.llama_patternkv import reset_patternkv_runtime_state
 
 
 def eos_ids(tokenizer, model) -> list[int]:
@@ -68,9 +69,17 @@ def load_model(args):
         config.v_bits = args.v_bits
         config.group_size = args.group_size
         config.residual_length = args.residual_length
+        config.sink_length = getattr(args, "sink_length", 0)
+        config.recent_length = getattr(args, "recent_length", args.residual_length)
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base
+        config.patternkv_cache_path = getattr(args, "patternkv_cache_path", "segmented")
+        config.patternkv_cache_mode = getattr(args, "patternkv_cache_mode", "segmented_rolling")
+        config.patternkv_value_objective = getattr(args, "patternkv_value_objective", "base")
+        config.patternkv_v_precision_selector = getattr(args, "patternkv_v_precision_selector", "base_v2")
+        config.patternkv_v4_budget_fraction = float(getattr(args, "patternkv_v4_budget_fraction", 0.0))
+        config.patternkv_random_selector_seed = int(getattr(args, "patternkv_random_selector_seed", 20260809))
         model = LlamaForCausalLM_PatternKV.from_pretrained(args.model_path, local_files_only=True, config=config, torch_dtype=dtype, low_cpu_mem_usage=True).to("cuda:0")
     else:
         raise ValueError(f"Unsupported backend {backend}")
@@ -78,8 +87,23 @@ def load_model(args):
     return model, tokenizer
 
 
+def set_selector_task_context(model, selector_task_key: str) -> None:
+    reset_patternkv_runtime_state(model)
+    if hasattr(model, "config"):
+        model.config.patternkv_selector_task_key = selector_task_key
+    for layer in getattr(getattr(model, "model", None), "layers", []):
+        attn = getattr(layer, "self_attn", None)
+        if attn is None:
+            continue
+        attn.selector_task_key = selector_task_key
+        attn.v_causal_importance = None
+        attn.v_oracle_importance = None
+
+
 @torch.no_grad()
 def run_one(args, model, tokenizer, row, cfg_hash, git_commit):
+    if getattr(args, "patternkv_v_precision_selector", None) == "causal_v4":
+        set_selector_task_context(model, f"gsm8k:p{int(row['problem_id'])}")
     rendered_prompt, user_prompt = build_prompt(row["question"], tokenizer)
     encoded = tokenizer(rendered_prompt, return_tensors="pt", add_special_tokens=False)
     input_ids = encoded.input_ids.to("cuda:0")
@@ -150,7 +174,8 @@ def run_one(args, model, tokenizer, row, cfg_hash, git_commit):
         "peak_memory_allocated_bytes": int(torch.cuda.max_memory_allocated()),
         "peak_memory_reserved_bytes": int(torch.cuda.max_memory_reserved()),
         "quantization_config": method_config_dict(args),
-        "patternkv_config": method_config_dict(args) if args.method == "patternkv_paper" else {},
+        "patternkv_config": method_config_dict(args) if args.method in ("patternkv_paper", "causal_v4_25") else {},
+        "selector_task_key": f"gsm8k:p{int(row['problem_id'])}" if getattr(args, "patternkv_v_precision_selector", None) == "causal_v4" else None,
         "cache_bitwidth_stats": cache_stats,
         "git_commit": git_commit,
         "gpu_id": args.gpu_id,
