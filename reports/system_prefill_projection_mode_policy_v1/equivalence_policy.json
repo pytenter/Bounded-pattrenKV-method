@@ -1,0 +1,21 @@
+{
+  "bi_k": {
+    "k_side": "structural_exact",
+    "v_assignment": "exact",
+    "v_centroid": "numerical_metric",
+    "v_mask": "exact",
+    "v_packed_payload": "exact",
+    "v_precision_mask": "exact",
+    "v_scale_zero": "exact"
+  },
+  "bi_kv": {
+    "compressed_kv_state": "request_local_exact",
+    "k_side": "structural_exact",
+    "v_centroid": "exact",
+    "v_side": "structural_exact"
+  },
+  "normal": {
+    "batch_state_equivalence": "not_promised",
+    "purpose": "baseline"
+  }
+}

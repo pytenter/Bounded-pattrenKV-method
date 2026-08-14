@@ -5,10 +5,17 @@ import torch
 from models.llama_patternkv import patternkv_use_bi_prefill_kproj, patternkv_use_bi_prefill_vproj
 from bench.run_bi_vproj_cost_benefit import classify_cost_benefit, drift_reduction_ratio, prefill_overhead_percent
 from quant.batch_invariant_kproj import (
+    BI_KV_PREFILL_PROJ_MODE,
+    BI_K_PREFILL_PROJ_MODE,
+    NORMAL_PREFILL_PROJ_MODE,
     batch_invariant_k_projection,
     batch_invariant_kproj_available,
     batch_invariant_kproj_counters,
     flag_enabled,
+    patternkv_mode_aware_equivalence_policy,
+    patternkv_prefill_projection_mode,
+    patternkv_prefill_projection_mode_description,
+    patternkv_prefill_projection_mode_policy,
     prefill_proj_mode,
     record_bi_prefill_kproj,
     record_bi_prefill_vproj,
@@ -16,8 +23,10 @@ from quant.batch_invariant_kproj import (
     record_normal_decode_vproj_call,
     record_normal_prefill_kproj_call,
     record_normal_prefill_vproj_call,
+    recommended_patternkv_serving_prefill_proj_mode,
     reset_batch_invariant_kproj_counters,
     selected_backend,
+    strict_patternkv_prefill_proj_mode,
 )
 
 
@@ -98,6 +107,99 @@ def test_prefill_proj_mode_legacy_bi_k(monkeypatch) -> None:
     monkeypatch.delenv("PATTERNKV_PREFILL_PROJ_MODE", raising=False)
     monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
     assert prefill_proj_mode() == "bi_k"
+
+
+def test_prefill_proj_mode_default_normal(monkeypatch) -> None:
+    monkeypatch.delenv("PATTERNKV_PREFILL_PROJ_MODE", raising=False)
+    monkeypatch.delenv("PATTERNKV_BATCH_INVARIANT_KPROJ", raising=False)
+    assert patternkv_prefill_projection_mode() == NORMAL_PREFILL_PROJ_MODE
+
+
+def test_prefill_proj_mode_legacy_flag_maps_to_bi_k(monkeypatch) -> None:
+    monkeypatch.delenv("PATTERNKV_PREFILL_PROJ_MODE", raising=False)
+    monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
+    assert patternkv_prefill_projection_mode() == BI_K_PREFILL_PROJ_MODE
+
+
+def test_prefill_proj_mode_explicit_normal_overrides_legacy(monkeypatch) -> None:
+    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "normal")
+    monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
+    assert patternkv_prefill_projection_mode() == NORMAL_PREFILL_PROJ_MODE
+
+
+def test_prefill_proj_mode_explicit_bi_k(monkeypatch) -> None:
+    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_k")
+    monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "0")
+    assert patternkv_prefill_projection_mode() == BI_K_PREFILL_PROJ_MODE
+
+
+def test_prefill_proj_mode_explicit_bi_kv(monkeypatch) -> None:
+    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_kv")
+    monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
+    assert patternkv_prefill_projection_mode() == BI_KV_PREFILL_PROJ_MODE
+
+
+def test_prefill_proj_mode_invalid_rejected(monkeypatch) -> None:
+    for value in ("foo", "strict", "deterministic", "1", "true"):
+        monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", value)
+        try:
+            patternkv_prefill_projection_mode()
+        except ValueError as exc:
+            assert "normal" in str(exc)
+            assert "bi_k" in str(exc)
+            assert "bi_kv" in str(exc)
+        else:
+            raise AssertionError(f"invalid mode was accepted: {value}")
+
+
+def test_recommended_serving_mode_is_bi_k() -> None:
+    assert recommended_patternkv_serving_prefill_proj_mode() == BI_K_PREFILL_PROJ_MODE
+
+
+def test_strict_mode_is_bi_kv() -> None:
+    assert strict_patternkv_prefill_proj_mode() == BI_KV_PREFILL_PROJ_MODE
+
+
+def test_normal_mode_dispatch_contract() -> None:
+    desc = patternkv_prefill_projection_mode_description("normal")
+    assert desc["prefill_k"] == "normal"
+    assert desc["prefill_v"] == "normal"
+    assert desc["decode_k"] == "normal"
+    assert desc["decode_v"] == "normal"
+
+
+def test_bi_k_mode_dispatch_contract() -> None:
+    desc = patternkv_prefill_projection_mode_description("bi_k")
+    assert desc["prefill_k"] == "bi_v2"
+    assert desc["prefill_v"] == "normal"
+    assert desc["decode_k"] == "normal"
+    assert desc["decode_v"] == "normal"
+
+
+def test_bi_kv_mode_dispatch_contract() -> None:
+    desc = patternkv_prefill_projection_mode_description("bi_kv")
+    assert desc["prefill_k"] == "bi_v2"
+    assert desc["prefill_v"] == "bi_v2"
+    assert desc["decode_k"] == "normal"
+    assert desc["decode_v"] == "normal"
+
+
+def test_bi_kv_decode_uses_normal_kv(monkeypatch) -> None:
+    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_kv")
+    past = ("patternkv_segmented_cache_v1", None)
+    assert patternkv_use_bi_prefill_kproj(past) is False
+    assert patternkv_use_bi_prefill_vproj(past) is False
+
+
+def test_mode_aware_equivalence_policy() -> None:
+    policy = patternkv_mode_aware_equivalence_policy()
+    assert policy["normal"]["batch_state_equivalence"] == "not_promised"
+    assert policy["bi_k"]["v_centroid"] == "numerical_metric"
+    assert policy["bi_kv"]["compressed_kv_state"] == "request_local_exact"
+    mode_policy = patternkv_prefill_projection_mode_policy()
+    assert mode_policy["historical_default"] == "normal"
+    assert mode_policy["recommended_serving_mode"] == "bi_k"
+    assert mode_policy["strict_mode"] == "bi_kv"
 
 
 def test_bi_vproj_prefill_dispatch(monkeypatch) -> None:

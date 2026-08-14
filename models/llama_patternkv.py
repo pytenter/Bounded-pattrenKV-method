@@ -10,6 +10,8 @@ from torch import nn
 
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
 from quant.batch_invariant_kproj import (
+    BI_KV_PREFILL_PROJ_MODE,
+    BI_K_PREFILL_PROJ_MODE,
     batch_invariant_k_projection,
     prefill_proj_mode,
     record_bi_prefill_kproj,
@@ -84,12 +86,47 @@ def patternkv_mixed_v_backend() -> str:
     return backend
 
 
+_PREFILL_PROJ_TRACE: list[dict[str, torch.Tensor | int]] = []
+
+
+def reset_patternkv_prefill_proj_trace() -> None:
+    _PREFILL_PROJ_TRACE.clear()
+
+
+def patternkv_prefill_proj_trace_records() -> list[dict[str, torch.Tensor | int]]:
+    return list(_PREFILL_PROJ_TRACE)
+
+
+def _maybe_record_prefill_proj_trace(
+    *,
+    layer_idx: int | None,
+    past_key_value: Optional[Tuple[torch.Tensor]],
+    key_states: torch.Tensor,
+    value_states: torch.Tensor,
+) -> None:
+    if os.environ.get("PATTERNKV_PREFILL_PROJ_TRACE", "0") != "1":
+        return
+    if past_key_value is not None:
+        return
+    requested_layer = int(os.environ.get("PATTERNKV_PREFILL_PROJ_TRACE_LAYER", "0"))
+    current_layer = int(layer_idx) if layer_idx is not None else -1
+    if current_layer != requested_layer:
+        return
+    _PREFILL_PROJ_TRACE.append(
+        {
+            "layer_idx": current_layer,
+            "k_proj": key_states.detach().clone(),
+            "v_proj": value_states.detach().clone(),
+        }
+    )
+
+
 def patternkv_use_bi_prefill_kproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
-    return past_key_value is None and prefill_proj_mode() in {"bi_k", "bi_kv"}
+    return past_key_value is None and prefill_proj_mode() in {BI_K_PREFILL_PROJ_MODE, BI_KV_PREFILL_PROJ_MODE}
 
 
 def patternkv_use_bi_prefill_vproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
-    return past_key_value is None and prefill_proj_mode() == "bi_kv"
+    return past_key_value is None and prefill_proj_mode() == BI_KV_PREFILL_PROJ_MODE
 
 
 def cuda_attn_v_fused_with_base_strided_v2_compat(
@@ -973,6 +1010,12 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 else:
                     record_normal_decode_vproj_call()
                 value_states = self.v_proj(hidden_states)
+            _maybe_record_prefill_proj_trace(
+                layer_idx=self.layer_idx,
+                past_key_value=past_key_value,
+                key_states=key_states,
+                value_states=value_states,
+            )
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)

@@ -1,0 +1,50 @@
+[
+  {
+    "k_assignment_difference_rate": 0.0,
+    "k_centroid_exact": true,
+    "k_proj": {
+      "difference_rate": 0.0,
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "packed_k_difference_rate": 0.0,
+    "packed_v4_difference_rate": 0.0,
+    "packed_v_difference_rate": 0.0,
+    "request": "A",
+    "v_assignment_difference_rate": 0.0,
+    "v_centroid_exact": true,
+    "v_mask_difference_rate": 0.0,
+    "v_precision_mask_difference_rate": 0.0,
+    "v_proj": {
+      "difference_rate": 0.0,
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "v_scale_relative_l2": 0.0,
+    "v_zero_relative_l2": 0.0
+  },
+  {
+    "k_assignment_difference_rate": 0.0,
+    "k_centroid_exact": true,
+    "k_proj": {
+      "difference_rate": 0.0,
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "packed_k_difference_rate": 0.0,
+    "packed_v4_difference_rate": 0.0,
+    "packed_v_difference_rate": 0.0,
+    "request": "B",
+    "v_assignment_difference_rate": 0.0,
+    "v_centroid_exact": false,
+    "v_mask_difference_rate": 0.0,
+    "v_precision_mask_difference_rate": 0.0,
+    "v_proj": {
+      "difference_rate": 0.0,
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "v_scale_relative_l2": 0.0,
+    "v_zero_relative_l2": 0.0
+  }
+]

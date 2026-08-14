@@ -1,0 +1,59 @@
+[
+  {
+    "env": {},
+    "expected": "normal",
+    "got": "normal",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_BATCH_INVARIANT_KPROJ": "0"
+    },
+    "expected": "normal",
+    "got": "normal",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_BATCH_INVARIANT_KPROJ": "1"
+    },
+    "expected": "bi_k",
+    "got": "bi_k",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_BATCH_INVARIANT_KPROJ": "1",
+      "PATTERNKV_PREFILL_PROJ_MODE": "normal"
+    },
+    "expected": "normal",
+    "got": "normal",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_BATCH_INVARIANT_KPROJ": "0",
+      "PATTERNKV_PREFILL_PROJ_MODE": "bi_k"
+    },
+    "expected": "bi_k",
+    "got": "bi_k",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_BATCH_INVARIANT_KPROJ": "1",
+      "PATTERNKV_PREFILL_PROJ_MODE": "bi_kv"
+    },
+    "expected": "bi_kv",
+    "got": "bi_kv",
+    "pass": true
+  },
+  {
+    "env": {
+      "PATTERNKV_PREFILL_PROJ_MODE": "invalid-set"
+    },
+    "expected": "ValueError",
+    "got": "ValueError",
+    "pass": true
+  }
+]

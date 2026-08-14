@@ -13,6 +13,16 @@ except Exception:  # pragma: no cover - exercised only on Triton-less systems
     tl = None
 
 
+NORMAL_PREFILL_PROJ_MODE = "normal"
+BI_K_PREFILL_PROJ_MODE = "bi_k"
+BI_KV_PREFILL_PROJ_MODE = "bi_kv"
+ALLOWED_PREFILL_PROJ_MODES = (
+    NORMAL_PREFILL_PROJ_MODE,
+    BI_K_PREFILL_PROJ_MODE,
+    BI_KV_PREFILL_PROJ_MODE,
+)
+
+
 @dataclass
 class BatchInvariantKProjCounters:
     calls: int = 0
@@ -384,24 +394,101 @@ def prefill_proj_mode(env: dict[str, str] | None = None) -> str:
     source: Any = env if env is not None else __import__("os").environ
     explicit = source.get("PATTERNKV_PREFILL_PROJ_MODE")
     if explicit is None or str(explicit).strip() == "":
-        return "bi_k" if flag_enabled(env) else "normal"
+        return BI_K_PREFILL_PROJ_MODE if flag_enabled(env) else NORMAL_PREFILL_PROJ_MODE
     mode = str(explicit).strip().lower()
-    aliases = {
-        "p0": "normal",
-        "baseline": "normal",
-        "off": "normal",
-        "0": "normal",
-        "p1": "bi_k",
-        "k": "bi_k",
-        "1": "bi_k",
-        "p2": "bi_kv",
-        "kv": "bi_kv",
-        "2": "bi_kv",
-    }
-    mode = aliases.get(mode, mode)
-    if mode not in {"normal", "bi_k", "bi_kv"}:
-        raise ValueError("PATTERNKV_PREFILL_PROJ_MODE must be 'normal', 'bi_k', or 'bi_kv'")
+    if mode not in ALLOWED_PREFILL_PROJ_MODES:
+        allowed = ", ".join(ALLOWED_PREFILL_PROJ_MODES)
+        raise ValueError(f"PATTERNKV_PREFILL_PROJ_MODE must be one of: {allowed}")
     return mode
+
+
+def patternkv_prefill_projection_mode(env: dict[str, str] | None = None) -> str:
+    return prefill_proj_mode(env)
+
+
+def recommended_patternkv_serving_prefill_proj_mode() -> str:
+    return BI_K_PREFILL_PROJ_MODE
+
+
+def strict_patternkv_prefill_proj_mode() -> str:
+    return BI_KV_PREFILL_PROJ_MODE
+
+
+def patternkv_prefill_projection_mode_description(mode: str) -> dict[str, str]:
+    normalized = str(mode).strip().lower()
+    if normalized not in ALLOWED_PREFILL_PROJ_MODES:
+        allowed = ", ".join(ALLOWED_PREFILL_PROJ_MODES)
+        raise ValueError(f"mode must be one of: {allowed}")
+    table = {
+        NORMAL_PREFILL_PROJ_MODE: {
+            "mode": NORMAL_PREFILL_PROJ_MODE,
+            "prefill_k": "normal",
+            "prefill_v": "normal",
+            "decode_k": "normal",
+            "decode_v": "normal",
+            "recommended_for": "baseline_ablation_debugging",
+        },
+        BI_K_PREFILL_PROJ_MODE: {
+            "mode": BI_K_PREFILL_PROJ_MODE,
+            "prefill_k": "bi_v2",
+            "prefill_v": "normal",
+            "decode_k": "normal",
+            "decode_v": "normal",
+            "recommended_for": "recommended_serving",
+        },
+        BI_KV_PREFILL_PROJ_MODE: {
+            "mode": BI_KV_PREFILL_PROJ_MODE,
+            "prefill_k": "bi_v2",
+            "prefill_v": "bi_v2",
+            "decode_k": "normal",
+            "decode_v": "normal",
+            "recommended_for": "strict_batch_invariance",
+        },
+    }
+    return dict(table[normalized])
+
+
+def patternkv_prefill_projection_mode_policy() -> dict[str, Any]:
+    return {
+        "historical_default": NORMAL_PREFILL_PROJ_MODE,
+        "recommended_serving_mode": BI_K_PREFILL_PROJ_MODE,
+        "strict_mode": BI_KV_PREFILL_PROJ_MODE,
+        "resolution_precedence": [
+            "PATTERNKV_PREFILL_PROJ_MODE",
+            "PATTERNKV_BATCH_INVARIANT_KPROJ",
+            "historical_default",
+        ],
+        "allowed_modes": list(ALLOWED_PREFILL_PROJ_MODES),
+        "initial_prefill_detection": "past_key_value is None",
+        "modes": {
+            mode: patternkv_prefill_projection_mode_description(mode)
+            for mode in ALLOWED_PREFILL_PROJ_MODES
+        },
+    }
+
+
+def patternkv_mode_aware_equivalence_policy() -> dict[str, Any]:
+    return {
+        NORMAL_PREFILL_PROJ_MODE: {
+            "purpose": "baseline",
+            "batch_state_equivalence": "not_promised",
+        },
+        BI_K_PREFILL_PROJ_MODE: {
+            "k_side": "structural_exact",
+            "v_assignment": "exact",
+            "v_mask": "exact",
+            "v_precision_mask": "exact",
+            "v_packed_payload": "exact",
+            "v_scale_zero": "exact",
+            "v_centroid": "numerical_metric",
+        },
+        BI_KV_PREFILL_PROJ_MODE: {
+            "k_side": "structural_exact",
+            "v_side": "structural_exact",
+            "v_centroid": "exact",
+            "compressed_kv_state": "request_local_exact",
+        },
+    }
 
 
 def selected_backend(env: dict[str, str] | None = None) -> str:

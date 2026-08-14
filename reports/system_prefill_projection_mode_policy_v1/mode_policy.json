@@ -1,0 +1,42 @@
+{
+  "allowed_modes": [
+    "normal",
+    "bi_k",
+    "bi_kv"
+  ],
+  "historical_default": "normal",
+  "initial_prefill_detection": "past_key_value is None",
+  "modes": {
+    "bi_k": {
+      "decode_k": "normal",
+      "decode_v": "normal",
+      "mode": "bi_k",
+      "prefill_k": "bi_v2",
+      "prefill_v": "normal",
+      "recommended_for": "recommended_serving"
+    },
+    "bi_kv": {
+      "decode_k": "normal",
+      "decode_v": "normal",
+      "mode": "bi_kv",
+      "prefill_k": "bi_v2",
+      "prefill_v": "bi_v2",
+      "recommended_for": "strict_batch_invariance"
+    },
+    "normal": {
+      "decode_k": "normal",
+      "decode_v": "normal",
+      "mode": "normal",
+      "prefill_k": "normal",
+      "prefill_v": "normal",
+      "recommended_for": "baseline_ablation_debugging"
+    }
+  },
+  "recommended_serving_mode": "bi_k",
+  "resolution_precedence": [
+    "PATTERNKV_PREFILL_PROJ_MODE",
+    "PATTERNKV_BATCH_INVARIANT_KPROJ",
+    "historical_default"
+  ],
+  "strict_mode": "bi_kv"
+}
