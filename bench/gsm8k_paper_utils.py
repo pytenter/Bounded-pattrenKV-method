@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper", "causal_v4_25")
+METHODS = ("fp16", "kivi_paper_g128", "patternkv_paper")
 EXPECTED_GSM8K_TEST = 1319
 
 HASH_RE = re.compile(r"####\s*([^\n\r]+)")

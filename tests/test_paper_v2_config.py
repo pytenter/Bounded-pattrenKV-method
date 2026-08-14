@@ -2,7 +2,6 @@ from argparse import Namespace
 
 from bench.longbench_config import MAX_NEW_TOKENS, METRIC_NAMES, PROMPT_TEMPLATES, SUBTASKS, expected_samples
 from bench.paper_config import apply_method_defaults, kivi_quantized_region_bits, method_config_dict, pattern_boundary_events
-from scripts.run_longbench_paper_8k_single4090 import BASELINE_METHODS
 
 
 def test_longbench_paper_v2_panel_is_complete():
@@ -42,26 +41,3 @@ def test_patternkv_paper_forces_patterns_after_rope():
     assert pattern_boundary_events(127, 128) == []
     assert pattern_boundary_events(128, 128) == [128]
     assert pattern_boundary_events(129, 128) == [128]
-
-
-def test_causal_v4_25_uses_frozen_aime24_config():
-    args = Namespace(method="causal_v4_25", k_bits=4, v_bits=4, group_size=32, residual_length=64, num_k_base=1, num_v_base=1)
-    cfg = apply_method_defaults(args)
-    assert cfg.backend_method == "patternkv"
-    assert args.k_bits == 2
-    assert args.v_bits == 2
-    assert args.group_size == 128
-    assert args.residual_length == 128
-    assert args.sink_length == 16
-    assert args.recent_length == 128
-    assert args.num_k_base == 32
-    assert args.num_v_base == 32
-    assert args.patternkv_v_precision_selector == "causal_v4"
-    assert args.patternkv_v4_budget_fraction == 0.25
-    assert cfg.value_precision_selector == "causal_v4"
-    assert cfg.v4_budget_fraction == 0.25
-    assert method_config_dict(args)["cache_mode"] == "segmented_rolling"
-
-
-def test_longbench_protocol_hash_keeps_baseline_method_set():
-    assert BASELINE_METHODS == ("fp16", "kivi_paper_g128", "patternkv_paper")

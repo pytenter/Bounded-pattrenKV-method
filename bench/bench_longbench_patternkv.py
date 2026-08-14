@@ -259,17 +259,9 @@ def load_model(args):
         config.v_bits = args.v_bits
         config.group_size = args.group_size
         config.residual_length = args.residual_length
-        config.sink_length = getattr(args, "sink_length", 0)
-        config.recent_length = getattr(args, "recent_length", args.residual_length)
         config.use_flash = True
         config.num_k_base = args.num_k_base
         config.num_v_base = args.num_v_base
-        config.patternkv_cache_path = getattr(args, "patternkv_cache_path", "segmented")
-        config.patternkv_cache_mode = getattr(args, "patternkv_cache_mode", "segmented_rolling")
-        config.patternkv_value_objective = getattr(args, "patternkv_value_objective", "base")
-        config.patternkv_v_precision_selector = getattr(args, "patternkv_v_precision_selector", "base_v2")
-        config.patternkv_v4_budget_fraction = float(getattr(args, "patternkv_v4_budget_fraction", 0.0))
-        config.patternkv_random_selector_seed = int(getattr(args, "patternkv_random_selector_seed", 20260809))
         model = LlamaForCausalLM_PatternKV.from_pretrained(
             args.model_path,
             config=config,
@@ -441,7 +433,7 @@ def summarize_task(path: Path, task: str, args, started_at: float, expected_samp
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--method", choices=["fp16", "patternkv", "patternkv_paper", "causal_v4_25", "kivi", "kivi_official", "kivi_paper_g128", "kivi_original_g32"], required=True)
+    parser.add_argument("--method", choices=["fp16", "patternkv", "patternkv_paper", "kivi", "kivi_official", "kivi_paper_g128", "kivi_original_g32"], required=True)
     parser.add_argument("--tasks", nargs="+", choices=TASKS, required=True)
     parser.add_argument("--num-samples", type=int, required=True, help="Use <=0 for the full available LongBench split for each task.")
     parser.add_argument("--model-path", default="/data/zypan/blockgtq-repro/models/Llama-3.1-8B-Instruct")

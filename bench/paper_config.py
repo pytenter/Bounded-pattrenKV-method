@@ -28,8 +28,6 @@ class MethodConfig:
     initial_pattern_count: int | None = None
     pattern_group: int | None = None
     pattern_selection_position: str | None = None
-    value_precision_selector: str | None = None
-    v4_budget_fraction: float | None = None
 
 
 def apply_method_defaults(args) -> MethodConfig:
@@ -95,39 +93,6 @@ def apply_method_defaults(args) -> MethodConfig:
             initial_pattern_count=32,
             pattern_group=128,
             pattern_selection_position="post-RoPE key/value states",
-        )
-    if args.method == "causal_v4_25":
-        args.k_bits = 2
-        args.v_bits = 2
-        args.group_size = 128
-        args.residual_length = 128
-        args.sink_length = 16
-        args.recent_length = 128
-        args.num_k_base = 32
-        args.num_v_base = 32
-        args.patternkv_cache_path = "segmented"
-        args.patternkv_cache_mode = "segmented_rolling"
-        args.patternkv_value_objective = "base"
-        args.patternkv_v_precision_selector = "causal_v4"
-        args.patternkv_v4_budget_fraction = 0.25
-        args.patternkv_random_selector_seed = 20260809
-        return MethodConfig(
-            method=args.method,
-            backend_method="patternkv",
-            k_bits=2,
-            v_bits=2,
-            group_size=128,
-            residual_length=128,
-            sink_length=16,
-            recent_length=128,
-            key_quant_axis="per-channel: quantize transposed K along token axis",
-            value_quant_axis="per-token: quantize V residual/centroids along head_dim axis",
-            asym=True,
-            initial_pattern_count=32,
-            pattern_group=128,
-            pattern_selection_position="post-RoPE key/value states",
-            value_precision_selector="causal_v4",
-            v4_budget_fraction=0.25,
         )
     if args.method == "kivi_official":
         return MethodConfig(
@@ -203,9 +168,8 @@ def method_config_dict(args) -> dict[str, Any]:
     out["compact_kernel_storage_note"] = "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes."
     out["mixed_key_mask_path"] = str(getattr(args, "mixed_key_mask_path", "") or "")
     out["mixed_key_int4_ratio"] = float(getattr(args, "mixed_key_int4_ratio", 0.0) or 0.0)
-    is_pattern_backend = str(getattr(args, "method", "")).startswith("pattern") or getattr(args, "method", "") == "causal_v4_25"
-    out["patternkv_cache_path"] = str(getattr(args, "patternkv_cache_path", "") or "") if is_pattern_backend else None
-    out["cache_mode"] = str(getattr(args, "patternkv_cache_mode", "") or "") if is_pattern_backend else None
+    out["patternkv_cache_path"] = str(getattr(args, "patternkv_cache_path", "") or "") if str(getattr(args, "method", "")).startswith("pattern") else None
+    out["cache_mode"] = str(getattr(args, "patternkv_cache_mode", "") or "") if str(getattr(args, "method", "")).startswith("pattern") else None
     return out
 
 
