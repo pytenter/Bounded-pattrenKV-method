@@ -1,0 +1,3 @@
+# Hidden Logit Drift
+
+B2 hidden/logit max relL2: 0.1174919381737709 / 0.06365784257650375; B4 hidden/logit max relL2: 0.14383603632450104 / 0.0725238025188446.
