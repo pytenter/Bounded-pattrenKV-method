@@ -147,6 +147,93 @@ def _request_vector(cache: QuantizedKVCache, name: str, fallback: int, *, device
     return torch.full((cache_batch_size(cache),), int(fallback), dtype=torch.long, device=device)
 
 
+_RAGGED_K_COUNTERS = {
+    "ragged_batch_forward_calls": 0,
+    "ragged_requests_processed": 0,
+    "ragged_k_path_calls": 0,
+    "ragged_k_mask_calls": 0,
+    "ragged_k_invalid_tail_tokens": 0,
+    "serial_request_dispatches": 0,
+    "historical_fp16_k_materialization": 0,
+}
+
+
+def reset_ragged_k_counters() -> None:
+    for key in _RAGGED_K_COUNTERS:
+        _RAGGED_K_COUNTERS[key] = 0
+
+
+def get_ragged_k_counters() -> dict[str, int]:
+    return dict(_RAGGED_K_COUNTERS)
+
+
+def record_ragged_k_counter(key: str, amount: int = 1) -> None:
+    if key not in _RAGGED_K_COUNTERS:
+        raise KeyError(f"unknown ragged K counter: {key}")
+    _RAGGED_K_COUNTERS[key] += int(amount)
+
+
+def get_packed_k_tokens_per_request(cache: QuantizedKVCache, *, device: torch.device | None = None) -> torch.Tensor:
+    return _request_vector(cache, "request_packed_k_tokens", int(cache.packed_k_tokens), device=device)
+
+
+def k_segment_valid_lengths(cache: QuantizedKVCache, *, device: torch.device | None = None) -> dict[str, torch.Tensor]:
+    totals = get_total_tokens_per_request(cache, device=device)
+    packed = get_packed_k_tokens_per_request(cache, device=totals.device)
+    sink_limit = torch.full_like(totals, int(cache.sink_length))
+    recent_limit = torch.full_like(totals, int(cache.recent_length))
+    zeros = torch.zeros_like(totals)
+    sink_values = torch.minimum(totals, sink_limit)
+    non_sink = torch.maximum(totals - sink_values, zeros)
+    recent_values = torch.minimum(non_sink, recent_limit)
+    quantized_history = torch.maximum(non_sink - recent_values, zeros)
+    pending_values = torch.maximum(quantized_history - packed, zeros)
+    return {
+        "sink": sink_values.to(dtype=torch.long),
+        "packed": packed.to(dtype=torch.long, device=totals.device),
+        "pending": pending_values.to(dtype=torch.long),
+        "recent": recent_values.to(dtype=torch.long),
+    }
+
+
+def build_k_segment_validity_mask(
+    cache: QuantizedKVCache,
+    value_parts: list[tuple[str, int]],
+    *,
+    device: torch.device | None = None,
+) -> torch.Tensor | None:
+    if not torch.is_tensor(getattr(cache, "request_total_tokens", None)) and not torch.is_tensor(getattr(cache, "request_packed_k_tokens", None)):
+        return None
+    target_device = device
+    if target_device is None:
+        for value in (cache.sink_k, cache.packed_k, cache.pending_k, cache.recent_k):
+            if torch.is_tensor(value):
+                target_device = value.device
+                break
+    lengths = k_segment_valid_lengths(cache, device=target_device)
+    masks = []
+    invalid = None
+    for name, physical_length in value_parts:
+        physical = int(physical_length)
+        if physical <= 0:
+            continue
+        valid = lengths[name].clamp(min=0, max=physical)
+        positions = torch.arange(physical, dtype=torch.long, device=valid.device).unsqueeze(0)
+        segment_mask = positions < valid.unsqueeze(1)
+        masks.append(segment_mask)
+        segment_invalid = physical - valid
+        invalid = segment_invalid if invalid is None else invalid + segment_invalid
+    if not masks:
+        return None
+    mask = torch.cat(masks, dim=1)
+    if invalid is not None:
+        invalid_count = int(invalid.sum().item())
+        if invalid_count:
+            record_ragged_k_counter("ragged_k_mask_calls", 1)
+            record_ragged_k_counter("ragged_k_invalid_tail_tokens", invalid_count)
+    return mask
+
+
 @dataclass
 class PatternKVCentroidStatePool:
     k_centroid_pool: torch.Tensor
@@ -2336,6 +2423,10 @@ def _cat_optional_by_batch(items: list[torch.Tensor | None], lengths: list[int],
     return torch.cat(rows, dim=0).contiguous()
 
 
+def _ceil_div(value: int, divisor: int) -> int:
+    return (int(value) + int(divisor) - 1) // int(divisor)
+
+
 def _request_cache_from_any(value: Any) -> QuantizedKVCache:
     cache = deserialize_cache(value, pattern=True)
     if cache_batch_size(cache) != 1:
@@ -2486,6 +2577,8 @@ def assemble_ragged_patternkv_cache(per_request_caches: list[Any]) -> PatternQua
         raise TypeError("ragged PatternKV assembly requires PatternQuantizedKVCache inputs")
     first = caches[0]
     packed_k_lengths = [int(cache.packed_k_tokens) for cache in caches]
+    packed_k_payload_lengths = [_ceil_div(length, 32 // int(first.k_bits)) for length in packed_k_lengths]
+    packed_k_scale_lengths = [_ceil_div(length, int(first.group_size)) for length in packed_k_lengths]
     packed_v_lengths = [int(cache.packed_v_tokens) for cache in caches]
     packed_v4_lengths = [int(getattr(cache, "packed_v4_tokens", 0) or 0) for cache in caches]
     sink_lengths = [tensor_tokens(cache.sink_k) for cache in caches]
@@ -2496,9 +2589,9 @@ def assemble_ragged_patternkv_cache(per_request_caches: list[Any]) -> PatternQua
     assembled = PatternQuantizedKVCache(
         sink_k=_cat_optional_by_batch([cache.sink_k for cache in caches], sink_lengths, 2),
         sink_v=_cat_optional_by_batch([cache.sink_v for cache in caches], sink_lengths, 2),
-        packed_k=_cat_optional_by_batch([cache.packed_k for cache in caches], packed_k_lengths, 3),
-        packed_k_scale=_cat_optional_by_batch([cache.packed_k_scale for cache in caches], packed_k_lengths, 3),
-        packed_k_zero=_cat_optional_by_batch([cache.packed_k_zero for cache in caches], packed_k_lengths, 3),
+        packed_k=_cat_optional_by_batch([cache.packed_k for cache in caches], packed_k_payload_lengths, 3),
+        packed_k_scale=_cat_optional_by_batch([cache.packed_k_scale for cache in caches], packed_k_scale_lengths, 3),
+        packed_k_zero=_cat_optional_by_batch([cache.packed_k_zero for cache in caches], packed_k_scale_lengths, 3),
         packed_v=_cat_optional_by_batch([cache.packed_v for cache in caches], packed_v_lengths, 2),
         packed_v_scale=_cat_optional_by_batch([cache.packed_v_scale for cache in caches], packed_v_lengths, 2),
         packed_v_zero=_cat_optional_by_batch([cache.packed_v_zero for cache in caches], packed_v_lengths, 2),

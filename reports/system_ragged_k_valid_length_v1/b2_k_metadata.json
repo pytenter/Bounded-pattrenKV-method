@@ -1,0 +1,35 @@
+{
+  "assignment_shape": [
+    2,
+    8,
+    256
+  ],
+  "b2_context_lengths": [
+    384,
+    513
+  ],
+  "b2_packed_k_valid_lengths": [
+    128,
+    256
+  ],
+  "b2_position_ids": [
+    [
+      384
+    ],
+    [
+      513
+    ]
+  ],
+  "packed_k_scale_shape": [
+    2,
+    8,
+    128,
+    2
+  ],
+  "packed_k_shape": [
+    2,
+    8,
+    128,
+    16
+  ]
+}

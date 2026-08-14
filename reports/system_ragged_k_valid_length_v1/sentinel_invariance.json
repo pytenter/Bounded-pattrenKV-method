@@ -1,0 +1,4 @@
+{
+  "covered_by": "tests/test_ragged_k_valid_lengths.py",
+  "invalid_k_tail_ignored": true
+}

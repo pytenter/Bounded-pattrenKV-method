@@ -1,0 +1,57 @@
+{
+  "bi_mlp_oracle": {
+    "bi_mlp_down_calls": 0,
+    "bi_mlp_gate_calls": 0,
+    "bi_mlp_up_calls": 0,
+    "normal_mlp_down_calls": 160,
+    "normal_mlp_gate_calls": 160,
+    "normal_mlp_up_calls": 160
+  },
+  "bi_projection": {
+    "bi_decode_kproj_calls": 0,
+    "bi_decode_vproj_calls": 0,
+    "bi_kproj_calls": 0,
+    "bi_kproj_fallback_calls": 0,
+    "bi_kproj_input_copy_bytes": 0,
+    "bi_kproj_kernel_launches": 0,
+    "bi_kproj_rows": 0,
+    "bi_kproj_serial_request_dispatches": 0,
+    "bi_kproj_v1_calls": 0,
+    "bi_kproj_v2_calls": 0,
+    "bi_kproj_weight_copy_bytes": 0,
+    "bi_prefill_fallback_calls": 0,
+    "bi_prefill_kproj_calls": 0,
+    "bi_prefill_kproj_kernel_launches": 0,
+    "bi_prefill_kproj_rows": 0,
+    "bi_prefill_serial_dispatches": 0,
+    "bi_prefill_vproj_calls": 0,
+    "bi_prefill_vproj_kernel_launches": 0,
+    "bi_prefill_vproj_rows": 0,
+    "normal_decode_kproj_calls": 96,
+    "normal_decode_vproj_calls": 96,
+    "normal_prefill_kproj_calls": 64,
+    "normal_prefill_vproj_calls": 64
+  },
+  "ragged_k": {
+    "historical_fp16_k_materialization": 0,
+    "ragged_batch_forward_calls": 32,
+    "ragged_k_invalid_tail_tokens": 4128,
+    "ragged_k_mask_calls": 32,
+    "ragged_k_path_calls": 32,
+    "ragged_requests_processed": 64,
+    "serial_request_dispatches": 0
+  },
+  "real_decode": {
+    "fused_page_operator_calls": 96,
+    "gpu_tensor_item_calls_hot_path": 0,
+    "historical_v_materialization_bytes": 0,
+    "legacy_mixed_v_operator_calls": 0,
+    "new_pages_allocated": 96,
+    "operator_ready_pool_full_rebuilds": 0,
+    "operator_ready_pool_incremental_updates": 64,
+    "page_value_materialization_bytes": 0,
+    "python_page_dispatches": 0,
+    "real_decode_steps": 96,
+    "serial_b1_dispatches": 0
+  }
+}

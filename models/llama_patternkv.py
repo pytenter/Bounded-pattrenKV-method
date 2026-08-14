@@ -41,6 +41,7 @@ from models.segmented_cache import (
     append_decode,
     append_decode_chunked_buffer_only,
     build_cache_from_prefill,
+    build_k_segment_validity_mask,
     cache_validate_enabled,
     deserialize_cache,
     flush_chunked_buffer,
@@ -56,6 +57,7 @@ from models.segmented_cache import (
     tensor_tokens,
     update_value_causal_importance,
     value_precision_is_mixed,
+    record_ragged_k_counter,
 )
 from insight.hook_metrics import (
     record_decode_k_window_metrics,
@@ -1235,6 +1237,15 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 attn_weights = torch.cat(score_parts, dim=-1) / math.sqrt(self.head_dim)
             if attn_weights.size() != (bsz, self.num_heads, q_len, cache.total_tokens):
                 raise ValueError(f"segmented PatternKV attention weights shape mismatch: got {attn_weights.size()}, total={cache.total_tokens}")
+            k_valid_mask = build_k_segment_validity_mask(cache, value_parts, device=attn_weights.device)
+            if k_valid_mask is not None:
+                record_ragged_k_counter("ragged_batch_forward_calls", 1)
+                record_ragged_k_counter("ragged_requests_processed", int(bsz))
+                record_ragged_k_counter("ragged_k_path_calls", 1)
+                attn_weights = attn_weights.masked_fill(
+                    ~k_valid_mask[:, None, None, :],
+                    torch.finfo(attn_weights.dtype).min,
+                )
             if attention_mask is not None:
                 if attention_mask.size() != (bsz, 1, q_len, cache.total_tokens):
                     raise ValueError(f"Attention mask should be of size {(bsz, 1, q_len, cache.total_tokens)}, but is {attention_mask.size()}")

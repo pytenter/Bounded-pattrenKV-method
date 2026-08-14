@@ -1,0 +1,27 @@
+{
+  "b2_packed_k_valid_lengths": [
+    128,
+    256
+  ],
+  "physical_k_workspace_length": 256,
+  "physical_workspace": "rectangular compressed-domain max length",
+  "segments": {
+    "packed": [
+      128,
+      256
+    ],
+    "pending": [
+      112,
+      113
+    ],
+    "recent": [
+      128,
+      128
+    ],
+    "sink": [
+      16,
+      16
+    ]
+  },
+  "valid_source": "PatternQuantizedKVCache.request_packed_k_tokens"
+}

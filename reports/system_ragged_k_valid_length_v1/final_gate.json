@@ -1,0 +1,44 @@
+{
+  "algorithm_changed": false,
+  "assignment_ragged_shape_supported": true,
+  "b2_context_lengths": [
+    384,
+    513
+  ],
+  "b2_decode1_passed": true,
+  "b2_packed_k_valid_lengths": [
+    128,
+    256
+  ],
+  "b2_position_ids": [
+    [
+      384
+    ],
+    [
+      513
+    ]
+  ],
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "classification": "PATTERNKV_RAGGED_K_VALID_LENGTH_SUPPORTED",
+  "compileall_pass": true,
+  "compressed_domain_padding_used": true,
+  "cross_request_k_leakage_detected": false,
+  "deferred_lm_head_optimization_reintroduced": false,
+  "equal_length_fixed_batch_regression": true,
+  "fallback_calls": 0,
+  "generalization_branch_touched": false,
+  "historical_fp16_k_materialization": 0,
+  "invalid_k_tail_masked": true,
+  "invalid_tail_sentinel_invariant": true,
+  "k_ragged_length_contract_defined": true,
+  "new_first_blocker": "NONE_DECODE1_PASSED",
+  "next_task": "RUN_RAGGED_DECODE1_SEMANTIC_GATE",
+  "previous_assignment_shape_error_removed": true,
+  "previous_first_blocker": "RAGGED_K_LENGTH_UNSUPPORTED",
+  "pytest_result": "869 passed in 23.22s",
+  "reorder_pass": true,
+  "request_local_k_valid_lengths_supported": true,
+  "serial_request_dispatches": 0,
+  "start_head": "1544904952cb1918eabc69ffa9743143a823cdd3",
+  "true_b2_decode_forward_attempted": true
+}
