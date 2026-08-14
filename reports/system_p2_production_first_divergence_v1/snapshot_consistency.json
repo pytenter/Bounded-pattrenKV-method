@@ -1,0 +1,4 @@
+{
+  "note": "canonical state is built from deserialized production past_key_values",
+  "production_to_serialized_to_deserialized": "PASS"
+}

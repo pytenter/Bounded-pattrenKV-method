@@ -1,0 +1,3010 @@
+[
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 0,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 1,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 2,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 3,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 4,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 5,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 6,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 7,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 8,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 9,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 10,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 11,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 12,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 13,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 14,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 15,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 16,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 17,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 18,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 19,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 20,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 21,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 22,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 23,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 24,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 25,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 26,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 27,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 28,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 29,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 30,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  },
+  {
+    "field_shapes": {
+      "k_assignments": [
+        8,
+        256
+      ],
+      "k_centroids": [
+        8,
+        32,
+        128
+      ],
+      "packed_k": [
+        8,
+        128,
+        16
+      ],
+      "packed_k_scale": [
+        8,
+        128,
+        2
+      ],
+      "packed_k_zero": [
+        8,
+        128,
+        2
+      ],
+      "packed_v": [
+        8,
+        192,
+        8
+      ],
+      "packed_v4": [
+        8,
+        64,
+        16
+      ],
+      "packed_v4_scale": [
+        8,
+        64,
+        1
+      ],
+      "packed_v4_zero": [
+        8,
+        64,
+        1
+      ],
+      "packed_v_scale": [
+        8,
+        192,
+        1
+      ],
+      "packed_v_zero": [
+        8,
+        192,
+        1
+      ],
+      "v2_assignment_idx": [
+        8,
+        192
+      ],
+      "v4_assignment_idx": [
+        8,
+        64
+      ],
+      "v_assignment_idx": [
+        8,
+        256
+      ],
+      "v_centroids": [
+        8,
+        32,
+        128
+      ],
+      "v_pattern_mask": [
+        8,
+        256
+      ],
+      "v_precision_mask": [
+        256
+      ]
+    },
+    "layer": 31,
+    "metadata": {
+      "k_count": 32,
+      "k_updates": 0,
+      "packed_k_tokens": 256,
+      "packed_v4_tokens": 64,
+      "packed_v_tokens": 256,
+      "total_tokens": 512,
+      "v_count": 32,
+      "v_updates": 0
+    },
+    "slot": 0
+  }
+]

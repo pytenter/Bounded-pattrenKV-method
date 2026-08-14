@@ -87,6 +87,7 @@ def patternkv_mixed_v_backend() -> str:
 
 
 _PREFILL_PROJ_TRACE: list[dict[str, torch.Tensor | int]] = []
+_P2_FIRST_DIVERGENCE_TRACE: list[dict[str, torch.Tensor | int | str | tuple[int, ...]]] = []
 
 
 def reset_patternkv_prefill_proj_trace() -> None:
@@ -95,6 +96,38 @@ def reset_patternkv_prefill_proj_trace() -> None:
 
 def patternkv_prefill_proj_trace_records() -> list[dict[str, torch.Tensor | int]]:
     return list(_PREFILL_PROJ_TRACE)
+
+
+def reset_patternkv_p2_first_divergence_trace() -> None:
+    _P2_FIRST_DIVERGENCE_TRACE.clear()
+
+
+def patternkv_p2_first_divergence_trace_records() -> list[dict[str, torch.Tensor | int | str | tuple[int, ...]]]:
+    return list(_P2_FIRST_DIVERGENCE_TRACE)
+
+
+def _p2_first_divergence_trace_enabled() -> bool:
+    return os.environ.get("PATTERNKV_P2_FIRST_DIVERGENCE_TRACE", "0") == "1"
+
+
+def _record_p2_first_divergence_trace(layer_idx: int | None, component: str, value: torch.Tensor) -> None:
+    if not _p2_first_divergence_trace_enabled():
+        return
+    if layer_idx is None:
+        return
+    layer_filter = os.environ.get("PATTERNKV_P2_FIRST_DIVERGENCE_TRACE_LAYER")
+    current_layer = int(layer_idx)
+    if layer_filter is not None and str(current_layer) != str(layer_filter):
+        return
+    _P2_FIRST_DIVERGENCE_TRACE.append(
+        {
+            "layer": current_layer,
+            "component": component,
+            "shape": tuple(value.shape),
+            "dtype": str(value.dtype),
+            "tensor": value.detach().cpu().contiguous(),
+        }
+    )
 
 
 def _maybe_record_prefill_proj_trace(
@@ -443,6 +476,7 @@ class LlamaAttention_PatternKV(nn.Module):
                 key_states_full = None
             if key_states_quant is not None:
                 key_states_quant_trans, key_scale_trans, key_mn_trans = triton_quantize_and_pack_along_last_dim(key_states_quant.transpose(2, 3).contiguous(), self.group_size, self.k_bits)
+                _record_p2_first_divergence_trace(self.layer_idx, "PACKED_K", key_states_quant_trans[0] if key_states_quant_trans.shape[0] > 1 else key_states_quant_trans)
             else:
                 key_states_quant_trans = None
                 key_scale_trans = None
@@ -1016,6 +1050,10 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 key_states=key_states,
                 value_states=value_states,
             )
+            if past_key_value is None:
+                _record_p2_first_divergence_trace(self.layer_idx, "Q_PROJ", query_states)
+                _record_p2_first_divergence_trace(self.layer_idx, "K_PROJ", key_states)
+                _record_p2_first_divergence_trace(self.layer_idx, "V_PROJ", value_states)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
@@ -1032,6 +1070,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
         with profile_range("rope_position"):
             cos, sin = self.rotary_emb(value_states, position_ids)
             query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
+        if past_key_value is None:
+            _record_p2_first_divergence_trace(self.layer_idx, "K_POST_ROPE", key_states)
         if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "patternkv_segmented_cache_v1":
             cache = deserialize_cache(past_key_value, pattern=True)
             with profile_range("cache_append"):
@@ -1671,21 +1711,28 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 key_states_means = key_states.mean(dim=0, keepdim=True)
                 Xmk = key_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
                 Xk = key_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
+                _record_p2_first_divergence_trace(self.layer_idx, "KMEANS_K_INPUT", Xmk)
                 assign_k, k_centroids = batched_kmeans_fast_compiled(Xmk, k=self.num_k_bases, iters=30, tol=1e-4, seed=0)
                 assign_k = batched_assign_compiled(Xk, k_centroids)
                 assignments = assign_k.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
                 self.k_base = k_centroids.to(key_states.dtype)
+                _record_p2_first_divergence_trace(self.layer_idx, "K_CENTROID", self.k_base)
+                _record_p2_first_divergence_trace(self.layer_idx, "K_ASSIGNMENT", assignments)
             else:
                 k_bases = []
                 assignment_rows = []
                 for req_idx in range(bz):
                     Xmk = key_states[req_idx : req_idx + 1].permute(1, 0, 2, 3).reshape(n_kv, seq_len, hd).to(torch.float32)
+                    if req_idx == 0:
+                        _record_p2_first_divergence_trace(self.layer_idx, "KMEANS_K_INPUT", Xmk)
                     _assign_seed, k_centroids = batched_kmeans_fast_compiled(Xmk, k=self.num_k_bases, iters=30, tol=1e-4, seed=0)
                     assign_k = batched_assign_compiled(Xmk, k_centroids)
                     assignment_rows.append(assign_k.view(n_kv, 1, seq_len).permute(1, 0, 2).contiguous().to(torch.long))
                     k_bases.append(k_centroids.to(key_states.dtype))
                 assignments = torch.cat(assignment_rows, dim=0)
                 self.k_base = torch.stack(k_bases, dim=0).contiguous()
+                _record_p2_first_divergence_trace(self.layer_idx, "K_CENTROID", self.k_base[0])
+                _record_p2_first_divergence_trace(self.layer_idx, "K_ASSIGNMENT", assignments[0])
 
             
             bz, n_kv, seq_len, hd = value_states.shape
@@ -1694,21 +1741,28 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 value_states_means = value_states.mean(dim=0, keepdim=True)
                 Xm = value_states_means.permute(1, 0, 2, 3).reshape(n_kv, 1 * seq_len, hd).to(torch.float32)  # [H, N, D]
                 X = value_states.permute(1, 0, 2, 3).reshape(n_kv, bz * seq_len, hd).to(torch.float32)
+                _record_p2_first_divergence_trace(self.layer_idx, "KMEANS_V_INPUT", Xm)
                 assign, centroids = batched_kmeans_fast_compiled(Xm, k=self.num_v_bases, iters=30, tol=1e-4, seed=0)
                 assign = batched_assign_compiled(X, centroids)
                 v_assignments_idx_all = assign.view(n_kv, bz, seq_len).permute(1, 0, 2).contiguous().to(torch.long)  # [bz, n_kv, seq_len]
                 self.v_centroids = centroids.to(value_states.dtype)                                                        # [n_kv, num_v_bases, hd]
+                _record_p2_first_divergence_trace(self.layer_idx, "V_CENTROID", self.v_centroids)
+                _record_p2_first_divergence_trace(self.layer_idx, "V_ASSIGNMENT", v_assignments_idx_all)
             else:
                 v_bases = []
                 v_assignment_rows = []
                 for req_idx in range(bz):
                     Xm = value_states[req_idx : req_idx + 1].permute(1, 0, 2, 3).reshape(n_kv, seq_len, hd).to(torch.float32)
+                    if req_idx == 0:
+                        _record_p2_first_divergence_trace(self.layer_idx, "KMEANS_V_INPUT", Xm)
                     _assign_seed, centroids = batched_kmeans_fast_compiled(Xm, k=self.num_v_bases, iters=30, tol=1e-4, seed=0)
                     assign = batched_assign_compiled(Xm, centroids)
                     v_assignment_rows.append(assign.view(n_kv, 1, seq_len).permute(1, 0, 2).contiguous().to(torch.long))
                     v_bases.append(centroids.to(value_states.dtype))
                 v_assignments_idx_all = torch.cat(v_assignment_rows, dim=0)
                 self.v_centroids = torch.stack(v_bases, dim=0).contiguous()
+                _record_p2_first_divergence_trace(self.layer_idx, "V_CENTROID", self.v_centroids[0])
+                _record_p2_first_divergence_trace(self.layer_idx, "V_ASSIGNMENT", v_assignments_idx_all[0])
 
             if key_states.shape[-2] % self.residual_length != 0:
                 if key_states.shape[-2] < self.residual_length:
@@ -1799,6 +1853,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 T1, _ = self._v_threshold_and_mask(value_states_quant, base_override=v_cent_per_pos_q)
                 # print(v_mask_q.float().mean())
                 # exit(0)
+                _record_p2_first_divergence_trace(self.layer_idx, "V_PATTERN_MASK", v_mask_q[0] if v_mask_q.shape[0] > 1 else v_mask_q)
 
                 # 条件性减质心（做残差化）
                 _insight_value_states_quant_raw = value_states_quant
@@ -1820,6 +1875,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 value_states_quant, value_scale, value_mn = triton_quantize_and_pack_along_last_dim(
                     value_states_quant, self.group_size, self.v_bits
                 )
+                _record_p2_first_divergence_trace(self.layer_idx, "PACKED_V", value_states_quant[0] if value_states_quant.shape[0] > 1 else value_states_quant)
 
                 # 保存：mask 与 最近质心编号
                 v_assignments     = v_mask_q.to(torch.uint8)   # [bz, n_kv, qlen]
@@ -2031,9 +2087,12 @@ class LlamaDecoderLayer_PatternKV(nn.Module):
                 "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
             )
 
+        layer_idx = getattr(self.self_attn, "layer_idx", None)
+        _record_p2_first_divergence_trace(layer_idx, "LAYER_INPUT", hidden_states)
         residual = hidden_states
 
         hidden_states = self.input_layernorm(hidden_states)
+        _record_p2_first_divergence_trace(layer_idx, "INPUT_RMSNORM", hidden_states)
 
         # Self Attention
         hidden_states, self_attn_weights, present_key_value = self.self_attn(
@@ -2045,13 +2104,18 @@ class LlamaDecoderLayer_PatternKV(nn.Module):
             use_cache=use_cache,
             **kwargs,
         )
+        _record_p2_first_divergence_trace(layer_idx, "ATTENTION_VALUE_OUTPUT", hidden_states)
         hidden_states = residual + hidden_states
+        _record_p2_first_divergence_trace(layer_idx, "ATTENTION_RESIDUAL_OUTPUT", hidden_states)
 
         # Fully Connected
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
+        _record_p2_first_divergence_trace(layer_idx, "POST_ATTENTION_RMSNORM", hidden_states)
         hidden_states = self.mlp(hidden_states)
+        _record_p2_first_divergence_trace(layer_idx, "MLP_OUTPUT", hidden_states)
         hidden_states = residual + hidden_states
+        _record_p2_first_divergence_trace(layer_idx, "LAYER_OUTPUT", hidden_states)
 
         outputs = (hidden_states,)
 

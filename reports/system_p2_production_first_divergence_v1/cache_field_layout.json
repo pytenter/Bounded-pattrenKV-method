@@ -1,0 +1,437 @@
+[
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "sink_k",
+    "has_batch_axis": true,
+    "logical_semantics": "sink_k",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      16,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      16,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "sink_v",
+    "has_batch_axis": true,
+    "logical_semantics": "sink_v",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      16,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      16,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "recent_k",
+    "has_batch_axis": true,
+    "logical_semantics": "recent_k",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      128,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      128,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "recent_v",
+    "has_batch_axis": true,
+    "logical_semantics": "recent_v",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      128,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      128,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "pending_k",
+    "has_batch_axis": true,
+    "logical_semantics": "pending_k",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      112,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      112,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "pending_v",
+    "has_batch_axis": true,
+    "logical_semantics": "pending_v",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      112,
+      128
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      112,
+      128
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.int64",
+    "field_name": "k_assignments",
+    "has_batch_axis": true,
+    "logical_semantics": "k_assignments",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      256
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      256
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.int32",
+    "field_name": "v_assignment_idx",
+    "has_batch_axis": true,
+    "logical_semantics": "v_assignment_idx",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      256
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      256
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.uint8",
+    "field_name": "v_pattern_mask",
+    "has_batch_axis": true,
+    "logical_semantics": "v_pattern_mask",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      8,
+      256
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      256
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.uint8",
+    "field_name": "v_precision_mask",
+    "has_batch_axis": true,
+    "logical_semantics": "v_precision_mask",
+    "logical_token_count": null,
+    "physical_capacity": [
+      2,
+      256
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      256
+    ],
+    "token_axis": 1
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.int32",
+    "field_name": "packed_k",
+    "has_batch_axis": true,
+    "logical_semantics": "packed_k",
+    "logical_token_count": 256,
+    "physical_capacity": [
+      2,
+      8,
+      128,
+      16
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      128,
+      16
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "packed_k_scale",
+    "has_batch_axis": true,
+    "logical_semantics": "packed_k_scale",
+    "logical_token_count": 256,
+    "physical_capacity": [
+      2,
+      8,
+      128,
+      2
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      128,
+      2
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": 0,
+    "dtype": "torch.float16",
+    "field_name": "packed_k_zero",
+    "has_batch_axis": true,
+    "logical_semantics": "packed_k_zero",
+    "logical_token_count": 256,
+    "physical_capacity": [
+      2,
+      8,
+      128,
+      2
+    ],
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "batch_axis_0",
+    "request_local": true,
+    "row_slice_valid": true,
+    "shape": [
+      2,
+      8,
+      128,
+      2
+    ],
+    "token_axis": 2
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v_scale",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v_scale",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v_zero",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v_zero",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v4",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v4",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v4_scale",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v4_scale",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "packed_v4_zero",
+    "has_batch_axis": false,
+    "logical_semantics": "packed_v4_zero",
+    "logical_token_count": 256,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "v2_assignment_idx",
+    "has_batch_axis": false,
+    "logical_semantics": "v2_assignment_idx",
+    "logical_token_count": null,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  },
+  {
+    "batch_axis": null,
+    "dtype": null,
+    "field_name": "v4_assignment_idx",
+    "has_batch_axis": false,
+    "logical_semantics": "v4_assignment_idx",
+    "logical_token_count": null,
+    "physical_capacity": null,
+    "producer_function": "build_cache_from_prefill/flush_pending",
+    "request_indexing_method": "centroid_slot_or_global",
+    "request_local": true,
+    "row_slice_valid": false,
+    "shape": null,
+    "token_axis": null
+  }
+]
