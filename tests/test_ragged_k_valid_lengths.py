@@ -5,6 +5,7 @@ import torch
 from models.segmented_cache import (
     PatternKVCentroidStatePool,
     PatternQuantizedKVCache,
+    append_decode_rolling,
     assemble_ragged_patternkv_cache,
     build_k_segment_validity_mask,
     get_packed_k_tokens_per_request,
@@ -177,6 +178,22 @@ def test_ragged_k_decode_update_independent() -> None:
     lengths = k_segment_valid_lengths(cache)
     assert lengths["pending"].tolist() == [113, 114]
     assert lengths["packed"].tolist() == [128, 256]
+
+
+def test_ragged_decode_append_preserves_pending_valid_prefix() -> None:
+    cache = _b2_cache()
+    cache.recent_k[0, :, 0, :].fill_(42.0)
+    cache.recent_v[0, :, 0, :].fill_(43.0)
+    cache.pending_k[0, :, 112:, :].fill_(-100.0)
+    cache.pending_v[0, :, 112:, :].fill_(-101.0)
+    key_states = torch.full((2, 1, 1, 128), 99.0)
+    value_states = torch.full((2, 1, 1, 128), 100.0)
+    append_decode_rolling(cache, key_states, value_states)
+    lengths = k_segment_valid_lengths(cache)
+    assert lengths["pending"].tolist() == [113, 114]
+    assert torch.equal(cache.pending_k[0, :, 112, :], torch.full((1, 128), 42.0))
+    assert torch.equal(cache.pending_v[0, :, 112, :], torch.full((1, 128), 43.0))
+    assert torch.equal(cache.recent_k[0, :, -1, :], torch.full((1, 128), 99.0))
 
 
 def test_ragged_k_boundary_transition_independent() -> None:

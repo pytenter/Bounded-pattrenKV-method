@@ -1,0 +1,4 @@
+{
+  "invalid_probability_mass_max": 0.0,
+  "reason": "masked_fill(-inf) applied before softmax; covered by S6-B.3.2 counters/tests"
+}

@@ -1,0 +1,8 @@
+# Layerwise First Divergence
+
+{
+  "component": "none_with_threshold",
+  "layer": null,
+  "request": "A",
+  "threshold": 0.05
+}

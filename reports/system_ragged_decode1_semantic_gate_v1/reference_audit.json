@@ -1,0 +1,63 @@
+{
+  "after_layer0": {
+    "centroid_counts": [
+      32,
+      32,
+      32,
+      32
+    ],
+    "k_assign_hash": "d9fb188670218fc5847dc686e6c254765b66ce5c83164a0deac83929e8a4b926",
+    "layer": 0,
+    "packed_k_hash": "1d662ad4c16db3f4b801cd6e3937d26c69c1cf3a37ca8d92c413631a383963a9",
+    "packed_k_tokens": 128,
+    "packed_v4_tokens": 32,
+    "packed_v_hash": "de676bae28a480011d3d012db14bef539324e62a841a9627863c689bea168af3",
+    "packed_v_tokens": 128,
+    "page_indptr": [
+      0,
+      1
+    ],
+    "page_seq_lens": [
+      128
+    ],
+    "pending_k_hash": "dd39035584ad3984d4abf510b45dd430402381d818f871e6b7a920f7924f06ef",
+    "recent_k_hash": "ba6e0bdf837721566c12d620f943ac1c2f98872268e5c4f60ea1065555684d55",
+    "request_packed_k_tokens": [
+      128
+    ],
+    "request_total_tokens": [
+      384
+    ]
+  },
+  "before_layer0": {
+    "centroid_counts": [
+      32,
+      32,
+      32,
+      32
+    ],
+    "k_assign_hash": "d9fb188670218fc5847dc686e6c254765b66ce5c83164a0deac83929e8a4b926",
+    "layer": 0,
+    "packed_k_hash": "1d662ad4c16db3f4b801cd6e3937d26c69c1cf3a37ca8d92c413631a383963a9",
+    "packed_k_tokens": 128,
+    "packed_v4_tokens": 32,
+    "packed_v_hash": "de676bae28a480011d3d012db14bef539324e62a841a9627863c689bea168af3",
+    "packed_v_tokens": 128,
+    "page_indptr": [
+      0,
+      1
+    ],
+    "page_seq_lens": [
+      128
+    ],
+    "pending_k_hash": "dd39035584ad3984d4abf510b45dd430402381d818f871e6b7a920f7924f06ef",
+    "recent_k_hash": "ba6e0bdf837721566c12d620f943ac1c2f98872268e5c4f60ea1065555684d55",
+    "request_packed_k_tokens": [
+      128
+    ],
+    "request_total_tokens": [
+      384
+    ]
+  },
+  "reference_cache_aliasing_detected": false
+}

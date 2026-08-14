@@ -2150,8 +2150,76 @@ def build_cache_from_prefill(
     return cache
 
 
+def _ragged_rows_to_padded_batch(rows: list[torch.Tensor]) -> torch.Tensor | None:
+    max_tokens = max((int(row.shape[2]) for row in rows), default=0)
+    if max_tokens <= 0:
+        return None
+    padded = []
+    for row in rows:
+        if int(row.shape[2]) == max_tokens:
+            padded.append(row.contiguous())
+            continue
+        pad_shape = (row.shape[0], row.shape[1], max_tokens - int(row.shape[2]), row.shape[3])
+        pad = torch.zeros(pad_shape, dtype=row.dtype, device=row.device)
+        padded.append(torch.cat([row, pad], dim=2).contiguous())
+    return torch.cat(padded, dim=0)
+
+
+def _empty_row_like(reference: torch.Tensor, row: int) -> torch.Tensor:
+    return reference[row : row + 1, :, :0, :]
+
+
+def _roll_ragged_recent_overflow(
+    cache: QuantizedKVCache,
+    old_segments: dict[str, torch.Tensor],
+    *,
+    old_recent_physical: int,
+    recent_append_tokens: int,
+) -> None:
+    if cache.recent_k is None or cache.recent_v is None:
+        return
+    bsz = cache_batch_size(cache)
+    appended_k = cache.recent_k[:, :, old_recent_physical : old_recent_physical + recent_append_tokens, :]
+    appended_v = cache.recent_v[:, :, old_recent_physical : old_recent_physical + recent_append_tokens, :]
+    pending_k_rows = []
+    pending_v_rows = []
+    recent_k_rows = []
+    recent_v_rows = []
+    for row in range(bsz):
+        old_recent = int(old_segments["recent"][row].item())
+        old_pending = int(old_segments["pending"][row].item())
+        recent_k_valid = cache.recent_k[row : row + 1, :, :old_recent, :]
+        recent_v_valid = cache.recent_v[row : row + 1, :, :old_recent, :]
+        if recent_append_tokens:
+            recent_k_valid = torch.cat([recent_k_valid, appended_k[row : row + 1]], dim=2)
+            recent_v_valid = torch.cat([recent_v_valid, appended_v[row : row + 1]], dim=2)
+        overflow = max(int(recent_k_valid.shape[2]) - int(cache.recent_length), 0)
+        overflow_k = recent_k_valid[:, :, :overflow, :]
+        overflow_v = recent_v_valid[:, :, :overflow, :]
+        if cache.pending_k is not None:
+            pending_k_valid = cache.pending_k[row : row + 1, :, :old_pending, :]
+        else:
+            pending_k_valid = _empty_row_like(cache.recent_k, row)
+        if cache.pending_v is not None:
+            pending_v_valid = cache.pending_v[row : row + 1, :, :old_pending, :]
+        else:
+            pending_v_valid = _empty_row_like(cache.recent_v, row)
+        pending_k_rows.append(torch.cat([pending_k_valid, overflow_k], dim=2))
+        pending_v_rows.append(torch.cat([pending_v_valid, overflow_v], dim=2))
+        recent_k_rows.append(recent_k_valid[:, :, overflow:, :])
+        recent_v_rows.append(recent_v_valid[:, :, overflow:, :])
+    cache.pending_k = _ragged_rows_to_padded_batch(pending_k_rows)
+    cache.pending_v = _ragged_rows_to_padded_batch(pending_v_rows)
+    cache.recent_k = _ragged_rows_to_padded_batch(recent_k_rows)
+    cache.recent_v = _ragged_rows_to_padded_batch(recent_v_rows)
+
+
 def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, value_states: torch.Tensor) -> QuantizedKVCache:
     append_tokens = int(key_states.shape[2])
+    ragged_segments = None
+    old_recent_physical = tensor_tokens(cache.recent_k)
+    if torch.is_tensor(getattr(cache, "request_total_tokens", None)):
+        ragged_segments = k_segment_valid_lengths(cache, device=key_states.device)
     sink_capacity = max(int(cache.sink_length) - tensor_tokens(cache.sink_k), 0)
     sink_fill = min(sink_capacity, append_tokens)
     if sink_fill:
@@ -2165,10 +2233,18 @@ def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, val
         advance_request_total_tokens(cache, int(key_states.shape[2]))
     overflow = max(tensor_tokens(cache.recent_k) - cache.recent_length, 0)
     if overflow:
-        cache.pending_k = _cat_token(cache.pending_k, cache.recent_k[:, :, :overflow, :].contiguous(), category="recent_pending")
-        cache.pending_v = _cat_token(cache.pending_v, cache.recent_v[:, :, :overflow, :].contiguous(), category="recent_pending")
-        cache.recent_k = cache.recent_k[:, :, overflow:, :].contiguous()
-        cache.recent_v = cache.recent_v[:, :, overflow:, :].contiguous()
+        if ragged_segments is not None:
+            _roll_ragged_recent_overflow(
+                cache,
+                ragged_segments,
+                old_recent_physical=old_recent_physical,
+                recent_append_tokens=append_tokens - sink_fill,
+            )
+        else:
+            cache.pending_k = _cat_token(cache.pending_k, cache.recent_k[:, :, :overflow, :].contiguous(), category="recent_pending")
+            cache.pending_v = _cat_token(cache.pending_v, cache.recent_v[:, :, :overflow, :].contiguous(), category="recent_pending")
+            cache.recent_k = cache.recent_k[:, :, overflow:, :].contiguous()
+            cache.recent_v = cache.recent_v[:, :, overflow:, :].contiguous()
     flush_pending(cache)
     if isinstance(cache, PatternQuantizedKVCache):
         reference = cache.sink_k
