@@ -1,0 +1,10 @@
+{
+  "first_diff": {
+    "component": "k_centroid_values",
+    "got_hash": "af9e9b974251990429932f9a58f1175c1c6b1223014fd9cdd078ffb88a498988",
+    "layer": 0,
+    "ref_hash": "121854cea67cd05693b5e190bf775ed5c247b9f7566c5b2c95e66215967ab6ae"
+  },
+  "match": false,
+  "step": 0
+}

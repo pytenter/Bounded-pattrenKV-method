@@ -1,0 +1,10 @@
+{
+  "component": "k_proj",
+  "cosine": 1.0,
+  "exact": false,
+  "inf": 0,
+  "layer": 0,
+  "max_abs": 0.00390625,
+  "nan": 0,
+  "relative_l2": 0.0002817699278239161
+}

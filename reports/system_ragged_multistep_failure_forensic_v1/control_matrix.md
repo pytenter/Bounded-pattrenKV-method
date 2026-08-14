@@ -1,0 +1,70 @@
+# Control Matrix
+
+{
+  "C0_different_content_different_length": {
+    "all_top1": true,
+    "first_failure": {
+      "metrics": {
+        "cosine": 0.9996905326843262,
+        "inf": 0,
+        "max_abs": 0.462890625,
+        "nan": 0,
+        "relative_l2": 0.02502460964024067,
+        "request": "A",
+        "step": 5,
+        "top1_equal": true,
+        "top1_margin": 7.96875,
+        "top5_overlap": 5
+      },
+      "request": "A",
+      "step": 5
+    },
+    "max_relative_l2": 0.02638724073767662,
+    "max_relative_l2_request": "B",
+    "max_relative_l2_step": 6,
+    "min_top5": 4,
+    "pass": false
+  },
+  "C1_different_content_same_length": {
+    "all_top1": true,
+    "first_failure": null,
+    "max_relative_l2": 0.008601090870797634,
+    "max_relative_l2_request": "B",
+    "max_relative_l2_step": 16,
+    "min_top5": 4,
+    "pass": true
+  },
+  "C2_same_content_different_length": {
+    "all_top1": true,
+    "first_failure": {
+      "metrics": {
+        "cosine": 0.9996905326843262,
+        "inf": 0,
+        "max_abs": 0.462890625,
+        "nan": 0,
+        "relative_l2": 0.02502460964024067,
+        "request": "A",
+        "step": 5,
+        "top1_equal": true,
+        "top1_margin": 7.96875,
+        "top5_overlap": 5
+      },
+      "request": "A",
+      "step": 5
+    },
+    "max_relative_l2": 0.02502460964024067,
+    "max_relative_l2_request": "A",
+    "max_relative_l2_step": 5,
+    "min_top5": 4,
+    "pass": false
+  },
+  "C3_same_content_same_length": {
+    "all_top1": true,
+    "first_failure": null,
+    "max_relative_l2": 0.00284616369754076,
+    "max_relative_l2_request": "B",
+    "max_relative_l2_step": 16,
+    "min_top5": 4,
+    "pass": true
+  }
+}
