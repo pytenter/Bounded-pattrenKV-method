@@ -1,0 +1,36 @@
+## git status --short
+ M bench/bench_gsm8k_paper.py
+ M bench/bench_longbench_patternkv.py
+ M bench/gsm8k_paper_utils.py
+ M bench/paper_config.py
+ M models/llama_patternkv.py
+ M scripts/run_longbench_paper_8k_single4090.py
+ M scripts/summarize_gsm8k_paper_results.py
+ M scripts/summarize_longbench_8k_4090.py
+ M tests/test_paper_v2_config.py
+?? reports/causal_v4_25_generalization_v1/
+?? reports/system_ragged_cache_assembly_v1/
+?? scripts/diagnose_longbench_causal_oom.py
+
+## git diff --name-only
+bench/bench_gsm8k_paper.py
+bench/bench_longbench_patternkv.py
+bench/gsm8k_paper_utils.py
+bench/paper_config.py
+models/llama_patternkv.py
+scripts/run_longbench_paper_8k_single4090.py
+scripts/summarize_gsm8k_paper_results.py
+scripts/summarize_longbench_8k_4090.py
+tests/test_paper_v2_config.py
+
+## git diff --stat
+ bench/bench_gsm8k_paper.py                   | 27 ++++++++++++++++++-
+ bench/bench_longbench_patternkv.py           | 10 ++++++-
+ bench/gsm8k_paper_utils.py                   |  2 +-
+ bench/paper_config.py                        | 40 ++++++++++++++++++++++++++--
+ models/llama_patternkv.py                    | 13 +++++++--
+ scripts/run_longbench_paper_8k_single4090.py | 31 ++++++++++++++++-----
+ scripts/summarize_gsm8k_paper_results.py     |  5 +++-
+ scripts/summarize_longbench_8k_4090.py       |  8 ++++--
+ tests/test_paper_v2_config.py                | 24 +++++++++++++++++
+ 9 files changed, 144 insertions(+), 16 deletions(-)

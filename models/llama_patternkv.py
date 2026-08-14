@@ -44,6 +44,7 @@ from models.segmented_cache import (
     cache_validate_enabled,
     deserialize_cache,
     flush_chunked_buffer,
+    get_decode_position_ids,
     maybe_validate_cache,
     normalize_value_objective,
     normalize_value_precision_selector,
@@ -2275,10 +2276,14 @@ class LlamaModel_PatternKV(LlamaPreTrainedModel):
 
         if position_ids is None:
             device = input_ids.device if input_ids is not None else inputs_embeds.device
-            position_ids = torch.arange(
-                past_key_values_length, seq_length + past_key_values_length, dtype=torch.long, device=device
-            )
-            position_ids = position_ids.unsqueeze(0)
+            first_cache = past_key_values[0] if past_key_values is not None else None
+            if isinstance(first_cache, tuple) and first_cache and first_cache[0] == "patternkv_segmented_cache_v1":
+                position_ids = get_decode_position_ids(deserialize_cache(first_cache, pattern=True), seq_length, device=device)
+            else:
+                position_ids = torch.arange(
+                    past_key_values_length, seq_length + past_key_values_length, dtype=torch.long, device=device
+                )
+                position_ids = position_ids.unsqueeze(0)
 
         if inputs_embeds is None:
             inputs_embeds = self.embed_tokens(input_ids)

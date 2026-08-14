@@ -1,0 +1,62 @@
+{
+  "actual_model_error": null,
+  "actual_model_loaded": true,
+  "b2_context_lengths": [
+    384,
+    513
+  ],
+  "b2_page_indptr": [
+    0,
+    1,
+    3
+  ],
+  "b2_position_ids": [
+    [
+      384
+    ],
+    [
+      513
+    ]
+  ],
+  "b4_context_lengths": [
+    384,
+    513,
+    642,
+    771
+  ],
+  "b4_page_indptr": [
+    0,
+    1,
+    3,
+    6,
+    10
+  ],
+  "b4_position_ids": [
+    [
+      384
+    ],
+    [
+      513
+    ],
+    [
+      642
+    ],
+    [
+      771
+    ]
+  ],
+  "classification": "RAGGED_CACHE_ASSEMBLY_AND_POSITION_SUPPORTED",
+  "equal_length_backward_compatible": true,
+  "explicit_position_ids_preserved": true,
+  "first_ragged_blocker": "RAGGED_K_LENGTH_UNSUPPORTED",
+  "next_task": "RAGGED_K_LENGTH_UNSUPPORTED",
+  "per_request_position_ids_supported": true,
+  "ragged_cache_assembly_supported": true,
+  "ragged_centroid_pool_merge_supported": true,
+  "ragged_decode_probe_attempted": true,
+  "ragged_decode_probe_passed": false,
+  "ragged_page_pool_merge_supported": true,
+  "request_local_packed_tokens_supported": true,
+  "request_local_total_tokens_supported": true,
+  "start_head": "c66676cbd605fc9c528111f8440e0f5136b53786"
+}

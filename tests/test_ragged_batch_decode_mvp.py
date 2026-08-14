@@ -159,4 +159,4 @@ def test_equal_length_batch_still_supported() -> None:
 
 
 def test_current_first_ragged_blocker_is_cache_assembly() -> None:
-    assert current_first_ragged_blocker()["first_ragged_blocker"] == "RAGGED_CACHE_ASSEMBLY_UNSUPPORTED"
+    assert current_first_ragged_blocker()["first_ragged_blocker"] == "RAGGED_K_LENGTH_UNSUPPORTED"

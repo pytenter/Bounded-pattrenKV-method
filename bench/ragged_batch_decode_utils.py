@@ -178,16 +178,15 @@ def ragged_metadata_from_layer_summaries(summaries: list[dict[str, Any]]) -> Rag
 
 def current_first_ragged_blocker() -> dict[str, Any]:
     return {
-        "first_ragged_blocker": "RAGGED_CACHE_ASSEMBLY_UNSUPPORTED",
+        "first_ragged_blocker": "RAGGED_K_LENGTH_UNSUPPORTED",
         "secondary_blockers": [
-            "RAGGED_POSITION_IDS_UNSUPPORTED",
-            "RAGGED_K_LENGTH_UNSUPPORTED",
             "RAGGED_V_PAGE_METADATA_UNSUPPORTED",
             "RAGGED_ATTENTION_MASK_UNSUPPORTED",
         ],
         "evidence": [
-            "PatternQuantizedKVCache.total_tokens is serialized as a batch-global scalar.",
-            "LlamaModel_PatternKV derives decode position_ids from the first layer cache length.",
+            "PatternQuantizedKVCache now carries request-local logical and packed length vectors.",
+            "Ragged cache assembly can merge independent B1 cache rows and operator-ready page metadata.",
+            "LlamaModel_PatternKV derives default decode position_ids from request-local cache lengths.",
             "Segmented PatternKV attention validates [B,H,Q,cache.total_tokens] with one global cache length.",
             "quant.page_batch patternkv_page_batch_decode currently requires equal seq_lens.",
         ],
