@@ -907,6 +907,8 @@ def _cat_packed_k(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         record_cache_mutation("packed_k_scale", old_scale, scale, cache.packed_k_scale)
         record_cache_mutation("packed_k_zero", old_zero, zero, cache.packed_k_zero)
     cache.packed_k_tokens += int(tokens)
+    if torch.is_tensor(getattr(cache, "request_packed_k_tokens", None)):
+        cache.request_packed_k_tokens = cache.request_packed_k_tokens.to(device=cache.packed_k.device, dtype=torch.long) + int(tokens)
     cache.pack_count_k += 1
 
 
@@ -916,6 +918,8 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         cache.packed_v_scale = _append_capacity_stream(cache, "packed_v_scale", scale, token_dim=2)
         cache.packed_v_zero = _append_capacity_stream(cache, "packed_v_zero", zero, token_dim=2)
         cache.packed_v_tokens += int(tokens)
+        if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
+            cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=cache.packed_v.device, dtype=torch.long) + int(tokens)
         cache.pack_count_v += 1
         return
     if cache.packed_v is None:
@@ -935,6 +939,8 @@ def _cat_packed_v(cache: QuantizedKVCache, packed: torch.Tensor, scale: torch.Te
         record_cache_mutation("packed_v2_scale", old_scale, scale, cache.packed_v_scale)
         record_cache_mutation("packed_v2_zero", old_zero, zero, cache.packed_v_zero)
     cache.packed_v_tokens += int(tokens)
+    if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
+        cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=cache.packed_v.device, dtype=torch.long) + int(tokens)
     cache.pack_count_v += 1
 
 
@@ -1480,6 +1486,10 @@ def _cat_mixed_packed_v(
             cache.v_precision_mask = _cat_v_precision_mask(cache, precision_mask.to(torch.uint8))
             cache.packed_v_tokens += int(tokens)
             cache.packed_v4_tokens += int(precision_mask.bool().sum().item())
+            if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
+                cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(tokens)
+            if torch.is_tensor(getattr(cache, "request_packed_v4_tokens", None)):
+                cache.request_packed_v4_tokens = cache.request_packed_v4_tokens.to(device=v_adjusted.device, dtype=torch.long) + precision_mask.bool().sum(dim=1).to(dtype=torch.long)
             cache.pack_count_v += 1
             return
 
@@ -1530,6 +1540,10 @@ def _cat_mixed_packed_v(
         mask_u8 = precision_mask.to(torch.uint8)
         _cat_v_precision_mask(cache, mask_u8)
         cache.packed_v_tokens += int(tokens)
+        if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
+            cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(tokens)
+        if torch.is_tensor(getattr(cache, "request_packed_v4_tokens", None)):
+            cache.request_packed_v4_tokens = cache.request_packed_v4_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(mask.sum().item())
         cache.pack_count_v += 1
 
 
@@ -1836,8 +1850,11 @@ def _append_dynamic_centroids(cache: PatternQuantizedKVCache, k_window: torch.Te
         v_centroid = ((v_window.amin(dim=2, keepdim=True) + v_window.amax(dim=2, keepdim=True)) * 0.5).to(pool.v_centroid_pool.dtype)
         k_pos = pool.k_counts[update_slots].long()
         v_pos = pool.v_counts[update_slots].long()
-        pool.k_centroid_pool[update_slots, :, k_pos, :] = k_centroid[active_rows, :, 0, :]
-        pool.v_centroid_pool[update_slots, :, v_pos, :] = v_centroid[active_rows, :, 0, :]
+        active_indices = torch.nonzero(active_rows, as_tuple=False).flatten()
+        for local_idx, slot in enumerate(update_slots):
+            source_row = int(active_indices[local_idx].item())
+            pool.k_centroid_pool[slot, :, int(k_pos[local_idx].item()), :] = k_centroid[source_row, :, 0, :]
+            pool.v_centroid_pool[slot, :, int(v_pos[local_idx].item()), :] = v_centroid[source_row, :, 0, :]
         pool.k_counts[update_slots] += 1
         pool.v_counts[update_slots] += 1
         pool.update_counts_k[update_slots] += 1
@@ -1990,6 +2007,230 @@ def _pack_pattern_window_impl(
     cache.pending_v = cache.pending_v[:, :, tokens:, :].contiguous() if tensor_tokens(cache.pending_v) > tokens else None
 
 
+def _slice_tokens_for_request(value: torch.Tensor | None, row: int, tokens: int, token_dim: int) -> torch.Tensor | None:
+    if value is None:
+        return None
+    item = value[row : row + 1]
+    dim = token_dim if token_dim >= 0 else item.dim() + token_dim
+    slices = [slice(None)] * item.dim()
+    slices[dim] = slice(0, int(tokens))
+    return item[tuple(slices)].contiguous()
+
+
+def _slice_operator_ready_page_pools_for_request(cache: PatternQuantizedKVCache, row: int, centroids: torch.Tensor | None) -> Any | None:
+    pools = getattr(cache, "operator_ready_page_pools", None)
+    if pools is None:
+        return None
+    from quant.page_batch import PatternKVBatchMetadata, PatternKVOperatorReadyPagePools
+
+    meta = pools.metadata
+    row_pages = int(meta.num_pages[row].item())
+    device = meta.seq_lens.device
+    page_size = int(pools.page_size)
+    local_v2_offsets = []
+    local_v4_offsets = []
+    local_v2_payload = []
+    local_v4_payload = []
+    local_v2_scale = []
+    local_v2_zero = []
+    local_v4_scale = []
+    local_v4_zero = []
+    local_v2_pattern = []
+    local_v4_pattern = []
+    local_v2_assignment = []
+    local_v4_assignment = []
+    local_v2_table = []
+    local_v4_table = []
+    local_precision = []
+    local_v2_counts = []
+    local_v4_counts = []
+    local_valid = []
+    local_prefix = []
+    v2_cursor = 0
+    v4_cursor = 0
+    for page in range(row_pages):
+        metadata_page = int(meta.metadata_page_table[row, page].item())
+        valid = int(meta.valid_tokens[metadata_page].item())
+        v2_count = int(meta.v2_counts[metadata_page].item())
+        v4_count = int(meta.v4_counts[metadata_page].item())
+        local_precision.append(meta.precision_bitmap[metadata_page].to(device=device))
+        local_v2_counts.append(meta.v2_counts[metadata_page].to(device=device))
+        local_v4_counts.append(meta.v4_counts[metadata_page].to(device=device))
+        local_valid.append(meta.valid_tokens[metadata_page].to(device=device))
+        local_prefix.append(meta.v4_prefix_counts[metadata_page].to(device=device))
+        v2_page = int(meta.v2_page_table[row, page].item())
+        if v2_page >= 0 and v2_count:
+            start = int(pools.v2_page_offsets[v2_page].item())
+            local_v2_offsets.append(v2_cursor)
+            local_v2_table.append(page)
+            local_v2_payload.append(pools.v2_payload_pool[:, start : start + v2_count, :])
+            local_v2_scale.append(pools.v2_scale_pool[:, start : start + v2_count, :])
+            local_v2_zero.append(pools.v2_zero_pool[:, start : start + v2_count, :])
+            local_v2_pattern.append(pools.v2_pattern_pool[:, start : start + v2_count])
+            local_v2_assignment.append(pools.v2_assignment_pool[:, start : start + v2_count])
+            v2_cursor += v2_count
+        else:
+            local_v2_offsets.append(-1)
+            local_v2_table.append(-1)
+        v4_page = int(meta.v4_page_table[row, page].item())
+        if v4_page >= 0 and v4_count:
+            start = int(pools.v4_page_offsets[v4_page].item())
+            local_v4_offsets.append(v4_cursor)
+            local_v4_table.append(page)
+            local_v4_payload.append(pools.v4_payload_pool[:, start : start + v4_count, :])
+            local_v4_scale.append(pools.v4_scale_pool[:, start : start + v4_count, :])
+            local_v4_zero.append(pools.v4_zero_pool[:, start : start + v4_count, :])
+            local_v4_pattern.append(pools.v4_pattern_pool[:, start : start + v4_count])
+            local_v4_assignment.append(pools.v4_assignment_pool[:, start : start + v4_count])
+            v4_cursor += v4_count
+        else:
+            local_v4_offsets.append(-1)
+            local_v4_table.append(-1)
+
+    def _cat_or_empty(items: list[torch.Tensor], template: torch.Tensor, tail: bool) -> torch.Tensor:
+        if items:
+            return torch.cat(items, dim=1).contiguous()
+        shape = (template.shape[0], 0, template.shape[2]) if tail else (template.shape[0], 0)
+        return torch.empty(shape, dtype=template.dtype, device=template.device)
+
+    metadata = PatternKVBatchMetadata(
+        request_indptr=torch.tensor([0, row_pages], dtype=torch.int32, device=device),
+        seq_lens=meta.seq_lens[row : row + 1].contiguous(),
+        num_pages=meta.num_pages[row : row + 1].contiguous(),
+        v2_page_table=torch.tensor([local_v2_table], dtype=torch.int32, device=device),
+        v4_page_table=torch.tensor([local_v4_table], dtype=torch.int32, device=device),
+        metadata_page_table=torch.arange(row_pages, dtype=torch.int32, device=device).view(1, row_pages),
+        precision_bitmap=torch.stack(local_precision).contiguous() if local_precision else torch.empty((0, 4), dtype=torch.int32, device=device),
+        v2_counts=torch.stack(local_v2_counts).contiguous() if local_v2_counts else torch.empty((0,), dtype=torch.int16, device=device),
+        v4_counts=torch.stack(local_v4_counts).contiguous() if local_v4_counts else torch.empty((0,), dtype=torch.int16, device=device),
+        valid_tokens=torch.stack(local_valid).contiguous() if local_valid else torch.empty((0,), dtype=torch.int16, device=device),
+        v4_prefix_counts=torch.stack(local_prefix).contiguous() if local_prefix else torch.empty((0, page_size + 1), dtype=torch.int16, device=device),
+    )
+    row_centroids = centroids if torch.is_tensor(centroids) else pools.centroids[row : row + 1] if pools.centroids.dim() == 4 else pools.centroids
+    return PatternKVOperatorReadyPagePools(
+        v2_payload_pool=_cat_or_empty(local_v2_payload, pools.v2_payload_pool, True),
+        v4_payload_pool=_cat_or_empty(local_v4_payload, pools.v4_payload_pool, True),
+        v2_scale_pool=_cat_or_empty(local_v2_scale, pools.v2_scale_pool, True),
+        v2_zero_pool=_cat_or_empty(local_v2_zero, pools.v2_zero_pool, True),
+        v4_scale_pool=_cat_or_empty(local_v4_scale, pools.v4_scale_pool, True),
+        v4_zero_pool=_cat_or_empty(local_v4_zero, pools.v4_zero_pool, True),
+        v2_pattern_pool=_cat_or_empty(local_v2_pattern, pools.v2_pattern_pool, False),
+        v4_pattern_pool=_cat_or_empty(local_v4_pattern, pools.v4_pattern_pool, False),
+        v2_assignment_pool=_cat_or_empty(local_v2_assignment, pools.v2_assignment_pool, False),
+        v4_assignment_pool=_cat_or_empty(local_v4_assignment, pools.v4_assignment_pool, False),
+        v2_page_offsets=torch.tensor(local_v2_offsets, dtype=torch.int32, device=device),
+        v4_page_offsets=torch.tensor(local_v4_offsets, dtype=torch.int32, device=device),
+        metadata=metadata,
+        centroids=row_centroids,
+        group_size=int(pools.group_size),
+        nh=int(pools.nh),
+        nh_kv=int(pools.nh_kv),
+        head_dim=int(pools.head_dim),
+        page_size=page_size,
+    )
+
+
+def _slice_ragged_request_cache(cache: PatternQuantizedKVCache, row: int, lengths: dict[str, torch.Tensor]) -> PatternQuantizedKVCache:
+    packed_k = int(get_packed_k_tokens_per_request(cache)[row].item())
+    packed_v = int(_request_vector(cache, "request_packed_v_tokens", int(cache.packed_v_tokens))[row].item())
+    packed_v4 = int(_request_vector(cache, "request_packed_v4_tokens", int(getattr(cache, "packed_v4_tokens", 0) or 0))[row].item())
+    packed_k_payload = _ceil_div(packed_k, 32 // int(cache.k_bits))
+    packed_k_scale = _ceil_div(packed_k, int(cache.group_size))
+    packed_v2 = max(packed_v - packed_v4, 0)
+    centroid_indices = cache.centroid_state_indices[row : row + 1].contiguous() if torch.is_tensor(cache.centroid_state_indices) else None
+    k_centroids = cache.centroid_state_pool.current_k(centroid_indices) if cache.centroid_state_pool is not None and centroid_indices is not None else (cache.k_centroids[row : row + 1].contiguous() if torch.is_tensor(cache.k_centroids) and cache.k_centroids.dim() == 4 else cache.k_centroids)
+    v_centroids = cache.centroid_state_pool.current_v(centroid_indices) if cache.centroid_state_pool is not None and centroid_indices is not None else (cache.v_centroids[row : row + 1].contiguous() if torch.is_tensor(cache.v_centroids) and cache.v_centroids.dim() == 4 else cache.v_centroids)
+    row_cache = PatternQuantizedKVCache(
+        sink_k=_slice_tokens_for_request(cache.sink_k, row, int(lengths["sink"][row].item()), 2),
+        sink_v=_slice_tokens_for_request(cache.sink_v, row, int(lengths["sink"][row].item()), 2),
+        packed_k=_slice_tokens_for_request(cache.packed_k, row, packed_k_payload, 3),
+        packed_k_scale=_slice_tokens_for_request(cache.packed_k_scale, row, packed_k_scale, 3),
+        packed_k_zero=_slice_tokens_for_request(cache.packed_k_zero, row, packed_k_scale, 3),
+        packed_v=_slice_tokens_for_request(cache.packed_v, row, packed_v2, 2),
+        packed_v_scale=_slice_tokens_for_request(cache.packed_v_scale, row, packed_v2, 2),
+        packed_v_zero=_slice_tokens_for_request(cache.packed_v_zero, row, packed_v2, 2),
+        pending_k=_slice_tokens_for_request(cache.pending_k, row, int(lengths["pending"][row].item()), 2),
+        pending_v=_slice_tokens_for_request(cache.pending_v, row, int(lengths["pending"][row].item()), 2),
+        recent_k=_slice_tokens_for_request(cache.recent_k, row, int(lengths["recent"][row].item()), 2),
+        recent_v=_slice_tokens_for_request(cache.recent_v, row, int(lengths["recent"][row].item()), 2),
+        total_tokens=int(get_total_tokens_per_request(cache)[row].item()),
+        packed_k_tokens=packed_k,
+        packed_v_tokens=packed_v,
+        sink_length=int(cache.sink_length),
+        recent_length=int(cache.recent_length),
+        group_size=int(cache.group_size),
+        k_bits=int(cache.k_bits),
+        v_bits=int(cache.v_bits),
+        pack_count_k=int(cache.pack_count_k),
+        pack_count_v=int(cache.pack_count_v),
+        cache_mode=getattr(cache, "cache_mode", ROLLING_CACHE_MODE),
+        chunk_length=int(getattr(cache, "chunk_length", cache.group_size)),
+        cache_backend=getattr(cache, "cache_backend", CONTIGUOUS_CACHE_BACKEND),
+        k_assignments=_slice_tokens_for_request(cache.k_assignments, row, packed_k, 2),
+        v_assignments=_slice_tokens_for_request(cache.v_assignments, row, packed_v, 2),
+        v_assignment_idx=_slice_tokens_for_request(cache.v_assignment_idx, row, packed_v, 2),
+        v_pattern_mask=_slice_tokens_for_request(cache.v_pattern_mask, row, packed_v, 2),
+        k_centroids=k_centroids,
+        v_centroids=v_centroids,
+        centroid_updates_k=int(cache.centroid_updates_k),
+        centroid_updates_v=int(cache.centroid_updates_v),
+        value_objective=getattr(cache, "value_objective", "base"),
+        v_precision_selector=getattr(cache, "v_precision_selector", "base_v2"),
+        v4_budget_fraction=float(getattr(cache, "v4_budget_fraction", 0.0)),
+        random_selector_seed=int(getattr(cache, "random_selector_seed", 20260809)),
+        v_precision_mask=_slice_tokens_for_request(cache.v_precision_mask, row, packed_v, 1),
+        packed_v4=_slice_tokens_for_request(cache.packed_v4, row, packed_v4, 2),
+        packed_v4_scale=_slice_tokens_for_request(cache.packed_v4_scale, row, packed_v4, 2),
+        packed_v4_zero=_slice_tokens_for_request(cache.packed_v4_zero, row, packed_v4, 2),
+        packed_v4_tokens=packed_v4,
+        v_causal_importance=_slice_tokens_for_request(cache.v_causal_importance, row, int(cache.total_tokens), 1),
+        v_oracle_importance=_slice_tokens_for_request(cache.v_oracle_importance, row, int(cache.total_tokens), 1),
+        v2_pattern_mask=_slice_tokens_for_request(cache.v2_pattern_mask, row, packed_v2, 2),
+        v2_assignment_idx=_slice_tokens_for_request(cache.v2_assignment_idx, row, packed_v2, 2),
+        v4_pattern_mask=_slice_tokens_for_request(cache.v4_pattern_mask, row, packed_v4, 2),
+        v4_assignment_idx=_slice_tokens_for_request(cache.v4_assignment_idx, row, packed_v4, 2),
+        capacity_backend=CAPACITY_GROWTH_BASELINE,
+        capacity_buffers=None,
+        centroid_state_pool=cache.centroid_state_pool,
+        centroid_state_indices=centroid_indices,
+    )
+    row_cache.operator_ready_page_pools = _slice_operator_ready_page_pools_for_request(cache, row, row_cache.v_centroids)
+    set_request_total_tokens(row_cache, [row_cache.total_tokens])
+    row_cache.request_packed_k_tokens = torch.tensor([packed_k], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
+    row_cache.request_packed_v_tokens = torch.tensor([packed_v], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
+    row_cache.request_packed_v4_tokens = torch.tensor([packed_v4], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
+    validate_cache(row_cache)
+    return row_cache
+
+
+def _replace_cache_state(cache: PatternQuantizedKVCache, source: PatternQuantizedKVCache) -> None:
+    cache.__dict__.clear()
+    cache.__dict__.update(source.__dict__)
+
+
+def _ragged_physical_total_tokens(cache: QuantizedKVCache) -> int:
+    return tensor_tokens(cache.sink_k) + int(cache.packed_k_tokens) + tensor_tokens(cache.pending_k) + tensor_tokens(cache.recent_k)
+
+
+def _flush_ragged_pending(cache: PatternQuantizedKVCache, *, dynamic_update: bool) -> bool:
+    lengths = k_segment_valid_lengths(cache, device=cache.pending_k.device if cache.pending_k is not None else None)
+    flush_mask = lengths["pending"] >= int(cache.group_size)
+    if not bool(flush_mask.any().item()):
+        return True
+    row_caches = []
+    for row in range(cache_batch_size(cache)):
+        row_cache = _slice_ragged_request_cache(cache, row, lengths)
+        if bool(flush_mask[row].item()):
+            row_cache.centroid_flush_mask = torch.ones(1, dtype=torch.bool, device=row_cache.pending_k.device if row_cache.pending_k is not None else get_total_tokens_per_request(row_cache).device)
+            _pack_pattern_window(row_cache, int(cache.group_size), dynamic_update=dynamic_update)
+            row_cache.centroid_flush_mask = None
+        row_caches.append(row_cache)
+    merged = assemble_ragged_patternkv_cache(row_caches)
+    _replace_cache_state(cache, merged)
+    cache.total_tokens = _ragged_physical_total_tokens(cache)
+    return False
+
+
 def flush_pending(
     cache: QuantizedKVCache,
     *,
@@ -1998,6 +2239,17 @@ def flush_pending(
     v_pattern_mask: torch.Tensor | None = None,
     dynamic_update: bool = True,
 ) -> None:
+    if (
+        isinstance(cache, PatternQuantizedKVCache)
+        and torch.is_tensor(getattr(cache, "request_total_tokens", None))
+        and get_total_tokens_per_request(cache).numel() > 1
+        and k_assignments is None
+        and v_assignment_idx is None
+        and v_pattern_mask is None
+    ):
+        while not _flush_ragged_pending(cache, dynamic_update=dynamic_update):
+            pass
+        return
     pending_k_tokens = tensor_tokens(cache.pending_k)
     k_pack_tokens = (pending_k_tokens // cache.group_size) * cache.group_size
     if not k_pack_tokens:
@@ -2246,6 +2498,8 @@ def append_decode_rolling(cache: QuantizedKVCache, key_states: torch.Tensor, val
             cache.recent_k = cache.recent_k[:, :, overflow:, :].contiguous()
             cache.recent_v = cache.recent_v[:, :, overflow:, :].contiguous()
     flush_pending(cache)
+    if torch.is_tensor(getattr(cache, "request_total_tokens", None)) and get_total_tokens_per_request(cache).numel() > 1:
+        cache.total_tokens = _ragged_physical_total_tokens(cache)
     if isinstance(cache, PatternQuantizedKVCache):
         reference = cache.sink_k
         if reference is None:
@@ -2661,6 +2915,12 @@ def assemble_ragged_patternkv_cache(per_request_caches: list[Any]) -> PatternQua
     pending_lengths = [tensor_tokens(cache.pending_k) for cache in caches]
     recent_lengths = [tensor_tokens(cache.recent_k) for cache in caches]
     total_lengths = [int(get_total_tokens_per_request(cache)[0].item()) for cache in caches]
+    physical_total_tokens = (
+        (max(sink_lengths) if sink_lengths else 0)
+        + max(packed_k_lengths)
+        + (max(pending_lengths) if pending_lengths else 0)
+        + (max(recent_lengths) if recent_lengths else 0)
+    )
     centroid_pool, centroid_slots = _merge_centroid_pools(caches)
     assembled = PatternQuantizedKVCache(
         sink_k=_cat_optional_by_batch([cache.sink_k for cache in caches], sink_lengths, 2),
@@ -2675,7 +2935,7 @@ def assemble_ragged_patternkv_cache(per_request_caches: list[Any]) -> PatternQua
         pending_v=_cat_optional_by_batch([cache.pending_v for cache in caches], pending_lengths, 2),
         recent_k=_cat_optional_by_batch([cache.recent_k for cache in caches], recent_lengths, 2),
         recent_v=_cat_optional_by_batch([cache.recent_v for cache in caches], recent_lengths, 2),
-        total_tokens=max(total_lengths),
+        total_tokens=physical_total_tokens,
         packed_k_tokens=max(packed_k_lengths),
         packed_v_tokens=max(packed_v_lengths),
         sink_length=int(first.sink_length),

@@ -23,9 +23,15 @@ def _actual_like_cache(total: int, packed_tokens: int, *, value: float) -> Patte
     payload_cols = (packed_tokens + pack - 1) // pack
     scale_cols = (packed_tokens + group_size - 1) // group_size
     lengths = _rolling_lengths(total, packed_tokens)
-    k_static = torch.tensor([[[value], [value + 1.0]]])
-    v_static = torch.tensor([[[value + 2.0], [value + 3.0]]])
-    pool = PatternKVCentroidStatePool.create(k_static, v_static, max_slots=1, max_dynamic_centroids=0)
+    k_static = torch.stack([
+        torch.full((128,), value),
+        torch.full((128,), value + 1.0),
+    ]).unsqueeze(0)
+    v_static = torch.stack([
+        torch.full((128,), value + 2.0),
+        torch.full((128,), value + 3.0),
+    ]).unsqueeze(0)
+    pool = PatternKVCentroidStatePool.create(k_static, v_static, max_slots=1, max_dynamic_centroids=8)
     pool.allocate(torch.tensor([0]))
     cache = PatternQuantizedKVCache(
         sink_k=torch.full((1, 1, lengths["sink"], 128), value),
@@ -33,7 +39,7 @@ def _actual_like_cache(total: int, packed_tokens: int, *, value: float) -> Patte
         packed_k=torch.full((1, 1, 128, payload_cols), int(value), dtype=torch.int32),
         packed_k_scale=torch.ones((1, 1, 128, scale_cols)),
         packed_k_zero=torch.zeros((1, 1, 128, scale_cols)),
-        packed_v=torch.zeros((1, 1, packed_tokens, 1), dtype=torch.int32),
+        packed_v=torch.zeros((1, 1, packed_tokens, 8), dtype=torch.int32),
         packed_v_scale=torch.zeros((1, 1, packed_tokens, 1)),
         packed_v_zero=torch.zeros((1, 1, packed_tokens, 1)),
         pending_k=torch.full((1, 1, lengths["pending"], 128), value),
@@ -54,8 +60,8 @@ def _actual_like_cache(total: int, packed_tokens: int, *, value: float) -> Patte
         v_pattern_mask=torch.zeros((1, 1, packed_tokens), dtype=torch.uint8),
         k_centroids=pool.current_k(torch.tensor([0])),
         v_centroids=pool.current_v(torch.tensor([0])),
-        v_precision_mask=torch.zeros((1, packed_tokens), dtype=torch.bool),
-        packed_v4=torch.zeros((1, 1, 0, 1), dtype=torch.int32),
+        v_precision_mask=None,
+        packed_v4=torch.zeros((1, 1, 0, 16), dtype=torch.int32),
         packed_v4_scale=torch.zeros((1, 1, 0, 1)),
         packed_v4_zero=torch.zeros((1, 1, 0, 1)),
         packed_v4_tokens=0,
@@ -207,3 +213,105 @@ def test_ragged_k_boundary_transition_independent() -> None:
     assert before["pending"].tolist() == [127, 112]
     assert after["pending"].tolist() == [128, 113]
     assert after["packed"].tolist() == [128, 256]
+
+
+def _append_steps(cache: PatternQuantizedKVCache, steps: int) -> None:
+    for step in range(steps):
+        key_states = torch.full((cache.sink_k.shape[0], 1, 1, 128), 100.0 + step)
+        value_states = torch.full((cache.sink_k.shape[0], 1, 1, 128), 200.0 + step)
+        append_decode_rolling(cache, key_states, value_states)
+
+
+def test_ragged_multistep_valid_prefix_preserved() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(513, 256, value=7.0),
+    ])
+    _append_steps(cache, 16)
+    lengths = k_segment_valid_lengths(cache)
+    assert lengths["pending"].tolist() == [0, 1]
+    assert lengths["packed"].tolist() == [256, 384]
+    assert cache.pending_k.shape[2] == 1
+    assert torch.equal(cache.pending_k[1, :, 0, :], torch.full((1, 128), 7.0))
+    assert torch.equal(cache.recent_k[:, :, -1, :], torch.full((2, 1, 128), 115.0))
+
+
+def test_ragged_multistep_independent_flush_schedule() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(399, 128, value=3.0),
+        _actual_like_cache(512, 256, value=7.0),
+    ])
+    _append_steps(cache, 1)
+    lengths = k_segment_valid_lengths(cache)
+    assert lengths["packed"].tolist() == [256, 256]
+    assert lengths["pending"].tolist() == [0, 113]
+
+
+def test_ragged_multistep_short_row_flush_does_not_move_long_row() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(399, 128, value=3.0),
+        _actual_like_cache(512, 256, value=7.0),
+    ])
+    long_recent_before = cache.recent_k[1, :, :128, :].clone()
+    _append_steps(cache, 1)
+    assert torch.equal(cache.recent_k[1], torch.cat([long_recent_before[:, 1:, :], torch.full((1, 1, 128), 100.0)], dim=1))
+    assert get_packed_k_tokens_per_request(cache).tolist() == [256, 256]
+
+
+def test_ragged_multistep_long_row_flush_does_not_move_short_row() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(527, 256, value=7.0),
+    ])
+    short_packed_before = cache.packed_k[0].clone()
+    _append_steps(cache, 1)
+    assert torch.equal(cache.packed_k[0, :, :, : short_packed_before.shape[-1]], short_packed_before)
+    assert get_packed_k_tokens_per_request(cache).tolist() == [128, 384]
+
+
+def test_ragged_multistep_reorder_preserves_flush_schedule() -> None:
+    ab = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(513, 256, value=7.0),
+    ])
+    ba = assemble_ragged_patternkv_cache([
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(384, 128, value=3.0),
+    ])
+    _append_steps(ab, 16)
+    _append_steps(ba, 16)
+    assert get_packed_k_tokens_per_request(ab).tolist() == [256, 384]
+    assert get_packed_k_tokens_per_request(ba).tolist() == [384, 256]
+
+
+def test_ragged_multistep_centroid_slots_isolated() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(399, 128, value=3.0),
+        _actual_like_cache(512, 256, value=7.0),
+    ])
+    pool = cache.centroid_state_pool
+    before = pool.update_counts_k.clone()
+    _append_steps(cache, 1)
+    after = pool.update_counts_k
+    assert (after - before).tolist() == [1, 0]
+
+
+def test_ragged_multistep_page_ownership_isolated() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(399, 128, value=3.0),
+        _actual_like_cache(512, 256, value=7.0),
+    ])
+    _append_steps(cache, 1)
+    assert get_packed_k_tokens_per_request(cache).tolist() == [256, 256]
+    assert cache.request_packed_v_tokens.tolist() == [256, 256]
+
+
+def test_ragged_multistep_equal_length_regression() -> None:
+    cache = assemble_ragged_patternkv_cache([
+        _actual_like_cache(512, 256, value=3.0),
+        _actual_like_cache(512, 256, value=7.0),
+    ])
+    _append_steps(cache, 16)
+    lengths = k_segment_valid_lengths(cache)
+    assert lengths["packed"].tolist() == [384, 384]
+    assert lengths["pending"].tolist() == [0, 0]

@@ -598,9 +598,9 @@ def append_operator_ready_page_pools(
         raise ValueError("operator-ready page pool batch mismatch")
     def centroid_geometry(centroids: torch.Tensor) -> tuple[int, ...]:
         if centroids.dim() == 3:
-            return (3, int(centroids.shape[0]), int(centroids.shape[2]))
+            return (int(centroids.shape[0]), int(centroids.shape[2]))
         if centroids.dim() == 4:
-            return (4, int(centroids.shape[0]), int(centroids.shape[1]), int(centroids.shape[3]))
+            return (int(centroids.shape[1]), int(centroids.shape[3]))
         raise ValueError("operator-ready page pool centroids must be [H,M,D] or [B,H,M,D]")
 
     def centroid_bank_size(centroids: torch.Tensor) -> int:
@@ -608,8 +608,9 @@ def append_operator_ready_page_pools(
 
     if centroid_geometry(existing.centroids) != centroid_geometry(chunk.centroids):
         raise ValueError("operator-ready page pool centroid geometry mismatch")
+    output_centroids = chunk.centroids
     if centroid_bank_size(chunk.centroids) < centroid_bank_size(existing.centroids):
-        raise ValueError("operator-ready page pool centroid bank shrank")
+        output_centroids = existing.centroids
 
     old_v2_pages = int(existing.v2_page_offsets.numel())
     old_v4_pages = int(existing.v4_page_offsets.numel())
@@ -656,7 +657,7 @@ def append_operator_ready_page_pools(
         v2_page_offsets=torch.cat([existing.v2_page_offsets, shift_offsets(chunk.v2_page_offsets, old_v2_tokens)], dim=0).contiguous(),
         v4_page_offsets=torch.cat([existing.v4_page_offsets, shift_offsets(chunk.v4_page_offsets, old_v4_tokens)], dim=0).contiguous(),
         metadata=metadata,
-        centroids=chunk.centroids,
+        centroids=output_centroids,
         group_size=existing.group_size,
         nh=existing.nh,
         nh_kv=existing.nh_kv,

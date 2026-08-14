@@ -1,0 +1,502 @@
+[
+  {
+    "after": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 113,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 385,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 114,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 514,
+        "v_assignment": 256
+      }
+    },
+    "before": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 112,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 384,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 113,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 513,
+        "v_assignment": 256
+      }
+    },
+    "metrics": {
+      "A": {
+        "boundary": false,
+        "cosine": 0.9999997615814209,
+        "inf": 0,
+        "max_abs": 0.0234375,
+        "nan": 0,
+        "relative_l2": 0.0009094374836422503,
+        "request": "A",
+        "step": 1,
+        "top1_equal": true,
+        "top1_margin": 10.953125,
+        "top5_overlap": 5
+      },
+      "B": {
+        "boundary": false,
+        "cosine": 0.9999997615814209,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0008930010953918099,
+        "request": "B",
+        "step": 1,
+        "top1_equal": true,
+        "top1_margin": 9.0703125,
+        "top5_overlap": 5
+      }
+    },
+    "step": 1,
+    "valid_prefix_compact": true
+  },
+  {
+    "after": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 114,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 386,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 115,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 515,
+        "v_assignment": 256
+      }
+    },
+    "before": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 113,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 385,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 114,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 514,
+        "v_assignment": 256
+      }
+    },
+    "metrics": {
+      "A": {
+        "boundary": false,
+        "cosine": 0.9999997615814209,
+        "inf": 0,
+        "max_abs": 0.01953125,
+        "nan": 0,
+        "relative_l2": 0.0008990169735625386,
+        "request": "A",
+        "step": 2,
+        "top1_equal": true,
+        "top1_margin": 10.875,
+        "top5_overlap": 5
+      },
+      "B": {
+        "boundary": false,
+        "cosine": 0.9999998211860657,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0007777232676744461,
+        "request": "B",
+        "step": 2,
+        "top1_equal": true,
+        "top1_margin": 10.0703125,
+        "top5_overlap": 5
+      }
+    },
+    "step": 2,
+    "valid_prefix_compact": true
+  },
+  {
+    "after": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 115,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 387,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 116,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 516,
+        "v_assignment": 256
+      }
+    },
+    "before": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 114,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 386,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 115,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 515,
+        "v_assignment": 256
+      }
+    },
+    "metrics": {
+      "A": {
+        "boundary": false,
+        "cosine": 0.9999998211860657,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0007405783399008214,
+        "request": "A",
+        "step": 3,
+        "top1_equal": true,
+        "top1_margin": 10.6953125,
+        "top5_overlap": 5
+      },
+      "B": {
+        "boundary": false,
+        "cosine": 0.9999998211860657,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0007288704509846866,
+        "request": "B",
+        "step": 3,
+        "top1_equal": true,
+        "top1_margin": 11.8671875,
+        "top5_overlap": 5
+      }
+    },
+    "step": 3,
+    "valid_prefix_compact": true
+  },
+  {
+    "after": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 116,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 388,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 117,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 517,
+        "v_assignment": 256
+      }
+    },
+    "before": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 115,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 387,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 116,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 516,
+        "v_assignment": 256
+      }
+    },
+    "metrics": {
+      "A": {
+        "boundary": false,
+        "cosine": 0.9999977350234985,
+        "inf": 0,
+        "max_abs": 0.0517578125,
+        "nan": 0,
+        "relative_l2": 0.0022579447831958532,
+        "request": "A",
+        "step": 4,
+        "top1_equal": true,
+        "top1_margin": 9.7734375,
+        "top5_overlap": 5
+      },
+      "B": {
+        "boundary": false,
+        "cosine": 0.9999998807907104,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0006882213056087494,
+        "request": "B",
+        "step": 4,
+        "top1_equal": true,
+        "top1_margin": 11.671875,
+        "top5_overlap": 5
+      }
+    },
+    "step": 4,
+    "valid_prefix_compact": true
+  },
+  {
+    "after": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 117,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 389,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 118,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 518,
+        "v_assignment": 256
+      }
+    },
+    "before": {
+      "A": {
+        "centroid_slot": 1,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 128,
+        "packed_v": 128,
+        "packed_v4": 32,
+        "page_count": 1,
+        "pending": 116,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 388,
+        "v_assignment": 256
+      },
+      "B": {
+        "centroid_slot": 0,
+        "centroid_updates_k": 0,
+        "centroid_updates_v": 0,
+        "k_assignment": 256,
+        "last_page_valid": 128,
+        "packed_k": 256,
+        "packed_v": 256,
+        "packed_v4": 64,
+        "page_count": 2,
+        "pending": 117,
+        "recent": 128,
+        "sink": 16,
+        "total_tokens": 517,
+        "v_assignment": 256
+      }
+    },
+    "metrics": {
+      "A": {
+        "boundary": false,
+        "cosine": 0.9996905326843262,
+        "inf": 0,
+        "max_abs": 0.462890625,
+        "nan": 0,
+        "relative_l2": 0.02502460964024067,
+        "request": "A",
+        "step": 5,
+        "top1_equal": true,
+        "top1_margin": 7.96875,
+        "top5_overlap": 5
+      },
+      "B": {
+        "boundary": false,
+        "cosine": 0.9999999403953552,
+        "inf": 0,
+        "max_abs": 0.015625,
+        "nan": 0,
+        "relative_l2": 0.0008081053383648396,
+        "request": "B",
+        "step": 5,
+        "top1_equal": true,
+        "top1_margin": 10.9140625,
+        "top5_overlap": 5
+      }
+    },
+    "step": 5,
+    "valid_prefix_compact": true
+  }
+]
