@@ -31,6 +31,13 @@ class BatchInvariantKProjCounters:
     normal_decode_calls: int = 0
     prefill_serial_dispatches: int = 0
     prefill_fallback_calls: int = 0
+    normal_prefill_kproj_calls: int = 0
+    normal_prefill_vproj_calls: int = 0
+    bi_prefill_vproj_calls: int = 0
+    bi_prefill_vproj_rows: int = 0
+    bi_prefill_vproj_kernel_launches: int = 0
+    normal_decode_vproj_calls: int = 0
+    bi_decode_vproj_calls: int = 0
 
     def as_dict(self) -> dict[str, int]:
         return {
@@ -50,6 +57,13 @@ class BatchInvariantKProjCounters:
             "normal_decode_kproj_calls": self.normal_decode_calls,
             "bi_prefill_serial_dispatches": self.prefill_serial_dispatches,
             "bi_prefill_fallback_calls": self.prefill_fallback_calls,
+            "normal_prefill_kproj_calls": self.normal_prefill_kproj_calls,
+            "normal_prefill_vproj_calls": self.normal_prefill_vproj_calls,
+            "bi_prefill_vproj_calls": self.bi_prefill_vproj_calls,
+            "bi_prefill_vproj_rows": self.bi_prefill_vproj_rows,
+            "bi_prefill_vproj_kernel_launches": self.bi_prefill_vproj_kernel_launches,
+            "normal_decode_vproj_calls": self.normal_decode_vproj_calls,
+            "bi_decode_vproj_calls": self.bi_decode_vproj_calls,
         }
 
 
@@ -73,6 +87,13 @@ def reset_batch_invariant_kproj_counters() -> None:
     COUNTERS.normal_decode_calls = 0
     COUNTERS.prefill_serial_dispatches = 0
     COUNTERS.prefill_fallback_calls = 0
+    COUNTERS.normal_prefill_kproj_calls = 0
+    COUNTERS.normal_prefill_vproj_calls = 0
+    COUNTERS.bi_prefill_vproj_calls = 0
+    COUNTERS.bi_prefill_vproj_rows = 0
+    COUNTERS.bi_prefill_vproj_kernel_launches = 0
+    COUNTERS.normal_decode_vproj_calls = 0
+    COUNTERS.bi_decode_vproj_calls = 0
 
 
 def batch_invariant_kproj_counters() -> dict[str, int]:
@@ -85,12 +106,34 @@ def record_bi_prefill_kproj(rows: int, kernel_launches: int = 1) -> None:
     COUNTERS.prefill_kernel_launches += int(kernel_launches)
 
 
+def record_normal_prefill_kproj_call() -> None:
+    COUNTERS.normal_prefill_kproj_calls += 1
+
+
+def record_normal_prefill_vproj_call() -> None:
+    COUNTERS.normal_prefill_vproj_calls += 1
+
+
+def record_bi_prefill_vproj(rows: int, kernel_launches: int = 1) -> None:
+    COUNTERS.bi_prefill_vproj_calls += 1
+    COUNTERS.bi_prefill_vproj_rows += int(rows)
+    COUNTERS.bi_prefill_vproj_kernel_launches += int(kernel_launches)
+
+
 def record_bi_decode_kproj_call() -> None:
     COUNTERS.decode_calls += 1
 
 
 def record_normal_decode_kproj_call() -> None:
     COUNTERS.normal_decode_calls += 1
+
+
+def record_bi_decode_vproj_call() -> None:
+    COUNTERS.bi_decode_vproj_calls += 1
+
+
+def record_normal_decode_vproj_call() -> None:
+    COUNTERS.normal_decode_vproj_calls += 1
 
 
 def batch_invariant_kproj_available() -> bool:
@@ -335,6 +378,30 @@ def batch_invariant_k_projection(
 def flag_enabled(env: dict[str, str] | None = None) -> bool:
     source: Any = env if env is not None else __import__("os").environ
     return str(source.get("PATTERNKV_BATCH_INVARIANT_KPROJ", "0")).strip() == "1"
+
+
+def prefill_proj_mode(env: dict[str, str] | None = None) -> str:
+    source: Any = env if env is not None else __import__("os").environ
+    explicit = source.get("PATTERNKV_PREFILL_PROJ_MODE")
+    if explicit is None or str(explicit).strip() == "":
+        return "bi_k" if flag_enabled(env) else "normal"
+    mode = str(explicit).strip().lower()
+    aliases = {
+        "p0": "normal",
+        "baseline": "normal",
+        "off": "normal",
+        "0": "normal",
+        "p1": "bi_k",
+        "k": "bi_k",
+        "1": "bi_k",
+        "p2": "bi_kv",
+        "kv": "bi_kv",
+        "2": "bi_kv",
+    }
+    mode = aliases.get(mode, mode)
+    if mode not in {"normal", "bi_k", "bi_kv"}:
+        raise ValueError("PATTERNKV_PREFILL_PROJ_MODE must be 'normal', 'bi_k', or 'bi_kv'")
+    return mode
 
 
 def selected_backend(env: dict[str, str] | None = None) -> str:

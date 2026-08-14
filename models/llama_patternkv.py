@@ -11,9 +11,13 @@ from torch import nn
 from quant.new_pack import triton_quantize_and_pack_along_last_dim
 from quant.batch_invariant_kproj import (
     batch_invariant_k_projection,
-    flag_enabled as bi_kproj_flag_enabled,
+    prefill_proj_mode,
     record_bi_prefill_kproj,
+    record_bi_prefill_vproj,
     record_normal_decode_kproj_call,
+    record_normal_decode_vproj_call,
+    record_normal_prefill_kproj_call,
+    record_normal_prefill_vproj_call,
     selected_backend as bi_kproj_selected_backend,
 )
 from quant.matmul import (
@@ -81,7 +85,11 @@ def patternkv_mixed_v_backend() -> str:
 
 
 def patternkv_use_bi_prefill_kproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
-    return past_key_value is None and bi_kproj_flag_enabled()
+    return past_key_value is None and prefill_proj_mode() in {"bi_k", "bi_kv"}
+
+
+def patternkv_use_bi_prefill_vproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
+    return past_key_value is None and prefill_proj_mode() == "bi_kv"
 
 
 def cuda_attn_v_fused_with_base_strided_v2_compat(
@@ -936,6 +944,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
 
         else:
             query_states = self.q_proj(hidden_states)
+            is_prefill = past_key_value is None
             if patternkv_use_bi_prefill_kproj(past_key_value):
                 key_states = batch_invariant_k_projection(
                     hidden_states,
@@ -945,10 +954,25 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 )
                 record_bi_prefill_kproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
             else:
-                if past_key_value is not None:
+                if is_prefill:
+                    record_normal_prefill_kproj_call()
+                else:
                     record_normal_decode_kproj_call()
                 key_states = self.k_proj(hidden_states)
-            value_states = self.v_proj(hidden_states)
+            if patternkv_use_bi_prefill_vproj(past_key_value):
+                value_states = batch_invariant_k_projection(
+                    hidden_states,
+                    self.v_proj.weight,
+                    getattr(self.v_proj, "bias", None),
+                    backend=bi_kproj_selected_backend(),
+                )
+                record_bi_prefill_vproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
+            else:
+                if is_prefill:
+                    record_normal_prefill_vproj_call()
+                else:
+                    record_normal_decode_vproj_call()
+                value_states = self.v_proj(hidden_states)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
