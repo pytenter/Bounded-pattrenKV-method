@@ -1,0 +1,2 @@
+commit,result,notes
+not_run,not_required,"Canonical A/B rejected a reproducible 8d-fast/50a-slow code regression."

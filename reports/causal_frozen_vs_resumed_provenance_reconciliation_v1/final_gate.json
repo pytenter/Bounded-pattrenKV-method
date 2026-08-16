@@ -1,0 +1,8 @@
+{
+  "algorithm_changed": false,
+  "capacity_classification": "CAUSAL_CAPACITY_MEMORY_LIFECYCLE_DRIFT_CONFIRMED",
+  "new_performance_optimization_performed": false,
+  "primary_classification": "CAUSAL_FROZEN_VS_RESUMED_RECONCILED_NO_REGRESSION",
+  "quality_results_affected": false,
+  "release_unchanged": true
+}
