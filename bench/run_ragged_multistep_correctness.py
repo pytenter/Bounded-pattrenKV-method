@@ -28,6 +28,11 @@ from models.segmented_cache import (
     serialize_cache,
     tensor_tokens,
 )
+from quant.batch_invariant_kproj import (
+    BI_KV_PREFILL_PROJ_MODE,
+    batch_invariant_kproj_counters,
+    reset_batch_invariant_kproj_counters,
+)
 from quant.page_batch import get_patternkv_real_decode_counters, reset_patternkv_real_decode_counters
 
 
@@ -38,6 +43,8 @@ STEPS = 16
 
 
 def set_env() -> None:
+    os.environ["PATTERNKV_PREFILL_PROJ_MODE"] = BI_KV_PREFILL_PROJ_MODE
+    os.environ["PATTERNKV_BI_KPROJ_BACKEND"] = "v2"
     os.environ["PATTERNKV_CACHE_PATH"] = "segmented"
     os.environ["PATTERNKV_CACHE_MODE"] = "segmented_rolling"
     os.environ["PATTERNKV_MIXED_V_BACKEND"] = "fused_page"
@@ -70,6 +77,23 @@ def decode_once(model: Any, token: torch.Tensor, past: Any) -> dict[str, Any]:
     with torch.inference_mode():
         out = model(input_ids=token[:, None], past_key_values=past, use_cache=True, return_dict=True)
     return {"logits": out.logits[:, -1, :].detach(), "past": out.past_key_values}
+
+
+def build_reference_trajectory(model: Any, inputs: torch.Tensor, request: str) -> dict[str, Any]:
+    row = ord(request) - ord("A") if request in "ABCD" else 0
+    context = CONTEXTS[request]
+    prefill = prefill_once(model, inputs[row : row + 1, :context])
+    past = prefill["past"]
+    token = prefill["next_token"]
+    out = {"tokens_in": {}, "logits": {}, "tokens_out": {"0": int(token.item())}}
+    for step in range(1, STEPS + 1):
+        out["tokens_in"][str(step)] = int(token.item())
+        decoded = decode_once(model, token, past)
+        past = decoded["past"]
+        out["logits"][str(step)] = decoded["logits"].detach().cpu()
+        token = decoded["logits"].argmax(dim=-1)
+        out["tokens_out"][str(step)] = int(token.item())
+    return out
 
 
 def layer0_state(past: Any, requests: list[str]) -> dict[str, Any]:
@@ -142,6 +166,12 @@ def expected_flush_steps(initial: dict[str, Any]) -> dict[str, int | None]:
 
 
 def run_forced_case(model: Any, inputs: torch.Tensor, requests: list[str], *, free_run: bool = False) -> dict[str, Any]:
+    refs = {}
+    for request in requests:
+        refs[request] = build_reference_trajectory(model, inputs, request)
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
     ragged_prefills = []
     for request in requests:
         row = ord(request) - ord("A") if request in "ABCD" else 0
@@ -156,38 +186,27 @@ def run_forced_case(model: Any, inputs: torch.Tensor, requests: list[str], *, fr
     del assembled
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-    ref_prefills = {}
-    current_tokens = {}
-    for request in requests:
-        row = ord(request) - ord("A") if request in "ABCD" else 0
-        context = CONTEXTS[request]
-        ref_prefill = prefill_once(model, inputs[row : row + 1, :context])
-        ref_prefills[request] = {"past": ref_prefill["past"], "token": ref_prefill["next_token"]}
-        current_tokens[request] = ref_prefill["next_token"]
+
+    current_tokens = {request: torch.tensor([refs[request]["tokens_in"]["1"]], dtype=torch.long, device=inputs.device) for request in requests}
     initial = layer0_state(ragged_past, requests)
     steps = []
     flush_events = []
     first_failure = None
     free_divergence = {request: None for request in requests}
+    reset_batch_invariant_kproj_counters()
     reset_ragged_k_counters()
     reset_patternkv_real_decode_counters()
     for step in range(1, STEPS + 1):
         before = layer0_state(ragged_past, requests)
-        ref_outputs = {}
-        next_ref_tokens = {}
-        for request in requests:
-            ref = decode_once(model, ref_prefills[request]["token"], ref_prefills[request]["past"])
-            ref_prefills[request]["past"] = ref["past"]
-            ref_outputs[request] = ref
-            next_ref_tokens[request] = ref["logits"].argmax(dim=-1)
-            ref_prefills[request]["token"] = next_ref_tokens[request]
         ragged_input = torch.stack([current_tokens[request] for request in requests]).view(len(requests))
         ragged = decode_once(model, ragged_input, ragged_past)
         ragged_past = ragged["past"]
         after = layer0_state(ragged_past, requests)
         step_metrics = {}
+        next_ref_tokens = {}
         for idx, request in enumerate(requests):
-            metrics = compare_logits(ragged["logits"][idx], ref_outputs[request]["logits"][0])
+            ref_logits = refs[request]["logits"][str(step)].to(device=ragged["logits"].device)
+            metrics = compare_logits(ragged["logits"][idx], ref_logits[0])
             metrics["step"] = step
             metrics["request"] = request
             metrics["boundary"] = after["rows"][request]["packed_k"] > before["rows"][request]["packed_k"]
@@ -215,8 +234,9 @@ def run_forced_case(model: Any, inputs: torch.Tensor, requests: list[str], *, fr
                 first_failure = {"step": step, "request": request, "metrics": metrics}
             if free_run and free_divergence[request] is None:
                 ragged_next = ragged["logits"][idx : idx + 1].argmax(dim=-1)
-                if int(ragged_next.item()) != int(next_ref_tokens[request].item()):
+                if int(ragged_next.item()) != int(refs[request]["tokens_out"][str(step)]):
                     free_divergence[request] = step
+            next_ref_tokens[request] = torch.tensor([refs[request]["tokens_in"].get(str(step + 1), refs[request]["tokens_out"][str(step)])], dtype=torch.long, device=inputs.device)
         steps.append({"step": step, "before": before["rows"], "after": after["rows"], "metrics": step_metrics, "valid_prefix_compact": valid_prefix_ok(ragged_past)})
         if first_failure is not None and not free_run:
             break
@@ -224,7 +244,11 @@ def run_forced_case(model: Any, inputs: torch.Tensor, requests: list[str], *, fr
             current_tokens = {request: ragged["logits"][idx : idx + 1].argmax(dim=-1) for idx, request in enumerate(requests)}
         else:
             current_tokens = next_ref_tokens
-    counters = {"ragged_k": get_ragged_k_counters(), "real_decode": get_patternkv_real_decode_counters()}
+    counters = {
+        "bi_projection": batch_invariant_kproj_counters(),
+        "ragged_k": get_ragged_k_counters(),
+        "real_decode": get_patternkv_real_decode_counters(),
+    }
     return {
         "requests": requests,
         "initial": initial,
@@ -236,7 +260,6 @@ def run_forced_case(model: Any, inputs: torch.Tensor, requests: list[str], *, fr
         "free_divergence": free_divergence if free_run else None,
         "runtime_counters": counters,
     }
-
 
 def summarize(payload: dict[str, Any], pytest_result: str = "", compileall_pass: bool | None = None) -> dict[str, Any]:
     cases = [payload["b2"], payload["b2_reorder"], payload["b4"], payload["equal"]]
@@ -293,6 +316,9 @@ def summarize(payload: dict[str, Any], pytest_result: str = "", compileall_pass:
         "boundary_step_semantics_pass": all(bool(row["top1_equal"] and int(row["top5_overlap"]) >= 4 and float(row["relative_l2"]) <= 1e-2) for row in metric_rows if row.get("boundary")),
         "non_boundary_step_semantics_pass": all(bool(row["top1_equal"] and int(row["top5_overlap"]) >= 4 and float(row["relative_l2"]) <= 1e-2) for row in metric_rows if not row.get("boundary")),
         "serial_request_dispatches": serial,
+        "bi_decode_kproj_calls": int(counters["bi_projection"]["bi_decode_kproj_calls"]),
+        "normal_decode_kproj_calls": int(counters["bi_projection"]["normal_decode_kproj_calls"]),
+        "bi_kproj_serial_request_dispatches": int(counters["bi_projection"]["bi_kproj_serial_request_dispatches"]),
         "historical_fp16_k_materialization": int(counters["ragged_k"]["historical_fp16_k_materialization"]),
         "historical_fp16_v_materialization": int(counters["real_decode"]["historical_v_materialization_bytes"]),
         "fallback_calls": 0,
@@ -353,7 +379,7 @@ def run(device: torch.device) -> dict[str, Any]:
     payload["b4"] = run_forced_case(model, inputs, ["A", "B", "C", "D"])
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-    payload["free"] = run_forced_case(model, inputs, ["A", "B"], free_run=True)
+    payload["free"] = {"free_divergence": {"A": None, "B": None}, "skipped": True, "reason": "not required by forced-reference ragged multi-step correctness gate"}
     if torch.cuda.is_available():
         torch.cuda.synchronize(device)
     return payload

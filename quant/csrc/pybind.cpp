@@ -15,4 +15,5 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)
   m.def("attn_v_forward_cuda_outer_dim_with_base_strided_v2", &attn_v_forward_cuda_outer_dim_with_base_strided_v2);
   m.def("attn_v_forward_cuda_outer_dim_with_base_strided_v4", &attn_v_forward_cuda_outer_dim_with_base_strided_v4);
   m.def("attn_v_forward_cuda_page_mixed_pool", &attn_v_forward_cuda_page_mixed_pool);
+  m.def("request_invariant_fixed_split_softmax_cuda", &request_invariant_fixed_split_softmax_cuda);
 }

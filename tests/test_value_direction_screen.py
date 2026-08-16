@@ -219,3 +219,14 @@ def test_value_objective_survives_serialize_roundtrip() -> None:
     restored = deserialize_cache(serialize_cache(cache), pattern=True)
     assert isinstance(restored, PatternQuantizedKVCache)
     assert restored.value_objective == "v_dir"
+
+
+def test_v_candidate_block_size_equivalence() -> None:
+    torch.manual_seed(2026081503)
+    x = torch.randn(1, 2, 33, 8)
+    centroids = torch.randn(2, 7, 8)
+    for objective in ("v_dir", "v_hybrid"):
+        idx_full, mask_full, _ = pattern_select_v_candidate(x, centroids, value_objective=objective, group_size=4, bits=2, block_tokens=128)
+        idx_chunked, mask_chunked, _ = pattern_select_v_candidate(x, centroids, value_objective=objective, group_size=4, bits=2, block_tokens=8)
+        assert torch.equal(idx_chunked, idx_full)
+        assert torch.equal(mask_chunked, mask_full)

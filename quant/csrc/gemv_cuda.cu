@@ -2714,6 +2714,7 @@ __global__ void page_mixed_pool_value_kernel(
   const int32_t* __restrict__ v4_page_table,
   const int32_t* __restrict__ metadata_page_table,
   const int16_t* __restrict__ v4_prefix_counts,
+  const int32_t* __restrict__ seq_lens,
   half* __restrict__ out,                  // [B, nh, 1, OC]
   const int B,
   const int T,
@@ -2737,9 +2738,10 @@ __global__ void page_mixed_pool_value_kernel(
   const int hk = hq / ratio;
   const int tid = threadIdx.x;
   const int oc_group = oc / group_size;
+  const int T_valid = min(max((int)__ldg(seq_lens + b), 0), T);
 
   float sum = 0.0f;
-  for (int t = tid; t < T; t += blockDim.x) {
+  for (int t = tid; t < T_valid; t += blockDim.x) {
     const int logical_page = t / page_size;
     const int page_off = t - logical_page * page_size;
     const int table_off = b * pages_per_request + logical_page;
@@ -2813,6 +2815,7 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
     torch::Tensor _v4_page_table,
     torch::Tensor _metadata_page_table,
     torch::Tensor _v4_prefix_counts,
+    torch::Tensor _seq_lens,
     const int group_size,
     const int nh,
     const int nh_kv,
@@ -2840,6 +2843,7 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
   TORCH_CHECK(_v4_page_table.sizes()==_v2_page_table.sizes(), "v4 page table mismatch");
   TORCH_CHECK(_metadata_page_table.sizes()==_v2_page_table.sizes(), "metadata page table mismatch");
   TORCH_CHECK(_v4_prefix_counts.dim()==2 && _v4_prefix_counts.size(1)==page_size+1, "v4 prefix must be [pages,page_size+1]");
+  TORCH_CHECK(_seq_lens.dim()==1 && _seq_lens.size(0)==B, "seq_lens must be [B]");
 
   auto alpha = _alpha_q.to(torch::kFloat16).contiguous();
   auto centroids = _centroids.to(torch::kFloat16).contiguous();
@@ -2859,6 +2863,7 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
   auto v4_page_table = _v4_page_table.to(torch::kInt32).contiguous();
   auto metadata_page_table = _metadata_page_table.to(torch::kInt32).contiguous();
   auto v4_prefix_counts = _v4_prefix_counts.to(torch::kInt16).contiguous();
+  auto seq_lens = _seq_lens.to(torch::kInt32).contiguous();
 
   auto out = torch::empty({B, nh, 1, OC}, alpha.options());
   dim3 blocks(B * nh, OC, 1);
@@ -2882,9 +2887,198 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
     reinterpret_cast<const int32_t*>(v4_page_table.data_ptr<int>()),
     reinterpret_cast<const int32_t*>(metadata_page_table.data_ptr<int>()),
     reinterpret_cast<const int16_t*>(v4_prefix_counts.data_ptr<int16_t>()),
+    reinterpret_cast<const int32_t*>(seq_lens.data_ptr<int>()),
     reinterpret_cast<half*>(out.data_ptr<at::Half>()),
     B, T, OC, Mcent, Bcent, N2, N4, pages_per_request, group_size, nh, nh_kv, page_size
   );
+  return out;
+}
+
+__device__ __forceinline__ float block_reduce_sum_128(float value) {
+  __shared__ float shared[128];
+  const int tid = threadIdx.x;
+  shared[tid] = value;
+  __syncthreads();
+  for (int stride = 64; stride > 0; stride >>= 1) {
+    if (tid < stride) {
+      shared[tid] += shared[tid + stride];
+    }
+    __syncthreads();
+  }
+  return shared[0];
+}
+
+__device__ __forceinline__ float block_reduce_max_128(float value) {
+  __shared__ float shared[128];
+  const int tid = threadIdx.x;
+  shared[tid] = value;
+  __syncthreads();
+  for (int stride = 64; stride > 0; stride >>= 1) {
+    if (tid < stride) {
+      shared[tid] = fmaxf(shared[tid], shared[tid + stride]);
+    }
+    __syncthreads();
+  }
+  return shared[0];
+}
+
+__device__ __forceinline__ int logical_to_physical_idx(
+    const int logical,
+    const int sink_valid,
+    const int packed_valid,
+    const int pending_valid,
+    const int recent_valid,
+    const int sink_physical,
+    const int packed_physical,
+    const int pending_physical) {
+  if (logical < sink_valid) {
+    return logical;
+  }
+  int rem = logical - sink_valid;
+  if (rem < packed_valid) {
+    return sink_physical + rem;
+  }
+  rem -= packed_valid;
+  if (rem < pending_valid) {
+    return sink_physical + packed_physical + rem;
+  }
+  rem -= pending_valid;
+  if (rem < recent_valid) {
+    return sink_physical + packed_physical + pending_physical + rem;
+  }
+  return -1;
+}
+
+__global__ void request_invariant_fixed_split_softmax_kernel(
+    const half* scores,
+    half* out,
+    const int32_t* total_lens,
+    const int32_t* sink_lens,
+    const int32_t* packed_lens,
+    const int32_t* pending_lens,
+    const int32_t* recent_lens,
+    const int B,
+    const int H,
+    const int T,
+    const int sink_physical,
+    const int packed_physical,
+    const int pending_physical,
+    const int recent_physical,
+    const int split_size) {
+  const int bh = blockIdx.x;
+  const int b = bh / H;
+  const int h = bh - b * H;
+  const int tid = threadIdx.x;
+  const int total = total_lens[b];
+  const int sink_valid = sink_lens[b];
+  const int packed_valid = packed_lens[b];
+  const int pending_valid = pending_lens[b];
+  const int recent_valid = recent_lens[b];
+  const int splits = (total + split_size - 1) / split_size;
+  const size_t base = ((size_t)b * H + h) * (size_t)T;
+
+  __shared__ float merged_max_shared;
+  __shared__ float merged_sum_shared;
+
+  if (tid == 0) {
+    merged_max_shared = -INFINITY;
+    merged_sum_shared = 0.0f;
+  }
+  __syncthreads();
+
+  for (int split = 0; split < splits; ++split) {
+    const int start = split * split_size;
+    const int end = min(start + split_size, total);
+    float local_max = -INFINITY;
+    for (int logical = start + tid; logical < end; logical += blockDim.x) {
+      const int physical = logical_to_physical_idx(
+          logical, sink_valid, packed_valid, pending_valid, recent_valid,
+          sink_physical, packed_physical, pending_physical);
+      if (physical >= 0 && physical < T) {
+        local_max = fmaxf(local_max, __half2float(scores[base + physical]));
+      }
+    }
+    const float split_max = block_reduce_max_128(local_max);
+    float local_sum = 0.0f;
+    for (int logical = start + tid; logical < end; logical += blockDim.x) {
+      const int physical = logical_to_physical_idx(
+          logical, sink_valid, packed_valid, pending_valid, recent_valid,
+          sink_physical, packed_physical, pending_physical);
+      if (physical >= 0 && physical < T) {
+        local_sum += expf(__half2float(scores[base + physical]) - split_max);
+      }
+    }
+    const float split_sum = block_reduce_sum_128(local_sum);
+    if (tid == 0) {
+      if (split == 0) {
+        merged_max_shared = split_max;
+        merged_sum_shared = split_sum;
+      } else if (split_sum > 0.0f) {
+        const float old_max = merged_max_shared;
+        const float old_sum = merged_sum_shared;
+        const float merged_max = fmaxf(old_max, split_max);
+        merged_sum_shared = old_sum * expf(old_max - merged_max) + split_sum * expf(split_max - merged_max);
+        merged_max_shared = merged_max;
+      }
+    }
+    __syncthreads();
+  }
+
+  const float merged_max = merged_max_shared;
+  const float merged_sum = merged_sum_shared;
+  for (int physical = tid; physical < T; physical += blockDim.x) {
+    out[base + physical] = __float2half(0.0f);
+  }
+  __syncthreads();
+  for (int logical = tid; logical < total; logical += blockDim.x) {
+    const int physical = logical_to_physical_idx(
+        logical, sink_valid, packed_valid, pending_valid, recent_valid,
+        sink_physical, packed_physical, pending_physical);
+    if (physical >= 0 && physical < T && merged_sum > 0.0f) {
+      const float prob = expf(__half2float(scores[base + physical]) - merged_max) / merged_sum;
+      out[base + physical] = __float2half(prob);
+    }
+  }
+}
+
+torch::Tensor request_invariant_fixed_split_softmax_cuda(
+    torch::Tensor _scores,
+    torch::Tensor _total_lens,
+    torch::Tensor _sink_lens,
+    torch::Tensor _packed_lens,
+    torch::Tensor _pending_lens,
+    torch::Tensor _recent_lens,
+    const int sink_physical,
+    const int packed_physical,
+    const int pending_physical,
+    const int recent_physical,
+    const int split_size) {
+  TORCH_CHECK(_scores.dim()==4 && _scores.size(2)==1, "scores must be [B,H,1,T]");
+  TORCH_CHECK(_scores.scalar_type()==torch::kFloat16, "fixed split softmax currently expects float16 scores");
+  TORCH_CHECK(split_size > 0, "split_size must be positive");
+  const int B = _scores.size(0);
+  const int H = _scores.size(1);
+  const int T = _scores.size(3);
+  auto scores = _scores.contiguous();
+  auto total_lens = _total_lens.to(torch::kInt32).contiguous();
+  auto sink_lens = _sink_lens.to(torch::kInt32).contiguous();
+  auto packed_lens = _packed_lens.to(torch::kInt32).contiguous();
+  auto pending_lens = _pending_lens.to(torch::kInt32).contiguous();
+  auto recent_lens = _recent_lens.to(torch::kInt32).contiguous();
+  auto out = torch::empty_like(scores);
+  dim3 blocks(B * H, 1, 1);
+  dim3 threads(128, 1, 1);
+  request_invariant_fixed_split_softmax_kernel<<<blocks, threads>>>(
+      reinterpret_cast<const half*>(scores.data_ptr<at::Half>()),
+      reinterpret_cast<half*>(out.data_ptr<at::Half>()),
+      reinterpret_cast<const int32_t*>(total_lens.data_ptr<int>()),
+      reinterpret_cast<const int32_t*>(sink_lens.data_ptr<int>()),
+      reinterpret_cast<const int32_t*>(packed_lens.data_ptr<int>()),
+      reinterpret_cast<const int32_t*>(pending_lens.data_ptr<int>()),
+      reinterpret_cast<const int32_t*>(recent_lens.data_ptr<int>()),
+      B, H, T,
+      sink_physical, packed_physical, pending_physical, recent_physical,
+      split_size);
   return out;
 }
 

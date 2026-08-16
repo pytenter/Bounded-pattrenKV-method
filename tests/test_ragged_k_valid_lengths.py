@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import torch
 
+from models.llama_patternkv import patternkv_request_invariant_qk_scores
 from models.segmented_cache import (
     PatternKVCentroidStatePool,
     PatternQuantizedKVCache,
@@ -11,8 +12,15 @@ from models.segmented_cache import (
     get_packed_k_tokens_per_request,
     get_ragged_k_counters,
     k_segment_valid_lengths,
+    request_invariant_attention_split_boundaries,
+    request_invariant_batch_split_signatures,
+    request_invariant_full_value_attention,
+    request_invariant_segmented_attention_softmax,
+    request_invariant_split_signature,
+    request_invariant_value_split_boundaries,
     reset_ragged_k_counters,
     set_request_total_tokens,
+    update_value_causal_importance,
 )
 
 
@@ -97,6 +105,316 @@ def _value_parts(cache: PatternQuantizedKVCache) -> list[tuple[str, int]]:
         ("pending", cache.pending_k.shape[2]),
         ("recent", cache.recent_k.shape[2]),
     ]
+
+
+def _physical_mass_from_logical(cache: PatternQuantizedKVCache, row: int, logical: torch.Tensor) -> torch.Tensor:
+    lengths = k_segment_valid_lengths(cache)
+    mass = torch.zeros(cache.sink_k.shape[0], int(cache.total_tokens), dtype=torch.float32)
+    physical_offset = 0
+    logical_offset = 0
+    for name, physical in _value_parts(cache):
+        valid = int(lengths[name][row].item())
+        if valid:
+            mass[row, physical_offset : physical_offset + valid] = logical[logical_offset : logical_offset + valid]
+        physical_offset += int(physical)
+        logical_offset += valid
+    return mass
+
+
+def _physical_logits_from_logical(cache: PatternQuantizedKVCache, row: int, logical: torch.Tensor) -> torch.Tensor:
+    lengths = k_segment_valid_lengths(cache)
+    logits = torch.full((cache.sink_k.shape[0], 2, 1, int(cache.total_tokens)), torch.finfo(logical.dtype).min, dtype=logical.dtype)
+    physical_offset = 0
+    logical_offset = 0
+    for name, physical in _value_parts(cache):
+        valid = int(lengths[name][row].item())
+        if valid:
+            logits[row, :, :, physical_offset : physical_offset + valid] = logical[:, None, logical_offset : logical_offset + valid]
+        physical_offset += int(physical)
+        logical_offset += valid
+    return logits
+
+
+def _canonical_probs_from_physical(cache: PatternQuantizedKVCache, row: int, probs: torch.Tensor) -> torch.Tensor:
+    lengths = k_segment_valid_lengths(cache)
+    total = int(getattr(cache, "request_total_tokens")[row].item())
+    out = torch.empty((probs.shape[1], total), dtype=probs.dtype)
+    physical_offset = 0
+    logical_offset = 0
+    for name, physical in _value_parts(cache):
+        valid = int(lengths[name][row].item())
+        if valid:
+            out[:, logical_offset : logical_offset + valid] = probs[row, :, 0, physical_offset : physical_offset + valid]
+        physical_offset += int(physical)
+        logical_offset += valid
+    return out
+
+
+def _request_a_softmax_probs(cache: PatternQuantizedKVCache, row: int = 0, *, peer_delta: float = 0.0) -> torch.Tensor:
+    logical_a = torch.linspace(-2.0, 2.0, 384, dtype=torch.float32).repeat(2, 1)
+    logits = _physical_logits_from_logical(cache, row, logical_a)
+    for peer in range(logits.shape[0]):
+        if peer != row:
+            logits[peer].masked_fill_(logits[peer] > -1e20, peer_delta)
+    probs = request_invariant_segmented_attention_softmax(logits, cache, _value_parts(cache))
+    return _canonical_probs_from_physical(cache, row, probs)
+
+
+def _update_from_mass(cache: PatternQuantizedKVCache, mass: torch.Tensor) -> torch.Tensor:
+    update_value_causal_importance(cache, mass[:, None, None, :])
+    assert cache.v_causal_importance is not None
+    return cache.v_causal_importance.detach()
+
+
+def _logical_signal(total: int) -> torch.Tensor:
+    return torch.linspace(0.001, 1.0, total, dtype=torch.float32)
+
+
+def test_causal_importance_ragged_segment_mapping_b1_vs_b2_short() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2 = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(384, 128, value=7.0),
+    ])
+    logical = _logical_signal(384)
+    b1_out = _update_from_mass(b1, _physical_mass_from_logical(b1, 0, logical))[0, :384]
+    b2_out = _update_from_mass(b2, _physical_mass_from_logical(b2, 0, logical))[0, :384]
+    assert torch.equal(b1_out, logical)
+    assert torch.equal(b2_out, logical)
+
+
+def test_request_invariant_softmax_split_boundaries() -> None:
+    expected = [(0, 128), (128, 256), (256, 384)]
+    assert request_invariant_attention_split_boundaries(384) == expected
+    assert request_invariant_attention_split_boundaries(385) == expected + [(384, 385)]
+
+
+def test_fixed_split_signature_boundaries_and_merge_order() -> None:
+    lengths = [127, 128, 129, 255, 256, 257, 384, 513, 642, 771]
+    for length in lengths:
+        signature = request_invariant_split_signature(length)
+        assert signature[0] == length
+        assert signature[1] == 128
+        assert signature[3] == "left_to_right"
+        assert list(signature[2]) == request_invariant_attention_split_boundaries(length)
+
+
+def test_batch_composition_invariant_split_signatures() -> None:
+    a = request_invariant_batch_split_signatures([384])[0]
+    ab = request_invariant_batch_split_signatures([384, 513])[0]
+    b4 = request_invariant_batch_split_signatures([384, 513, 642, 771])[0]
+    reorder = request_invariant_batch_split_signatures([771, 384, 642, 513])[1]
+    assert a == ab == b4 == reorder
+
+
+def test_fixed_split_cuda_softmax_matches_reference_for_b1_b2_b4(monkeypatch) -> None:
+    if not torch.cuda.is_available():
+        return
+    device = torch.device("cuda")
+    for lengths in ([257], [384, 513], [384, 513, 642, 771]):
+        packed = [max(length - 128, 0) for length in lengths]
+        recent = [min(length, 128) for length in lengths]
+        cache = PatternQuantizedKVCache(
+            total_tokens=max(lengths),
+            packed_k_tokens=max(packed),
+            packed_v_tokens=max(packed),
+            sink_length=0,
+            recent_length=128,
+            group_size=128,
+        )
+        cache.packed_k = torch.empty(len(lengths), 1, 1, max((value + 15) // 16 for value in packed), device=device, dtype=torch.int32)
+        cache.recent_k = torch.empty(len(lengths), 1, max(recent), 1, device=device, dtype=torch.float16)
+        set_request_total_tokens(cache, torch.tensor(lengths, device=device))
+        cache.request_packed_k_tokens = torch.tensor(packed, device=device)
+        generator = torch.Generator(device=device).manual_seed(2026081501 + len(lengths))
+        scores = torch.randn(len(lengths), 32, 1, cache.total_tokens, device=device, dtype=torch.float16, generator=generator)
+        parts = [("packed", max(packed)), ("recent", max(recent))]
+        monkeypatch.setenv("PATTERNKV_FIXED_SPLIT_SOFTMAX", "0")
+        ref = request_invariant_segmented_attention_softmax(scores, cache, parts)
+        monkeypatch.setenv("PATTERNKV_FIXED_SPLIT_SOFTMAX", "1")
+        got = request_invariant_segmented_attention_softmax(scores, cache, parts)
+        torch.cuda.synchronize()
+        assert torch.allclose(got, ref, rtol=0.0, atol=2e-5)
+
+
+def test_request_invariant_softmax_peer_length() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2_short = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(384, 128, value=7.0),
+    ])
+    b2_long = _b2_cache()
+    expected = request_invariant_attention_split_boundaries(384)
+    assert request_invariant_attention_split_boundaries(int(b1.request_total_tokens[0].item())) == expected
+    assert request_invariant_attention_split_boundaries(int(b2_short.request_total_tokens[0].item())) == expected
+    assert request_invariant_attention_split_boundaries(int(b2_long.request_total_tokens[0].item())) == expected
+
+
+def test_request_invariant_softmax_peer_content() -> None:
+    cache = _b2_cache()
+    base = _request_a_softmax_probs(cache, peer_delta=0.0)
+    changed_peer = _request_a_softmax_probs(cache, peer_delta=19.0)
+    assert torch.equal(base, changed_peer)
+
+
+def test_request_invariant_softmax_reorder() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    ab = _b2_cache()
+    ba = assemble_ragged_patternkv_cache([
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(384, 128, value=3.0),
+    ])
+    ref = _request_a_softmax_probs(b1)
+    assert torch.equal(_request_a_softmax_probs(ab, row=0), ref)
+    assert torch.equal(_request_a_softmax_probs(ba, row=1), ref)
+
+
+def test_request_invariant_softmax_b4_layout() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b4 = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(642, 384, value=11.0),
+        _actual_like_cache(771, 512, value=13.0),
+    ])
+    assert torch.equal(_request_a_softmax_probs(b4), _request_a_softmax_probs(b1))
+
+
+def test_request_invariant_softmax_probability_exact() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2 = _b2_cache()
+    got = _request_a_softmax_probs(b2)
+    ref = _request_a_softmax_probs(b1)
+    assert torch.equal(got, ref)
+
+
+def test_request_invariant_value_split_boundaries() -> None:
+    assert request_invariant_value_split_boundaries(384) == request_invariant_attention_split_boundaries(384)
+    assert request_invariant_value_split_boundaries(385) == [(0, 128), (128, 256), (256, 384), (384, 385)]
+
+
+def test_request_invariant_value_peer_length() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2_short = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(384, 128, value=7.0),
+    ])
+    b2_long = _b2_cache()
+    ref = request_invariant_value_split_boundaries(int(b1.request_total_tokens[0].item()))
+    assert request_invariant_value_split_boundaries(int(b2_short.request_total_tokens[0].item())) == ref
+    assert request_invariant_value_split_boundaries(int(b2_long.request_total_tokens[0].item())) == ref
+
+
+def test_request_invariant_value_peer_content() -> None:
+    first = request_invariant_value_split_boundaries(384)
+    peer_mutated = request_invariant_value_split_boundaries(384)
+    assert peer_mutated == first
+
+
+def test_request_invariant_value_reorder() -> None:
+    ab = _b2_cache()
+    ba = assemble_ragged_patternkv_cache([
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(384, 128, value=3.0),
+    ])
+    assert request_invariant_value_split_boundaries(int(ab.request_total_tokens[0].item())) == request_invariant_value_split_boundaries(int(ba.request_total_tokens[1].item()))
+
+
+def test_request_invariant_value_b4() -> None:
+    b4 = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(642, 384, value=11.0),
+        _actual_like_cache(771, 512, value=13.0),
+    ])
+    assert request_invariant_value_split_boundaries(int(b4.request_total_tokens[0].item())) == request_invariant_value_split_boundaries(384)
+
+
+def test_request_invariant_value_reduction_golden() -> None:
+    probs = torch.softmax(torch.linspace(-1.0, 1.0, 385, dtype=torch.float16), dim=0).to(torch.float16)
+    values = torch.linspace(-0.5, 0.5, 385 * 4, dtype=torch.float16).reshape(385, 4)
+    out_a = torch.zeros((4,), dtype=torch.float16)
+    for start, end in request_invariant_value_split_boundaries(385):
+        partial = torch.zeros((4,), dtype=torch.float16)
+        for idx in range(start, end):
+            partial = partial + probs[idx] * values[idx]
+        out_a = out_a + partial
+    out_b = torch.zeros((4,), dtype=torch.float16)
+    for start, end in request_invariant_value_split_boundaries(385):
+        partial = torch.zeros((4,), dtype=torch.float16)
+        for idx in range(start, end):
+            partial = partial + probs[idx] * values[idx]
+        out_b = out_b + partial
+    assert torch.equal(out_a, out_b)
+
+
+def test_attention_softmax_value_share_logical_split_contract() -> None:
+    assert request_invariant_value_split_boundaries(771) == request_invariant_attention_split_boundaries(771)
+
+
+def test_request_invariant_attention_pre_o_exact() -> None:
+    weights_a = torch.softmax(torch.linspace(-2.0, 2.0, 113, dtype=torch.float16), dim=0).reshape(1, 1, 1, 113).repeat(1, 2, 1, 1)
+    values_a = torch.linspace(-0.5, 0.5, 113 * 4, dtype=torch.float16).reshape(1, 1, 113, 4)
+    weights_b = torch.zeros(2, 2, 1, 114, dtype=torch.float16)
+    values_b = torch.zeros(2, 1, 114, 4, dtype=torch.float16)
+    weights_b[0, :, :, :113] = weights_a[0]
+    values_b[0, :, :113, :] = values_a[0]
+    weights_b[1, :, :, :] = torch.softmax(torch.linspace(1.0, -1.0, 114, dtype=torch.float16), dim=0)
+    values_b[1, :, :, :] = torch.linspace(0.1, 0.7, 114 * 4, dtype=torch.float16).reshape(1, 114, 4)
+    ref = request_invariant_full_value_attention(weights_a, values_a, torch.tensor([113]), 2)
+    got = request_invariant_full_value_attention(weights_b, values_b, torch.tensor([113, 114]), 2)[0:1]
+    assert torch.equal(got, ref)
+
+
+def test_softmax_contract_preserved_after_value_fix() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2 = _b2_cache()
+    assert torch.equal(_request_a_softmax_probs(b2), _request_a_softmax_probs(b1))
+
+
+def test_causal_importance_ragged_segment_mapping_b1_vs_b2_long() -> None:
+    b1 = _actual_like_cache(384, 128, value=3.0)
+    b2 = _b2_cache()
+    logical = _logical_signal(384)
+    b1_out = _update_from_mass(b1, _physical_mass_from_logical(b1, 0, logical))[0, :384]
+    b2_out = _update_from_mass(b2, _physical_mass_from_logical(b2, 0, logical))[0, :384]
+    assert torch.equal(b1_out, logical)
+    assert torch.equal(b2_out, logical)
+
+
+def test_causal_importance_ragged_mapping_reorder_preserves_request_a() -> None:
+    ab = _b2_cache()
+    ba = assemble_ragged_patternkv_cache([
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(384, 128, value=3.0),
+    ])
+    logical = _logical_signal(384)
+    ab_out = _update_from_mass(ab, _physical_mass_from_logical(ab, 0, logical))[0, :384]
+    ba_out = _update_from_mass(ba, _physical_mass_from_logical(ba, 1, logical))[1, :384]
+    assert torch.equal(ab_out, logical)
+    assert torch.equal(ba_out, logical)
+
+
+def test_causal_importance_ragged_mapping_b4_preserves_request_a() -> None:
+    b4 = assemble_ragged_patternkv_cache([
+        _actual_like_cache(384, 128, value=3.0),
+        _actual_like_cache(513, 256, value=7.0),
+        _actual_like_cache(642, 384, value=11.0),
+        _actual_like_cache(771, 512, value=13.0),
+    ])
+    logical = _logical_signal(384)
+    out = _update_from_mass(b4, _physical_mass_from_logical(b4, 0, logical))[0, :384]
+    assert torch.equal(out, logical)
+
+
+def test_causal_importance_segment_mapping_covers_sink_packed_pending_recent() -> None:
+    cache = _b2_cache()
+    logical = _logical_signal(384)
+    out = _update_from_mass(cache, _physical_mass_from_logical(cache, 0, logical))[0]
+    assert torch.equal(out[:16], logical[:16])
+    assert torch.equal(out[16:144], logical[16:144])
+    assert torch.equal(out[144:256], logical[144:256])
+    assert torch.equal(out[256:384], logical[256:384])
 
 
 def test_ragged_k_valid_lengths_from_cache() -> None:
@@ -315,3 +633,26 @@ def test_ragged_multistep_equal_length_regression() -> None:
     lengths = k_segment_valid_lengths(cache)
     assert lengths["packed"].tolist() == [384, 384]
     assert lengths["pending"].tolist() == [0, 0]
+
+
+def test_request_invariant_qk_scores_preserve_row_when_peer_count_changes() -> None:
+    torch.manual_seed(2026081501)
+    query_ab = torch.randn(2, 4, 1, 8, dtype=torch.float16)
+    key_ab = torch.randn(2, 2, 5, 8, dtype=torch.float16)
+    query_abcd = torch.randn(4, 4, 1, 8, dtype=torch.float16)
+    key_abcd = torch.randn(4, 2, 7, 8, dtype=torch.float16)
+    query_abcd[1] = query_ab[1]
+    key_abcd[1, :, :5, :] = key_ab[1]
+    scores_ab = patternkv_request_invariant_qk_scores(query_ab, key_ab, 2)
+    scores_abcd = patternkv_request_invariant_qk_scores(query_abcd, key_abcd, 2)
+    assert torch.equal(scores_ab[1, :, :, :5], scores_abcd[1, :, :, :5])
+
+
+def test_request_invariant_qk_scores_match_single_row_matmul() -> None:
+    torch.manual_seed(2026081502)
+    query = torch.randn(3, 4, 1, 8, dtype=torch.float16)
+    key = torch.randn(3, 2, 6, 8, dtype=torch.float16)
+    got = patternkv_request_invariant_qk_scores(query, key, 2)
+    repeated = key.repeat_interleave(2, dim=1)
+    expected = (query.unsqueeze(3) * repeated.unsqueeze(2)).sum(dim=-1).contiguous()
+    assert torch.equal(got, expected)

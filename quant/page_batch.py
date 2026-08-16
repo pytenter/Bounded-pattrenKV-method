@@ -192,8 +192,8 @@ def pack_mixed_v_pages(
         if v_adjusted.dim() != 4:
             raise ValueError(f"v_adjusted must be [B,Hkv,T,D], got {tuple(v_adjusted.shape)}")
         bsz, nh_kv, tokens, head_dim = v_adjusted.shape
-        if bsz not in (1, 2, 4):
-            raise ValueError("S6-B.2 MVP only supports B=1, B=2, and B=4")
+        if bsz <= 0:
+            raise ValueError("batch size must be positive")
         if precision_mask.shape != (bsz, tokens):
             raise ValueError(f"precision_mask must be [B,T], got {tuple(precision_mask.shape)}")
         if v_pattern_mask.shape != (bsz, nh_kv, tokens):
@@ -672,30 +672,32 @@ def patternkv_fused_page_batch_decode(attn: torch.Tensor, pools: PatternKVOperat
     from quant.matmul import patternkv_gemv
 
     record_patternkv_real_decode_counter("fused_page_operator_calls", 1)
-    out = patternkv_gemv.attn_v_forward_cuda_page_mixed_pool(
-        attn.to(torch.float16).contiguous(),
-        pools.v2_payload_pool,
-        pools.v4_payload_pool,
-        pools.v2_scale_pool,
-        pools.v2_zero_pool,
-        pools.v4_scale_pool,
-        pools.v4_zero_pool,
-        pools.v2_pattern_pool,
-        pools.v4_pattern_pool,
-        pools.v2_assignment_pool,
-        pools.v4_assignment_pool,
-        pools.centroids,
-        pools.v2_page_offsets,
-        pools.v4_page_offsets,
-        pools.metadata.v2_page_table,
-        pools.metadata.v4_page_table,
-        pools.metadata.metadata_page_table,
-        pools.metadata.v4_prefix_counts,
-        int(pools.group_size),
-        int(pools.nh),
-        int(pools.nh_kv),
-        int(pools.page_size),
-    )
+    with profile_range("mixed_v_page_pool_operator", tokens=int(attn.shape[-1])):
+        out = patternkv_gemv.attn_v_forward_cuda_page_mixed_pool(
+            attn.to(torch.float16).contiguous(),
+            pools.v2_payload_pool,
+            pools.v4_payload_pool,
+            pools.v2_scale_pool,
+            pools.v2_zero_pool,
+            pools.v4_scale_pool,
+            pools.v4_zero_pool,
+            pools.v2_pattern_pool,
+            pools.v4_pattern_pool,
+            pools.v2_assignment_pool,
+            pools.v4_assignment_pool,
+            pools.centroids,
+            pools.v2_page_offsets,
+            pools.v4_page_offsets,
+            pools.metadata.v2_page_table,
+            pools.metadata.v4_page_table,
+            pools.metadata.metadata_page_table,
+            pools.metadata.v4_prefix_counts,
+            pools.metadata.seq_lens,
+            int(pools.group_size),
+            int(pools.nh),
+            int(pools.nh_kv),
+            int(pools.page_size),
+        )
     return out.to(attn.dtype)
 
 

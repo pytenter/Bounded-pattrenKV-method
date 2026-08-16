@@ -17,11 +17,14 @@ from quant.batch_invariant_kproj import (
     prefill_proj_mode,
     record_bi_prefill_kproj,
     record_bi_prefill_vproj,
+    record_bi_decode_kproj_call,
+    record_bi_decode_vproj_call,
     record_normal_decode_kproj_call,
     record_normal_decode_vproj_call,
     record_normal_prefill_kproj_call,
     record_normal_prefill_vproj_call,
     selected_backend as bi_kproj_selected_backend,
+    use_batch_invariant_kproj,
 )
 from quant.matmul import (
     cuda_attn_v_fused_with_base,
@@ -46,10 +49,13 @@ from models.segmented_cache import (
     deserialize_cache,
     flush_chunked_buffer,
     get_decode_position_ids,
+    k_segment_valid_lengths,
     maybe_validate_cache,
     normalize_value_objective,
     normalize_value_precision_selector,
     pattern_gather_request_centroids,
+    request_invariant_full_value_attention,
+    request_invariant_segmented_attention_softmax,
     pattern_select_v_candidate,
     pattern_select_request_v_candidate,
     reconstruct_packed_v,
@@ -144,19 +150,94 @@ def patternkv_bi_mlp_oracle_backend() -> str:
     return os.environ.get("PATTERNKV_BI_MLP_ORACLE_BACKEND", "v2").strip().lower()
 
 
+def patternkv_decode_bi_mlp_enabled(past_key_value: Optional[Tuple[torch.Tensor]] = None) -> bool:
+    return past_key_value is not None and os.environ.get("PATTERNKV_DECODE_BI_MLP", "1") == "1"
+
+
+def patternkv_decode_bi_mlp_components() -> set[str]:
+    raw = os.environ.get("PATTERNKV_DECODE_BI_MLP_COMPONENTS", "gate,up,down")
+    return {item.strip().lower() for item in raw.split(",") if item.strip()}
+
+
+def patternkv_full_bi_decode_enabled(past_key_value: Optional[Tuple[torch.Tensor]] = None) -> bool:
+    return past_key_value is not None and os.environ.get("PATTERNKV_FULL_BI_DECODE", "0") == "1"
+
+
+def patternkv_full_bi_decode_backend() -> str:
+    return os.environ.get("PATTERNKV_FULL_BI_DECODE_BACKEND", "v2").strip().lower()
+
+
+def patternkv_decode_linear(module: nn.Linear, hidden_states: torch.Tensor, *, enabled: bool) -> torch.Tensor:
+    if enabled:
+        return batch_invariant_linear_projection(
+            hidden_states,
+            module.weight,
+            getattr(module, "bias", None),
+            backend=patternkv_full_bi_decode_backend(),
+        )
+    return module(hidden_states)
+
+
+def patternkv_decode_request_invariant_rmsnorm_enabled(past_key_value: Optional[Tuple[torch.Tensor]] = None) -> bool:
+    return past_key_value is not None and os.environ.get("PATTERNKV_DECODE_RI_RMSNORM", "1") == "1"
+
+
+def patternkv_decode_request_invariant_rmsnorm_chunk_size() -> int:
+    raw = int(os.environ.get("PATTERNKV_DECODE_RI_RMSNORM_CHUNK_SIZE", "128"))
+    if raw <= 0:
+        raise ValueError("PATTERNKV_DECODE_RI_RMSNORM_CHUNK_SIZE must be positive")
+    return raw
+
+
+def patternkv_request_invariant_rmsnorm(module: nn.Module, hidden_states: torch.Tensor) -> torch.Tensor:
+    input_dtype = hidden_states.dtype
+    x = hidden_states.to(torch.float32)
+    hidden = int(x.shape[-1])
+    chunk_size = patternkv_decode_request_invariant_rmsnorm_chunk_size()
+    chunks = []
+    for start in range(0, hidden, chunk_size):
+        chunk = x[..., start : min(start + chunk_size, hidden)]
+        chunks.append((chunk * chunk).sum(dim=-1, keepdim=True))
+    acc = chunks[0]
+    for chunk_sum in chunks[1:]:
+        acc = acc + chunk_sum
+    variance = acc / float(hidden)
+    out = hidden_states * torch.rsqrt(variance + module.variance_epsilon).to(input_dtype)
+    return module.weight * out
+
+
+def patternkv_post_attention_rmsnorm(
+    module: nn.Module,
+    hidden_states: torch.Tensor,
+    past_key_value: Optional[Tuple[torch.Tensor]] = None,
+) -> torch.Tensor:
+    if patternkv_decode_request_invariant_rmsnorm_enabled(past_key_value):
+        return patternkv_request_invariant_rmsnorm(module, hidden_states)
+    return module(hidden_states)
+
+
 def _record_bi_mlp_trace(layer_idx: int | None, component: str, value: torch.Tensor) -> None:
     if os.environ.get("PATTERNKV_BI_MLP_TRACE", "0") != "1":
         return
     _record_p2_first_divergence_trace(layer_idx, component, value)
 
 
-def patternkv_mlp_oracle_forward(layer: nn.Module, hidden_states: torch.Tensor, layer_idx: int | None) -> torch.Tensor:
+def patternkv_mlp_oracle_forward(
+    layer: nn.Module,
+    hidden_states: torch.Tensor,
+    layer_idx: int | None,
+    *,
+    full_bi_decode: bool = False,
+    production_bi_decode: bool = False,
+) -> torch.Tensor:
     mlp = layer.mlp
     enabled = patternkv_bi_mlp_oracle_enabled(layer_idx)
     components = patternkv_bi_mlp_oracle_components() if enabled else set()
-    backend = patternkv_bi_mlp_oracle_backend()
+    if production_bi_decode:
+        components = components | patternkv_decode_bi_mlp_components()
+    backend = patternkv_full_bi_decode_backend() if full_bi_decode else patternkv_bi_mlp_oracle_backend()
 
-    if enabled and "gate" in components:
+    if full_bi_decode or "gate" in components:
         gate = batch_invariant_linear_projection(hidden_states, mlp.gate_proj.weight, getattr(mlp.gate_proj, "bias", None), backend=backend)
         _BI_MLP_ORACLE_COUNTERS["bi_mlp_gate_calls"] += 1
     else:
@@ -164,7 +245,7 @@ def patternkv_mlp_oracle_forward(layer: nn.Module, hidden_states: torch.Tensor, 
         _BI_MLP_ORACLE_COUNTERS["normal_mlp_gate_calls"] += 1
     _record_bi_mlp_trace(layer_idx, "MLP_GATE_PROJ", gate)
 
-    if enabled and "up" in components:
+    if full_bi_decode or "up" in components:
         up = batch_invariant_linear_projection(hidden_states, mlp.up_proj.weight, getattr(mlp.up_proj, "bias", None), backend=backend)
         _BI_MLP_ORACLE_COUNTERS["bi_mlp_up_calls"] += 1
     else:
@@ -177,7 +258,7 @@ def patternkv_mlp_oracle_forward(layer: nn.Module, hidden_states: torch.Tensor, 
     product = activated_gate * up
     _record_bi_mlp_trace(layer_idx, "MLP_PRODUCT", product)
 
-    if enabled and "down" in components:
+    if full_bi_decode or "down" in components:
         out = batch_invariant_linear_projection(product, mlp.down_proj.weight, getattr(mlp.down_proj, "bias", None), backend=backend)
         _BI_MLP_ORACLE_COUNTERS["bi_mlp_down_calls"] += 1
     else:
@@ -239,8 +320,16 @@ def patternkv_use_bi_prefill_kproj(past_key_value: Optional[Tuple[torch.Tensor]]
     return past_key_value is None and prefill_proj_mode() in {BI_K_PREFILL_PROJ_MODE, BI_KV_PREFILL_PROJ_MODE}
 
 
+def patternkv_use_bi_kproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
+    return use_batch_invariant_kproj()
+
+
 def patternkv_use_bi_prefill_vproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
     return past_key_value is None and prefill_proj_mode() == BI_KV_PREFILL_PROJ_MODE
+
+
+def patternkv_use_bi_vproj(past_key_value: Optional[Tuple[torch.Tensor]]) -> bool:
+    return prefill_proj_mode() == BI_KV_PREFILL_PROJ_MODE
 
 
 def cuda_attn_v_fused_with_base_strided_v2_compat(
@@ -280,6 +369,20 @@ def patternkv_value_reader_fn(bits: int):
     if bits == 2 and patternkv_cache_growth_backend() in {"fixed_capacity", "chunked_capacity"}:
         return cuda_attn_v_fused_with_base_strided_v2_compat
     return cuda_attn_v_fused_with_base
+
+
+def patternkv_request_invariant_qk_scores(
+    query_states: torch.Tensor,
+    key_states: torch.Tensor,
+    num_key_value_groups: int,
+) -> torch.Tensor:
+    if query_states.dim() != 4 or key_states.dim() != 4:
+        raise ValueError(f"expected query/key states [B,H,Q,D]/[B,Hkv,T,D], got {tuple(query_states.shape)} {tuple(key_states.shape)}")
+    if query_states.shape[0] != key_states.shape[0] or query_states.shape[-1] != key_states.shape[-1]:
+        raise ValueError(f"QK shape mismatch: query={tuple(query_states.shape)} key={tuple(key_states.shape)}")
+    key_for_attention = repeat_kv(key_states, num_key_value_groups)
+    products = query_states.unsqueeze(3) * key_for_attention.unsqueeze(2)
+    return products.sum(dim=-1).contiguous()
 
 
 def patternkv_mixed_value_attention(
@@ -419,6 +522,7 @@ class LlamaAttention_PatternKV(nn.Module):
                 "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
             )
         bsz, q_len, _ = hidden_states.size()
+        full_bi_decode = patternkv_full_bi_decode_enabled(past_key_value)
 
         with profile_range("qkv_projection"):
             if self.config.pretraining_tp > 1:
@@ -606,13 +710,18 @@ class LlamaAttention_PatternKV(nn.Module):
 
         attn_output = attn_output.transpose(1, 2).contiguous()
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
+        _record_p2_first_divergence_trace(self.layer_idx, "ATTENTION_PRE_O_PROJ", attn_output)
 
         if self.config.pretraining_tp > 1:
             attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
             o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
             attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
         else:
-            attn_output = self.o_proj(attn_output)
+            attn_output = patternkv_decode_linear(
+                self.o_proj,
+                attn_output,
+                enabled=full_bi_decode,
+            )
 
         attn_weights = None
         return attn_output, attn_weights, past_key_value
@@ -1076,65 +1185,78 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
             )
         bsz, q_len, _ = hidden_states.size()
+        full_bi_decode = patternkv_full_bi_decode_enabled(past_key_value)
+        profile_phase = "decode" if past_key_value is not None else "prefill"
 
         if self.config.pretraining_tp > 1:
-            key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
-            query_slices = self.q_proj.weight.split(
-                (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
-            )
-            key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
-            value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
+            with profile_range(f"{profile_phase}_qkv_projection"):
+                key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
+                query_slices = self.q_proj.weight.split(
+                    (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
+                )
+                key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
+                value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
 
-            query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
-            query_states = torch.cat(query_states, dim=-1)
+                query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
+                query_states = torch.cat(query_states, dim=-1)
 
-            key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
-            key_states = torch.cat(key_states, dim=-1)
+                key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
+                key_states = torch.cat(key_states, dim=-1)
 
-            value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
-            value_states = torch.cat(value_states, dim=-1)
+                value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
+                value_states = torch.cat(value_states, dim=-1)
 
         else:
-            query_states = self.q_proj(hidden_states)
             is_prefill = past_key_value is None
-            if patternkv_use_bi_prefill_kproj(past_key_value):
-                key_states = batch_invariant_k_projection(
-                    hidden_states,
-                    self.k_proj.weight,
-                    getattr(self.k_proj, "bias", None),
-                    backend=bi_kproj_selected_backend(),
-                )
-                record_bi_prefill_kproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
+            with profile_range(f"{profile_phase}_q_projection"):
+                query_states = patternkv_decode_linear(self.q_proj, hidden_states, enabled=full_bi_decode)
+            if patternkv_use_bi_kproj(past_key_value):
+                with profile_range(f"{profile_phase}_k_projection"):
+                    key_states = batch_invariant_k_projection(
+                        hidden_states,
+                        self.k_proj.weight,
+                        getattr(self.k_proj, "bias", None),
+                        backend=bi_kproj_selected_backend(),
+                    )
+                if is_prefill:
+                    record_bi_prefill_kproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
+                else:
+                    record_bi_decode_kproj_call()
             else:
                 if is_prefill:
                     record_normal_prefill_kproj_call()
                 else:
                     record_normal_decode_kproj_call()
-                key_states = self.k_proj(hidden_states)
-            if patternkv_use_bi_prefill_vproj(past_key_value):
-                value_states = batch_invariant_k_projection(
-                    hidden_states,
-                    self.v_proj.weight,
-                    getattr(self.v_proj, "bias", None),
-                    backend=bi_kproj_selected_backend(),
-                )
-                record_bi_prefill_vproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
+                with profile_range(f"{profile_phase}_k_projection"):
+                    key_states = self.k_proj(hidden_states)
+            if patternkv_use_bi_vproj(past_key_value):
+                with profile_range(f"{profile_phase}_v_projection"):
+                    value_states = batch_invariant_k_projection(
+                        hidden_states,
+                        self.v_proj.weight,
+                        getattr(self.v_proj, "bias", None),
+                        backend=bi_kproj_selected_backend(),
+                    )
+                if is_prefill:
+                    record_bi_prefill_vproj(int(hidden_states.shape[0] * hidden_states.shape[1]))
+                else:
+                    record_bi_decode_vproj_call()
             else:
                 if is_prefill:
                     record_normal_prefill_vproj_call()
                 else:
                     record_normal_decode_vproj_call()
-                value_states = self.v_proj(hidden_states)
+                with profile_range(f"{profile_phase}_v_projection"):
+                    value_states = self.v_proj(hidden_states)
             _maybe_record_prefill_proj_trace(
                 layer_idx=self.layer_idx,
                 past_key_value=past_key_value,
                 key_states=key_states,
                 value_states=value_states,
             )
-            if past_key_value is None:
-                _record_p2_first_divergence_trace(self.layer_idx, "Q_PROJ", query_states)
-                _record_p2_first_divergence_trace(self.layer_idx, "K_PROJ", key_states)
-                _record_p2_first_divergence_trace(self.layer_idx, "V_PROJ", value_states)
+            _record_p2_first_divergence_trace(self.layer_idx, "Q_PROJ", query_states)
+            _record_p2_first_divergence_trace(self.layer_idx, "K_PROJ", key_states)
+            _record_p2_first_divergence_trace(self.layer_idx, "V_PROJ", value_states)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
@@ -1151,8 +1273,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
         with profile_range("rope_position"):
             cos, sin = self.rotary_emb(value_states, position_ids)
             query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
-        if past_key_value is None:
-            _record_p2_first_divergence_trace(self.layer_idx, "K_POST_ROPE", key_states)
+        _record_p2_first_divergence_trace(self.layer_idx, "Q_POST_ROPE", query_states)
+        _record_p2_first_divergence_trace(self.layer_idx, "K_POST_ROPE", key_states)
         if past_key_value is not None and isinstance(past_key_value, tuple) and past_key_value and past_key_value[0] == "patternkv_segmented_cache_v1":
             cache = deserialize_cache(past_key_value, pattern=True)
             with profile_range("cache_append"):
@@ -1176,12 +1298,17 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 else:
                     attn_output, _, _, _ = reference_patternkv_attention(query_states, view, attention_mask=attention_mask)
                 attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+                _record_p2_first_divergence_trace(self.layer_idx, "ATTENTION_PRE_O_PROJ", attn_output)
                 if self.config.pretraining_tp > 1:
                     attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
                     o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
                     attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
                 else:
-                    attn_output = self.o_proj(attn_output)
+                    attn_output = patternkv_decode_linear(
+                        self.o_proj,
+                        attn_output,
+                        enabled=full_bi_decode,
+                    )
                 if capture_metrics:
                     record_reference_metric_capture(
                         decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
@@ -1200,38 +1327,39 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             value_parts: list[tuple[str, int]] = []
             if cache.sink_k is not None:
                 with profile_range("qk_fp16_regions", tokens=int(cache.sink_k.shape[2])):
-                    sink_k = repeat_kv(cache.sink_k, self.num_key_value_groups)
-                    score_parts.append(torch.matmul(query_states, sink_k.transpose(2, 3)))
+                    with profile_range("qk_fp16_sink", tokens=int(cache.sink_k.shape[2])):
+                        score_parts.append(patternkv_request_invariant_qk_scores(query_states, cache.sink_k, self.num_key_value_groups))
                 value_parts.append(("sink", cache.sink_k.shape[2]))
             if cache.packed_k is not None:
-                if cache.k_centroids is not None and cache.k_assignments is not None:
-                    packed_scores = cuda_bmm_fA_qB_outer_with_base(
-                        self.group_size,
-                        query_states,
-                        cache.packed_k,
-                        cache.packed_k_scale,
-                        cache.packed_k_zero,
-                        self.k_bits,
-                        cache.k_centroids,
-                        cache.k_assignments[:, :, : cache.packed_k_tokens],
-                        self.num_heads,
-                        self.num_key_value_heads,
-                    )
-                else:
-                    packed_scores = cuda_bmm_fA_qB_outer(
-                        self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
-                    )
+                with profile_range("qk_int2_history", tokens=int(cache.packed_k_tokens)):
+                    if cache.k_centroids is not None and cache.k_assignments is not None:
+                        packed_scores = cuda_bmm_fA_qB_outer_with_base(
+                            self.group_size,
+                            query_states,
+                            cache.packed_k,
+                            cache.packed_k_scale,
+                            cache.packed_k_zero,
+                            self.k_bits,
+                            cache.k_centroids,
+                            cache.k_assignments[:, :, : cache.packed_k_tokens],
+                            self.num_heads,
+                            self.num_key_value_heads,
+                        )
+                    else:
+                        packed_scores = cuda_bmm_fA_qB_outer(
+                            self.group_size, query_states, cache.packed_k, cache.packed_k_scale, cache.packed_k_zero, self.k_bits
+                        )
                 score_parts.append(packed_scores[:, :, :, : cache.packed_k_tokens])
                 value_parts.append(("packed", cache.packed_k_tokens))
             if cache.pending_k is not None:
                 with profile_range("qk_fp16_regions", tokens=int(cache.pending_k.shape[2])):
-                    pending_k = repeat_kv(cache.pending_k, self.num_key_value_groups)
-                    score_parts.append(torch.matmul(query_states, pending_k.transpose(2, 3)))
+                    with profile_range("qk_fp16_pending", tokens=int(cache.pending_k.shape[2])):
+                        score_parts.append(patternkv_request_invariant_qk_scores(query_states, cache.pending_k, self.num_key_value_groups))
                 value_parts.append(("pending", cache.pending_k.shape[2]))
             if cache.recent_k is not None:
                 with profile_range("qk_fp16_regions", tokens=int(cache.recent_k.shape[2])):
-                    recent_k = repeat_kv(cache.recent_k, self.num_key_value_groups)
-                    score_parts.append(torch.matmul(query_states, recent_k.transpose(2, 3)))
+                    with profile_range("qk_fp16_recent", tokens=int(cache.recent_k.shape[2])):
+                        score_parts.append(patternkv_request_invariant_qk_scores(query_states, cache.recent_k, self.num_key_value_groups))
                 value_parts.append(("recent", cache.recent_k.shape[2]))
             with profile_range("attention_score_concat", tokens=int(cache.total_tokens)):
                 attn_weights = torch.cat(score_parts, dim=-1) / math.sqrt(self.head_dim)
@@ -1252,7 +1380,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                 attn_weights = attn_weights + attention_mask
                 attn_weights = torch.max(attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min))
             with profile_range("attention_softmax", tokens=int(cache.total_tokens)):
-                attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+                attn_weights = request_invariant_segmented_attention_softmax(attn_weights, cache, value_parts)
             update_value_causal_importance(cache, attn_weights)
 
             offset = 0
@@ -1341,19 +1469,30 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     else:
                         source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
                         with profile_range("value_fp16_tail", tokens=int(length)):
-                            part = torch.matmul(weights, repeat_kv(source, self.num_key_value_groups))
+                            with profile_range(f"value_fp16_{name}", tokens=int(length)):
+                                part = request_invariant_full_value_attention(
+                                    weights,
+                                    source,
+                                    k_segment_valid_lengths(cache, device=weights.device)[name],
+                                    self.num_key_value_groups,
+                                )
                     attn_output = part if attn_output is None else attn_output + part
                     offset += length
             if cache_validate_enabled() and offset != cache.total_tokens:
                 raise ValueError(f"segmented PatternKV attention consumed {offset} tokens, expected {cache.total_tokens}")
             attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+            _record_p2_first_divergence_trace(self.layer_idx, "ATTENTION_PRE_O_PROJ", attn_output)
             with profile_range("output_projection"):
                 if self.config.pretraining_tp > 1:
                     attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
                     o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
                     attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
                 else:
-                    attn_output = self.o_proj(attn_output)
+                    attn_output = patternkv_decode_linear(
+                        self.o_proj,
+                        attn_output,
+                        enabled=full_bi_decode,
+                    )
             if getattr(cache, "cache_mode", ROLLING_CACHE_MODE) == CHUNKED_CACHE_MODE:
                 cache.trace_layer_idx = int(self.layer_idx)
                 with profile_range("cache_flush"):
@@ -1483,6 +1622,7 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                         key_scale_trans = key_scale_trans_new
                         key_mn_trans = key_mn_trans_new
                 attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
+                _record_p2_first_divergence_trace(self.layer_idx, "ATTENTION_PRE_O_PROJ", attn_output)
                 if reference_value_states_full.shape[-2] == self.residual_length:
                     _insight_old_v_centroids = self.v_centroids
                     self._append_v_centroid_from_window(reference_value_states_full)
@@ -1528,7 +1668,11 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
                     attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
                 else:
-                    attn_output = self.o_proj(attn_output)
+                    attn_output = patternkv_decode_linear(
+                        self.o_proj,
+                        attn_output,
+                        enabled=full_bi_decode,
+                    )
                 if capture_metrics:
                     record_reference_metric_capture(
                         decode_position=int(os.environ.get("PATTERNKV_EQUIV_TRACE_DECODE_POS", "-1")),
@@ -2004,13 +2148,18 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
             past_key_value = (key_states_quant_trans, key_states_full, key_scale_trans, key_mn_trans, 
                               value_states_quant, value_states_full, value_scale, value_mn, kv_seq_len, assignments, v_assignments, v_assignments_idx) if use_cache else None
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
+        _record_p2_first_divergence_trace(self.layer_idx, "ATTENTION_PRE_O_PROJ", attn_output)
 
         if self.config.pretraining_tp > 1:
             attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
             o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
             attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
         else:
-            attn_output = self.o_proj(attn_output)
+            attn_output = patternkv_decode_linear(
+                self.o_proj,
+                attn_output,
+                enabled=full_bi_decode,
+            )
 
         attn_weights = None
         return attn_output, attn_weights, past_key_value
@@ -2178,33 +2327,47 @@ class LlamaDecoderLayer_PatternKV(nn.Module):
             )
 
         layer_idx = getattr(self.self_attn, "layer_idx", None)
+        profile_phase = "decode" if past_key_value is not None else "prefill"
         _record_p2_first_divergence_trace(layer_idx, "LAYER_INPUT", hidden_states)
         residual = hidden_states
 
-        hidden_states = self.input_layernorm(hidden_states)
+        with profile_range(f"{profile_phase}_layer_input_rmsnorm"):
+            hidden_states = patternkv_post_attention_rmsnorm(self.input_layernorm, hidden_states, past_key_value)
         _record_p2_first_divergence_trace(layer_idx, "INPUT_RMSNORM", hidden_states)
 
         # Self Attention
-        hidden_states, self_attn_weights, present_key_value = self.self_attn(
-            hidden_states=hidden_states,
-            attention_mask=attention_mask,
-            position_ids=position_ids,
-            past_key_value=past_key_value,
-            output_attentions=output_attentions,
-            use_cache=use_cache,
-            **kwargs,
-        )
+        with profile_range(f"{profile_phase}_layer_self_attention"):
+            hidden_states, self_attn_weights, present_key_value = self.self_attn(
+                hidden_states=hidden_states,
+                attention_mask=attention_mask,
+                position_ids=position_ids,
+                past_key_value=past_key_value,
+                output_attentions=output_attentions,
+                use_cache=use_cache,
+                **kwargs,
+            )
         _record_p2_first_divergence_trace(layer_idx, "ATTENTION_VALUE_OUTPUT", hidden_states)
-        hidden_states = residual + hidden_states
+        with profile_range(f"{profile_phase}_layer_attention_residual_add"):
+            hidden_states = residual + hidden_states
         _record_p2_first_divergence_trace(layer_idx, "ATTENTION_RESIDUAL_OUTPUT", hidden_states)
 
         # Fully Connected
         residual = hidden_states
-        hidden_states = self.post_attention_layernorm(hidden_states)
+        _record_p2_first_divergence_trace(layer_idx, "POST_ATTENTION_RMSNORM_INPUT", hidden_states)
+        with profile_range(f"{profile_phase}_layer_post_attention_rmsnorm"):
+            hidden_states = patternkv_post_attention_rmsnorm(self.post_attention_layernorm, hidden_states, past_key_value)
         _record_p2_first_divergence_trace(layer_idx, "POST_ATTENTION_RMSNORM", hidden_states)
-        hidden_states = patternkv_mlp_oracle_forward(self, hidden_states, layer_idx)
+        with profile_range(f"{profile_phase}_layer_mlp"):
+            hidden_states = patternkv_mlp_oracle_forward(
+                self,
+                hidden_states,
+                layer_idx,
+                full_bi_decode=patternkv_full_bi_decode_enabled(past_key_value),
+                production_bi_decode=patternkv_decode_bi_mlp_enabled(past_key_value),
+            )
         _record_p2_first_divergence_trace(layer_idx, "MLP_OUTPUT", hidden_states)
-        hidden_states = residual + hidden_states
+        with profile_range(f"{profile_phase}_layer_mlp_residual_add"):
+            hidden_states = residual + hidden_states
         _record_p2_first_divergence_trace(layer_idx, "LAYER_OUTPUT", hidden_states)
 
         outputs = (hidden_states,)

@@ -359,7 +359,7 @@ def build_gate(results: dict[str, Any]) -> dict[str, Any]:
     batch_ok = {batch: any(row["batch"] == batch for row in state_rows) and all(row["state_ok"] for row in state_rows if row["batch"] == batch) for batch in (1, 2, 4)}
     b1_quality_pass = bool(results["b1_quality_rows"]) and all(row["token_match"] for row in results["b1_quality_rows"])
     counter_sets = results["runtime_counters"]
-    counters_ok = all(c.get("bi_prefill_kproj_calls", 0) > 0 and c.get("bi_decode_kproj_calls", 0) == 0 and c.get("normal_decode_kproj_calls", 0) > 0 for c in counter_sets.values())
+    counters_ok = all(c.get("bi_prefill_kproj_calls", 0) > 0 and c.get("bi_decode_kproj_calls", 0) > 0 and c.get("normal_decode_kproj_calls", 0) == 0 for c in counter_sets.values())
     request_reorder_pass = bool(results["request_reorder_rows"]) and all(row["state_ok"] for row in results["request_reorder_rows"])
     batch_composition_pass = bool(results["batch_composition_rows"]) and all(row["state_ok"] for row in results["batch_composition_rows"])
     all_correct = all(step_ok.values()) and all(batch_ok.values()) and request_reorder_pass and batch_composition_pass
@@ -371,7 +371,8 @@ def build_gate(results: dict[str, Any]) -> dict[str, Any]:
         "actual_model_loaded": True,
         "synthetic_model_used_for_primary_evidence": False,
         "bi_kproj_v2_integrated": True,
-        "bi_kproj_prefill_only": counters_ok,
+        "bi_kproj_prefill_only": False,
+        "bi_kproj_decode_enabled": counters_ok,
         "prefill_detection_initial_cache": True,
         "prefill_detection_decode_cache": True,
         "algorithm_changed": False,

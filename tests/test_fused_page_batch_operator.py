@@ -64,7 +64,7 @@ def _assert_flat_pool_matches_pages(pool: torch.Tensor, offsets: torch.Tensor, p
         torch.testing.assert_close(pool[:, offset : offset + count], page.squeeze(0))
 
 
-@pytest.mark.parametrize("batch,tokens", [(1, 513), (2, 2051), (4, 4096)])
+@pytest.mark.parametrize("batch,tokens", [(1, 513), (2, 2051), (4, 4096), (8, 512)])
 def test_operator_ready_page_pools_preserve_page_layout(batch, tokens):
     _attn, cache = _build_cache(batch, tokens)
     pools = build_operator_ready_page_pools(cache)
@@ -108,3 +108,31 @@ def test_fused_page_batch_operator_matches_page_torch_mvp(batch, tokens):
     assert counters["gpu_tensor_item_calls"] == 0
     assert counters["matmul_calls"] == 0
     assert cache.page_size == PAGE_SIZE
+
+
+def test_fused_page_batch_operator_uses_request_local_seq_lens() -> None:
+    device = torch.device("cuda")
+    torch.manual_seed(2026081401)
+    tokens = 256
+    valid = 128
+    v_adjusted = (torch.randn(2, NH_KV, tokens, HEAD_DIM, device=device, dtype=torch.float16) * 0.25).contiguous()
+    precision = _precision_masks(2, tokens, device=device)
+    centroids = (torch.randn(NH_KV, CENTROIDS, HEAD_DIM, device=device, dtype=torch.float16) * 0.1).contiguous()
+    v_idx = torch.randint(0, CENTROIDS, (2, NH_KV, tokens), device=device, dtype=torch.int64)
+    v_pattern_mask = (torch.rand(2, NH_KV, tokens, device=device) > 0.55).to(torch.uint8)
+    attn = torch.softmax(torch.randn(2, NH, 1, tokens, device=device, dtype=torch.float16), dim=-1).contiguous()
+    attn[0, :, :, valid:] = 1.0
+    ragged_cache = pack_mixed_v_pages(v_adjusted, precision, v_pattern_mask, v_idx, centroids, group_size=GROUP_SIZE, nh=NH)
+    ragged_cache.metadata.seq_lens[0] = valid
+    ref_cache = pack_mixed_v_pages(
+        v_adjusted[0:1, :, :valid, :].contiguous(),
+        precision[0:1, :valid].contiguous(),
+        v_pattern_mask[0:1, :, :valid].contiguous(),
+        v_idx[0:1, :, :valid].contiguous(),
+        centroids,
+        group_size=GROUP_SIZE,
+        nh=NH,
+    )
+    got = patternkv_fused_page_batch_decode(attn, build_operator_ready_page_pools(ragged_cache))[0:1]
+    ref = patternkv_fused_page_batch_decode(attn[0:1, :, :, :valid].contiguous(), build_operator_ready_page_pools(ref_cache))
+    torch.testing.assert_close(got, ref, rtol=0, atol=0)

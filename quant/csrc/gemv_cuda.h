@@ -191,8 +191,23 @@ torch::Tensor attn_v_forward_cuda_page_mixed_pool(
     torch::Tensor _v4_page_table,
     torch::Tensor _metadata_page_table,
     torch::Tensor _v4_prefix_counts,
+    torch::Tensor _seq_lens,
     const int group_size,
     const int nh,
     const int nh_kv,
     const int page_size
+);
+
+torch::Tensor request_invariant_fixed_split_softmax_cuda(
+    torch::Tensor _scores,
+    torch::Tensor _total_lens,
+    torch::Tensor _sink_lens,
+    torch::Tensor _packed_lens,
+    torch::Tensor _pending_lens,
+    torch::Tensor _recent_lens,
+    const int sink_physical,
+    const int packed_physical,
+    const int pending_physical,
+    const int recent_physical,
+    const int split_size
 );

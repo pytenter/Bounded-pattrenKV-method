@@ -83,8 +83,8 @@ FINAL_GATE_TEMPLATE: dict[str, Any] = {
     "p2_v_scale_relative_l2": None,
     "p2_v_zero_relative_l2": None,
     "p2_request_reorder_pass": None,
-    "p2_decode_k_normal": None,
-    "p2_decode_v_normal": None,
+    "p2_decode_k_bi": None,
+    "p2_decode_v_bi": None,
     "p2_bi_decode_k_calls": None,
     "p2_bi_decode_v_calls": None,
     "p2_serial_request_dispatches": None,
@@ -464,8 +464,8 @@ def run_actual(args: argparse.Namespace) -> dict[str, Any]:
             "p2_v_scale_relative_l2": aggregate["v_scale_relative_l2"],
             "p2_v_zero_relative_l2": aggregate["v_zero_relative_l2"],
             "p2_request_reorder_pass": reorder_pass,
-            "p2_decode_k_normal": decode_counters.get("normal_decode_kproj_calls", 0) > 0 and decode_counters.get("bi_decode_kproj_calls", 0) == 0,
-            "p2_decode_v_normal": decode_counters.get("normal_decode_vproj_calls", 0) > 0 and decode_counters.get("bi_decode_vproj_calls", 0) == 0,
+            "p2_decode_k_bi": decode_counters.get("bi_decode_kproj_calls", 0) > 0 and decode_counters.get("normal_decode_kproj_calls", 0) == 0,
+            "p2_decode_v_bi": decode_counters.get("bi_decode_vproj_calls", 0) > 0 and decode_counters.get("normal_decode_vproj_calls", 0) == 0,
             "p2_bi_decode_k_calls": decode_counters.get("bi_decode_kproj_calls", 0),
             "p2_bi_decode_v_calls": decode_counters.get("bi_decode_vproj_calls", 0),
             "p2_serial_request_dispatches": sum(item.get("bi_kproj_serial_request_dispatches", 0) for item in all_prefill_counters),
@@ -496,8 +496,8 @@ def run_actual(args: argparse.Namespace) -> dict[str, Any]:
         and gate["p2_serial_request_dispatches"] == 0
         and gate["p2_fallback_calls"] == 0
         and gate["p2_request_reorder_pass"]
-        and gate["p2_decode_k_normal"]
-        and gate["p2_decode_v_normal"]
+        and gate["p2_decode_k_bi"]
+        and gate["p2_decode_v_bi"]
     )
     if hard_pass:
         gate["classification"] = "PREFILL_PROJECTION_MODE_POLICY_SUPPORTED"

@@ -433,6 +433,10 @@ def patternkv_prefill_projection_mode(env: dict[str, str] | None = None) -> str:
     return prefill_proj_mode(env)
 
 
+def use_batch_invariant_kproj(env: dict[str, str] | None = None) -> bool:
+    return prefill_proj_mode(env) in {BI_K_PREFILL_PROJ_MODE, BI_KV_PREFILL_PROJ_MODE}
+
+
 def recommended_patternkv_serving_prefill_proj_mode() -> str:
     return BI_K_PREFILL_PROJ_MODE
 
@@ -459,7 +463,7 @@ def patternkv_prefill_projection_mode_description(mode: str) -> dict[str, str]:
             "mode": BI_K_PREFILL_PROJ_MODE,
             "prefill_k": "bi_v2",
             "prefill_v": "normal",
-            "decode_k": "normal",
+            "decode_k": "bi_v2",
             "decode_v": "normal",
             "recommended_for": "recommended_serving",
         },
@@ -467,8 +471,8 @@ def patternkv_prefill_projection_mode_description(mode: str) -> dict[str, str]:
             "mode": BI_KV_PREFILL_PROJ_MODE,
             "prefill_k": "bi_v2",
             "prefill_v": "bi_v2",
-            "decode_k": "normal",
-            "decode_v": "normal",
+            "decode_k": "bi_v2",
+            "decode_v": "bi_v2",
             "recommended_for": "strict_batch_invariance",
         },
     }

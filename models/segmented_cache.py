@@ -9,7 +9,7 @@ from typing import Any
 import torch
 
 from quant.new_pack import pack_tensor, triton_quantize_and_pack_along_last_dim, unpack_tensor
-from quant.patternkv_profile import profile_range, record_cache_mutation, record_counter, tensor_bytes
+from quant.patternkv_profile import profile_enabled, profile_range, record_cache_mutation, record_counter, tensor_bytes
 
 
 @dataclass
@@ -234,6 +234,262 @@ def build_k_segment_validity_mask(
     return mask
 
 
+REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE = 128
+REQUEST_INVARIANT_ATTENTION_VALUE_SPLIT_SIZE = REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE
+
+
+def request_invariant_attention_split_boundaries(
+    valid_length: int,
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE,
+) -> list[tuple[int, int]]:
+    if split_size <= 0:
+        raise ValueError(f"attention softmax split_size must be positive, got {split_size}")
+    length = int(valid_length)
+    return [(start, min(start + split_size, length)) for start in range(0, length, int(split_size))]
+
+
+def request_invariant_split_signature(
+    valid_length: int,
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE,
+) -> tuple[int, int, tuple[tuple[int, int], ...], str]:
+    boundaries = tuple(request_invariant_attention_split_boundaries(valid_length, split_size=split_size))
+    return (int(valid_length), int(split_size), boundaries, "left_to_right")
+
+
+def request_invariant_batch_split_signatures(
+    lengths: torch.Tensor | list[int] | tuple[int, ...],
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE,
+) -> tuple[tuple[int, int, tuple[tuple[int, int], ...], str], ...]:
+    if torch.is_tensor(lengths):
+        values = [int(x) for x in lengths.detach().cpu().tolist()]
+    else:
+        values = [int(x) for x in lengths]
+    return tuple(request_invariant_split_signature(value, split_size=split_size) for value in values)
+
+
+def fixed_split_softmax_cuda_enabled() -> bool:
+    return os.environ.get("PATTERNKV_FIXED_SPLIT_SOFTMAX", "0").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _fixed_split_softmax_supported(attn_weights: torch.Tensor, q_len: int) -> bool:
+    return (
+        fixed_split_softmax_cuda_enabled()
+        and attn_weights.is_cuda
+        and attn_weights.dtype == torch.float16
+        and int(q_len) == 1
+    )
+
+
+def request_invariant_value_split_boundaries(
+    valid_length: int,
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_VALUE_SPLIT_SIZE,
+) -> list[tuple[int, int]]:
+    return request_invariant_attention_split_boundaries(valid_length, split_size=split_size)
+
+
+def request_invariant_segmented_attention_softmax(
+    attn_weights: torch.Tensor,
+    cache: QuantizedKVCache,
+    value_parts: list[tuple[str, int]],
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_SOFTMAX_SPLIT_SIZE,
+) -> torch.Tensor:
+    if split_size <= 0:
+        raise ValueError(f"attention softmax split_size must be positive, got {split_size}")
+    if attn_weights.dim() != 4:
+        raise ValueError(f"expected attention weights [B,H,Q,T], got {tuple(attn_weights.shape)}")
+    bsz, heads, q_len, physical_total = attn_weights.shape
+    totals = get_total_tokens_per_request(cache, device=attn_weights.device).to(dtype=torch.long)
+    max_logical = int(totals.max().item()) if totals.numel() else int(physical_total)
+    if max_logical <= 0:
+        return torch.zeros_like(attn_weights)
+    lengths = k_segment_valid_lengths(cache, device=attn_weights.device)
+    physical_by_name = {name: int(physical_length) for name, physical_length in value_parts}
+    if _fixed_split_softmax_supported(attn_weights, q_len):
+        from quant.matmul import request_invariant_fixed_split_softmax_cuda
+
+        if profile_enabled():
+            record_counter("fixed_split_softmax_requests", calls=int(bsz))
+            split_counts = (totals + int(split_size) - 1) // int(split_size)
+            split_total = int(split_counts.sum().item())
+            record_counter("fixed_split_softmax_splits", calls=split_total)
+            record_counter("partial_state_workspace", calls=0, bytes_copied=split_total * int(heads) * 2 * 4)
+            record_counter("merge_workspace", calls=0, bytes_copied=int(bsz) * int(heads) * 2 * 4)
+        return request_invariant_fixed_split_softmax_cuda(
+            attn_weights,
+            totals,
+            lengths.get("sink", torch.zeros_like(totals)),
+            lengths.get("packed", torch.zeros_like(totals)),
+            lengths.get("pending", torch.zeros_like(totals)),
+            lengths.get("recent", torch.zeros_like(totals)),
+            sink_physical=physical_by_name.get("sink", 0),
+            packed_physical=physical_by_name.get("packed", 0),
+            pending_physical=physical_by_name.get("pending", 0),
+            recent_physical=physical_by_name.get("recent", 0),
+            split_size=int(split_size),
+        )
+
+    sentinel = torch.finfo(attn_weights.dtype).min
+    logical = torch.full((bsz, heads, q_len, max_logical), sentinel, dtype=attn_weights.dtype, device=attn_weights.device)
+    physical_offset = 0
+    logical_offset = torch.zeros((bsz,), dtype=torch.long, device=attn_weights.device)
+    for name, physical_length in value_parts:
+        physical = int(physical_length)
+        if physical <= 0:
+            continue
+        valid = lengths[name].clamp(min=0, max=physical).to(dtype=torch.long)
+        positions = torch.arange(physical, dtype=torch.long, device=attn_weights.device).unsqueeze(0)
+        valid_mask = positions < valid.unsqueeze(1)
+        dst = (logical_offset.unsqueeze(1) + positions).clamp(max=max_logical - 1)
+        src = attn_weights[:, :, :, physical_offset : physical_offset + physical]
+        dst_expanded = dst[:, None, None, :].expand(-1, heads, q_len, -1)
+        values = torch.where(valid_mask[:, None, None, :], src, torch.full_like(src, sentinel))
+        logical.scatter_(3, dst_expanded, values)
+        physical_offset += physical
+        logical_offset = logical_offset + valid
+    if physical_offset != int(physical_total):
+        raise ValueError(f"attention softmax consumed {physical_offset} physical tokens, expected {physical_total}")
+
+    logical_positions = torch.arange(max_logical, dtype=torch.long, device=attn_weights.device).unsqueeze(0)
+    logical_valid = logical_positions < totals.unsqueeze(1)
+    padded = ((max_logical + int(split_size) - 1) // int(split_size)) * int(split_size)
+    if padded != max_logical:
+        logical = torch.nn.functional.pad(logical, (0, padded - max_logical), value=sentinel)
+        logical_valid = torch.nn.functional.pad(logical_valid, (0, padded - max_logical), value=False)
+    split_count = padded // int(split_size)
+    split_logits = logical.reshape(bsz, heads, q_len, split_count, int(split_size))
+    split_valid = logical_valid.reshape(bsz, split_count, int(split_size))
+    split_active = split_valid.any(dim=-1)
+
+    local_max = split_logits.float().max(dim=-1).values
+    inactive_min = torch.full_like(local_max, torch.finfo(torch.float32).min)
+    local_max = torch.where(split_active[:, None, None, :], local_max, inactive_min)
+    exp_terms = torch.exp(split_logits.float() - local_max[..., None])
+    exp_terms = torch.where(split_valid[:, None, None, :, :], exp_terms, torch.zeros_like(exp_terms))
+    local_sum = exp_terms.sum(dim=-1)
+
+    merged_max = local_max[:, :, :, 0]
+    merged_sum = local_sum[:, :, :, 0]
+    for split_idx in range(1, split_count):
+        next_max = local_max[:, :, :, split_idx]
+        next_sum = local_sum[:, :, :, split_idx]
+        combined_max = torch.maximum(merged_max, next_max)
+        combined_sum = merged_sum * torch.exp(merged_max - combined_max) + next_sum * torch.exp(next_max - combined_max)
+        active = split_active[:, None, None, split_idx]
+        merged_sum = torch.where(active, combined_sum, merged_sum)
+        merged_max = torch.where(active, combined_max, merged_max)
+
+    probs_logical = torch.exp(logical.float() - merged_max[..., None]) / merged_sum[..., None]
+    probs_logical = torch.where(logical_valid[:, None, None, :], probs_logical, torch.zeros_like(probs_logical))
+    probs_logical = probs_logical[:, :, :, :max_logical].to(attn_weights.dtype)
+
+    output = torch.zeros_like(attn_weights)
+    physical_offset = 0
+    logical_offset = torch.zeros((bsz,), dtype=torch.long, device=attn_weights.device)
+    for name, physical_length in value_parts:
+        physical = int(physical_length)
+        if physical <= 0:
+            continue
+        valid = lengths[name].clamp(min=0, max=physical).to(dtype=torch.long)
+        positions = torch.arange(physical, dtype=torch.long, device=attn_weights.device).unsqueeze(0)
+        valid_mask = positions < valid.unsqueeze(1)
+        src_idx = (logical_offset.unsqueeze(1) + positions).clamp(max=max_logical - 1)
+        gathered = torch.gather(probs_logical, 3, src_idx[:, None, None, :].expand(-1, heads, q_len, -1))
+        output[:, :, :, physical_offset : physical_offset + physical] = torch.where(valid_mask[:, None, None, :], gathered, torch.zeros_like(gathered))
+        physical_offset += physical
+        logical_offset = logical_offset + valid
+    return output.contiguous()
+
+
+def request_invariant_full_value_attention(
+    weights: torch.Tensor,
+    values: torch.Tensor,
+    valid_lengths: torch.Tensor,
+    num_key_value_groups: int,
+    *,
+    split_size: int = REQUEST_INVARIANT_ATTENTION_VALUE_SPLIT_SIZE,
+) -> torch.Tensor:
+    if weights.dim() != 4 or values.dim() != 4:
+        raise ValueError(f"expected weights [B,H,1,T] and values [B,Hkv,T,D], got {tuple(weights.shape)} {tuple(values.shape)}")
+    if weights.shape[0] != values.shape[0] or weights.shape[2] != 1 or weights.shape[3] != values.shape[2]:
+        raise ValueError(f"full Value attention shape mismatch: weights={tuple(weights.shape)} values={tuple(values.shape)}")
+    if split_size <= 0:
+        raise ValueError(f"Value split_size must be positive, got {split_size}")
+    bsz, heads, q_len, physical = weights.shape
+    if q_len != 1:
+        raise ValueError("request-invariant full Value attention currently supports decode q_len=1")
+    lengths = valid_lengths.to(device=weights.device, dtype=torch.long).clamp(min=0, max=int(physical))
+    max_valid = int(lengths.max().item()) if lengths.numel() else int(physical)
+    padded = ((max_valid + int(split_size) - 1) // int(split_size)) * int(split_size)
+    if padded == 0:
+        return torch.zeros((bsz, heads, q_len, values.shape[-1]), dtype=weights.dtype, device=weights.device)
+
+    if padded > physical:
+        weights = torch.nn.functional.pad(weights, (0, padded - physical), value=0.0)
+        values = torch.nn.functional.pad(values, (0, 0, 0, padded - physical), value=0.0)
+    else:
+        weights = weights[:, :, :, :padded]
+        values = values[:, :, :padded, :]
+    positions = torch.arange(padded, dtype=torch.long, device=weights.device).unsqueeze(0)
+    valid_mask = positions < lengths.unsqueeze(1)
+    weights = torch.where(valid_mask[:, None, None, :], weights, torch.zeros_like(weights))
+    if num_key_value_groups != 1:
+        values = values[:, :, None, :, :].expand(bsz, values.shape[1], int(num_key_value_groups), padded, values.shape[-1])
+        values = values.reshape(bsz, heads, padded, values.shape[-1])
+    out = torch.zeros((bsz, heads, q_len, values.shape[-1]), dtype=weights.dtype, device=weights.device)
+    for start, end in request_invariant_value_split_boundaries(padded, split_size=split_size):
+        contrib = weights[:, :, :, start:end].unsqueeze(-1) * values[:, :, None, start:end, :]
+        out = out + contrib.sum(dim=3).to(out.dtype)
+    return out.contiguous()
+
+
+def _k_attention_value_parts(cache: QuantizedKVCache) -> list[tuple[str, int]]:
+    parts: list[tuple[str, int]] = []
+    if cache.sink_k is not None:
+        parts.append(("sink", int(cache.sink_k.shape[2])))
+    if cache.packed_k is not None:
+        parts.append(("packed", int(cache.packed_k_tokens)))
+    if cache.pending_k is not None:
+        parts.append(("pending", int(cache.pending_k.shape[2])))
+    if cache.recent_k is not None:
+        parts.append(("recent", int(cache.recent_k.shape[2])))
+    return parts
+
+
+def _has_ragged_attention_layout(cache: QuantizedKVCache) -> bool:
+    return torch.is_tensor(getattr(cache, "request_total_tokens", None)) or torch.is_tensor(getattr(cache, "request_packed_k_tokens", None))
+
+
+def _scatter_k_attention_mass_to_logical_indices(cache: QuantizedKVCache, mass: torch.Tensor) -> torch.Tensor:
+    parts = _k_attention_value_parts(cache)
+    if not parts:
+        return mass.new_zeros((mass.shape[0], int(cache.total_tokens)), dtype=torch.float32)
+    totals = get_total_tokens_per_request(cache, device=mass.device).to(dtype=torch.long)
+    lengths = k_segment_valid_lengths(cache, device=mass.device)
+    destination = mass.new_zeros((mass.shape[0], int(cache.total_tokens)), dtype=torch.float32)
+    physical_offset = 0
+    logical_offset = torch.zeros_like(totals)
+    for name, physical_length in parts:
+        physical = int(physical_length)
+        if physical <= 0:
+            continue
+        valid = lengths[name].to(device=mass.device, dtype=torch.long).clamp(min=0, max=physical)
+        positions = torch.arange(physical, device=mass.device, dtype=torch.long).unsqueeze(0)
+        valid_mask = positions < valid.unsqueeze(1)
+        logical_idx = logical_offset.unsqueeze(1) + positions
+        logical_idx = logical_idx.clamp(min=0, max=max(int(cache.total_tokens) - 1, 0))
+        segment_mass = mass[:, physical_offset : physical_offset + physical].float() * valid_mask.float()
+        destination.scatter_add_(1, logical_idx, segment_mass)
+        physical_offset += physical
+        logical_offset = logical_offset + valid
+    request_mask = torch.arange(int(cache.total_tokens), device=mass.device, dtype=torch.long).unsqueeze(0) < totals.unsqueeze(1)
+    return destination * request_mask.float()
+
+
 @dataclass
 class PatternKVCentroidStatePool:
     k_centroid_pool: torch.Tensor
@@ -305,6 +561,56 @@ class PatternKVCentroidStatePool:
             static_centroid_count=k_static_count,
             static_v_centroid_count=v_static_count,
         )
+
+    def allocated_bytes(self) -> int:
+        return (
+            tensor_bytes(self.k_centroid_pool)
+            + tensor_bytes(self.v_centroid_pool)
+            + tensor_bytes(self.k_counts)
+            + tensor_bytes(self.v_counts)
+            + tensor_bytes(self.update_counts_k)
+            + tensor_bytes(self.update_counts_v)
+            + tensor_bytes(self.last_flush_pos)
+            + tensor_bytes(self.active)
+        )
+
+    def logical_bytes(self) -> int:
+        active_slots = self.active.nonzero(as_tuple=False).flatten()
+        if active_slots.numel() == 0:
+            return 0
+        k_items = int(self.k_counts[active_slots].sum().item())
+        v_items = int(self.v_counts[active_slots].sum().item())
+        heads = int(self.k_centroid_pool.shape[1])
+        dim = int(self.k_centroid_pool.shape[-1])
+        centroid_bytes = (k_items + v_items) * heads * dim * int(self.k_centroid_pool.element_size())
+        metadata_bytes = int(active_slots.numel()) * (
+            self.k_counts.element_size()
+            + self.v_counts.element_size()
+            + self.update_counts_k.element_size()
+            + self.update_counts_v.element_size()
+            + self.last_flush_pos.element_size()
+            + self.active.element_size()
+        )
+        return int(centroid_bytes + metadata_bytes)
+
+    def ensure_dynamic_capacity(self, required_total_centroids: int) -> None:
+        required = int(required_total_centroids)
+        current = int(self.k_centroid_pool.shape[2])
+        if required <= current:
+            return
+        new_total = max(required, current * 2)
+
+        def grow(value: torch.Tensor) -> torch.Tensor:
+            out = torch.empty(
+                (int(value.shape[0]), int(value.shape[1]), new_total, int(value.shape[3])),
+                dtype=value.dtype,
+                device=value.device,
+            )
+            out[:, :, :current, :].copy_(value)
+            return out
+
+        self.k_centroid_pool = grow(self.k_centroid_pool)
+        self.v_centroid_pool = grow(self.v_centroid_pool)
 
     def allocate(self, slots: torch.Tensor) -> None:
         self.active[slots.long()] = True
@@ -1584,7 +1890,11 @@ def update_value_causal_importance(cache: PatternQuantizedKVCache, attn_weights:
         elif cache.v_causal_importance.device != mass.device or cache.v_causal_importance.dtype != torch.float32:
             cache.v_causal_importance = cache.v_causal_importance.to(device=mass.device, dtype=torch.float32)
         width = min(mass.shape[1], cache.total_tokens)
-        cache.v_causal_importance[:, :width] += mass[:, :width]
+        if _has_ragged_attention_layout(cache):
+            logical_mass = _scatter_k_attention_mass_to_logical_indices(cache, mass)
+            cache.v_causal_importance[:, : logical_mass.shape[1]] += logical_mass
+        else:
+            cache.v_causal_importance[:, :width] += mass[:, :width]
 
 
 def pattern_select_v_candidate(
@@ -1595,7 +1905,7 @@ def pattern_select_v_candidate(
     group_size: int,
     bits: int,
     tie_atol: float = 1e-7,
-    block_tokens: int = 128,
+    block_tokens: int = 16,
 ) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
     objective = normalize_value_objective(value_objective)
     if objective == "base":
@@ -1642,7 +1952,7 @@ def pattern_select_request_v_candidate(
     bits: int,
     centroid_counts: torch.Tensor | None = None,
     tie_atol: float = 1e-7,
-    block_tokens: int = 128,
+    block_tokens: int = 16,
 ) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
     objective = normalize_value_objective(value_objective)
     if objective == "base":
@@ -1775,8 +2085,10 @@ def _ensure_centroid_state_pool(cache: PatternQuantizedKVCache, bsz: int) -> Pat
     if cache.centroid_state_indices is None:
         cache.centroid_state_indices = _default_centroid_slots(bsz, device)
     if cache.centroid_state_pool is None:
-        max_slots = max(int(os.environ.get("PATTERNKV_CENTROID_MAX_SLOTS", "16")), int(bsz))
-        max_dynamic = int(os.environ.get("PATTERNKV_CENTROID_MAX_DYNAMIC", "512"))
+        required_slots = max(int(bsz), int(cache.centroid_state_indices.long().max().item()) + 1 if cache.centroid_state_indices.numel() else 0)
+        max_slots = max(int(os.environ["PATTERNKV_CENTROID_MAX_SLOTS"]), required_slots) if "PATTERNKV_CENTROID_MAX_SLOTS" in os.environ else required_slots
+        default_dynamic = max(16, _ceil_div(int(getattr(cache, "total_tokens", 0) or 0) + int(getattr(cache, "recent_length", 0) or 0), int(getattr(cache, "group_size", 128) or 128)) + 8)
+        max_dynamic = int(os.environ.get("PATTERNKV_CENTROID_MAX_DYNAMIC", str(default_dynamic)))
         k_static = cache.k_centroids
         v_static = cache.v_centroids
         cache.centroid_state_pool = PatternKVCentroidStatePool.create(
@@ -1787,6 +2099,8 @@ def _ensure_centroid_state_pool(cache: PatternQuantizedKVCache, bsz: int) -> Pat
             initial_slots=cache.centroid_state_indices,
         )
     cache.centroid_state_pool.allocate(cache.centroid_state_indices)
+    record_counter("centroid_capacity_bytes", calls=0, bytes_copied=cache.centroid_state_pool.allocated_bytes())
+    record_counter("centroid_logical_bytes", calls=0, bytes_copied=cache.centroid_state_pool.logical_bytes())
     return cache.centroid_state_pool
 
 
@@ -1800,9 +2114,8 @@ def _active_request_centroids(cache: PatternQuantizedKVCache, *, stream: str) ->
     slots = cache.centroid_state_indices.long()
     source = pool.k_centroid_pool if stream == "k" else pool.v_centroid_pool
     if slots.numel() == 1:
-        updates = int(cache.centroid_updates_k if stream == "k" else cache.centroid_updates_v)
-        static_count = int(pool.static_centroid_count if stream == "k" else (pool.static_v_centroid_count or pool.static_centroid_count))
-        max_count = int(static_count + updates)
+        counts = pool.k_counts if stream == "k" else pool.v_counts
+        max_count = int(counts[slots[0]].item())
         centroids = source[slots, :, :max_count, :].contiguous()
         return centroids[0]
     return source[slots].contiguous()
@@ -1850,6 +2163,8 @@ def _append_dynamic_centroids(cache: PatternQuantizedKVCache, k_window: torch.Te
         v_centroid = ((v_window.amin(dim=2, keepdim=True) + v_window.amax(dim=2, keepdim=True)) * 0.5).to(pool.v_centroid_pool.dtype)
         k_pos = pool.k_counts[update_slots].long()
         v_pos = pool.v_counts[update_slots].long()
+        required = int(torch.maximum(k_pos.max(), v_pos.max()).item()) + 1
+        pool.ensure_dynamic_capacity(required)
         active_indices = torch.nonzero(active_rows, as_tuple=False).flatten()
         for local_idx, slot in enumerate(update_slots):
             source_row = int(active_indices[local_idx].item())
@@ -1909,6 +2224,10 @@ def _pack_pattern_window_impl(
     v_centroids_active = _active_request_centroids(cache, stream="v")
     k_counts_active = _active_centroid_counts(cache, stream="k")
     v_counts_active = _active_centroid_counts(cache, stream="v")
+    if k_centroids_active.dim() == 4 and k_counts_active is not None and k_counts_active.numel():
+        k_centroids_active = k_centroids_active[:, :, : int(k_counts_active.max().item()), :].contiguous()
+    if v_centroids_active.dim() == 4 and v_counts_active is not None and v_counts_active.numel():
+        v_centroids_active = v_centroids_active[:, :, : int(v_counts_active.max().item()), :].contiguous()
     if k_assignments is None:
         if k_centroids_active.dim() == 4:
             k_assignments = _assign_minmax_bhnk(k_window, k_centroids_active, counts=k_counts_active).to(torch.long)
@@ -2131,9 +2450,11 @@ def _slice_operator_ready_page_pools_for_request(cache: PatternQuantizedKVCache,
 
 
 def _slice_ragged_request_cache(cache: PatternQuantizedKVCache, row: int, lengths: dict[str, torch.Tensor]) -> PatternQuantizedKVCache:
-    packed_k = int(get_packed_k_tokens_per_request(cache)[row].item())
+    packed_k = int(_request_vector(cache, "request_packed_k_tokens", int(cache.packed_k_tokens))[row].item())
     packed_v = int(_request_vector(cache, "request_packed_v_tokens", int(cache.packed_v_tokens))[row].item())
     packed_v4 = int(_request_vector(cache, "request_packed_v4_tokens", int(getattr(cache, "packed_v4_tokens", 0) or 0))[row].item())
+    if cache.v_precision_mask is not None:
+        packed_v4 = int(cache.v_precision_mask[row].bool().sum().item())
     packed_k_payload = _ceil_div(packed_k, 32 // int(cache.k_bits))
     packed_k_scale = _ceil_div(packed_k, int(cache.group_size))
     packed_v2 = max(packed_v - packed_v4, 0)
@@ -2199,7 +2520,8 @@ def _slice_ragged_request_cache(cache: PatternQuantizedKVCache, row: int, length
     row_cache.request_packed_k_tokens = torch.tensor([packed_k], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
     row_cache.request_packed_v_tokens = torch.tensor([packed_v], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
     row_cache.request_packed_v4_tokens = torch.tensor([packed_v4], dtype=torch.long, device=get_total_tokens_per_request(row_cache).device)
-    validate_cache(row_cache)
+    if getattr(row_cache, "operator_ready_page_pools", None) is None:
+        validate_cache(row_cache)
     return row_cache
 
 
@@ -2677,7 +2999,7 @@ def validate_cache(cache: QuantizedKVCache) -> None:
             elif int(selected_by_request.sum().item()) != int(cache.packed_v4_tokens):
                 raise ValueError(f"V4 payload token mismatch: mask selected={int(selected_by_request.sum().item())}, payload={cache.packed_v4_tokens}")
             selected = int(selected_by_request.max().item()) if selected_by_request.numel() else 0
-            if cache.v_precision_mask.shape[0] > 1 and getattr(cache, "operator_ready_page_pools", None) is not None:
+            if getattr(cache, "operator_ready_page_pools", None) is not None:
                 pools = cache.operator_ready_page_pools
                 if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
                     packed_v_by_request = _request_vector(cache, "request_packed_v_tokens", int(cache.packed_v_tokens), device=pools.metadata.seq_lens.device)

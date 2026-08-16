@@ -7,6 +7,7 @@ import torch
 from models.segmented_cache import (
     PatternKVCentroidStatePool,
     PatternQuantizedKVCache,
+    _ensure_centroid_state_pool,
     advance_request_total_tokens,
     assemble_ragged_patternkv_cache,
     deserialize_cache,
@@ -170,6 +171,47 @@ def test_ragged_centroid_state_copied_not_aliased() -> None:
     before = cache.centroid_state_pool.k_centroid_pool[0].clone()
     left.centroid_state_pool.k_centroid_pool[0].fill_(999.0)
     assert torch.equal(cache.centroid_state_pool.k_centroid_pool[0], before)
+
+
+def test_centroid_state_pool_defaults_to_active_batch_capacity(monkeypatch) -> None:
+    monkeypatch.delenv("PATTERNKV_CENTROID_MAX_SLOTS", raising=False)
+    monkeypatch.delenv("PATTERNKV_CENTROID_MAX_DYNAMIC", raising=False)
+    cache = _cache(384)
+    cache.centroid_state_pool = None
+    cache.centroid_state_indices = None
+
+    pool = _ensure_centroid_state_pool(cache, 1)
+
+    assert pool is not None
+    assert pool.k_centroid_pool.shape[0] == 1
+    assert pool.allocated_bytes() > pool.logical_bytes()
+    assert pool.logical_bytes() > 0
+
+
+def test_centroid_state_pool_grows_without_changing_existing_values() -> None:
+    cache = _cache(384)
+    pool = cache.centroid_state_pool
+    assert pool is not None
+    before = pool.k_centroid_pool[:, :, : int(pool.k_counts.max().item()), :].clone()
+    pool.ensure_dynamic_capacity(int(pool.k_centroid_pool.shape[2]) + 3)
+
+    assert pool.k_centroid_pool.shape[2] >= before.shape[2] + 3
+    assert torch.equal(pool.k_centroid_pool[:, :, : before.shape[2], :], before)
+
+
+def test_centroid_slot_reuse_resets_logical_counts() -> None:
+    cache = _cache(384)
+    pool = cache.centroid_state_pool
+    assert pool is not None
+    slot = cache.centroid_state_indices.long()
+    pool.k_counts[slot] = int(pool.static_centroid_count) + 1
+    pool.v_counts[slot] = int(pool.static_v_centroid_count or pool.static_centroid_count) + 1
+
+    pool.free(slot)
+    pool.allocate(slot)
+
+    assert int(pool.k_counts[slot][0].item()) == int(pool.static_centroid_count)
+    assert int(pool.v_counts[slot][0].item()) == int(pool.static_v_centroid_count or pool.static_centroid_count)
 
 
 def test_ragged_page_indptr_after_pool_assembly() -> None:

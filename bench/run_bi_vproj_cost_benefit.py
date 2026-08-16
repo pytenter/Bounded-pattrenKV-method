@@ -38,8 +38,8 @@ FINAL_GATE_TEMPLATE: dict[str, Any] = {
     "p2_uses_existing_bi_v2_kernel": None,
     "p2_prefill_k_bi": None,
     "p2_prefill_v_bi": None,
-    "p2_decode_k_normal": None,
-    "p2_decode_v_normal": None,
+    "p2_decode_k_bi": None,
+    "p2_decode_v_bi": None,
     "p2_serial_request_dispatches": None,
     "p2_fallback_calls": None,
     "p2_b1_b2_kproj_exact": None,
@@ -385,8 +385,8 @@ def _run_actual(args: argparse.Namespace) -> dict[str, Any]:
     gate["p2_prefill_k_bi"] = all(c.get("bi_prefill_kproj_calls", 0) > 0 for k, c in dispatch.items() if k.startswith("p2_") and "decode" not in k)
     gate["p2_prefill_v_bi"] = all(c.get("bi_prefill_vproj_calls", 0) > 0 for k, c in dispatch.items() if k.startswith("p2_") and "decode" not in k)
     p2_decode = dispatch.get("p2_decode_one", {})
-    gate["p2_decode_k_normal"] = p2_decode.get("normal_decode_kproj_calls", 0) > 0 and p2_decode.get("bi_decode_kproj_calls", 0) == 0
-    gate["p2_decode_v_normal"] = p2_decode.get("normal_decode_vproj_calls", 0) > 0 and p2_decode.get("bi_decode_vproj_calls", 0) == 0
+    gate["p2_decode_k_bi"] = p2_decode.get("bi_decode_kproj_calls", 0) > 0 and p2_decode.get("normal_decode_kproj_calls", 0) == 0
+    gate["p2_decode_v_bi"] = p2_decode.get("bi_decode_vproj_calls", 0) > 0 and p2_decode.get("normal_decode_vproj_calls", 0) == 0
     gate["p2_serial_request_dispatches"] = sum(c.get("bi_kproj_serial_request_dispatches", 0) for k, c in dispatch.items() if k.startswith("p2_"))
     gate["p2_fallback_calls"] = sum(c.get("bi_kproj_fallback_calls", 0) for k, c in dispatch.items() if k.startswith("p2_"))
     p1_mem = [float(r["peak_allocated_bytes"]) for r in perf_rows if r["variant"] == "p1"]

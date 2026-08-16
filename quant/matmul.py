@@ -97,6 +97,37 @@ def _tensor_bytes(value: torch.Tensor | None) -> int:
 	return 0 if value is None else int(value.numel() * value.element_size())
 
 
+def request_invariant_fixed_split_softmax_cuda(
+	scores: torch.Tensor,
+	total_lens: torch.Tensor,
+	sink_lens: torch.Tensor,
+	packed_lens: torch.Tensor,
+	pending_lens: torch.Tensor,
+	recent_lens: torch.Tensor,
+	*,
+	sink_physical: int,
+	packed_physical: int,
+	pending_physical: int,
+	recent_physical: int,
+	split_size: int,
+) -> torch.Tensor:
+	with profile_range("fixed_split_softmax_kernel", tokens=int(scores.shape[-1])):
+		record_counter("softmax_kernel_launches")
+		return patternkv_gemv.request_invariant_fixed_split_softmax_cuda(
+			scores,
+			total_lens,
+			sink_lens,
+			packed_lens,
+			pending_lens,
+			recent_lens,
+			int(sink_physical),
+			int(packed_physical),
+			int(pending_physical),
+			int(recent_physical),
+			int(split_size),
+		)
+
+
 def patternkv_gqa_v_backend() -> str:
 	backend = os.environ.get("PATTERNKV_GQA_V_BACKEND", "baseline").strip().lower()
 	if backend not in {"baseline", "gqa"}:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import torch
 
-from models.llama_patternkv import patternkv_use_bi_prefill_kproj, patternkv_use_bi_prefill_vproj
+from models.llama_patternkv import patternkv_use_bi_kproj, patternkv_use_bi_prefill_kproj, patternkv_use_bi_prefill_vproj, patternkv_use_bi_vproj
 from bench.run_bi_vproj_cost_benefit import classify_cost_benefit, drift_reduction_ratio, prefill_overhead_percent
 from quant.batch_invariant_kproj import (
     BI_KV_PREFILL_PROJ_MODE,
@@ -35,9 +35,9 @@ def test_bi_kproj_prefill_dispatch_enabled(monkeypatch) -> None:
     assert patternkv_use_bi_prefill_kproj(None) is True
 
 
-def test_bi_kproj_decode_dispatch_disabled(monkeypatch) -> None:
+def test_bi_kproj_decode_dispatch_enabled(monkeypatch) -> None:
     monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
-    assert patternkv_use_bi_prefill_kproj(("patternkv_segmented_cache_v1",)) is False
+    assert patternkv_use_bi_kproj(("patternkv_segmented_cache_v1",)) is True
 
 
 def test_bi_kproj_flag_disabled_baseline(monkeypatch) -> None:
@@ -52,9 +52,10 @@ def test_prefill_detection_initial_cache(monkeypatch) -> None:
     assert patternkv_use_bi_prefill_kproj(None) is True
 
 
-def test_prefill_detection_decode_cache(monkeypatch) -> None:
+def test_prefill_detection_decode_cache_uses_bi_kproj(monkeypatch) -> None:
     monkeypatch.setenv("PATTERNKV_BATCH_INVARIANT_KPROJ", "1")
     assert patternkv_use_bi_prefill_kproj(("patternkv_segmented_cache_v1", None)) is False
+    assert patternkv_use_bi_kproj(("patternkv_segmented_cache_v1", None)) is True
 
 
 def test_prefill_dispatch_no_serial_loop() -> None:
@@ -172,7 +173,7 @@ def test_bi_k_mode_dispatch_contract() -> None:
     desc = patternkv_prefill_projection_mode_description("bi_k")
     assert desc["prefill_k"] == "bi_v2"
     assert desc["prefill_v"] == "normal"
-    assert desc["decode_k"] == "normal"
+    assert desc["decode_k"] == "bi_v2"
     assert desc["decode_v"] == "normal"
 
 
@@ -180,15 +181,17 @@ def test_bi_kv_mode_dispatch_contract() -> None:
     desc = patternkv_prefill_projection_mode_description("bi_kv")
     assert desc["prefill_k"] == "bi_v2"
     assert desc["prefill_v"] == "bi_v2"
-    assert desc["decode_k"] == "normal"
-    assert desc["decode_v"] == "normal"
+    assert desc["decode_k"] == "bi_v2"
+    assert desc["decode_v"] == "bi_v2"
 
 
-def test_bi_kv_decode_uses_normal_kv(monkeypatch) -> None:
+def test_bi_kv_decode_uses_bi_kv(monkeypatch) -> None:
     monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_kv")
     past = ("patternkv_segmented_cache_v1", None)
     assert patternkv_use_bi_prefill_kproj(past) is False
+    assert patternkv_use_bi_kproj(past) is True
     assert patternkv_use_bi_prefill_vproj(past) is False
+    assert patternkv_use_bi_vproj(past) is True
 
 
 def test_mode_aware_equivalence_policy() -> None:
@@ -208,9 +211,11 @@ def test_bi_vproj_prefill_dispatch(monkeypatch) -> None:
 
 
 def test_bi_vproj_decode_not_used(monkeypatch) -> None:
-    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_kv")
+    monkeypatch.setenv("PATTERNKV_PREFILL_PROJ_MODE", "bi_k")
     assert patternkv_use_bi_prefill_kproj(("patternkv_segmented_cache_v1",)) is False
+    assert patternkv_use_bi_kproj(("patternkv_segmented_cache_v1",)) is True
     assert patternkv_use_bi_prefill_vproj(("patternkv_segmented_cache_v1",)) is False
+    assert patternkv_use_bi_vproj(("patternkv_segmented_cache_v1",)) is False
 
 
 def test_projection_mode_counters() -> None:
