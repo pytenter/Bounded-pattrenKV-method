@@ -141,6 +141,7 @@ def protocol_invariants_pass(row: dict[str, Any]) -> bool:
         and int(row.get("prefill_tokens_in_timed_window", -1)) == 0
         and int(row.get("refill_calls_in_timed_window", -1)) == 0
         and int(row.get("membership_changes_in_timed_window", -1)) == 0
+        and int(row.get("page_batch_pack_calls", 0)) == 0
     )
 
 
@@ -180,6 +181,7 @@ def summarize_point(point: Point, rows: list[dict[str, Any]], *, status: str, er
         "prefill_tokens_in_timed_window": max((int(row.get("prefill_tokens_in_timed_window", 0)) for row in all_measured), default=0),
         "refill_calls_in_timed_window": max((int(row.get("refill_calls_in_timed_window", 0)) for row in all_measured), default=0),
         "membership_changes_in_timed_window": max((int(row.get("membership_changes_in_timed_window", 0)) for row in all_measured), default=0),
+        "page_batch_pack_calls": max((int(row.get("page_batch_pack_calls", 0)) for row in all_measured), default=0),
         "decode_window_peak_allocated_bytes": maximum("decode_window_peak_cuda_allocated_bytes"),
         "decode_window_peak_reserved_bytes": maximum("decode_window_peak_cuda_reserved_bytes"),
         "full_lifecycle_peak_allocated_bytes": maximum("full_lifecycle_peak_cuda_allocated_bytes"),

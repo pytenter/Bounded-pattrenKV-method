@@ -55,9 +55,8 @@ def register_decode_timing_start_hook(callback: Callable[[], None]) -> Callable[
 
 
 def reset_decode_only_profile_counters() -> None:
-    if not profile_enabled():
-        return
-    reset_profile()
+    if profile_enabled():
+        reset_profile()
     try:
         from quant.page_batch import reset_patternkv_page_batch_counters, reset_patternkv_real_decode_counters
 
@@ -129,6 +128,7 @@ class RunResult:
     prefill_tokens_in_timed_window: int
     refill_calls_in_timed_window: int
     membership_changes_in_timed_window: int
+    page_batch_pack_calls: int
     min_active_batch_size: int
     max_active_batch_size: int
     mean_active_batch_size: float
@@ -644,6 +644,7 @@ def run_full_model_benchmark(
     decode_window_peak_reserved = 0
     full_lifecycle_peak_allocated = 0
     full_lifecycle_peak_reserved = 0
+    page_batch_pack_calls = 0
 
     def prefill_group(group: list[RequestState], now: float) -> None:
         nonlocal prefill_prep_s, scheduler_overhead_s
@@ -763,6 +764,13 @@ def run_full_model_benchmark(
     full_lifecycle_peak_reserved = max(full_lifecycle_peak_reserved, decode_window_peak_reserved)
     peak_allocated = full_lifecycle_peak_allocated
     peak_reserved = full_lifecycle_peak_reserved
+    try:
+        from quant.page_batch import get_patternkv_page_batch_counters
+
+        page_batch_pack_calls = int(get_patternkv_page_batch_counters().get("page_batch_pack_calls", 0))
+    except Exception:
+        if os.environ.get("PATTERNKV_STRICT_PROFILE_RESET") == "1":
+            raise
     tpot = summarize_tpot_ms(per_request_decode_s, config.decode_length)
     result = RunResult(
         method=config.method,
@@ -809,6 +817,7 @@ def run_full_model_benchmark(
         prefill_tokens_in_timed_window=timed_prefill_tokens,
         refill_calls_in_timed_window=timed_refill_calls,
         membership_changes_in_timed_window=membership_changes_in_timed_window,
+        page_batch_pack_calls=page_batch_pack_calls,
         min_active_batch_size=min(active_batch_sizes) if active_batch_sizes else 0,
         max_active_batch_size=max(active_batch_sizes) if active_batch_sizes else 0,
         mean_active_batch_size=float(statistics.mean(active_batch_sizes)) if active_batch_sizes else 0.0,
@@ -873,6 +882,7 @@ def invalid_run_result(config: BenchmarkConfig, device: torch.device, run_index:
         prefill_tokens_in_timed_window=0,
         refill_calls_in_timed_window=0,
         membership_changes_in_timed_window=0,
+        page_batch_pack_calls=0,
         min_active_batch_size=0,
         max_active_batch_size=0,
         mean_active_batch_size=0.0,
