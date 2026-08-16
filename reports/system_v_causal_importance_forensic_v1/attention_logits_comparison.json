@@ -1,0 +1,4 @@
+{
+  "executed": false,
+  "reason": "production pre-softmax logits are local temporaries inside LlamaFlashAttention_PatternKV.forward; post-softmax probabilities and the importance update input were captured directly."
+}

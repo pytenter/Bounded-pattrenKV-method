@@ -1,0 +1,7 @@
+# B2 16-Step Postfix
+
+{
+  "first_failure": "see reports/system_ragged_multistep_correctness_v1/b2_16step.md",
+  "max_rel_l2": 0.023597149178385735,
+  "pass": false
+}

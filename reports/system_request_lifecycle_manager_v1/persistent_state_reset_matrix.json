@@ -1,0 +1,12 @@
+{
+  "recent_state_reset": "implemented",
+  "pending_state_reset": "implemented",
+  "packed_state_reset": "implemented",
+  "importance_state_reset": "implemented",
+  "precision_mask_reset": "implemented",
+  "centroid_active_state_reset": "implemented",
+  "valid_lengths_reset": "implemented",
+  "page_ownership_release": "implemented",
+  "execution_status": "not_executed_in_current_shell_missing_torch_pytest"
+}
+

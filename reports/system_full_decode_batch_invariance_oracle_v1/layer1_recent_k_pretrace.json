@@ -1,0 +1,49 @@
+{
+  "layer1_current_k_match_before_full_bi": {
+    "exact_equal": false,
+    "max_abs": 0.00390625,
+    "mismatch_count": 307,
+    "rel_l2": 0.00031342500005848706,
+    "shape": [
+      1,
+      8,
+      1,
+      128
+    ]
+  },
+  "layer1_hidden_in_match_before_full_bi": {
+    "exact_equal": false,
+    "max_abs": 0.0001220703125,
+    "mismatch_count": 1669,
+    "rel_l2": 0.0003862897283397615,
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "layer1_old_recent_match": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ]
+  },
+  "layer1_recent_after_match_before_full_bi": {
+    "exact_equal": false,
+    "max_abs": 0.00390625,
+    "mismatch_count": 307,
+    "rel_l2": 2.705688530113548e-05,
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ]
+  }
+}

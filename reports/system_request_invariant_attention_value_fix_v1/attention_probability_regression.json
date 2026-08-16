@@ -1,0 +1,7 @@
+{
+  "attention_probs_canonical_match": true,
+  "max_abs": 0.0,
+  "mismatch_count": 0,
+  "rel_l2": 0.0,
+  "reorder_match": true
+}

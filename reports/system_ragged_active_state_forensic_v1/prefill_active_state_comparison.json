@@ -1,0 +1,26 @@
+[
+  {
+    "component": "",
+    "layer": null,
+    "match": true,
+    "metrics": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "rel_l2": 0.0
+    },
+    "request": "A",
+    "step": 0
+  },
+  {
+    "component": "",
+    "layer": null,
+    "match": true,
+    "metrics": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "rel_l2": 0.0
+    },
+    "request": "B",
+    "step": 0
+  }
+]

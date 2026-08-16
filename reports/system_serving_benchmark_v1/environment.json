@@ -1,0 +1,12 @@
+{
+  "cuda_version": "12.4",
+  "driver_version": "580.173.02",
+  "gpu_memory_total_mib": 24576,
+  "gpu_model": "NVIDIA GeForce RTX 3090",
+  "physical_gpu": 2,
+  "pytest_version": "9.1.1",
+  "python_executable": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "python_version": "3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]",
+  "torch_cuda_is_available": true,
+  "torch_version": "2.4.1+cu124"
+}

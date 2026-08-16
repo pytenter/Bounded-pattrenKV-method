@@ -1,0 +1,25 @@
+{
+  "test": "test_survivor_trajectory_preserved",
+  "survivor": "D",
+  "dynamic_path": [
+    ["A", "B", "C", "D"],
+    ["A", "C", "D", "E"],
+    ["A", "D", "E", "F"],
+    ["D", "E", "F", "G"]
+  ],
+  "reference_path": [
+    ["A", "B", "C", "D"],
+    ["A", "B", "C", "D"],
+    ["A", "B", "C", "D"],
+    ["A", "B", "C", "D"]
+  ],
+  "compared_state": [
+    "slot_id",
+    "request_total_tokens",
+    "packed_k_tokens",
+    "k_segment_valid_lengths",
+    "recent_tail"
+  ],
+  "pass": true
+}
+

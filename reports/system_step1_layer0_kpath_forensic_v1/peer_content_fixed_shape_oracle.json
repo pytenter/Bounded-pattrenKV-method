@@ -1,0 +1,25 @@
+{
+  "classification_if_false": "CROSS_ROW_KPROJ_LEAKAGE_OR_LAYOUT_BUG",
+  "same_M_different_peer_A_row": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 1024,
+    "ref_sha256": "ea9a86a0f498e0f398bfcbeb29cfdfe5510d8495bad55391f8b34734f778ba93",
+    "rel_l2": 0.0,
+    "sha256": "ea9a86a0f498e0f398bfcbeb29cfdfe5510d8495bad55391f8b34734f778ba93",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  }
+}

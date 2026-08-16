@@ -1,0 +1,8 @@
+{
+  "fixed_reorder": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0
+  }
+}

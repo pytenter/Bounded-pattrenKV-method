@@ -1,0 +1,4 @@
+{
+  "reason": "no exposed request-slot allocator/lifecycle API in current forensic harness",
+  "slot_reuse_poison_executed": false
+}

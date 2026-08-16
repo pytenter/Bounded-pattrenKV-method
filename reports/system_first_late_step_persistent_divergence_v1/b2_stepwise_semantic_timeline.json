@@ -1,0 +1,4453 @@
+[
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1228,
+      "rel_l2": 5.4605308832833543e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 384,
+      "exact_equal": true,
+      "position_id": 384
+    },
+    "step": 1,
+    "token_id": {
+      "exact_equal": true,
+      "got": 47544,
+      "ref": 47544
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1578,
+      "rel_l2": 6.610435229958966e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 385,
+      "exact_equal": true,
+      "position_id": 385
+    },
+    "step": 2,
+    "token_id": {
+      "exact_equal": true,
+      "got": 374,
+      "ref": 374
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1252,
+      "rel_l2": 5.967394827166572e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 386,
+      "exact_equal": true,
+      "position_id": 386
+    },
+    "step": 3,
+    "token_id": {
+      "exact_equal": true,
+      "got": 70003,
+      "ref": 70003
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1722,
+      "rel_l2": 6.659990322077647e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 387,
+      "exact_equal": true,
+      "position_id": 387
+    },
+    "step": 4,
+    "token_id": {
+      "exact_equal": true,
+      "got": 304,
+      "ref": 304
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1609,
+      "rel_l2": 6.2853294366505e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 388,
+      "exact_equal": true,
+      "position_id": 388
+    },
+    "step": 5,
+    "token_id": {
+      "exact_equal": true,
+      "got": 1403,
+      "ref": 1403
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1296,
+      "rel_l2": 5.901539043406956e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 389,
+      "exact_equal": true,
+      "position_id": 389
+    },
+    "step": 6,
+    "token_id": {
+      "exact_equal": true,
+      "got": 64694,
+      "ref": 64694
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3592,
+      "rel_l2": 0.002026412868872285
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0234375,
+      "mismatch_count": 92824,
+      "rel_l2": 0.0008500007097609341
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "7e37d8a8b15d328bcaae75c2ded8b91facefbb567323fe1ab6582d9fb86224b9",
+        "layer": 10,
+        "max_abs": 7.450580596923828e-09,
+        "mismatch_count": 1,
+        "ref_hash": "f1d0fc71d73c6e5befeba4e37ea974645809bd6a7e27cab2cf457d79fac0e596",
+        "rel_l2": 1.9715944432618926e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 7.450580596923828e-09,
+          "rel_l2": 1.9715944432618926e-09
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 5.960464477539063e-08,
+          "rel_l2": 1.5379061579778863e-08
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.001953125,
+          "rel_l2": 1.1424472177168354e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00048828125,
+          "rel_l2": 2.6462650566827506e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 2.6702880859375e-05,
+          "rel_l2": 7.949294740683399e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.0078125,
+          "rel_l2": 2.664433850441128e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.0009765625,
+          "rel_l2": 4.9090158427134156e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 1.9280239939689636e-05,
+          "rel_l2": 4.793280368176056e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.0078125,
+          "rel_l2": 3.9527647459181026e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.000732421875,
+          "rel_l2": 6.713162292726338e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 2.288818359375e-05,
+          "rel_l2": 5.1583356253104284e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.0078125,
+          "rel_l2": 4.02813711843919e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.0006103515625,
+          "rel_l2": 6.634921737713739e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.0001068115234375,
+          "rel_l2": 1.9200879251002334e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.0078125,
+          "rel_l2": 3.681182715808973e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.0009765625,
+          "rel_l2": 7.162810652516782e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 4.57763671875e-05,
+          "rel_l2": 8.699379577592481e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.0078125,
+          "rel_l2": 4.1300088923890144e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.0009765625,
+          "rel_l2": 7.787384674884379e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000164031982421875,
+          "rel_l2": 3.313379056635313e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.0078125,
+          "rel_l2": 6.887529889354482e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.00128173828125,
+          "rel_l2": 0.00010047414980363101
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0003986358642578125,
+          "rel_l2": 8.126233296934515e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.886719736736268e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.0009765625,
+          "rel_l2": 9.332925401395187e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.00034809112548828125,
+          "rel_l2": 6.619379564654082e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.048240564065054e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.00146484375,
+          "rel_l2": 0.00010318730346625671
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 1.52587890625e-05,
+          "rel_l2": 4.205307504889788e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.313823203323409e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.00146484375,
+          "rel_l2": 0.00010110402945429087
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0002727508544921875,
+          "rel_l2": 4.5397238864097744e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 25,
+          "max_abs": 0.005859375,
+          "rel_l2": 4.75939414172899e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 25,
+          "max_abs": 0.0015869140625,
+          "rel_l2": 0.00010214385838480666
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 25,
+          "max_abs": 0.0001678466796875,
+          "rel_l2": 3.1298583053285256e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 26,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00010134663170902058
+        },
+        {
+          "component": "recent_v",
+          "layer": 26,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.00014158431440591812
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 26,
+          "max_abs": 0.00046539306640625,
+          "rel_l2": 8.108012116281316e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 27,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00010078993364004418
+        },
+        {
+          "component": "recent_v",
+          "layer": 27,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.00015168786922004074
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 27,
+          "max_abs": 0.00054931640625,
+          "rel_l2": 0.00010053643927676603
+        },
+        {
+          "component": "recent_k",
+          "layer": 28,
+          "max_abs": 0.015625,
+          "rel_l2": 8.077820530161262e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 28,
+          "max_abs": 0.00214385986328125,
+          "rel_l2": 0.00013891953858546913
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 28,
+          "max_abs": 0.00019550323486328125,
+          "rel_l2": 4.627416637958959e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 29,
+          "max_abs": 0.015625,
+          "rel_l2": 7.030646520433947e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 29,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.00013718924310524017
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 29,
+          "max_abs": 0.0001983642578125,
+          "rel_l2": 4.1898780182236806e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 30,
+          "max_abs": 0.0107421875,
+          "rel_l2": 0.00010113899770658463
+        },
+        {
+          "component": "recent_v",
+          "layer": 30,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.00016415062418673187
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 30,
+          "max_abs": 0.0007238388061523438,
+          "rel_l2": 0.00017879746155813336
+        },
+        {
+          "component": "recent_k",
+          "layer": 31,
+          "max_abs": 0.0078125,
+          "rel_l2": 7.697886758251116e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 31,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.00015209335833787918
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 31,
+          "max_abs": 0.000347137451171875,
+          "rel_l2": 8.531234925612807e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 390,
+      "exact_equal": true,
+      "position_id": 390
+    },
+    "step": 7,
+    "token_id": {
+      "exact_equal": true,
+      "got": 7504,
+      "ref": 7504
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3551,
+      "rel_l2": 0.001679577399045229
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.017578125,
+      "mismatch_count": 112530,
+      "rel_l2": 0.0017950725741684437
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "97ee1127c60ddfa955c6cd0e871a80924c9a8d09aa4ef64c008c23cf5fed2636",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "c1ee02e247b5db621176626977f6ac676528922edc70b806525c7ab84fe80467",
+        "rel_l2": 2.05342209902426e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 2.05342209902426e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5514920960413292e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.040886986127589e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 1.1444091796875e-05,
+          "rel_l2": 2.4068149286904372e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 4.809322490473278e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 8.752881694817916e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.0001964569091796875,
+          "rel_l2": 3.4549477277323604e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 7.199554238468409e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00011485031427582726
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.00103759765625,
+          "rel_l2": 0.00020016299095004797
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 7.455170998582616e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.00019478816830087453
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.000392913818359375,
+          "rel_l2": 8.534182416042313e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 8.58588027767837e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0002110424975398928
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 4.57763671875e-05,
+          "rel_l2": 1.2483214050007518e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00011350449494784698
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0002365985419601202
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.000911712646484375,
+          "rel_l2": 0.00016356071864720434
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.009765625,
+          "rel_l2": 9.529278031550348e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.002197265625,
+          "rel_l2": 0.0002239142486359924
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.001232147216796875,
+          "rel_l2": 0.0002855448692571372
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.0087890625,
+          "rel_l2": 0.00010901768109761178
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.00022227820591069758
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.00055694580078125,
+          "rel_l2": 0.00011453492334112525
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.0087890625,
+          "rel_l2": 9.107614459935576e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0028076171875,
+          "rel_l2": 0.0002601779415272176
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.000293731689453125,
+          "rel_l2": 6.698563083773479e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.00010188816668232903
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.00225830078125,
+          "rel_l2": 0.00021897480473853648
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.000255584716796875,
+          "rel_l2": 6.2009938119445e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.01171875,
+          "rel_l2": 8.954037184594199e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.000191191938938573
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00029754638671875,
+          "rel_l2": 6.569104152731597e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.009765625,
+          "rel_l2": 9.47203952819109e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0001983899564947933
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 2.3618340492248535e-05,
+          "rel_l2": 1.256531413673656e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.0087890625,
+          "rel_l2": 8.913916099118069e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.0018310546875,
+          "rel_l2": 0.00019042863277718425
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 3.1732022762298584e-05,
+          "rel_l2": 9.736663741932716e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.01177978515625,
+          "rel_l2": 9.295016207033768e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.0020751953125,
+          "rel_l2": 0.00018654167070053518
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.000270843505859375,
+          "rel_l2": 5.080119808553718e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.00927734375,
+          "rel_l2": 9.165694791590795e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.001708984375,
+          "rel_l2": 0.000180423870915547
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.0002899169921875,
+          "rel_l2": 4.5592165406560525e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.009765625,
+          "rel_l2": 8.447953587165102e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00018634564185049385
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.000110626220703125,
+          "rel_l2": 1.860854354163166e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.0078125,
+          "rel_l2": 8.789761341176927e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.00019122567027807236
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000171661376953125,
+          "rel_l2": 3.0516584956785664e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.00830078125,
+          "rel_l2": 0.000103294565633405
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00019554766186047345
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0008182525634765625,
+          "rel_l2": 0.00014495212235487998
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.00010533645399846137
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.0002211958635598421
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.00044727325439453125,
+          "rel_l2": 7.431476842612028e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.0078125,
+          "rel_l2": 9.760107059264556e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.0002402632962912321
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.0002593994140625,
+          "rel_l2": 3.7772857467643917e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.00010157737415283918
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.00023068794689606875
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0002727508544921875,
+          "rel_l2": 4.085446198587306e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 391,
+      "exact_equal": true,
+      "position_id": 391
+    },
+    "step": 8,
+    "token_id": {
+      "exact_equal": true,
+      "got": 13,
+      "ref": 13
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.0234375,
+      "mismatch_count": 3672,
+      "rel_l2": 0.0021395417861640453
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.015625,
+      "mismatch_count": 96996,
+      "rel_l2": 0.0010147986467927694
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "68ba493786cf5a7c090f94f5ebbce82c3411cdb56526d2e3782027d444783d7b",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "326ce9d7d05c478b03e348fc29ca6f99424b1b98bae845edbf195783efa02166",
+        "rel_l2": 1.8241483878966847e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.8241483878966847e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.552545654703863e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.0406559744733386e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 1.1444091796875e-05,
+          "rel_l2": 2.177357373511768e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.1307608373463154e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 9.503371984465048e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.000240325927734375,
+          "rel_l2": 3.7862435419810936e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 7.779451698297635e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00014202987949829549
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0011310577392578125,
+          "rel_l2": 0.00019331491785123944
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 8.735787559999153e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.0002171608357457444
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.00051116943359375,
+          "rel_l2": 9.612348367227241e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00010431354166939855
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00024423631839454174
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.00023651123046875,
+          "rel_l2": 3.828576154774055e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00013400141324382275
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0002927874738816172
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.000457763671875,
+          "rel_l2": 7.447507232427597e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.00012684082321356982
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.00028668789309449494
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.00127410888671875,
+          "rel_l2": 0.00025797748821787536
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001629288453841582
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.00323486328125,
+          "rel_l2": 0.0002941702550742775
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.001926422119140625,
+          "rel_l2": 0.00035392402787692845
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00013404869241639972
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.00038382416823878884
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.0009002685546875,
+          "rel_l2": 0.000182279763976112
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.0001520144141977653
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.00033207732485607266
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.000354766845703125,
+          "rel_l2": 7.609593012603e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00013874884461984038
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0002905212459154427
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00017547607421875,
+          "rel_l2": 3.377315806574188e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.013671875,
+          "rel_l2": 0.00014467739674728364
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00335693359375,
+          "rel_l2": 0.00029369094409048557
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.000492095947265625,
+          "rel_l2": 9.181792847812176e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.00012672599405050278
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00027404719730839133
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.000247955322265625,
+          "rel_l2": 4.321390952100046e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.01177978515625,
+          "rel_l2": 0.0001223309081979096
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.0020751953125,
+          "rel_l2": 0.0002742893120739609
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.000469207763671875,
+          "rel_l2": 7.790461677359417e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.00927734375,
+          "rel_l2": 0.00012446046457625926
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.001708984375,
+          "rel_l2": 0.00025617339997552335
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.0004425048828125,
+          "rel_l2": 6.139725883258507e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00013489797129295766
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00026493999757803977
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.000202178955078125,
+          "rel_l2": 3.0298488127300516e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.00012041436275467277
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.0025177001953125,
+          "rel_l2": 0.00027782656252384186
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000446319580078125,
+          "rel_l2": 6.746154394932091e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.00830078125,
+          "rel_l2": 0.00013668321480508894
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.0030517578125,
+          "rel_l2": 0.0002902699343394488
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0010471343994140625,
+          "rel_l2": 0.00016354730178136379
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.00014210835797712207
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0003158205363433808
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0005311965942382812,
+          "rel_l2": 7.833295967429876e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.0087890625,
+          "rel_l2": 0.00013437138113658875
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.00034615438198670745
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.000457763671875,
+          "rel_l2": 5.972968938294798e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.008544921875,
+          "rel_l2": 0.0001372394326608628
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.0040283203125,
+          "rel_l2": 0.0003342703857924789
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0005893707275390625,
+          "rel_l2": 7.965553231770173e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 392,
+      "exact_equal": true,
+      "position_id": 392
+    },
+    "step": 9,
+    "token_id": {
+      "exact_equal": true,
+      "got": 1939,
+      "ref": 1939
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3724,
+      "rel_l2": 0.0025275680236518383
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0234375,
+      "mismatch_count": 100713,
+      "rel_l2": 0.0011039822129532695
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "1144f48f42fca9db53520fc8357df903475eee2b84c31ba442de815fb7c55019",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "197c2e3f1baa21f4fc5540b9eed7a0a8029db4de114a6e21d4bcc985809a4423",
+        "rel_l2": 1.652141756736114e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.652141756736114e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5527659343206324e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.03698889183579e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 1.4151846698950976e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.481372863869183e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.00010204722639173269
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.00020599365234375,
+          "rel_l2": 3.0066468752920628e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 8.366649126401171e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00015460752183571458
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0010986328125,
+          "rel_l2": 0.00016803483595140278
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 9.375781519338489e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.00023115707153920084
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.0002689361572265625,
+          "rel_l2": 4.562758840620518e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.0001162254557129927
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0002712639106903225
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.00032806396484375,
+          "rel_l2": 4.732675006380305e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001484425156377256
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0003348817699588835
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.0005340576171875,
+          "rel_l2": 7.801242463756353e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.0001497606426710263
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0003458774881437421
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.00133514404296875,
+          "rel_l2": 0.00023928500013425946
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00019180735398549587
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.00323486328125,
+          "rel_l2": 0.00035555200884118676
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.002777099609375,
+          "rel_l2": 0.0004596651124302298
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00015753766638226807
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0029296875,
+          "rel_l2": 0.0004447997489478439
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.001129150390625,
+          "rel_l2": 0.00020517149823717773
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00018570203974377364
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.0003896848938893527
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.000766754150390625,
+          "rel_l2": 0.00014693061530124396
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001810183748602867
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003639175556600094
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.000339508056640625,
+          "rel_l2": 6.112310074968264e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002095495437970385
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00335693359375,
+          "rel_l2": 0.00038884373498149216
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.0016021728515625,
+          "rel_l2": 0.00026861499645747244
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.01953125,
+          "rel_l2": 0.00017473041953053325
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003485056513454765
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.000736236572265625,
+          "rel_l2": 0.00010974510223604739
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.01177978515625,
+          "rel_l2": 0.00016070299898274243
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003496496647130698
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.00054168701171875,
+          "rel_l2": 7.951291627250612e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.01416015625,
+          "rel_l2": 0.00016428127128165215
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003281999670434743
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.00043487548828125,
+          "rel_l2": 5.432814941741526e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001657581888139248
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00033535080729052424
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.000522613525390625,
+          "rel_l2": 6.988727545831352e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00017167252372018993
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.0025177001953125,
+          "rel_l2": 0.000348860485246405
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000164031982421875,
+          "rel_l2": 2.3938548110891134e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.00927734375,
+          "rel_l2": 0.00017031635798048228
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.0030517578125,
+          "rel_l2": 0.000347725028404966
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0011882781982421875,
+          "rel_l2": 0.00016522164514753968
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00018289500440005213
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0003731968463398516
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0006074905395507812,
+          "rel_l2": 8.018632797757164e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00017567853501532227
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0004090821312274784
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.0002899169921875,
+          "rel_l2": 3.42456296493765e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00018513684335630387
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.0040283203125,
+          "rel_l2": 0.000398007920011878
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0001468658447265625,
+          "rel_l2": 2.0170109564787708e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 393,
+      "exact_equal": true,
+      "position_id": 393
+    },
+    "step": 10,
+    "token_id": {
+      "exact_equal": true,
+      "got": 362,
+      "ref": 362
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3754,
+      "rel_l2": 0.0025353056844323874
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0234375,
+      "mismatch_count": 102147,
+      "rel_l2": 0.0011720180045813322
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "80a9845f80b884acd2cb7b9c676ae60001599a2deda9fd59a3d12c194390c841",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "fd73ffcb822346818f8fa8b488d72efd6f2491d031d5e109141d4104ccced19b",
+        "rel_l2": 1.5030355848821841e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.5030355848821841e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5521904060733505e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.0398350645555183e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 1.2791925882993382e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 5.759136183769442e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.00010724923777161166
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.000164031982421875,
+          "rel_l2": 2.2446794901043177e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00010472600115463138
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00017415231559425592
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0008115768432617188,
+          "rel_l2": 0.0001123515103245154
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.00010723102604970336
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.0002684250066522509
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 3.526359796524048e-05,
+          "rel_l2": 1.4751753951713908e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00013682110875379294
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003180965140927583
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.00052642822265625,
+          "rel_l2": 6.752941408194602e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001855723385233432
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.00039888909668661654
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.0004730224609375,
+          "rel_l2": 6.499883602373302e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00018753968470264226
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0004462884389795363
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.0006132125854492188,
+          "rel_l2": 0.00010331594239687547
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00023239251459017396
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0004435516893863678
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.0039825439453125,
+          "rel_l2": 0.0006052131066098809
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00019398015865590423
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.000547101953998208
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.00113677978515625,
+          "rel_l2": 0.0001864352816483006
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022415666899178177
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.00048018264351412654
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.0011730194091796875,
+          "rel_l2": 0.00020542694255709648
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00021424225997179747
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.0028076171875,
+          "rel_l2": 0.0004301310400478542
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00061798095703125,
+          "rel_l2": 9.722890536068007e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002475366636645049
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0004704464226961136
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.0007781982421875,
+          "rel_l2": 0.00011850542068714276
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.01953125,
+          "rel_l2": 0.00020689904340542853
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0004222003626637161
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.001224517822265625,
+          "rel_l2": 0.00016534407041035593
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00020174005476292223
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0004252369690220803
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 8.392333984375e-05,
+          "rel_l2": 1.7447233403800055e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.01416015625,
+          "rel_l2": 0.000197326167835854
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0003982963680755347
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 7.62939453125e-05,
+          "rel_l2": 1.378280830977019e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001997665094677359
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0004056474135722965
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.001087188720703125,
+          "rel_l2": 0.0001310734951402992
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00020476612553466111
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.0026397705078125,
+          "rel_l2": 0.00042462858255021274
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000835418701171875,
+          "rel_l2": 0.00010177992953686044
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.0001988027652259916
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.00041170750046148896
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.001163482666015625,
+          "rel_l2": 0.00014757040480617434
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00021082985040266067
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.00042648613452911377
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0012102127075195312,
+          "rel_l2": 0.00014451397873926908
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00020797713659703732
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.00047155466745607555
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.0002593994140625,
+          "rel_l2": 2.848539406841155e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022294899099506438
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.0040283203125,
+          "rel_l2": 0.0004589179588947445
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0002536773681640625,
+          "rel_l2": 3.0590425012633204e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 394,
+      "exact_equal": true,
+      "position_id": 394
+    },
+    "step": 11,
+    "token_id": {
+      "exact_equal": true,
+      "got": 25,
+      "ref": 25
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3635,
+      "rel_l2": 0.0020544901490211487
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0234375,
+      "mismatch_count": 94273,
+      "rel_l2": 0.000932863331399858
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "0f5dc523f2d1e5f763a3ca8221ef0df8abb52e6a1a2ba79fac665c179e6896c9",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "07858a807e62a5c2da4012e69211175e75d1e8bfc9b9c05b02b3ab3c991448b9",
+        "rel_l2": 1.3757872618924694e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.3757872618924694e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.551684363221284e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.0430150218307972e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 1.1779095530073391e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 6.0807909903815016e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.00011269981769146398
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.00020599365234375,
+          "rel_l2": 2.5327737603220157e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00011031048779841512
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00018699107749853283
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0007734298706054688,
+          "rel_l2": 9.760043758433312e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.00011483045091154054
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.0002877622318919748
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 9.632110595703125e-05,
+          "rel_l2": 2.0563780708471313e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00014964088040869683
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0003464792389422655
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.00055694580078125,
+          "rel_l2": 6.592346471734345e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00020413106540217996
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.00043952823034487665
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.000820159912109375,
+          "rel_l2": 0.00010131215094588697
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00021488759375642985
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.00048424070701003075
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.000177089124917984,
+          "rel_l2": 3.9011476474115625e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00025436028954572976
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0004961100639775395
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.00490570068359375,
+          "rel_l2": 0.0006870119832456112
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022215563512872905
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0006242580711841583
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.0013942718505859375,
+          "rel_l2": 0.00020936665532644838
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002570164215285331
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.0005457274382933974
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.00119781494140625,
+          "rel_l2": 0.00019118843192700297
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00023669820802751929
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.0028076171875,
+          "rel_l2": 0.0004835585714317858
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.000640869140625,
+          "rel_l2": 9.306666470365599e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002762501535471529
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005372202722355723
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.000270843505859375,
+          "rel_l2": 4.9753289204090834e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.01953125,
+          "rel_l2": 0.00023571836936753243
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0004692466463893652
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.001117706298828125,
+          "rel_l2": 0.00014014396583661437
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022705961600877345
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00047487704432569444
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.000324249267578125,
+          "rel_l2": 4.4533251639222726e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022071876446716487
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0004380774626042694
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.00012969970703125,
+          "rel_l2": 1.8335460481466725e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00021709837892558426
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00044253605301491916
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.0013332366943359375,
+          "rel_l2": 0.00014753670257050544
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022579942014999688
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.0026397705078125,
+          "rel_l2": 0.00046418351121246815
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.000652313232421875,
+          "rel_l2": 7.391812687274069e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00022337137488648295
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.003173828125,
+          "rel_l2": 0.0004446928505785763
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.001399993896484375,
+          "rel_l2": 0.00016469249385409057
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00023124511062633246
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.00045635015703737736
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0015687942504882812,
+          "rel_l2": 0.00017255943384952843
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00022973025625105947
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0005063695134595037
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.00031280517578125,
+          "rel_l2": 3.142542846035212e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.015625,
+          "rel_l2": 0.000247307529207319
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.0040283203125,
+          "rel_l2": 0.0004902628134004772
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0004673004150390625,
+          "rel_l2": 4.8701305786380544e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 395,
+      "exact_equal": true,
+      "position_id": 395
+    },
+    "step": 12,
+    "token_id": {
+      "exact_equal": true,
+      "got": 10552,
+      "ref": 10552
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 3737,
+      "rel_l2": 0.0028720346745103598
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.03125,
+      "mismatch_count": 101826,
+      "rel_l2": 0.0011743063805624843
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "bffcc48cff8daf3d70363b0c8bf0a00730a7566db8ff3a69b695f29454b413b6",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "b4fc2ef9d9c08104d3ca7d2b91b72f752a35e2172af89afe281299d79f569545",
+        "rel_l2": 1.26851540382944e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.26851540382944e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5507646821788512e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.039821604033932e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 1.0750125056802062e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 6.238097557798028e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.00011621312296483666
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.0002002716064453125,
+          "rel_l2": 2.3293381673283875e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00011405846453271806
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.0009765625,
+          "rel_l2": 0.00019832309044431895
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0009145736694335938,
+          "rel_l2": 0.00010582431423244998
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.0001228957116836682
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.00030680239433422685
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.0001659393310546875,
+          "rel_l2": 2.571680124674458e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00016112155572045594
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.000371707312297076
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.000202178955078125,
+          "rel_l2": 2.5651750547694974e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.01611328125,
+          "rel_l2": 0.00022893399000167847
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0004924633540213108
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.001209259033203125,
+          "rel_l2": 0.00013901547936256975
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.0157470703125,
+          "rel_l2": 0.00025419931625947356
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.00341796875,
+          "rel_l2": 0.0005513005307875574
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.00017052888870239258,
+          "rel_l2": 4.307307972339913e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.023681640625,
+          "rel_l2": 0.00032780232140794396
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.0006235107430256903
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.00482177734375,
+          "rel_l2": 0.0006267213029786944
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.020050048828125,
+          "rel_l2": 0.0002885940484702587
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0047760009765625,
+          "rel_l2": 0.000785782583989203
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.0004901885986328125,
+          "rel_l2": 7.333989924518391e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.0322265625,
+          "rel_l2": 0.00034396882983855903
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.00537109375,
+          "rel_l2": 0.0007316747214645147
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.0015811920166015625,
+          "rel_l2": 0.0002372058224864304
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.0244140625,
+          "rel_l2": 0.0003011674853041768
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.004150390625,
+          "rel_l2": 0.0006120975012890995
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00014850497245788574,
+          "rel_l2": 3.3583692129468545e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.0166015625,
+          "rel_l2": 0.0003147307434119284
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.004150390625,
+          "rel_l2": 0.0006570705445483327
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.000362396240234375,
+          "rel_l2": 5.777256592409685e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.01953125,
+          "rel_l2": 0.0002698151220101863
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.00347900390625,
+          "rel_l2": 0.0005676018772646785
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.001567840576171875,
+          "rel_l2": 0.0001802741171559319
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00026891566812992096
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.004302978515625,
+          "rel_l2": 0.0005901310360059142
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.000400543212890625,
+          "rel_l2": 5.572631926042959e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00025853782426565886
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0005256318836472929
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.000133514404296875,
+          "rel_l2": 1.7853824829217046e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00025434393319301307
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0005159754073247313
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.0015354156494140625,
+          "rel_l2": 0.00015658179472666234
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002650301030371338
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005478007951751351
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.0005779266357421875,
+          "rel_l2": 6.194522575242445e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002608558861538768
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005097601097077131
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0016040802001953125,
+          "rel_l2": 0.00017479227972216904
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00026928840088658035
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.000525931129232049
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0015039443969726562,
+          "rel_l2": 0.00015306108980439603
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.01171875,
+          "rel_l2": 0.00026424042880535126
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0005721389898099005
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.00063323974609375,
+          "rel_l2": 5.730865086661652e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002907174057327211
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.00433349609375,
+          "rel_l2": 0.0005477197701111436
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0002460479736328125,
+          "rel_l2": 2.738401417445857e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 396,
+      "exact_equal": true,
+      "position_id": 396
+    },
+    "step": 13,
+    "token_id": {
+      "exact_equal": true,
+      "got": 3249,
+      "ref": 3249
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.029296875,
+      "mismatch_count": 3666,
+      "rel_l2": 0.0018751404713839293
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.015625,
+      "mismatch_count": 84914,
+      "rel_l2": 0.0007006112136878073
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "5e2620206b5983a1ed2725bd91687f1d463288ff4683f47d113d4895ddb760f6",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "133b0073b9b9715dfb72e068341d4f6c2df61b8965cf90035ad35469c85af0ea",
+        "rel_l2": 1.1754778261874321e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.1754778261874321e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5500410881941207e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.041747368115466e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 1.0042373332908028e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 8.905742288334295e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.00013345353363547474
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.0007114410400390625,
+          "rel_l2": 7.288968481589109e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00013051737914793193
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.001220703125,
+          "rel_l2": 0.00023159028205554932
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0011472702026367188,
+          "rel_l2": 0.00012414723460096866
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.0001358350709779188
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.0003348584286868572
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.000476837158203125,
+          "rel_l2": 5.917087401030585e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00017876909987535328
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.0004136475326959044
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 8.396059274673462e-05,
+          "rel_l2": 1.7846708942670375e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.01611328125,
+          "rel_l2": 0.0002511466736905277
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.000536309671588242
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.000461578369140625,
+          "rel_l2": 5.604988837148994e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.0234375,
+          "rel_l2": 0.00028127190307714045
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.0005911613116040826
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.0009613037109375,
+          "rel_l2": 0.0001288952917093411
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.023681640625,
+          "rel_l2": 0.00034740217961370945
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.0006641893414780498
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.00420379638671875,
+          "rel_l2": 0.0005081095732748508
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.020050048828125,
+          "rel_l2": 0.0003082694602198899
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0047760009765625,
+          "rel_l2": 0.0008340922649949789
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.00010056793689727783,
+          "rel_l2": 3.26070367009379e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.0322265625,
+          "rel_l2": 0.00036627575173042715
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.00537109375,
+          "rel_l2": 0.0007708405028097332
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.0012760162353515625,
+          "rel_l2": 0.00017922662664204836
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.0244140625,
+          "rel_l2": 0.0003213136806152761
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.004150390625,
+          "rel_l2": 0.0006407542969100177
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00016508251428604126,
+          "rel_l2": 3.4053769923048094e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.0166015625,
+          "rel_l2": 0.0003298040828667581
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.004150390625,
+          "rel_l2": 0.0006857275729998946
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.000331878662109375,
+          "rel_l2": 5.227306974120438e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.01953125,
+          "rel_l2": 0.00028618922806344926
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.00347900390625,
+          "rel_l2": 0.0005933857755735517
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.001453399658203125,
+          "rel_l2": 0.0001563411351526156
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00028494239086285233
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.004302978515625,
+          "rel_l2": 0.0006176208844408393
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.000308990478515625,
+          "rel_l2": 4.7686175093986094e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002743447257671505
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0005463457782752812
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.000255584716796875,
+          "rel_l2": 2.562389272497967e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002665919018909335
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.002685546875,
+          "rel_l2": 0.0005395387415774167
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.00133514404296875,
+          "rel_l2": 0.00012762300320900977
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002800533839035779
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005720729823224247
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.0008449554443359375,
+          "rel_l2": 8.376931509701535e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00027312099700793624
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005334637244231999
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.001804351806640625,
+          "rel_l2": 0.0001833426795201376
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0002821003145072609
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.00390625,
+          "rel_l2": 0.0005442004185169935
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.0018930435180664062,
+          "rel_l2": 0.00017985211161430925
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00027681529172696173
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0005913936183787882
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.00061798095703125,
+          "rel_l2": 5.2258943469496444e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00030190011602826416
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.00433349609375,
+          "rel_l2": 0.0005680573522113264
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.00012493133544921875,
+          "rel_l2": 1.9471513951430097e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 397,
+      "exact_equal": true,
+      "position_id": 397
+    },
+    "step": 14,
+    "token_id": {
+      "exact_equal": true,
+      "got": 6303,
+      "ref": 6303
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.171875,
+      "mismatch_count": 4019,
+      "rel_l2": 0.012895239517092705
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.1484375,
+      "mismatch_count": 124438,
+      "rel_l2": 0.007358747534453869
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "v_causal_importance",
+        "exact_equal": false,
+        "got_hash": "733edc90c7229244b811a40f58a0e87589682bc81a3cabb798666e4d1b56a8bb",
+        "layer": 3,
+        "max_abs": 1.4901161193847656e-08,
+        "mismatch_count": 1,
+        "ref_hash": "4e0518b6bb92fb38908f04f80a2956cb1ebb8d5ac8eb372ba756cbd0cfa83a1d",
+        "rel_l2": 1.0973004727077296e-09
+      },
+      "nonexact_components": [
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 1.4901161193847656e-08,
+          "rel_l2": 1.0973004727077296e-09
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.5499645087402314e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.00048828125,
+          "rel_l2": 3.0446602977463044e-05
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.036592483520508e-06,
+          "rel_l2": 9.570707106831833e-07
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0078125,
+          "rel_l2": 9.262530511477962e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.000732421875,
+          "rel_l2": 0.0001393406855640933
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.0007228851318359375,
+          "rel_l2": 6.908300565555692e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 6,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0001345523342024535
+        },
+        {
+          "component": "recent_v",
+          "layer": 6,
+          "max_abs": 0.001220703125,
+          "rel_l2": 0.00024201991618610919
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 6,
+          "max_abs": 0.0012350082397460938,
+          "rel_l2": 0.00012537743896245956
+        },
+        {
+          "component": "recent_k",
+          "layer": 7,
+          "max_abs": 0.0078125,
+          "rel_l2": 0.00014660542365163565
+        },
+        {
+          "component": "recent_v",
+          "layer": 7,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.0003517978766467422
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 7,
+          "max_abs": 0.0003566741943359375,
+          "rel_l2": 4.4259242713451385e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 8,
+          "max_abs": 0.0126953125,
+          "rel_l2": 0.00019316881662234664
+        },
+        {
+          "component": "recent_v",
+          "layer": 8,
+          "max_abs": 0.00244140625,
+          "rel_l2": 0.00044632956269197166
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 8,
+          "max_abs": 0.000476837158203125,
+          "rel_l2": 4.653937867260538e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 9,
+          "max_abs": 0.01611328125,
+          "rel_l2": 0.00026910813176073134
+        },
+        {
+          "component": "recent_v",
+          "layer": 9,
+          "max_abs": 0.003662109375,
+          "rel_l2": 0.0005759725463576615
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 9,
+          "max_abs": 0.000896453857421875,
+          "rel_l2": 9.2639347712975e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 10,
+          "max_abs": 0.0234375,
+          "rel_l2": 0.0003081636386923492
+        },
+        {
+          "component": "recent_v",
+          "layer": 10,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.0006407556356862187
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 10,
+          "max_abs": 0.0016021728515625,
+          "rel_l2": 0.0001957614003913477
+        },
+        {
+          "component": "recent_k",
+          "layer": 11,
+          "max_abs": 0.023681640625,
+          "rel_l2": 0.00037909188540652394
+        },
+        {
+          "component": "recent_v",
+          "layer": 11,
+          "max_abs": 0.0048828125,
+          "rel_l2": 0.0007271129288710654
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 11,
+          "max_abs": 0.004261016845703125,
+          "rel_l2": 0.0004893189761787653
+        },
+        {
+          "component": "recent_k",
+          "layer": 12,
+          "max_abs": 0.020050048828125,
+          "rel_l2": 0.0003396887914277613
+        },
+        {
+          "component": "recent_v",
+          "layer": 12,
+          "max_abs": 0.0047760009765625,
+          "rel_l2": 0.0008896432118490338
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 12,
+          "max_abs": 0.0002593994140625,
+          "rel_l2": 4.51253836217802e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 13,
+          "max_abs": 0.0322265625,
+          "rel_l2": 0.0003963666968047619
+        },
+        {
+          "component": "recent_v",
+          "layer": 13,
+          "max_abs": 0.00537109375,
+          "rel_l2": 0.000838021922390908
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 13,
+          "max_abs": 0.0012760162353515625,
+          "rel_l2": 0.00016675340884830803
+        },
+        {
+          "component": "recent_k",
+          "layer": 14,
+          "max_abs": 0.0244140625,
+          "rel_l2": 0.0003578598552849144
+        },
+        {
+          "component": "recent_v",
+          "layer": 14,
+          "max_abs": 0.005126953125,
+          "rel_l2": 0.0007364044431596994
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 14,
+          "max_abs": 0.00089263916015625,
+          "rel_l2": 0.00010602411202853546
+        },
+        {
+          "component": "recent_k",
+          "layer": 15,
+          "max_abs": 0.01806640625,
+          "rel_l2": 0.00037281616823747754
+        },
+        {
+          "component": "recent_v",
+          "layer": 15,
+          "max_abs": 0.00439453125,
+          "rel_l2": 0.0007831960101611912
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 15,
+          "max_abs": 0.0012645721435546875,
+          "rel_l2": 0.00014665222261101007
+        },
+        {
+          "component": "recent_k",
+          "layer": 16,
+          "max_abs": 0.03125,
+          "rel_l2": 0.00035688834032043815
+        },
+        {
+          "component": "recent_v",
+          "layer": 16,
+          "max_abs": 0.0068359375,
+          "rel_l2": 0.0007499728235416114
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 16,
+          "max_abs": 0.000499725341796875,
+          "rel_l2": 5.99857849010732e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 17,
+          "max_abs": 0.021484375,
+          "rel_l2": 0.0003884218749590218
+        },
+        {
+          "component": "recent_v",
+          "layer": 17,
+          "max_abs": 0.005859375,
+          "rel_l2": 0.0008215770358219743
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 17,
+          "max_abs": 0.00025783106684684753,
+          "rel_l2": 4.4971307943342254e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 18,
+          "max_abs": 0.03125,
+          "rel_l2": 0.0004026175884064287
+        },
+        {
+          "component": "recent_v",
+          "layer": 18,
+          "max_abs": 0.005859375,
+          "rel_l2": 0.0008227406069636345
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 18,
+          "max_abs": 0.000316619873046875,
+          "rel_l2": 3.0265558962128125e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 19,
+          "max_abs": 0.0390625,
+          "rel_l2": 0.00045502997818402946
+        },
+        {
+          "component": "recent_v",
+          "layer": 19,
+          "max_abs": 0.007843017578125,
+          "rel_l2": 0.0008929638424888253
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 19,
+          "max_abs": 0.00225830078125,
+          "rel_l2": 0.0001998832740355283
+        },
+        {
+          "component": "recent_k",
+          "layer": 20,
+          "max_abs": 0.03515625,
+          "rel_l2": 0.0004644173022825271
+        },
+        {
+          "component": "recent_v",
+          "layer": 20,
+          "max_abs": 0.008544921875,
+          "rel_l2": 0.0009445854811929166
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 20,
+          "max_abs": 0.0010547637939453125,
+          "rel_l2": 9.875890827970579e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 21,
+          "max_abs": 0.0390625,
+          "rel_l2": 0.0005404455587267876
+        },
+        {
+          "component": "recent_v",
+          "layer": 21,
+          "max_abs": 0.01123046875,
+          "rel_l2": 0.0010295339161530137
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 21,
+          "max_abs": 0.0014021769165992737,
+          "rel_l2": 0.0001380726316710934
+        },
+        {
+          "component": "recent_k",
+          "layer": 22,
+          "max_abs": 0.0517578125,
+          "rel_l2": 0.0006200021016411483
+        },
+        {
+          "component": "recent_v",
+          "layer": 22,
+          "max_abs": 0.0146484375,
+          "rel_l2": 0.0011736492160707712
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 22,
+          "max_abs": 0.004044532775878906,
+          "rel_l2": 0.00036193677806295455
+        },
+        {
+          "component": "recent_k",
+          "layer": 23,
+          "max_abs": 0.0545654296875,
+          "rel_l2": 0.0006384464213624597
+        },
+        {
+          "component": "recent_v",
+          "layer": 23,
+          "max_abs": 0.015625,
+          "rel_l2": 0.0013762476155534387
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 23,
+          "max_abs": 0.00104522705078125,
+          "rel_l2": 8.190914377337322e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 24,
+          "max_abs": 0.052734375,
+          "rel_l2": 0.0006264047115109861
+        },
+        {
+          "component": "recent_v",
+          "layer": 24,
+          "max_abs": 0.019287109375,
+          "rel_l2": 0.0013619721867144108
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 24,
+          "max_abs": 0.0007658004760742188,
+          "rel_l2": 6.502261385321617e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 398,
+      "exact_equal": true,
+      "position_id": 398
+    },
+    "step": 15,
+    "token_id": {
+      "exact_equal": true,
+      "got": 47544,
+      "ref": 47544
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": false,
+      "max_abs": 0.02392578125,
+      "mismatch_count": 3825,
+      "rel_l2": 0.0030516870319843292
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.025390625,
+      "mismatch_count": 100624,
+      "rel_l2": 0.0011527662863954902
+    },
+    "persistent_state": {
+      "exact_equal": false,
+      "first_diff": {
+        "component": "pending_k",
+        "exact_equal": false,
+        "got_hash": "fd8086f95d5f50e619321ace67206465377dc81b398257a1ba2c615a2ee5ce19",
+        "layer": 0,
+        "max_abs": null,
+        "mismatch_count": null,
+        "ref_hash": null,
+        "rel_l2": null,
+        "shape_mismatch": true
+      },
+      "nonexact_components": [
+        {
+          "component": "pending_k",
+          "layer": 0,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 0,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "packed_k_payload",
+          "layer": 0,
+          "max_abs": 3238006784.0,
+          "rel_l2": 0.10787759721279144
+        },
+        {
+          "component": "packed_k_scale",
+          "layer": 0,
+          "max_abs": 0.32568359375,
+          "rel_l2": 0.013939155265688896
+        },
+        {
+          "component": "packed_k_zero",
+          "layer": 0,
+          "max_abs": 0.97509765625,
+          "rel_l2": 0.025647323578596115
+        },
+        {
+          "component": "k_assignments",
+          "layer": 0,
+          "max_abs": 944.0,
+          "rel_l2": 1.169541597366333
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 0,
+          "max_abs": 0.0001220703125,
+          "rel_l2": 3.3607735531404614e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 1,
+          "max_abs": 0.00390625,
+          "rel_l2": 1.987124778679572e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 1,
+          "max_abs": 0.0001220703125,
+          "rel_l2": 4.4222841097507626e-05
+        },
+        {
+          "component": "pending_k",
+          "layer": 1,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 1,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "packed_k_payload",
+          "layer": 1,
+          "max_abs": 3941248512.0,
+          "rel_l2": 0.4044039249420166
+        },
+        {
+          "component": "packed_k_scale",
+          "layer": 1,
+          "max_abs": 1.72119140625,
+          "rel_l2": 0.11799631267786026
+        },
+        {
+          "component": "packed_k_zero",
+          "layer": 1,
+          "max_abs": 4.984375,
+          "rel_l2": 0.16369454562664032
+        },
+        {
+          "component": "k_assignments",
+          "layer": 1,
+          "max_abs": 1030.0,
+          "rel_l2": 7.606748580932617
+        },
+        {
+          "component": "packed_v2_payload",
+          "layer": 1,
+          "max_abs": 3670190848.0,
+          "rel_l2": 0.06974814087152481
+        },
+        {
+          "component": "packed_v2_scale",
+          "layer": 1,
+          "max_abs": 0.003818511962890625,
+          "rel_l2": 0.02092961221933365
+        },
+        {
+          "component": "packed_v2_zero",
+          "layer": 1,
+          "max_abs": 0.00927734375,
+          "rel_l2": 0.03553023934364319
+        },
+        {
+          "component": "packed_v4_payload",
+          "layer": 1,
+          "max_abs": 4133809664.0,
+          "rel_l2": 0.15243041515350342
+        },
+        {
+          "component": "packed_v4_scale",
+          "layer": 1,
+          "max_abs": 0.0005536079406738281,
+          "rel_l2": 0.00570627860724926
+        },
+        {
+          "component": "packed_v4_zero",
+          "layer": 1,
+          "max_abs": 0.004974365234375,
+          "rel_l2": 0.007443377282470465
+        },
+        {
+          "component": "v_assignment_idx",
+          "layer": 1,
+          "max_abs": 537.0,
+          "rel_l2": 1.140480399131775
+        },
+        {
+          "component": "v2_assignment_idx",
+          "layer": 1,
+          "max_abs": 537.0,
+          "rel_l2": 1.0227580070495605
+        },
+        {
+          "component": "v4_assignment_idx",
+          "layer": 1,
+          "max_abs": 408.0,
+          "rel_l2": 1.4908194541931152
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 1,
+          "max_abs": 0.0007476806640625,
+          "rel_l2": 6.065205161576159e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 2,
+          "max_abs": 0.015625,
+          "rel_l2": 0.00012504731421358883
+        },
+        {
+          "component": "recent_v",
+          "layer": 2,
+          "max_abs": 0.0035400390625,
+          "rel_l2": 0.00025189213920384645
+        },
+        {
+          "component": "pending_k",
+          "layer": 2,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 2,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 2,
+          "max_abs": 0.000579833984375,
+          "rel_l2": 4.336836718721315e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 3,
+          "max_abs": 0.009765625,
+          "rel_l2": 0.0001045243043336086
+        },
+        {
+          "component": "recent_v",
+          "layer": 3,
+          "max_abs": 0.002197265625,
+          "rel_l2": 0.0002683868515305221
+        },
+        {
+          "component": "pending_k",
+          "layer": 3,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 3,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "packed_v2_payload",
+          "layer": 3,
+          "max_abs": 3787698176.0,
+          "rel_l2": 0.26110586524009705
+        },
+        {
+          "component": "packed_v2_scale",
+          "layer": 3,
+          "max_abs": 0.0388336181640625,
+          "rel_l2": 0.0780092254281044
+        },
+        {
+          "component": "packed_v2_zero",
+          "layer": 3,
+          "max_abs": 0.0517578125,
+          "rel_l2": 0.0742875337600708
+        },
+        {
+          "component": "packed_v4_payload",
+          "layer": 3,
+          "max_abs": 4149473024.0,
+          "rel_l2": 0.31434980034828186
+        },
+        {
+          "component": "packed_v4_scale",
+          "layer": 3,
+          "max_abs": 0.022539138793945312,
+          "rel_l2": 0.07266021519899368
+        },
+        {
+          "component": "packed_v4_zero",
+          "layer": 3,
+          "max_abs": 0.16314697265625,
+          "rel_l2": 0.07506685703992844
+        },
+        {
+          "component": "v_assignment_idx",
+          "layer": 3,
+          "max_abs": 408.0,
+          "rel_l2": 0.7022831439971924
+        },
+        {
+          "component": "v_precision_mask",
+          "layer": 3,
+          "max_abs": 1.0,
+          "rel_l2": 0.1767766922712326
+        },
+        {
+          "component": "v2_assignment_idx",
+          "layer": 3,
+          "max_abs": 408.0,
+          "rel_l2": 0.8134587407112122
+        },
+        {
+          "component": "v4_assignment_idx",
+          "layer": 3,
+          "max_abs": 66.0,
+          "rel_l2": 0.28695061802864075
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 3,
+          "max_abs": 0.0001983642578125,
+          "rel_l2": 1.40397196446429e-05
+        },
+        {
+          "component": "recent_k",
+          "layer": 4,
+          "max_abs": 0.0078125,
+          "rel_l2": 8.623789472039789e-05
+        },
+        {
+          "component": "recent_v",
+          "layer": 4,
+          "max_abs": 0.001953125,
+          "rel_l2": 0.00023730762768536806
+        },
+        {
+          "component": "pending_k",
+          "layer": 4,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 4,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 4,
+          "max_abs": 5.91278076171875e-05,
+          "rel_l2": 5.7229208323406056e-06
+        },
+        {
+          "component": "recent_k",
+          "layer": 5,
+          "max_abs": 0.0087890625,
+          "rel_l2": 0.00012872710067313164
+        },
+        {
+          "component": "recent_v",
+          "layer": 5,
+          "max_abs": 0.0018310546875,
+          "rel_l2": 0.00026043722755275667
+        },
+        {
+          "component": "pending_k",
+          "layer": 5,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "pending_v",
+          "layer": 5,
+          "max_abs": null,
+          "rel_l2": null
+        },
+        {
+          "component": "packed_v2_payload",
+          "layer": 5,
+          "max_abs": 3496304384.0,
+          "rel_l2": 0.04198651760816574
+        },
+        {
+          "component": "packed_v2_scale",
+          "layer": 5,
+          "max_abs": 0.0112457275390625,
+          "rel_l2": 0.005529739893972874
+        },
+        {
+          "component": "packed_v2_zero",
+          "layer": 5,
+          "max_abs": 0.01580810546875,
+          "rel_l2": 0.005152005236595869
+        },
+        {
+          "component": "packed_v4_payload",
+          "layer": 5,
+          "max_abs": 3839614208.0,
+          "rel_l2": 0.17125926911830902
+        },
+        {
+          "component": "packed_v4_scale",
+          "layer": 5,
+          "max_abs": 0.0037794113159179688,
+          "rel_l2": 0.01268402487039566
+        },
+        {
+          "component": "packed_v4_zero",
+          "layer": 5,
+          "max_abs": 0.02862548828125,
+          "rel_l2": 0.011344749480485916
+        },
+        {
+          "component": "v_assignment_idx",
+          "layer": 5,
+          "max_abs": 394.0,
+          "rel_l2": 0.6668429970741272
+        },
+        {
+          "component": "v2_assignment_idx",
+          "layer": 5,
+          "max_abs": 394.0,
+          "rel_l2": 0.5654293298721313
+        },
+        {
+          "component": "v4_assignment_idx",
+          "layer": 5,
+          "max_abs": 186.0,
+          "rel_l2": 0.8843994140625
+        },
+        {
+          "component": "v_causal_importance",
+          "layer": 5,
+          "max_abs": 0.0006618499755859375,
+          "rel_l2": 5.9402718761703e-05
+        }
+      ]
+    },
+    "position": {
+      "cache_position": 399,
+      "exact_equal": true,
+      "position_id": 399
+    },
+    "step": 16,
+    "token_id": {
+      "exact_equal": true,
+      "got": 374,
+      "ref": 374
+    }
+  }
+]

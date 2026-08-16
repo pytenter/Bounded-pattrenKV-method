@@ -1,0 +1,41 @@
+{
+  "b1_vs_b2": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "a4e04883f59fff74f1a18eda12621934d43b679693a81ba05273ecb4aed2e728",
+    "rel_l2": 0.0,
+    "sha256": "a4e04883f59fff74f1a18eda12621934d43b679693a81ba05273ecb4aed2e728",
+    "shape": [
+      32,
+      385
+    ]
+  },
+  "b4": {
+    "exact_equal": false,
+    "max_abs": 0.0001220703125,
+    "mean_abs": 1.3628756789785257e-08,
+    "mismatch_count": 4,
+    "ref_sha256": "a4e04883f59fff74f1a18eda12621934d43b679693a81ba05273ecb4aed2e728",
+    "rel_l2": 4.27952290920075e-05,
+    "sha256": "413f0bab43e66950efa50dbb74117ebf993f853570114b2b9f68bf6fef26c92b",
+    "shape": [
+      32,
+      385
+    ]
+  },
+  "reorder": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "a4e04883f59fff74f1a18eda12621934d43b679693a81ba05273ecb4aed2e728",
+    "rel_l2": 0.0,
+    "sha256": "a4e04883f59fff74f1a18eda12621934d43b679693a81ba05273ecb4aed2e728",
+    "shape": [
+      32,
+      385
+    ]
+  }
+}

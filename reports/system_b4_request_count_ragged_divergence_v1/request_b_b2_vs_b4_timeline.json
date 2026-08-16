@@ -1,0 +1,250 @@
+[
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 1,
+    "token": {
+      "bad": 43530,
+      "exact_equal": true,
+      "good": 43530
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 2,
+    "token": {
+      "bad": 279,
+      "exact_equal": true,
+      "good": 279
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 3,
+    "token": {
+      "bad": 3158,
+      "exact_equal": true,
+      "good": 3158
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 4,
+    "token": {
+      "bad": 315,
+      "exact_equal": true,
+      "good": 315
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2321,
+      "rel_l2": 5.304095247993246e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 5,
+    "token": {
+      "bad": 264,
+      "exact_equal": true,
+      "good": 264
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 6,
+    "token": {
+      "bad": 12960,
+      "exact_equal": true,
+      "good": 12960
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 7,
+    "token": {
+      "bad": 1701,
+      "exact_equal": true,
+      "good": 1701
+    }
+  },
+  {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "step": 8,
+    "token": {
+      "bad": 264,
+      "exact_equal": true,
+      "good": 264
+    }
+  }
+]

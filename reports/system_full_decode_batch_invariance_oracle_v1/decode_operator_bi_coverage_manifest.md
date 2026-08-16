@@ -1,0 +1,14 @@
+# Decode Operator BI Coverage Manifest
+
+{
+  "attention": false,
+  "down_proj": true,
+  "gate_proj": true,
+  "input_rmsnorm": false,
+  "k_proj": true,
+  "o_proj": true,
+  "post_attention_rmsnorm": false,
+  "q_proj": true,
+  "up_proj": true,
+  "v_proj": true
+}

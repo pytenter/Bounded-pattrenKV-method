@@ -1,0 +1,164 @@
+{
+  "attention_pre_o_match_fixed_reduction": null,
+  "attention_probs_canonical_match": false,
+  "b1_unique_hashes": 1,
+  "b1_value_reduction_topology": {
+    "attention_width": 385,
+    "batch": 1,
+    "logical_pages_processed_total": 1,
+    "num_pages_vector": [
+      1
+    ],
+    "packed_pages_for_a": 1,
+    "page_size": 128,
+    "reduction_order": "fused page operator over packed V pages, then fp16 tail torch.matmul parts are added segment-by-segment",
+    "request_a_row": 0,
+    "segments": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 128,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 128
+      },
+      {
+        "logical_offset": 144,
+        "physical_length": 113,
+        "physical_offset": 144,
+        "segment": "pending",
+        "valid_length": 113
+      },
+      {
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 257,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ],
+    "seq_lens_vector": [
+      128
+    ]
+  },
+  "b1_vs_ragged_exact": false,
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "chunk_partition_depends_on_batch_shape": true,
+  "commit_created": false,
+  "compileall_pass": true,
+  "compressed_domain_runtime_preserved": true,
+  "elapsed_s": 22.971540540922433,
+  "fallback_count": 0,
+  "fixed_reduction_b2_16step_pass": null,
+  "fixed_reduction_b2_max_rel_l2": null,
+  "fixed_reduction_m1_m2_exact": null,
+  "fixed_reduction_m1_m2_reorder_exact": null,
+  "fixed_reduction_m1_m4_exact": null,
+  "fixed_reduction_mode_enabled": false,
+  "floating_atomic_in_value_reduction": false,
+  "frozen_pv_oracle_executed": true,
+  "full_bi_linear_context_active": true,
+  "full_pytest": "pytest -q -> 883 passed in 25.65s",
+  "git_diff_check_pass": true,
+  "golden_fp32_output_computed": true,
+  "golden_same_dtype_output_computed": true,
+  "historical_fp16_k_materialization": 0,
+  "historical_fp16_v_materialization": 0,
+  "importance_mapping_fix_preserved": true,
+  "layer0_hidden_out_match_fixed_reduction": null,
+  "layer1_current_k_match_fixed_reduction": null,
+  "layer1_hidden_in_match_fixed_reduction": null,
+  "layer1_recent_k_match_fixed_reduction": null,
+  "merge_order_depends_on_batch_shape": true,
+  "next_task": "TRACE_ATTENTION_QK_SOFTMAX",
+  "per_token_pv_contributions_match": false,
+  "previous_pre_o_max_abs": 4.76837158203125e-07,
+  "previous_pre_o_rel_l2": 8.517238256899873e-07,
+  "prior_bi_k_fix_preserved": true,
+  "prior_bi_v_fix_preserved": true,
+  "production_default_modified": false,
+  "pushed": false,
+  "ragged_unique_hashes": 1,
+  "ragged_value_reduction_topology": {
+    "attention_width": 514,
+    "batch": 2,
+    "logical_pages_processed_total": 4,
+    "num_pages_vector": [
+      1,
+      2
+    ],
+    "packed_pages_for_a": 1,
+    "page_size": 128,
+    "reduction_order": "fused page operator over packed V pages, then fp16 tail torch.matmul parts are added segment-by-segment",
+    "request_a_row": 0,
+    "segments": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 256,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 128
+      },
+      {
+        "logical_offset": 144,
+        "physical_length": 114,
+        "physical_offset": 272,
+        "segment": "pending",
+        "valid_length": 113
+      },
+      {
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 386,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ],
+    "seq_lens_vector": [
+      128,
+      256
+    ]
+  },
+  "root_classification": "ATTENTION_PROBABILITY_PATH_DIVERGENCE",
+  "secondary_divergence": {
+    "component": "",
+    "layer": null,
+    "max_abs": null,
+    "rel_l2": null,
+    "request": "",
+    "step": null
+  },
+  "secondary_divergence_found": false,
+  "serial_attention_dispatches": 0,
+  "serial_request_forward_dispatches": 0,
+  "split_count_depends_on_batch_shape": true,
+  "split_size_depends_on_batch_shape": true,
+  "start_head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "target": {
+    "component": "attention_pre_o",
+    "layer": 0,
+    "request": "A",
+    "step": 1
+  },
+  "targeted_tests": "pytest tests/test_ragged_k_valid_lengths.py tests/test_selective_value_precision.py tests/test_bi_kproj_prefill_runtime.py tests/test_bi_mlp_oracle.py -> 90 passed in 5.41s",
+  "true_batch_preserved": true,
+  "v2_logical_mapping_match": true,
+  "v4_logical_mapping_match": true,
+  "v_precision_mask_match": true,
+  "value_reduction_topology_match": false,
+  "value_semantic_state_match": true,
+  "workspace_partition_depends_on_batch_shape": true
+}

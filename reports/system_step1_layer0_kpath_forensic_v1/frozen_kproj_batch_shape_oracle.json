@@ -1,0 +1,90 @@
+{
+  "M1_matches_B1_production_raw_k": {
+    "dtype": "torch.float16",
+    "exact_equal": false,
+    "first_diff_index": [
+      0,
+      0,
+      28
+    ],
+    "max_abs": 0.001953125,
+    "mean_abs": 6.934162229299545e-06,
+    "mismatch_count": 18,
+    "numel": 1024,
+    "ref_sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "rel_l2": 6.19986021774821e-05,
+    "sha256": "9b05bbff1d3f587d5bf14cb6049e1a08326e5708a78d8dc1401f048292765cdb",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  },
+  "M1_unique_hash_count": 1,
+  "M1_vs_M2_A_row": {
+    "dtype": "torch.float16",
+    "exact_equal": false,
+    "first_diff_index": [
+      0,
+      0,
+      5
+    ],
+    "max_abs": 0.001953125,
+    "mean_abs": 0.00016320892609655857,
+    "mismatch_count": 277,
+    "numel": 1024,
+    "ref_sha256": "9b05bbff1d3f587d5bf14cb6049e1a08326e5708a78d8dc1401f048292765cdb",
+    "rel_l2": 0.0002955596137326211,
+    "sha256": "ea9a86a0f498e0f398bfcbeb29cfdfe5510d8495bad55391f8b34734f778ba93",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  },
+  "M2_matches_RAGGED_production_raw_k": {
+    "dtype": "torch.float16",
+    "exact_equal": false,
+    "first_diff_index": [
+      0,
+      0,
+      5
+    ],
+    "max_abs": 0.001953125,
+    "mean_abs": 0.00016858777962625027,
+    "mismatch_count": 282,
+    "numel": 1024,
+    "ref_sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "rel_l2": 0.00030155666172504425,
+    "sha256": "ea9a86a0f498e0f398bfcbeb29cfdfe5510d8495bad55391f8b34734f778ba93",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  },
+  "M2_unique_hash_count": 1,
+  "bias": false,
+  "input_H_A_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/forensics/step1_layer0_k_path/fixed_layer0_step1_norm_A.pt",
+  "production_dtype": "torch.float16",
+  "weight_dtype": "torch.float16",
+  "weight_shape": [
+    1024,
+    4096
+  ]
+}

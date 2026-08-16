@@ -1,0 +1,27 @@
+# Request State Inventory
+
+| NAME | FILE | OWNER | LIFETIME | INDEXED_BY | INITIALIZATION | MUTATION | RELEASE REQUIREMENT | REUSE RESET REQUIREMENT | IS_PERSISTENT | CAN_BE_LAZILY_RESET | CAN_BE_SHARED |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| K cache: `sink_k`, `packed_k`, `pending_k`, `recent_k` | `models/segmented_cache.py` | slot | allocation to release | slot/request, row only in active assembly | `PatternQuantizedKVCache` creation | prefill/append/flush | detach slot cache, free slot owner | new request receives fresh cache or logical lengths zero | true | true | false |
+| V2 cache: `packed_v`, `packed_v_scale`, `packed_v_zero` | `models/segmented_cache.py` | slot | allocation to release | slot/request, row in active assembly | cache creation or flush | Value flush | detach slot cache | fresh cache/valid lengths/mask | true | true | false |
+| V4 cache: `packed_v4`, `packed_v4_scale`, `packed_v4_zero` | `models/segmented_cache.py` | slot | allocation to release | slot/request | selector/flush | mixed V flush | detach slot cache | fresh cache and `request_packed_v4_tokens=0` | true | true | false |
+| `recent_k`, `recent_v` | `models/segmented_cache.py` | slot | active request | slot/request | prefill or decode append | rolling append | inaccessible after release | clean recent length/content for new cache | true | true | false |
+| `pending_k`, `pending_v` | `models/segmented_cache.py` | slot | active request | slot/request | cache creation | recent overflow | inaccessible after release | clean pending length/content | true | true | false |
+| packed/page K metadata | `models/segmented_cache.py` | slot | active request | slot/request/page | cache creation/flush | K quant flush | remove slot cache ownership | packed lengths reset | true | true | false |
+| packed/page V metadata | `quant/page_batch.py` | slot/page | active request | request/page | `pack_mixed_v_pages` / merge | Value flush/page append | no active row may reference released pages | page tables rebuilt from new request | true | true | false |
+| centroid state pool | `models/segmented_cache.py` | slot | allocation to release | slot/layer | `PatternKVCentroidStatePool.create/allocate` | centroid update/flush | `free()` counts/update/active reset | allocate new request-local centroid state | true | true | static centroid banks can be copied |
+| centroid active lengths | `models/segmented_cache.py` | slot | active request | slot | static centroid count | update counts/last flush | reset counts and active bit | counts return to static | true | true | false |
+| `v_causal_importance` | `models/segmented_cache.py` | slot | decode history | request logical token | lazy zero allocation | attention mass update | inaccessible after release | must be `None` or zero for new request | true | true | false |
+| V precision mask / V4 selection | `models/segmented_cache.py` | slot | packed V history | request logical packed token | selector/flush | V2/V4 mask append | remove old mask with slot cache | mask derived only from new history | true | true | false |
+| eligible-set / selector score state | `models/segmented_cache.py` | workspace/slot result | selector invocation | request logical token | selector call | selector call | no persistent stale score retained | recompute for new request | false | true | false |
+| `request_total_tokens` | `models/segmented_cache.py` | slot | allocation to release | request/slot | `set_request_total_tokens` | decode append | remove with slot cache | initialize to new context length | true | false | false |
+| K segment valid lengths | `models/segmented_cache.py` | derived | active iteration | row from slot metadata | `k_segment_valid_lengths` | derived from lengths | no release action | derived from new metadata | false | true | false |
+| V segment valid lengths | `models/segmented_cache.py` | derived | active iteration | row from slot metadata | request packed V lengths | Value flush | no release action | derived from new metadata | false | true | false |
+| position/cache position metadata | `models/segmented_cache.py` | derived from slot | active iteration | row | `get_decode_position_ids` | decode length advance | no released request in active mapping | new request total length | false | true | false |
+| page/chunk metadata | `quant/page_batch.py` | slot/page | packed V history | page/request | page pack/merge | page append/merge | remove page table reachability | rebuild page table for new request | true | true | false |
+| `seq_lens` | `quant/page_batch.py` | active row metadata | active assembly | row | page pack/merge | page append | not retained for released row | rebuilt from active slots | false | true | false |
+| split metadata | `models/segmented_cache.py` | workspace | kernel/attention call | row/token | split helper | none | none | recompute | false | true | true |
+| workspace metadata | multiple | workspace | call-local | row/call | function locals | call | none | none | false | true | true |
+| request row mapping | `models/request_lifecycle.py` | manager | active iteration | row→slot | `build_active_row_mapping` | rebuild per iteration | released request removed | new active rows map to slot, not identity | false | true | false |
+| residual selector temporary state | `models/segmented_cache.py` | workspace | selector call | row/token | selector call | selector call | none | recompute | false | true | false |
+

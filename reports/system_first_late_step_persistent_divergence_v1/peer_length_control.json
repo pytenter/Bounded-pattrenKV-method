@@ -1,0 +1,9 @@
+{
+  "exact_equal": false,
+  "max_abs": 0.0078125,
+  "mismatch_count": 1228,
+  "rel_l2": 5.4605308832833543e-05,
+  "request": "A",
+  "state": "logits",
+  "step": 1
+}

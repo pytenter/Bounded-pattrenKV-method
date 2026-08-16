@@ -1,0 +1,90 @@
+{
+  "after": {
+    "ATTENTION_PRE_O_PROJ": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "ATTENTION_RESIDUAL_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "ATTENTION_VALUE_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "LAYER_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "MLP_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "POST_ATTENTION_RMSNORM": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "POST_ATTENTION_RMSNORM_INPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    }
+  },
+  "before": {
+    "ATTENTION_PRE_O_PROJ": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "ATTENTION_RESIDUAL_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "ATTENTION_VALUE_OUTPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "LAYER_OUTPUT": {
+      "exact_equal": false,
+      "max_abs": 0.0001220703125,
+      "mismatch_count": 464,
+      "rel_l2": 0.00014955112419556826
+    },
+    "MLP_OUTPUT": {
+      "exact_equal": false,
+      "max_abs": 0.0001220703125,
+      "mismatch_count": 1076,
+      "rel_l2": 0.00021477177506312728
+    },
+    "POST_ATTENTION_RMSNORM": {
+      "exact_equal": false,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 9,
+      "rel_l2": 2.112196307280101e-05
+    },
+    "POST_ATTENTION_RMSNORM_INPUT": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    }
+  }
+}

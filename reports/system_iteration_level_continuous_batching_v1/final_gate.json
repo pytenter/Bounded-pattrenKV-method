@@ -1,0 +1,82 @@
+{
+  "admission_boundary": "decode_ready_prefill_completed_cache",
+  "automatic_admission_pass": true,
+  "automatic_finished_removal_pass": true,
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "classification": "PATTERNKV_ITERATION_LEVEL_CONTINUOUS_BATCHING_SUPPORTED",
+  "compileall": "pass",
+  "compressed_domain_runtime_preserved": true,
+  "continuous_refill_pass": true,
+  "cuda_version": "12.4",
+  "dynamic_add_remove_gate_preserved": true,
+  "dynamic_add_remove_regression": "pass: 10 passed",
+  "dynamic_sequences": {
+    "t0": [
+      "A",
+      "C",
+      "D",
+      "E"
+    ],
+    "t1": [
+      "A",
+      "D",
+      "E",
+      "F"
+    ],
+    "t2": [
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "t3": [
+      "D",
+      "E",
+      "F",
+      "G"
+    ]
+  },
+  "fallback_count": 0,
+  "full_pytest": "pass: 989 passed",
+  "git_diff_check": "pass",
+  "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "historical_fp16_k_materialization": 0,
+  "historical_fp16_v_materialization": 0,
+  "iteration_metadata_rebuild_pass": true,
+  "late_arrival_queueing_pass": true,
+  "lifecycle_regression": "pass: 22 passed",
+  "max_active_requests": 4,
+  "multi_finish_multi_admit_pass": true,
+  "next_task": "SERVING_BENCHMARK",
+  "observed_flush_steps": {
+    "A": 16,
+    "B": 15,
+    "C": 14,
+    "D": 13
+  },
+  "partial_batch_pass": true,
+  "pytest_version": "9.1.1",
+  "python_executable": "/data/zypan/.local/share/mamba/envs/patternkv/bin/python",
+  "ragged_multistep_gate_preserved": true,
+  "ragged_regression": "pass",
+  "request_lifecycle_gate_preserved": true,
+  "scheduler_drain_pass": true,
+  "scheduler_page_ownership_pass": true,
+  "scheduler_policy": "FIFO",
+  "scheduler_request_slot_row_separation_pass": true,
+  "scheduler_slot_reuse_pass": true,
+  "scheduler_slot_reuse_poison_pass": true,
+  "scheduler_state_transitions_pass": true,
+  "serial_attention_dispatches": 0,
+  "serial_mlp_request_dispatches": 0,
+  "serial_request_forward_dispatches": 0,
+  "serial_rmsnorm_request_dispatches": 0,
+  "surviving_slot_id_stable": true,
+  "survivor_trajectory_preserved": true,
+  "targeted_tests": "pass: 15 passed",
+  "torch_version": "2.4.1+cu124",
+  "true_batch_preserved": true,
+  "waiting_queue_order_pass": true,
+  "waiting_running_finished_state_machine_pass": true,
+  "worktree_dirty": true
+}

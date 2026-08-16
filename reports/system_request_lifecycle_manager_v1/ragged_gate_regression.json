@@ -1,0 +1,17 @@
+{
+  "source": "reports/system_ragged_multistep_correctness_v1/final_gate.json",
+  "known_good_at_start": {
+    "b2_16step_pass": true,
+    "b2_reorder_16step_pass": true,
+    "b4_16step_pass": true,
+    "independent_request_flush_schedule_pass": true,
+    "observed_flush_steps_b4": {"A": 16, "B": 15, "C": 14, "D": 13},
+    "serial_request_dispatches": 0,
+    "bi_kproj_serial_request_dispatches": 0,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "fallback_calls": 0
+  },
+  "regression_rerun_status": "not_executed_in_current_shell_missing_torch_pytest"
+}
+

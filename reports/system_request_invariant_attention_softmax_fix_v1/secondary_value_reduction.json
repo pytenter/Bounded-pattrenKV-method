@@ -1,0 +1,12 @@
+{
+  "earliest_divergence": {
+    "component": "",
+    "found": false,
+    "layer": null,
+    "max_abs": null,
+    "rel_l2": null,
+    "request": "",
+    "step": null
+  },
+  "value_reduction_secondary_exposed": false
+}

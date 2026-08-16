@@ -1,0 +1,45 @@
+{
+  "2": {
+    "first_any": null,
+    "first_persistent": null,
+    "requests": [
+      "A",
+      "B"
+    ]
+  },
+  "3_abc": {
+    "first_any": null,
+    "first_persistent": null,
+    "requests": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "3_abd": {
+    "first_any": null,
+    "first_persistent": null,
+    "requests": [
+      "A",
+      "B",
+      "D"
+    ]
+  },
+  "4_abcd": {
+    "first_any": {
+      "exact_equal": false,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2321,
+      "rel_l2": 5.304095247993246e-05,
+      "state": "logits",
+      "step": 5
+    },
+    "first_persistent": null,
+    "requests": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ]
+  }
+}

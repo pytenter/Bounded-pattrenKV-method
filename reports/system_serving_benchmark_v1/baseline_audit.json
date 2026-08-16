@@ -1,0 +1,22 @@
+{
+  "CAUSAL_V4_25": {
+    "notes": "Measured as compressed-domain KV-runtime under same FIFO scheduler and workload.",
+    "serving_comparable": true,
+    "status": "AVAILABLE"
+  },
+  "FP16": {
+    "notes": "Same FIFO decode-ready scheduler/workload/model geometry; KV runtime only, not full model forward.",
+    "serving_comparable": true,
+    "status": "AVAILABLE_AS_FP16_KV_RUNTIME_BASELINE"
+  },
+  "KIVI": {
+    "notes": "Model class exists, but no same-policy continuous serving harness found.",
+    "serving_comparable": false,
+    "status": "BASELINE_NOT_YET_SERVING_COMPARABLE"
+  },
+  "Original PatternKV": {
+    "notes": "No existing same-policy continuous serving harness found.",
+    "serving_comparable": false,
+    "status": "BASELINE_NOT_YET_SERVING_COMPARABLE"
+  }
+}

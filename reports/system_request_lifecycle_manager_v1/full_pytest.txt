@@ -1,0 +1,11 @@
+Command:
+PYTHONPATH=/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant:/data/zypan/Bounded-pattrenKV-pseudodecode-3090 CUDA_VISIBLE_DEVICES=2 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True /data/zypan/.local/share/mamba/envs/patternkv/bin/python -m pytest -q
+
+Result:
+964 passed in 23.60s
+
+FULL_PYTEST_PASS=true
+FULL_PYTEST_PASSED=964
+FULL_PYTEST_FAILED=0
+FULL_PYTEST_SKIPPED=0
+

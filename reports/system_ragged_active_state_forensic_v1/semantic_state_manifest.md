@@ -1,0 +1,18 @@
+# Semantic State Manifest
+
+- `request_total_tokens`: get_total_tokens_per_request(cache)[row] (SEMANTIC_ACTIVE)
+- `position_id`: get_decode_position_ids(cache) (SEMANTIC_ACTIVE)
+- `packed_k_payload`: cache.packed_k (SEMANTIC_ACTIVE)
+- `packed_k_scale_zero`: cache.packed_k_scale/zero (SEMANTIC_ACTIVE)
+- `k_assignments`: cache.k_assignments (SEMANTIC_ACTIVE)
+- `k_centroid_values_active`: centroid_state_pool.k_centroid_pool (SEMANTIC_ACTIVE)
+- `k_centroid_pool_tail`: centroid_state_pool.k_centroid_pool (INACTIVE_CAPACITY_UNDEFINED)
+- `pending_kv`: cache.pending_k/v (SEMANTIC_ACTIVE)
+- `recent_kv`: cache.recent_k/v (SEMANTIC_ACTIVE)
+- `sink_kv`: cache.sink_k/v (SEMANTIC_ACTIVE)
+- `packed_v2_v4`: cache.packed_v/packed_v4 (SEMANTIC_ACTIVE)
+- `v_precision_mask`: cache.v_precision_mask (SEMANTIC_ACTIVE)
+- `v_assignment_pattern`: cache.v_assignment_idx/v_pattern_mask (SEMANTIC_ACTIVE)
+- `v_causal_importance`: cache.v_causal_importance (SEMANTIC_ACTIVE)
+- `page_metadata`: operator_ready_page_pools.metadata (SEMANTIC_ACTIVE)
+- `hidden_qkv_o`: forward hooks (MATH_ACTIVE)

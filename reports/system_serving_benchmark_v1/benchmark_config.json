@@ -1,0 +1,19 @@
+{
+  "concurrency": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "context": 16384,
+  "decode": 128,
+  "measured_runs": 3,
+  "methods": [
+    "FP16_KV_RUNTIME",
+    "CAUSAL_V4_25"
+  ],
+  "model": "DeepSeek-R1-Distill-Llama-8B",
+  "model_path": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "total_requests": 32,
+  "warmup_runs": 1
+}

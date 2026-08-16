@@ -1,0 +1,27 @@
+{
+  "canonical_mass": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "rel_l2": 0.0,
+    "sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "shape": [
+      385
+    ]
+  },
+  "physical_mass": {
+    "exact_equal": false,
+    "max_abs": null,
+    "ref_sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "ref_shape": [
+      385
+    ],
+    "rel_l2": null,
+    "sha256": "26ec8553d30cac4c2b44bdf2c64cc1816fee4c7b83dd379fbf77050c03c7d5dc",
+    "shape": [
+      514
+    ]
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "addressing": {
+    "addressing_match": false,
+    "fields": {
+      "active_batch_row": {
+        "b1": 0,
+        "match": false,
+        "ragged": 1
+      },
+      "dest_end": {
+        "b1": 128,
+        "match": true,
+        "ragged": 128
+      },
+      "dest_start": {
+        "b1": 0,
+        "match": true,
+        "ragged": 0
+      },
+      "implementation": {
+        "b1": "append-until-full then shift via cat followed by overflow roll",
+        "match": true,
+        "ragged": "append-until-full then shift via cat followed by overflow roll"
+      },
+      "physical_recent_slot": {
+        "b1": 0,
+        "match": false,
+        "ragged": 1
+      },
+      "request_slot": {
+        "b1": 0,
+        "match": false,
+        "ragged": 1
+      },
+      "ring_index": {
+        "b1": null,
+        "match": true,
+        "ragged": null
+      },
+      "shift_amount": {
+        "b1": 1,
+        "match": true,
+        "ragged": 1
+      },
+      "source_end": {
+        "b1": 128,
+        "match": true,
+        "ragged": 128
+      },
+      "source_start": {
+        "b1": 1,
+        "match": true,
+        "ragged": 1
+      },
+      "write_index": {
+        "b1": 127,
+        "match": true,
+        "ragged": 127
+      }
+    },
+    "first_divergent_transition_field": "request_slot"
+  },
+  "b1_vs_golden": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 131072,
+    "ref_sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "rel_l2": 0.0,
+    "sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ],
+    "stride": [
+      131072,
+      16384,
+      128,
+      1
+    ]
+  },
+  "ragged_vs_b1_new_recent": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 131072,
+    "ref_sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "rel_l2": 0.0,
+    "sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ],
+    "stride": [
+      131072,
+      16384,
+      128,
+      1
+    ]
+  },
+  "ragged_vs_golden": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 131072,
+    "ref_sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "rel_l2": 0.0,
+    "sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ],
+    "stride": [
+      131072,
+      16384,
+      128,
+      1
+    ]
+  },
+  "transition_inputs": {
+    "current_k": {
+      "dtype": "torch.float16",
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "numel": 1024,
+      "ref_sha256": "fc3e5783ea6857eb436356a568135c7e80d1c582bbb5744301ce6cf41c40aeea",
+      "rel_l2": 0.0,
+      "sha256": "fc3e5783ea6857eb436356a568135c7e80d1c582bbb5744301ce6cf41c40aeea",
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ],
+      "stride": [
+        1024,
+        128,
+        128,
+        1
+      ]
+    },
+    "logical_metadata": {
+      "b1": {
+        "logical_total_len": 384,
+        "packed_k_valid_len": 128,
+        "pending_valid_len": 112,
+        "physical_recent_capacity": 128,
+        "position_id": 384,
+        "recent_logical_end": 384,
+        "recent_logical_start": 256,
+        "recent_valid_len": 128,
+        "sink_valid_len": 16
+      },
+      "match": true,
+      "ragged": {
+        "logical_total_len": 384,
+        "packed_k_valid_len": 128,
+        "pending_valid_len": 112,
+        "physical_recent_capacity": 128,
+        "position_id": 384,
+        "recent_logical_end": 384,
+        "recent_logical_start": 256,
+        "recent_valid_len": 128,
+        "sink_valid_len": 16
+      }
+    },
+    "old_recent_k": {
+      "dtype": "torch.float16",
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "numel": 131072,
+      "ref_sha256": "348dac8a0f7e5f9c7e315d03c83e5d2452865682648d1651d1da6be8f64d95bf",
+      "rel_l2": 0.0,
+      "sha256": "348dac8a0f7e5f9c7e315d03c83e5d2452865682648d1651d1da6be8f64d95bf",
+      "shape": [
+        1,
+        8,
+        128,
+        128
+      ],
+      "stride": [
+        131072,
+        16384,
+        128,
+        1
+      ]
+    },
+    "position": {
+      "b1": 384,
+      "match": true,
+      "ragged": 384
+    },
+    "recent_valid_len": {
+      "b1": 128,
+      "match": true,
+      "ragged": 128
+    }
+  }
+}

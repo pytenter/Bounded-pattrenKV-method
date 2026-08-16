@@ -1,0 +1,51 @@
+{
+  "BI_KPROJ_M1_VS_M2_EXACT": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 1024,
+    "ref_sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "rel_l2": 0.0,
+    "sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  },
+  "available": true,
+  "backend": "v2",
+  "counters_after_direct_oracle": {
+    "bi_decode_kproj_calls": 0,
+    "bi_decode_vproj_calls": 0,
+    "bi_kproj_calls": 2,
+    "bi_kproj_fallback_calls": 0,
+    "bi_kproj_input_copy_bytes": 0,
+    "bi_kproj_kernel_launches": 2,
+    "bi_kproj_rows": 3,
+    "bi_kproj_serial_request_dispatches": 0,
+    "bi_kproj_v1_calls": 0,
+    "bi_kproj_v2_calls": 2,
+    "bi_kproj_weight_copy_bytes": 0,
+    "bi_prefill_fallback_calls": 0,
+    "bi_prefill_kproj_calls": 0,
+    "bi_prefill_kproj_kernel_launches": 0,
+    "bi_prefill_kproj_rows": 0,
+    "bi_prefill_serial_dispatches": 0,
+    "bi_prefill_vproj_calls": 0,
+    "bi_prefill_vproj_kernel_launches": 0,
+    "bi_prefill_vproj_rows": 0,
+    "normal_decode_kproj_calls": 0,
+    "normal_decode_vproj_calls": 0,
+    "normal_prefill_kproj_calls": 0,
+    "normal_prefill_vproj_calls": 0
+  }
+}

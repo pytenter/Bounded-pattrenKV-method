@@ -1,0 +1,3 @@
+# Root Cause Status
+
+OBSERVED: original C0 failure reproduced=False. OBSERVED: previous full centroid false positive filtered=True. OBSERVED: earliest active semantic divergence={'step': 1, 'request': 'A', 'match': False, 'layer': 1, 'component': 'recent_k', 'metrics': {'exact_equal': False, 'sha256': 'a962a9eabd0f6cc62e477a66ca8a631b3f5fcd679d67ef0667be6e52ad090b87', 'ref_sha256': '95656f3069e8690e3070d6a3bc58a3e15dfb61f0ea4d302b2b7e48a49c0d275e', 'shape': [1, 8, 128, 128], 'num_valid_elements': 131072, 'max_abs': 0.00390625, 'mean_abs': 1.9596918718889356e-06, 'rel_l2': 2.705688530113548e-05, 'first_differing_index': [0, 0, 127, 6], 'mismatch_count': 307}}. INFERRED: investigate REPRODUCE_RAGGED_MULTISTEP_FAILURE.

@@ -1,0 +1,73 @@
+{
+  "b1": {
+    "logical_length": 385,
+    "precision_mask_sha256": "036b8c042aa3aed7b5ebe837cdc86dcf3a6b9bdc6395f03543f9183a4350d796",
+    "precision_v4_count": 32,
+    "segment_mapping": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 128,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 128
+      },
+      {
+        "logical_offset": 144,
+        "physical_length": 113,
+        "physical_offset": 144,
+        "segment": "pending",
+        "valid_length": 113
+      },
+      {
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 257,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ]
+  },
+  "ragged": {
+    "logical_length": 385,
+    "precision_mask_sha256": "036b8c042aa3aed7b5ebe837cdc86dcf3a6b9bdc6395f03543f9183a4350d796",
+    "precision_v4_count": 32,
+    "segment_mapping": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 256,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 128
+      },
+      {
+        "logical_offset": 144,
+        "physical_length": 114,
+        "physical_offset": 272,
+        "segment": "pending",
+        "valid_length": 113
+      },
+      {
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 386,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ]
+  },
+  "v_precision_mask_match": true
+}

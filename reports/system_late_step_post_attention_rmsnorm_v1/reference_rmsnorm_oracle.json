@@ -1,0 +1,24 @@
+{
+  "fixed_m1_m2": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0
+  },
+  "fixed_m1_unique_hashes": 1,
+  "fixed_m2_unique_hashes": 1,
+  "fixed_m4": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0
+  },
+  "fixed_m4_unique_hashes": 1,
+  "fixed_reorder": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0
+  },
+  "fixed_reorder_unique_hashes": 1
+}

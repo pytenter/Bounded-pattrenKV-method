@@ -1,0 +1,48 @@
+{
+  "classification_if_output_diff": "BATCH_SHAPE_DEPENDENT_RMSNORM_NUMERICS_CONFIRMED",
+  "executed": true,
+  "rmsnorm_input_b1_vs_ragged": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 4096,
+    "ref_sha256": "1fcbf5ccdd217cf827d0203ff71e99960e169d69b10520ce60e99098c78e8433",
+    "rel_l2": 0.0,
+    "sha256": "1fcbf5ccdd217cf827d0203ff71e99960e169d69b10520ce60e99098c78e8433",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  },
+  "rmsnorm_output_b1_vs_ragged": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 4096,
+    "ref_sha256": "e6aad1f41b73c1daff393800fe5352f13db62cc9ea21d9691043839a975c6529",
+    "rel_l2": 0.0,
+    "sha256": "e6aad1f41b73c1daff393800fe5352f13db62cc9ea21d9691043839a975c6529",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  }
+}

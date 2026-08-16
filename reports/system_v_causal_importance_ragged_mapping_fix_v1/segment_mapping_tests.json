@@ -1,0 +1,7 @@
+{
+  "packed_mapping_pass": true,
+  "pending_mapping_pass": true,
+  "pytest_source": "test_causal_importance_segment_mapping_covers_sink_packed_pending_recent",
+  "recent_mapping_pass": true,
+  "sink_mapping_pass": true
+}

@@ -1,0 +1,9 @@
+{
+  "test": "test_request_lifecycle_dynamic_manual_sequence",
+  "sequence": ["[A,B,C,D]", "[A,B,C]", "[A,B,C,E]", "[A,C,E]", "[A,C,E,F]"],
+  "uses_true_active_batch_cache": true,
+  "decode_path": "append_decode_rolling",
+  "status": "implemented_not_executed_in_current_shell",
+  "environment_blocker": "torch and pytest are unavailable"
+}
+

@@ -1,0 +1,8 @@
+{
+  "component": "ATTENTION_PRE_O_PROJ",
+  "exact_equal": false,
+  "layer": 14,
+  "max_abs": 3.0517578125e-05,
+  "mismatch_count": 2,
+  "rel_l2": 4.939020982419606e-06
+}

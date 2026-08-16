@@ -1,0 +1,7 @@
+{
+  "test": "test_request_lifecycle_allocate_peer_isolation",
+  "allocated_request": "E",
+  "peer_requests": ["A", "B", "C"],
+  "status": "implemented_not_executed_in_current_shell"
+}
+

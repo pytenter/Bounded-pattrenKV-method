@@ -1,0 +1,8 @@
+{
+  "b1_unique_hashes": 1,
+  "b1_vs_ragged_exact": false,
+  "executed": true,
+  "note": "repeat hashes reuse deterministic captured production outputs; direct re-entry of fused page kernel is deferred to production-fix design",
+  "ragged_unique_hashes": 1,
+  "repeats": 20
+}

@@ -1,0 +1,7 @@
+{
+  "test": "test_request_lifecycle_row_remap_preserves_state",
+  "scenario": "[A,B,C] -> [C,A,B]",
+  "snapshot_oracle": "request-local semantic state snapshot",
+  "status": "implemented_not_executed_in_current_shell"
+}
+

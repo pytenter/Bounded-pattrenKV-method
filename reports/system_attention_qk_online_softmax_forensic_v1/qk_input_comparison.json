@@ -1,0 +1,42 @@
+{
+  "canonical_k": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "8e3d8965928525c78e1a3fec79141ac3a454c962dfa46d1452f96a649beca33a",
+    "rel_l2": 0.0,
+    "sha256": "8e3d8965928525c78e1a3fec79141ac3a454c962dfa46d1452f96a649beca33a",
+    "shape": [
+      8,
+      385,
+      128
+    ]
+  },
+  "current_k_post_rope": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "cb0b165543179c66f268424f574e8761406345b0739a03c9bd1f006ab7745ed5",
+    "rel_l2": 0.0,
+    "sha256": "cb0b165543179c66f268424f574e8761406345b0739a03c9bd1f006ab7745ed5",
+    "shape": [
+      8,
+      128
+    ]
+  },
+  "q_post_rope": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "cd3bc3c59703f0b304eb1e1e72c38e3236dc550b5a6a385b43f2f58537e5d5d3",
+    "rel_l2": 0.0,
+    "sha256": "cd3bc3c59703f0b304eb1e1e72c38e3236dc550b5a6a385b43f2f58537e5d5d3",
+    "shape": [
+      32,
+      128
+    ]
+  }
+}

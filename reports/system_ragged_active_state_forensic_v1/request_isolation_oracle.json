@@ -1,0 +1,4 @@
+{
+  "NOT_RUN_BECAUSE": "main first divergence localized; no cross-request metadata leakage indicated by active-state comparator",
+  "request_isolation_pass": null
+}

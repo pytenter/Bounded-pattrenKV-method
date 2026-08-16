@@ -1,0 +1,8 @@
+{
+  "attention_probs_canonical_match": true,
+  "per_token_pv_contributions_match": true,
+  "v2_logical_mapping_match": true,
+  "v4_logical_mapping_match": true,
+  "v_precision_mask_match": true,
+  "value_semantic_state_match": true
+}

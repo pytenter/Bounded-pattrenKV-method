@@ -1,0 +1,26 @@
+{
+  "fixed_split": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "2a8b25242559441b5dcbd714a421e150f2670e9d3261d99cf0533f0242c3df27",
+    "rel_l2": 0.0,
+    "sha256": "2a8b25242559441b5dcbd714a421e150f2670e9d3261d99cf0533f0242c3df27",
+    "shape": [
+      32
+    ]
+  },
+  "logical_no_split": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "02f85c9d88f2d93143b23822e5203562066d4e5a480ec16e97c3545f754677d2",
+    "rel_l2": 0.0,
+    "sha256": "02f85c9d88f2d93143b23822e5203562066d4e5a480ec16e97c3545f754677d2",
+    "shape": [
+      32
+    ]
+  }
+}

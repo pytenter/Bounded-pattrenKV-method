@@ -1,0 +1,24 @@
+Commands:
+PYTHONPATH=/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant:/data/zypan/Bounded-pattrenKV-pseudodecode-3090 CUDA_VISIBLE_DEVICES=1 /data/zypan/.local/share/mamba/envs/patternkv/bin/python -m pytest -q tests/test_dynamic_add_remove_batching.py
+
+PYTHONPATH=/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant:/data/zypan/Bounded-pattrenKV-pseudodecode-3090 CUDA_VISIBLE_DEVICES=1 /data/zypan/.local/share/mamba/envs/patternkv/bin/python -m pytest -q tests/test_request_lifecycle_manager.py tests/test_dynamic_add_remove_batching.py
+
+Results:
+10 passed in 3.40s
+32 passed in 2.92s
+
+Mapped gates:
+DYNAMIC_REMOVE_ADD_PASS=true
+MULTI_ITERATION_DYNAMIC_MEMBERSHIP_PASS=true
+SURVIVOR_TRAJECTORY_PRESERVED=true
+MULTI_REMAP_PEER_STATE_PASS=true
+DYNAMIC_SLOT_REUSE_PASS=true
+DYNAMIC_SLOT_REUSE_POISON_PASS=true
+DYNAMIC_PAGE_OWNERSHIP_PASS=true
+ACTIVE_METADATA_REBUILD_PASS=true
+NEW_REQUEST_ADMISSION_PASS=true
+FINISHED_REQUEST_REMOVAL_PASS=true
+REMOVED_REQUEST_REJECTED_PASS=true
+SURVIVING_SLOT_ID_STABLE=true
+TRUE_BATCH_PRESERVED=true
+

@@ -1,0 +1,18 @@
+[
+  {
+    "context_length": 16384,
+    "decode_length": 16,
+    "first_oom_concurrency": 16,
+    "max_successful_concurrency": 8,
+    "method": "FP16_KV_RUNTIME",
+    "peak_memory_at_max_bytes": 17179919360
+  },
+  {
+    "context_length": 16384,
+    "decode_length": 16,
+    "first_oom_concurrency": 128,
+    "max_successful_concurrency": 64,
+    "method": "CAUSAL_V4_25",
+    "peak_memory_at_max_bytes": 21479425024
+  }
+]

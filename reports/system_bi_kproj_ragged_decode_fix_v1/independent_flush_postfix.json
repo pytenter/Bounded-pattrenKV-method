@@ -1,0 +1,15 @@
+{
+  "expected_b2": {
+    "A": 16,
+    "B": 15
+  },
+  "expected_b4": {
+    "A": 16,
+    "B": 15,
+    "C": 14,
+    "D": 13
+  },
+  "observed_b2": {},
+  "observed_b4": {},
+  "pass": false
+}

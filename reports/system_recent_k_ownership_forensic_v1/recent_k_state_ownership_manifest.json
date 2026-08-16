@@ -1,0 +1,15 @@
+{
+  "B1": {
+    "active_batch_row": 0,
+    "physical_recent_slot": 0,
+    "request_id": "A",
+    "request_slot": 0
+  },
+  "no_double_ownership": true,
+  "ragged_AB": {
+    "active_batch_row": 0,
+    "physical_recent_slot": 0,
+    "request_id": "A",
+    "request_slot": 0
+  }
+}

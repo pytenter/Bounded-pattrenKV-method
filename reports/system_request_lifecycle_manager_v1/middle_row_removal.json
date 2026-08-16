@@ -1,0 +1,8 @@
+{
+  "test": "test_request_lifecycle_middle_row_removal",
+  "scenario": "[A,B,C,D] -> release B -> [A,C,D]",
+  "row_shift_forced": true,
+  "slot_preservation_asserted": true,
+  "status": "implemented_not_executed_in_current_shell"
+}
+

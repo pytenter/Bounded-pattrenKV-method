@@ -1,0 +1,49 @@
+{
+  "current_step": {
+    "final_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "input_hidden": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    "logits": {
+      "exact_equal": false,
+      "max_abs": 0.0078125,
+      "mismatch_count": 1228,
+      "rel_l2": 5.4605308832833543e-05
+    },
+    "persistent_state": {
+      "exact_equal": true,
+      "first_diff": null,
+      "nonexact_components": []
+    },
+    "position": {
+      "cache_position": 384,
+      "exact_equal": true,
+      "position_id": 384
+    },
+    "step": 1,
+    "token_id": {
+      "exact_equal": true,
+      "got": 47544,
+      "ref": 47544
+    }
+  },
+  "first_bad": {
+    "exact_equal": false,
+    "max_abs": 0.0078125,
+    "mismatch_count": 1228,
+    "rel_l2": 5.4605308832833543e-05,
+    "request": "A",
+    "state": "logits",
+    "step": 1
+  },
+  "input_state_match": true,
+  "previous_step": null
+}

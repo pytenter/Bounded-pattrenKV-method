@@ -1,0 +1,9 @@
+{
+  "pass": false,
+  "requests": {
+    "A": true,
+    "B": false,
+    "C": true,
+    "D": true
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "b1": {
+    "mapping": [
+      {
+        "logical_length": 16,
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "row_valid_length": 16,
+        "segment": "sink"
+      },
+      {
+        "logical_length": 128,
+        "logical_offset": 16,
+        "physical_length": 128,
+        "physical_offset": 16,
+        "row_valid_length": 128,
+        "segment": "packed"
+      },
+      {
+        "logical_length": 113,
+        "logical_offset": 144,
+        "physical_length": 113,
+        "physical_offset": 144,
+        "row_valid_length": 113,
+        "segment": "pending"
+      },
+      {
+        "logical_length": 128,
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 257,
+        "row_valid_length": 128,
+        "segment": "recent"
+      }
+    ],
+    "meta": {
+      "batch": 1,
+      "cache_total_tokens_scalar": 385,
+      "physical_lengths": {
+        "packed": 128,
+        "pending": 113,
+        "recent": 128,
+        "sink": 16
+      },
+      "request_packed_k_tokens": [
+        128
+      ],
+      "request_total_tokens": [
+        385
+      ],
+      "valid_lengths": {
+        "packed": [
+          128
+        ],
+        "pending": [
+          113
+        ],
+        "recent": [
+          128
+        ],
+        "sink": [
+          16
+        ]
+      }
+    }
+  },
+  "logical_valid_lengths_match": true,
+  "physical_mapping_match": false,
+  "ragged_ab_row_a": {
+    "mapping": [
+      {
+        "logical_length": 16,
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "row_valid_length": 16,
+        "segment": "sink"
+      },
+      {
+        "logical_length": 128,
+        "logical_offset": 16,
+        "physical_length": 256,
+        "physical_offset": 16,
+        "row_valid_length": 128,
+        "segment": "packed"
+      },
+      {
+        "logical_length": 113,
+        "logical_offset": 144,
+        "physical_length": 114,
+        "physical_offset": 272,
+        "row_valid_length": 113,
+        "segment": "pending"
+      },
+      {
+        "logical_length": 128,
+        "logical_offset": 257,
+        "physical_length": 128,
+        "physical_offset": 386,
+        "row_valid_length": 128,
+        "segment": "recent"
+      }
+    ],
+    "meta": {
+      "batch": 2,
+      "cache_total_tokens_scalar": 514,
+      "physical_lengths": {
+        "packed": 256,
+        "pending": 114,
+        "recent": 128,
+        "sink": 16
+      },
+      "request_packed_k_tokens": [
+        128,
+        256
+      ],
+      "request_total_tokens": [
+        385,
+        514
+      ],
+      "valid_lengths": {
+        "packed": [
+          128,
+          256
+        ],
+        "pending": [
+          113,
+          114
+        ],
+        "recent": [
+          128,
+          128
+        ],
+        "sink": [
+          16,
+          16
+        ]
+      }
+    }
+  },
+  "request_row_ownership_match": true
+}

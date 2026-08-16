@@ -1,0 +1,7 @@
+{
+  "test": "test_lifecycle_page_ownership_release",
+  "release_behavior": "slot cache reference removed and slot returned to free-list",
+  "active_page_reachability_after_release": false,
+  "status": "implemented_not_executed_in_current_shell"
+}
+

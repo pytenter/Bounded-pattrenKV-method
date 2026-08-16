@@ -1,0 +1,50 @@
+{
+  "b1_vs_golden": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 131072,
+    "ref_sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "rel_l2": 0.0,
+    "sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ],
+    "stride": [
+      131072,
+      16384,
+      128,
+      1
+    ]
+  },
+  "ragged_vs_golden": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 131072,
+    "ref_sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "rel_l2": 0.0,
+    "sha256": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ],
+    "stride": [
+      131072,
+      16384,
+      128,
+      1
+    ]
+  }
+}

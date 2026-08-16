@@ -1,0 +1,199 @@
+{
+  "BI_KPROJ_RUNTIME_PATH_B1": {
+    "counters_after_decode": {
+      "bi_decode_kproj_calls": 32,
+      "bi_decode_vproj_calls": 32,
+      "bi_kproj_calls": 64,
+      "bi_kproj_fallback_calls": 0,
+      "bi_kproj_input_copy_bytes": 0,
+      "bi_kproj_kernel_launches": 64,
+      "bi_kproj_rows": 64,
+      "bi_kproj_serial_request_dispatches": 0,
+      "bi_kproj_v1_calls": 0,
+      "bi_kproj_v2_calls": 64,
+      "bi_kproj_weight_copy_bytes": 0,
+      "bi_prefill_fallback_calls": 0,
+      "bi_prefill_kproj_calls": 0,
+      "bi_prefill_kproj_kernel_launches": 0,
+      "bi_prefill_kproj_rows": 0,
+      "bi_prefill_serial_dispatches": 0,
+      "bi_prefill_vproj_calls": 0,
+      "bi_prefill_vproj_kernel_launches": 0,
+      "bi_prefill_vproj_rows": 0,
+      "normal_decode_kproj_calls": 0,
+      "normal_decode_vproj_calls": 0,
+      "normal_prefill_kproj_calls": 0,
+      "normal_prefill_vproj_calls": 0
+    },
+    "input_shape_full": [
+      1,
+      1,
+      4096
+    ],
+    "input_stride_full": [
+      4096,
+      4096,
+      1
+    ],
+    "module": {
+      "bias": false,
+      "captured_from_bi_projection": true,
+      "class": "Linear",
+      "weight_dtype": "torch.float16",
+      "weight_shape": [
+        1024,
+        4096
+      ],
+      "weight_stride": [
+        4096,
+        1
+      ]
+    },
+    "normal_decode_kproj_calls": 0,
+    "output_shape_full": [
+      1,
+      1,
+      1024
+    ],
+    "output_stride_full": [
+      1024,
+      1024,
+      1
+    ],
+    "used_bi_kproj": true
+  },
+  "BI_KPROJ_RUNTIME_PATH_RAGGED": {
+    "counters_after_decode": {
+      "bi_decode_kproj_calls": 32,
+      "bi_decode_vproj_calls": 32,
+      "bi_kproj_calls": 64,
+      "bi_kproj_fallback_calls": 0,
+      "bi_kproj_input_copy_bytes": 0,
+      "bi_kproj_kernel_launches": 64,
+      "bi_kproj_rows": 128,
+      "bi_kproj_serial_request_dispatches": 0,
+      "bi_kproj_v1_calls": 0,
+      "bi_kproj_v2_calls": 64,
+      "bi_kproj_weight_copy_bytes": 0,
+      "bi_prefill_fallback_calls": 0,
+      "bi_prefill_kproj_calls": 0,
+      "bi_prefill_kproj_kernel_launches": 0,
+      "bi_prefill_kproj_rows": 0,
+      "bi_prefill_serial_dispatches": 0,
+      "bi_prefill_vproj_calls": 0,
+      "bi_prefill_vproj_kernel_launches": 0,
+      "bi_prefill_vproj_rows": 0,
+      "normal_decode_kproj_calls": 0,
+      "normal_decode_vproj_calls": 0,
+      "normal_prefill_kproj_calls": 0,
+      "normal_prefill_vproj_calls": 0
+    },
+    "input_shape_full": [
+      2,
+      1,
+      4096
+    ],
+    "input_stride_full": [
+      4096,
+      4096,
+      1
+    ],
+    "module": {
+      "bias": false,
+      "captured_from_bi_projection": true,
+      "class": "Linear",
+      "weight_dtype": "torch.float16",
+      "weight_shape": [
+        1024,
+        4096
+      ],
+      "weight_stride": [
+        4096,
+        1
+      ]
+    },
+    "normal_decode_kproj_calls": 0,
+    "output_shape_full": [
+      2,
+      1,
+      1024
+    ],
+    "output_stride_full": [
+      1024,
+      1024,
+      1
+    ],
+    "used_bi_kproj": true
+  },
+  "BI_KPROJ_STATIC_AUDIT": {
+    "b1_helper_result": false,
+    "b1_kproj_input_shape": [
+      1,
+      1,
+      4096
+    ],
+    "b1_step1_is_prefill": false,
+    "code_location": "models/llama_patternkv.py:1100-1110 calls batch_invariant_k_projection only when patternkv_use_bi_prefill_kproj(past_key_value) is true; quant/batch_invariant_kproj.py:238 returns true only for past_key_value is None and prefill mode in {bi_k, bi_kv}.",
+    "decode_supported_by_helper": false,
+    "helper_condition": "patternkv_use_bi_prefill_kproj(past_key_value) == past_key_value is None and prefill_proj_mode in {bi_k, bi_kv}",
+    "prefill_proj_mode": "bi_kv",
+    "ragged_helper_result": false,
+    "ragged_kproj_input_shape": [
+      2,
+      1,
+      4096
+    ],
+    "ragged_step1_is_prefill": false,
+    "same_function_kernel_expected": "Both decode paths use self.k_proj(hidden_states) rather than BI KProj."
+  },
+  "prefill_counters_a": {
+    "bi_decode_kproj_calls": 0,
+    "bi_decode_vproj_calls": 0,
+    "bi_kproj_calls": 64,
+    "bi_kproj_fallback_calls": 0,
+    "bi_kproj_input_copy_bytes": 0,
+    "bi_kproj_kernel_launches": 64,
+    "bi_kproj_rows": 24576,
+    "bi_kproj_serial_request_dispatches": 0,
+    "bi_kproj_v1_calls": 0,
+    "bi_kproj_v2_calls": 64,
+    "bi_kproj_weight_copy_bytes": 0,
+    "bi_prefill_fallback_calls": 0,
+    "bi_prefill_kproj_calls": 32,
+    "bi_prefill_kproj_kernel_launches": 32,
+    "bi_prefill_kproj_rows": 12288,
+    "bi_prefill_serial_dispatches": 0,
+    "bi_prefill_vproj_calls": 32,
+    "bi_prefill_vproj_kernel_launches": 32,
+    "bi_prefill_vproj_rows": 12288,
+    "normal_decode_kproj_calls": 0,
+    "normal_decode_vproj_calls": 0,
+    "normal_prefill_kproj_calls": 0,
+    "normal_prefill_vproj_calls": 0
+  },
+  "prefill_counters_b": {
+    "bi_decode_kproj_calls": 0,
+    "bi_decode_vproj_calls": 0,
+    "bi_kproj_calls": 64,
+    "bi_kproj_fallback_calls": 0,
+    "bi_kproj_input_copy_bytes": 0,
+    "bi_kproj_kernel_launches": 64,
+    "bi_kproj_rows": 32832,
+    "bi_kproj_serial_request_dispatches": 0,
+    "bi_kproj_v1_calls": 0,
+    "bi_kproj_v2_calls": 64,
+    "bi_kproj_weight_copy_bytes": 0,
+    "bi_prefill_fallback_calls": 0,
+    "bi_prefill_kproj_calls": 32,
+    "bi_prefill_kproj_kernel_launches": 32,
+    "bi_prefill_kproj_rows": 16416,
+    "bi_prefill_serial_dispatches": 0,
+    "bi_prefill_vproj_calls": 32,
+    "bi_prefill_vproj_kernel_launches": 32,
+    "bi_prefill_vproj_rows": 16416,
+    "normal_decode_kproj_calls": 0,
+    "normal_decode_vproj_calls": 0,
+    "normal_prefill_kproj_calls": 0,
+    "normal_prefill_vproj_calls": 0
+  }
+}

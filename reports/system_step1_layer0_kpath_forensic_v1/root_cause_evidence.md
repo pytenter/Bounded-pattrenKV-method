@@ -1,0 +1,3 @@
+# Root Cause Evidence
+
+TOKEN_MATCH=True; POSITION_INPUT_MATCH=True; EMBEDDING_MATCH=True; LAYER0_HIDDEN_IN_MATCH=True; RMSNORM_OUTPUT_MATCH=True; RAW_KPROJ_MATCH=True (max_abs=0.0, rel_l2=0.0); ROPE_OUTPUT_CURRENT_K_MATCH=True; production frozen M1 unique=1, M2 unique=1, M1_vs_M2=False; existing BI M1_vs_M2=True; classification=CURRENT_K_EXTRACTION_OR_INSTRUMENTATION_ARTIFACT.

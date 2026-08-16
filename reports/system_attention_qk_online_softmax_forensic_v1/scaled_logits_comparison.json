@@ -1,0 +1,13 @@
+{
+  "exact_equal": true,
+  "max_abs": 0.0,
+  "mean_abs": 0.0,
+  "mismatch_count": 0,
+  "ref_sha256": "17699fd3db623ebd2d1dcb08019c37bcd970eda302e3d4e821edff50d86676d5",
+  "rel_l2": 0.0,
+  "sha256": "17699fd3db623ebd2d1dcb08019c37bcd970eda302e3d4e821edff50d86676d5",
+  "shape": [
+    32,
+    385
+  ]
+}

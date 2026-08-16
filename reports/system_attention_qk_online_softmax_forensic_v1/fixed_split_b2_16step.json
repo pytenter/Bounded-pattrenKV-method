@@ -1,0 +1,4 @@
+{
+  "executed": false,
+  "reason": "forensic-only round; fixed softmax was evaluated as script-local oracle, not installed as a runtime replacement"
+}

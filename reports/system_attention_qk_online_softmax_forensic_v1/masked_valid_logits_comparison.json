@@ -1,0 +1,41 @@
+{
+  "b1_production_vs_reference_scaled_logits": {
+    "exact_equal": false,
+    "max_abs": 0.015625,
+    "mean_abs": 9.044095349963754e-05,
+    "mismatch_count": 842,
+    "ref_sha256": "17699fd3db623ebd2d1dcb08019c37bcd970eda302e3d4e821edff50d86676d5",
+    "rel_l2": 0.00016242594574578106,
+    "sha256": "90573ceef56d531773fe350835f28db15966d1983e24221d722c77184242beed",
+    "shape": [
+      32,
+      385
+    ]
+  },
+  "b1_vs_ragged_production_softmax_input": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "90573ceef56d531773fe350835f28db15966d1983e24221d722c77184242beed",
+    "rel_l2": 0.0,
+    "sha256": "90573ceef56d531773fe350835f28db15966d1983e24221d722c77184242beed",
+    "shape": [
+      32,
+      385
+    ]
+  },
+  "ragged_production_vs_reference_scaled_logits": {
+    "exact_equal": false,
+    "max_abs": 0.015625,
+    "mean_abs": 9.044095349963754e-05,
+    "mismatch_count": 842,
+    "ref_sha256": "17699fd3db623ebd2d1dcb08019c37bcd970eda302e3d4e821edff50d86676d5",
+    "rel_l2": 0.00016242594574578106,
+    "sha256": "90573ceef56d531773fe350835f28db15966d1983e24221d722c77184242beed",
+    "shape": [
+      32,
+      385
+    ]
+  }
+}

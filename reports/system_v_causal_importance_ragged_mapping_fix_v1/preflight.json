@@ -1,0 +1,72 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "git_diff_check_initial_pass": true,
+  "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "preexisting_forensic_files": [
+    "?? forensics/",
+    "?? reports/centroid_determinism_causal_forensic.md",
+    "?? reports/system_bi_kproj_ragged_decode_fix_v1/",
+    "?? reports/system_ragged_active_state_forensic_v1/",
+    "?? reports/system_recent_k_ownership_forensic_v1/",
+    "?? reports/system_step1_layer0_kpath_forensic_v1/",
+    "?? reports/system_v_causal_importance_forensic_v1/",
+    "?? scripts/centroid_determinism_causal_forensic.py",
+    "?? scripts/ragged_active_state_forensic.py",
+    "?? scripts/recent_k_ownership_forensic.py",
+    "?? scripts/step1_layer0_k_path_forensic.py",
+    "?? scripts/v_causal_importance_forensic.py"
+  ],
+  "preexisting_production_fix_files": [
+    "bench/run_actual_model_bi_prefill_runtime.py",
+    "bench/run_bi_vproj_cost_benefit.py",
+    "bench/run_prefill_projection_mode_policy.py",
+    "bench/run_ragged_multistep_correctness.py",
+    "models/llama_patternkv.py",
+    "quant/batch_invariant_kproj.py",
+    "tests/test_bi_kproj_prefill_runtime.py"
+  ],
+  "remote_v": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\nbounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\norigin\thttps://github.com/HCOOOH/PatternKV.git (fetch)\norigin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "start_head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "status_short": [
+    "M bench/run_actual_model_bi_prefill_runtime.py",
+    " M bench/run_bi_vproj_cost_benefit.py",
+    " M bench/run_prefill_projection_mode_policy.py",
+    " M bench/run_ragged_multistep_correctness.py",
+    " M models/llama_patternkv.py",
+    " M models/segmented_cache.py",
+    " M quant/batch_invariant_kproj.py",
+    " M reports/system_ragged_multistep_correctness_v1/b2_16step.md",
+    " M reports/system_ragged_multistep_correctness_v1/b2_reorder.md",
+    " M reports/system_ragged_multistep_correctness_v1/b2_reorder_steps.json",
+    " M reports/system_ragged_multistep_correctness_v1/b2_steps.json",
+    " M reports/system_ragged_multistep_correctness_v1/b4_16step.md",
+    " M reports/system_ragged_multistep_correctness_v1/b4_steps.json",
+    " M reports/system_ragged_multistep_correctness_v1/environment.md",
+    " M reports/system_ragged_multistep_correctness_v1/final_gate.json",
+    " M reports/system_ragged_multistep_correctness_v1/free_run.json",
+    " M reports/system_ragged_multistep_correctness_v1/pytest.md",
+    " M reports/system_ragged_multistep_correctness_v1/runtime_counters.json",
+    " M reports/system_ragged_multistep_correctness_v1/semantic_metrics.json",
+    " M tests/test_bi_kproj_prefill_runtime.py",
+    " M tests/test_ragged_k_valid_lengths.py",
+    "?? forensics/",
+    "?? reports/centroid_determinism_causal_forensic.md",
+    "?? reports/system_bi_kproj_ragged_decode_fix_v1/",
+    "?? reports/system_ragged_active_state_forensic_v1/",
+    "?? reports/system_recent_k_ownership_forensic_v1/",
+    "?? reports/system_step1_layer0_kpath_forensic_v1/",
+    "?? reports/system_v_causal_importance_forensic_v1/",
+    "?? scripts/centroid_determinism_causal_forensic.py",
+    "?? scripts/ragged_active_state_forensic.py",
+    "?? scripts/recent_k_ownership_forensic.py",
+    "?? scripts/step1_layer0_k_path_forensic.py",
+    "?? scripts/v_causal_importance_forensic.py"
+  ],
+  "this_round_new_files": [
+    "reports/system_v_causal_importance_ragged_mapping_fix_v1/"
+  ],
+  "this_round_production_files": [
+    "models/segmented_cache.py",
+    "tests/test_ragged_k_valid_lengths.py"
+  ]
+}

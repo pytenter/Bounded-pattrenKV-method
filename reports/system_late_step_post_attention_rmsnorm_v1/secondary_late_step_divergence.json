@@ -1,0 +1,17 @@
+{
+  "first_diff": {
+    "component": "v_causal_importance",
+    "exact_equal": false,
+    "layer": 10,
+    "max_abs": 7.450580596923828e-09,
+    "mismatch_count": 1,
+    "rel_l2": 1.9715944432618926e-09
+  },
+  "layer": 10,
+  "max_abs": 7.450580596923828e-09,
+  "mismatch_count": 1,
+  "rel_l2": 1.9715944432618926e-09,
+  "request": "A",
+  "state": "v_causal_importance",
+  "step": 7
+}

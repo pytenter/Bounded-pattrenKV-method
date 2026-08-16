@@ -1,0 +1,10 @@
+{
+  "attention_probs_canonical_match": true,
+  "instant_importance_signal_canonical_match": true,
+  "logical_importance_index_mapping_match": true,
+  "new_v_causal_importance_match": true,
+  "new_v_causal_importance_rel_l2": 0.0,
+  "previous_importance_match": true,
+  "q_rope_match": true,
+  "raw_q_match": true
+}

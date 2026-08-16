@@ -1,0 +1,4621 @@
+{
+  "first_bad_layer_component": {
+    "component": "ATTENTION_PRE_O_PROJ",
+    "exact_equal": false,
+    "layer": 14,
+    "max_abs": 3.0517578125e-05,
+    "mismatch_count": 2,
+    "rel_l2": 4.939020982419606e-06
+  },
+  "rows": [
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 0,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 1,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 2,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 3,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 4,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 5,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 6,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 7,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 8,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 9,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 10,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 11,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 12,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": true,
+      "layer": 13,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": true,
+      "layer": 14,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 3.0517578125e-05,
+      "mismatch_count": 2,
+      "rel_l2": 4.939020982419606e-06
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 6.103515625e-05,
+      "mismatch_count": 173,
+      "rel_l2": 5.878271258552559e-05
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 42,
+      "rel_l2": 4.460079435375519e-05
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 37,
+      "rel_l2": 5.5036918638506904e-05
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 1913,
+      "rel_l2": 0.00011908608576050028
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 2808,
+      "rel_l2": 0.0001492072333348915
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 1752,
+      "rel_l2": 0.00012757563672494143
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3784,
+      "rel_l2": 0.00020632923406083137
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.0001220703125,
+      "mismatch_count": 1674,
+      "rel_l2": 0.0003015279653482139
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.0001220703125,
+      "mismatch_count": 1674,
+      "rel_l2": 0.0003015279653482139
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 14,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 743,
+      "rel_l2": 0.00016454288561362773
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 743,
+      "rel_l2": 0.00016454288561362773
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 632,
+      "rel_l2": 0.00015096548304427415
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00390625,
+      "mismatch_count": 1170,
+      "rel_l2": 0.00016010573017410934
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.001953125,
+      "mismatch_count": 198,
+      "rel_l2": 0.00010279098933096975
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 393,
+      "rel_l2": 0.00029418530175462365
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00390625,
+      "mismatch_count": 1063,
+      "rel_l2": 0.00018110986275132746
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.001953125,
+      "mismatch_count": 178,
+      "rel_l2": 0.00011982773139607161
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 1827,
+      "rel_l2": 0.0006160480552352965
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.0001678466796875,
+      "mismatch_count": 2994,
+      "rel_l2": 0.0007776434067636728
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 2019,
+      "rel_l2": 0.00036970042856410146
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 1779,
+      "rel_l2": 0.000481101538753137
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.001953125,
+      "mismatch_count": 8482,
+      "rel_l2": 0.00047974957851693034
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 9448,
+      "rel_l2": 0.0005776721518486738
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 7550,
+      "rel_l2": 0.0005221438477747142
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 10919,
+      "rel_l2": 0.0007266700849868357
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 2981,
+      "rel_l2": 0.00079202966298908
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 2981,
+      "rel_l2": 0.00079202966298908
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 15,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 2300,
+      "rel_l2": 0.0004362432810012251
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 2300,
+      "rel_l2": 0.0004362432810012251
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2050,
+      "rel_l2": 0.0003959584282711148
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2140,
+      "rel_l2": 0.0003468201030045748
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0078125,
+      "mismatch_count": 417,
+      "rel_l2": 0.000263986672507599
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 658,
+      "rel_l2": 0.0005415299092419446
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2089,
+      "rel_l2": 0.00036663960781879723
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0078125,
+      "mismatch_count": 404,
+      "rel_l2": 0.00027908940683119
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 2973,
+      "rel_l2": 0.0009014930110424757
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3277,
+      "rel_l2": 0.0010706842876970768
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2623,
+      "rel_l2": 0.0005507755558937788
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 2386,
+      "rel_l2": 0.0006853231461718678
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001953125,
+      "mismatch_count": 9593,
+      "rel_l2": 0.0006082609761506319
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 10530,
+      "rel_l2": 0.0007472106954082847
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 8562,
+      "rel_l2": 0.0006535159191116691
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001953125,
+      "mismatch_count": 11786,
+      "rel_l2": 0.0009963661432266235
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0008544921875,
+      "mismatch_count": 3343,
+      "rel_l2": 0.0011375669855624437
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.0008544921875,
+      "mismatch_count": 3343,
+      "rel_l2": 0.0011375669855624437
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 16,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2748,
+      "rel_l2": 0.0005903337150812149
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2748,
+      "rel_l2": 0.0005903337150812149
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2552,
+      "rel_l2": 0.0006102046463638544
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2563,
+      "rel_l2": 0.0004182339471299201
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0078125,
+      "mismatch_count": 546,
+      "rel_l2": 0.0004090565489605069
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 730,
+      "rel_l2": 0.0007806830108165741
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2498,
+      "rel_l2": 0.00043707096483558416
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0078125,
+      "mismatch_count": 513,
+      "rel_l2": 0.00042998528806492686
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 2561,
+      "rel_l2": 0.0007093534804880619
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3040,
+      "rel_l2": 0.0008279600297100842
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2800,
+      "rel_l2": 0.000621453276835382
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 2608,
+      "rel_l2": 0.0007922042859718204
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.001953125,
+      "mismatch_count": 9905,
+      "rel_l2": 0.0006558024324476719
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 10827,
+      "rel_l2": 0.0008461216348223388
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.001953125,
+      "mismatch_count": 8869,
+      "rel_l2": 0.0007090154103934765
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 12031,
+      "rel_l2": 0.0010701653081923723
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 3339,
+      "rel_l2": 0.0010973969474434853
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 3339,
+      "rel_l2": 0.0010973969474434853
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 17,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2907,
+      "rel_l2": 0.0006555669824592769
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2907,
+      "rel_l2": 0.0006555669824592769
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.005859375,
+      "mismatch_count": 2802,
+      "rel_l2": 0.0006428519263863564
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2595,
+      "rel_l2": 0.0004440347838681191
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.0078125,
+      "mismatch_count": 607,
+      "rel_l2": 0.00041964248521253467
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.0006103515625,
+      "mismatch_count": 749,
+      "rel_l2": 0.0007350366795435548
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2539,
+      "rel_l2": 0.0004639727994799614
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.0078125,
+      "mismatch_count": 576,
+      "rel_l2": 0.00043631752487272024
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 2617,
+      "rel_l2": 0.0009014848037622869
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.000152587890625,
+      "mismatch_count": 3305,
+      "rel_l2": 0.0010376451537013054
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2980,
+      "rel_l2": 0.0007022687932476401
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2815,
+      "rel_l2": 0.0008560530259273946
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001953125,
+      "mismatch_count": 10365,
+      "rel_l2": 0.0007485028472729027
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 11096,
+      "rel_l2": 0.0009144176146946847
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 9372,
+      "rel_l2": 0.0007828747038729489
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 12274,
+      "rel_l2": 0.0011581032304093242
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 3414,
+      "rel_l2": 0.0012828666949644685
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 3414,
+      "rel_l2": 0.0012828666949644685
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 18,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3023,
+      "rel_l2": 0.0007201399421319366
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3023,
+      "rel_l2": 0.0007201399421319366
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2878,
+      "rel_l2": 0.0006944252527318895
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2618,
+      "rel_l2": 0.0004615621000993997
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.0078125,
+      "mismatch_count": 566,
+      "rel_l2": 0.00037640109076164663
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 728,
+      "rel_l2": 0.0007528658024966717
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2550,
+      "rel_l2": 0.0004847649543080479
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.0078125,
+      "mismatch_count": 524,
+      "rel_l2": 0.00038602997665293515
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 2824,
+      "rel_l2": 0.0009508889634162188
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 3428,
+      "rel_l2": 0.0013319621793925762
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3091,
+      "rel_l2": 0.0007496683392673731
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 2904,
+      "rel_l2": 0.0009431050275452435
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.001953125,
+      "mismatch_count": 10808,
+      "rel_l2": 0.0008241827017627656
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.001953125,
+      "mismatch_count": 11253,
+      "rel_l2": 0.00099415541626513
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.001953125,
+      "mismatch_count": 9804,
+      "rel_l2": 0.0008986180764622986
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 12362,
+      "rel_l2": 0.0013083163648843765
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 3413,
+      "rel_l2": 0.0013768365606665611
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 3413,
+      "rel_l2": 0.0013768365606665611
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 19,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3107,
+      "rel_l2": 0.00079097825801
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3107,
+      "rel_l2": 0.00079097825801
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2922,
+      "rel_l2": 0.0007467037066817284
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2736,
+      "rel_l2": 0.0005320489290170372
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0078125,
+      "mismatch_count": 609,
+      "rel_l2": 0.00041852833237499
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 770,
+      "rel_l2": 0.000848889525514096
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00390625,
+      "mismatch_count": 2691,
+      "rel_l2": 0.0005522979772649705
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0078125,
+      "mismatch_count": 590,
+      "rel_l2": 0.00043452289537526667
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3271,
+      "rel_l2": 0.0010037134634330869
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.000244140625,
+      "mismatch_count": 3372,
+      "rel_l2": 0.0011586498003453016
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3153,
+      "rel_l2": 0.0008348762057721615
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.001953125,
+      "mismatch_count": 2951,
+      "rel_l2": 0.001018602168187499
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.001953125,
+      "mismatch_count": 10983,
+      "rel_l2": 0.0008708739187568426
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.001953125,
+      "mismatch_count": 11480,
+      "rel_l2": 0.0010744079481810331
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.001953125,
+      "mismatch_count": 9995,
+      "rel_l2": 0.0009432365768589079
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.001953125,
+      "mismatch_count": 12607,
+      "rel_l2": 0.0012456785188987851
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0006103515625,
+      "mismatch_count": 3455,
+      "rel_l2": 0.0012859144480898976
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.0006103515625,
+      "mismatch_count": 3455,
+      "rel_l2": 0.0012859144480898976
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 20,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3178,
+      "rel_l2": 0.0008844638941809535
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3178,
+      "rel_l2": 0.0008844638941809535
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.01171875,
+      "mismatch_count": 3336,
+      "rel_l2": 0.000987461069598794
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3181,
+      "rel_l2": 0.0007807562360540032
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0078125,
+      "mismatch_count": 808,
+      "rel_l2": 0.0007204408757388592
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00128173828125,
+      "mismatch_count": 873,
+      "rel_l2": 0.001068915706127882
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3132,
+      "rel_l2": 0.0007995482883416116
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0078125,
+      "mismatch_count": 795,
+      "rel_l2": 0.0007393271662294865
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 3506,
+      "rel_l2": 0.0012834637891501188
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 3556,
+      "rel_l2": 0.0015965987695381045
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3265,
+      "rel_l2": 0.0009445750620216131
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3039,
+      "rel_l2": 0.001138015533797443
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11805,
+      "rel_l2": 0.0011334236478433013
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00341796875,
+      "mismatch_count": 11786,
+      "rel_l2": 0.001227624132297933
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.001953125,
+      "mismatch_count": 10926,
+      "rel_l2": 0.0011654940899461508
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12886,
+      "rel_l2": 0.0014629751676693559
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3561,
+      "rel_l2": 0.0015685498947277665
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3561,
+      "rel_l2": 0.0015685498947277665
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 21,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3288,
+      "rel_l2": 0.0010213309433311224
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3288,
+      "rel_l2": 0.0010213309433311224
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.01171875,
+      "mismatch_count": 3119,
+      "rel_l2": 0.0009443716262467206
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3151,
+      "rel_l2": 0.0007783517939969897
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 700,
+      "rel_l2": 0.0006048441864550114
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 804,
+      "rel_l2": 0.0010052284924313426
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3132,
+      "rel_l2": 0.0007933297310955822
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 688,
+      "rel_l2": 0.0006289885495789349
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.00128173828125,
+      "mismatch_count": 3557,
+      "rel_l2": 0.0017209586221724749
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 3616,
+      "rel_l2": 0.0018610355909913778
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3338,
+      "rel_l2": 0.0010917283361777663
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3130,
+      "rel_l2": 0.001282980665564537
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 11703,
+      "rel_l2": 0.0011504775611683726
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 12095,
+      "rel_l2": 0.0013787930365651846
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.001953125,
+      "mismatch_count": 10851,
+      "rel_l2": 0.0012444477761164308
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.001708984375,
+      "mismatch_count": 12961,
+      "rel_l2": 0.001759109552949667
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0005950927734375,
+      "mismatch_count": 3613,
+      "rel_l2": 0.0017900082748383284
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.0005950927734375,
+      "mismatch_count": 3613,
+      "rel_l2": 0.0017900082748383284
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 22,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3371,
+      "rel_l2": 0.0010768708307296038
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3371,
+      "rel_l2": 0.0010768708307296038
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3201,
+      "rel_l2": 0.000984308193437755
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2998,
+      "rel_l2": 0.0006576899904757738
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0078125,
+      "mismatch_count": 672,
+      "rel_l2": 0.0005100413109175861
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 853,
+      "rel_l2": 0.0012241809163242579
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2941,
+      "rel_l2": 0.0006722136749885976
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0078125,
+      "mismatch_count": 658,
+      "rel_l2": 0.0005327216349542141
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.0003662109375,
+      "mismatch_count": 3277,
+      "rel_l2": 0.001033798442222178
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00032806396484375,
+      "mismatch_count": 3370,
+      "rel_l2": 0.0012529013911262155
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3373,
+      "rel_l2": 0.0010895344894379377
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3222,
+      "rel_l2": 0.0013240862172096968
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.002197265625,
+      "mismatch_count": 11906,
+      "rel_l2": 0.0012462675804272294
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00152587890625,
+      "mismatch_count": 12187,
+      "rel_l2": 0.0014218644937500358
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 11097,
+      "rel_l2": 0.0013347375206649303
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.001953125,
+      "mismatch_count": 13108,
+      "rel_l2": 0.0014649165095761418
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00042724609375,
+      "mismatch_count": 3508,
+      "rel_l2": 0.0015102920588105917
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00042724609375,
+      "mismatch_count": 3508,
+      "rel_l2": 0.0015102920588105917
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 23,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3329,
+      "rel_l2": 0.0010817395523190498
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3329,
+      "rel_l2": 0.0010817395523190498
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3179,
+      "rel_l2": 0.0009922974277287722
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3032,
+      "rel_l2": 0.0006927523645572364
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0078125,
+      "mismatch_count": 688,
+      "rel_l2": 0.0005268450477160513
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 838,
+      "rel_l2": 0.0011381442891433835
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3005,
+      "rel_l2": 0.0007114550098776817
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0078125,
+      "mismatch_count": 670,
+      "rel_l2": 0.0005509069305844605
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 3438,
+      "rel_l2": 0.0014935268554836512
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.000732421875,
+      "mismatch_count": 3565,
+      "rel_l2": 0.001607731101103127
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3379,
+      "rel_l2": 0.0010966727277264
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3226,
+      "rel_l2": 0.0013297698460519314
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 11981,
+      "rel_l2": 0.0012455809628590941
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00146484375,
+      "mismatch_count": 12264,
+      "rel_l2": 0.001467220252379775
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.001953125,
+      "mismatch_count": 11204,
+      "rel_l2": 0.001391165191307664
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.001953125,
+      "mismatch_count": 13133,
+      "rel_l2": 0.0018393013160675764
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0004425048828125,
+      "mismatch_count": 3609,
+      "rel_l2": 0.0017601832514628768
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.0004425048828125,
+      "mismatch_count": 3609,
+      "rel_l2": 0.0017601832514628768
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 24,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3354,
+      "rel_l2": 0.0011293310672044754
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3354,
+      "rel_l2": 0.0011293310672044754
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3224,
+      "rel_l2": 0.0010328456992283463
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2991,
+      "rel_l2": 0.0005993373924866319
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.005859375,
+      "mismatch_count": 636,
+      "rel_l2": 0.00047782392357476056
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0015869140625,
+      "mismatch_count": 837,
+      "rel_l2": 0.001141090178862214
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0078125,
+      "mismatch_count": 2944,
+      "rel_l2": 0.0006199746276251972
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.005859375,
+      "mismatch_count": 623,
+      "rel_l2": 0.0004994210903532803
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 3264,
+      "rel_l2": 0.0013859971659258008
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 3704,
+      "rel_l2": 0.0015612118877470493
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3420,
+      "rel_l2": 0.001161930849775672
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3341,
+      "rel_l2": 0.0013856625882908702
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12111,
+      "rel_l2": 0.001245261519216001
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.001953125,
+      "mismatch_count": 12312,
+      "rel_l2": 0.0014947904273867607
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11293,
+      "rel_l2": 0.001426143804565072
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.002197265625,
+      "mismatch_count": 13193,
+      "rel_l2": 0.0018334429478272796
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3618,
+      "rel_l2": 0.001825439976528287
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.00048828125,
+      "mismatch_count": 3618,
+      "rel_l2": 0.001825439976528287
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 25,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3446,
+      "rel_l2": 0.001174717559479177
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3446,
+      "rel_l2": 0.001174717559479177
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.015625,
+      "mismatch_count": 3496,
+      "rel_l2": 0.0013055236777290702
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.015625,
+      "mismatch_count": 3441,
+      "rel_l2": 0.001057158107869327
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.015625,
+      "mismatch_count": 876,
+      "rel_l2": 0.00100560556165874
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.00390625,
+      "mismatch_count": 902,
+      "rel_l2": 0.0016501001082360744
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.015625,
+      "mismatch_count": 3406,
+      "rel_l2": 0.0010702591389417648
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.015625,
+      "mismatch_count": 873,
+      "rel_l2": 0.0010280266869813204
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3824,
+      "rel_l2": 0.0026348913088440895
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 3747,
+      "rel_l2": 0.0027407703455537558
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3489,
+      "rel_l2": 0.0012311431346461177
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0048828125,
+      "mismatch_count": 3560,
+      "rel_l2": 0.0016663122223690152
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12537,
+      "rel_l2": 0.0014319701585918665
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.001953125,
+      "mismatch_count": 12695,
+      "rel_l2": 0.0017484173877164721
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11616,
+      "rel_l2": 0.0016843774355947971
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.00390625,
+      "mismatch_count": 13403,
+      "rel_l2": 0.002078833756968379
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 3711,
+      "rel_l2": 0.0022176415659487247
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0009765625,
+      "mismatch_count": 3711,
+      "rel_l2": 0.0022176415659487247
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 26,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3491,
+      "rel_l2": 0.0012879598652943969
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3491,
+      "rel_l2": 0.0012879598652943969
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 3621,
+      "rel_l2": 0.0014132456853985786
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 3516,
+      "rel_l2": 0.0011008569272235036
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 891,
+      "rel_l2": 0.000991112319752574
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 921,
+      "rel_l2": 0.0017485065618529916
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 3452,
+      "rel_l2": 0.0011086058802902699
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 860,
+      "rel_l2": 0.0010071181459352374
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 3839,
+      "rel_l2": 0.0033742559608072042
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3856,
+      "rel_l2": 0.0030394212808459997
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 3503,
+      "rel_l2": 0.001409725402481854
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3452,
+      "rel_l2": 0.0015924316830933094
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12237,
+      "rel_l2": 0.001161144464276731
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.001953125,
+      "mismatch_count": 12489,
+      "rel_l2": 0.0016512635629624128
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11272,
+      "rel_l2": 0.0015367419691756368
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.005859375,
+      "mismatch_count": 13221,
+      "rel_l2": 0.0017163121374323964
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 3632,
+      "rel_l2": 0.0016836932627484202
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.001220703125,
+      "mismatch_count": 3632,
+      "rel_l2": 0.0016836932627484202
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 27,
+      "max_abs": 0.015625,
+      "mismatch_count": 3462,
+      "rel_l2": 0.0014145830646157265
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.015625,
+      "mismatch_count": 3462,
+      "rel_l2": 0.0014145830646157265
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0234375,
+      "mismatch_count": 3374,
+      "rel_l2": 0.0014139532577246428
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3300,
+      "rel_l2": 0.0008889478049241006
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.015625,
+      "mismatch_count": 810,
+      "rel_l2": 0.000825759838335216
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.00214385986328125,
+      "mismatch_count": 895,
+      "rel_l2": 0.0016095293685793877
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3274,
+      "rel_l2": 0.0009072665125131607
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.015625,
+      "mismatch_count": 792,
+      "rel_l2": 0.0008355097379535437
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 3459,
+      "rel_l2": 0.001697169616818428
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3645,
+      "rel_l2": 0.0019711987115442753
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.015625,
+      "mismatch_count": 3474,
+      "rel_l2": 0.0014022119576111436
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3551,
+      "rel_l2": 0.0016184907872229815
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12205,
+      "rel_l2": 0.0010942061198875308
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.002685546875,
+      "mismatch_count": 12428,
+      "rel_l2": 0.0014939114917069674
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11223,
+      "rel_l2": 0.0015431067440658808
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.005859375,
+      "mismatch_count": 13192,
+      "rel_l2": 0.0015403813449665904
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0013427734375,
+      "mismatch_count": 3541,
+      "rel_l2": 0.001520552090369165
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.0013427734375,
+      "mismatch_count": 3541,
+      "rel_l2": 0.001520552090369165
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 28,
+      "max_abs": 0.015625,
+      "mismatch_count": 3446,
+      "rel_l2": 0.0013851226540282369
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.015625,
+      "mismatch_count": 3446,
+      "rel_l2": 0.0013851226540282369
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3306,
+      "rel_l2": 0.001422442146576941
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3215,
+      "rel_l2": 0.0008593089878559113
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.015625,
+      "mismatch_count": 756,
+      "rel_l2": 0.0007034708978608251
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 874,
+      "rel_l2": 0.001491319970227778
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3208,
+      "rel_l2": 0.000877629907336086
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.015625,
+      "mismatch_count": 748,
+      "rel_l2": 0.0007229748880490661
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.00732421875,
+      "mismatch_count": 3369,
+      "rel_l2": 0.001698226435109973
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3658,
+      "rel_l2": 0.0018343047704547644
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.015625,
+      "mismatch_count": 3462,
+      "rel_l2": 0.0013372065732255578
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.005859375,
+      "mismatch_count": 3322,
+      "rel_l2": 0.0015762252733111382
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.00390625,
+      "mismatch_count": 11938,
+      "rel_l2": 0.0009376584202982485
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.0029296875,
+      "mismatch_count": 12218,
+      "rel_l2": 0.001296904985792935
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.00390625,
+      "mismatch_count": 10999,
+      "rel_l2": 0.0012736734934151173
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.01171875,
+      "mismatch_count": 13020,
+      "rel_l2": 0.0016272527864202857
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3557,
+      "rel_l2": 0.001590430154465139
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.001953125,
+      "mismatch_count": 3557,
+      "rel_l2": 0.001590430154465139
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 29,
+      "max_abs": 0.015625,
+      "mismatch_count": 3436,
+      "rel_l2": 0.001393264508806169
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.015625,
+      "mismatch_count": 3436,
+      "rel_l2": 0.001393264508806169
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.015625,
+      "mismatch_count": 3549,
+      "rel_l2": 0.0015136372530832887
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3456,
+      "rel_l2": 0.0010975003242492676
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0107421875,
+      "mismatch_count": 833,
+      "rel_l2": 0.0010200750548392534
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0048828125,
+      "mismatch_count": 892,
+      "rel_l2": 0.0018073911778628826
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3393,
+      "rel_l2": 0.0011108743492513895
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0107421875,
+      "mismatch_count": 816,
+      "rel_l2": 0.0010322692105546594
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3798,
+      "rel_l2": 0.002575808437541127
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3777,
+      "rel_l2": 0.0021795551292598248
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.015625,
+      "mismatch_count": 3553,
+      "rel_l2": 0.0013981838710606098
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3421,
+      "rel_l2": 0.0017368552507832646
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.0078125,
+      "mismatch_count": 12369,
+      "rel_l2": 0.0011317478492856026
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.005859375,
+      "mismatch_count": 12543,
+      "rel_l2": 0.0012626164825633168
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.009765625,
+      "mismatch_count": 11248,
+      "rel_l2": 0.0012277611531317234
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.015625,
+      "mismatch_count": 13125,
+      "rel_l2": 0.001945287105627358
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 3672,
+      "rel_l2": 0.0018290337175130844
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.00244140625,
+      "mismatch_count": 3672,
+      "rel_l2": 0.0018290337175130844
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 30,
+      "max_abs": 0.015625,
+      "mismatch_count": 3548,
+      "rel_l2": 0.0014935503713786602
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.015625,
+      "mismatch_count": 3548,
+      "rel_l2": 0.0014935503713786602
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.009765625,
+      "mismatch_count": 3434,
+      "rel_l2": 0.0016644680872559547
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3206,
+      "rel_l2": 0.0008225333876907825
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 801,
+      "rel_l2": 0.000793206098023802
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.00390625,
+      "mismatch_count": 900,
+      "rel_l2": 0.0016263346187770367
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 3157,
+      "rel_l2": 0.0008449503220617771
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 771,
+      "rel_l2": 0.0008030699100345373
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3556,
+      "rel_l2": 0.002020390471443534
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.015625,
+      "mismatch_count": 3747,
+      "rel_l2": 0.00170200748834759
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.01171875,
+      "mismatch_count": 3580,
+      "rel_l2": 0.0015007905894890428
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.00390625,
+      "mismatch_count": 3501,
+      "rel_l2": 0.001889426726847887
+    },
+    {
+      "component": "MLP_GATE_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 12255,
+      "rel_l2": 0.0008335320162586868
+    },
+    {
+      "component": "MLP_UP_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.00390625,
+      "mismatch_count": 12228,
+      "rel_l2": 0.0009646817343309522
+    },
+    {
+      "component": "MLP_ACTIVATED_GATE",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.0078125,
+      "mismatch_count": 11454,
+      "rel_l2": 0.0006118944729678333
+    },
+    {
+      "component": "MLP_PRODUCT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.013671875,
+      "mismatch_count": 13188,
+      "rel_l2": 0.0019444430945441127
+    },
+    {
+      "component": "MLP_DOWN_PROJ",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.009765625,
+      "mismatch_count": 3662,
+      "rel_l2": 0.0018067796481773257
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.009765625,
+      "mismatch_count": 3662,
+      "rel_l2": 0.0018067796481773257
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 31,
+      "max_abs": 0.015625,
+      "mismatch_count": 3612,
+      "rel_l2": 0.0017947601154446602
+    }
+  ],
+  "step": 7
+}

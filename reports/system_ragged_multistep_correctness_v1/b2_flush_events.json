@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "centroid_updates_after": 1,
+    "centroid_updates_before": 0,
+    "flush_detected": true,
+    "packed_k_after": 384,
+    "packed_k_before": 256,
+    "packed_v_after": 384,
+    "packed_v_before": 256,
+    "page_state_after": 3,
+    "page_state_before": 2,
+    "pending_after": 0,
+    "pending_before": 127,
+    "request": "B",
+    "step": 15
+  },
+  {
+    "centroid_updates_after": 1,
+    "centroid_updates_before": 0,
+    "flush_detected": true,
+    "packed_k_after": 256,
+    "packed_k_before": 128,
+    "packed_v_after": 256,
+    "packed_v_before": 128,
+    "page_state_after": 2,
+    "page_state_before": 1,
+    "pending_after": 0,
+    "pending_before": 127,
+    "request": "A",
+    "step": 16
+  }
+]

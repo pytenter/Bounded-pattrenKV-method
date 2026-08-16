@@ -1,0 +1,151 @@
+{
+  "B1": {
+    "active_row": 0,
+    "attention_mask_summary": {
+      "present": false
+    },
+    "attn_position_ids": [
+      [
+        384
+      ]
+    ],
+    "cache_position": null,
+    "cache_position_note": "LlamaModel_PatternKV.forward does not expose/use a cache_position argument; decode position comes from segmented cache total_tokens.",
+    "full_batch_size": 1,
+    "inferred_position_ids_full": [
+      [
+        384
+      ]
+    ],
+    "input_ids_full": [
+      6303
+    ],
+    "input_ids_row": [
+      6303
+    ],
+    "label": "B1_A_step1",
+    "layer0_position_ids": [
+      [
+        384
+      ]
+    ],
+    "tokens_at_embedding": [
+      6303
+    ]
+  },
+  "RAGGED": {
+    "active_row": 0,
+    "attention_mask_summary": {
+      "present": false
+    },
+    "attn_position_ids": [
+      [
+        384
+      ]
+    ],
+    "cache_position": null,
+    "cache_position_note": "LlamaModel_PatternKV.forward does not expose/use a cache_position argument; decode position comes from segmented cache total_tokens.",
+    "full_batch_size": 2,
+    "inferred_position_ids_full": [
+      [
+        384
+      ],
+      [
+        513
+      ]
+    ],
+    "input_ids_full": [
+      6303,
+      25
+    ],
+    "input_ids_row": [
+      6303
+    ],
+    "label": "RAGGED_AB_A_step1",
+    "layer0_position_ids": [
+      [
+        384
+      ]
+    ],
+    "tokens_at_embedding": [
+      6303
+    ]
+  },
+  "comparisons": {
+    "attention_mask": {
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "ref_sha256": null,
+      "rel_l2": 0.0,
+      "sha256": null,
+      "shape": null
+    },
+    "cache_position": {
+      "b1": null,
+      "match": true,
+      "note": "LlamaModel_PatternKV.forward does not expose/use a cache_position argument; decode position comes from segmented cache total_tokens.",
+      "ragged": null
+    },
+    "inferred_position_ids": {
+      "dtype": "torch.int64",
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "numel": 1,
+      "ref_sha256": "6b292f43dab302bdf0ed6ce93cb1827cc3f3fc74b077693a3b7f16476c9c85cf",
+      "rel_l2": 0.0,
+      "sha256": "6b292f43dab302bdf0ed6ce93cb1827cc3f3fc74b077693a3b7f16476c9c85cf",
+      "shape": [
+        1,
+        1
+      ],
+      "stride": [
+        1,
+        1
+      ]
+    },
+    "position_ids": {
+      "dtype": "torch.int64",
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "numel": 1,
+      "ref_sha256": "6b292f43dab302bdf0ed6ce93cb1827cc3f3fc74b077693a3b7f16476c9c85cf",
+      "rel_l2": 0.0,
+      "sha256": "6b292f43dab302bdf0ed6ce93cb1827cc3f3fc74b077693a3b7f16476c9c85cf",
+      "shape": [
+        1,
+        1
+      ],
+      "stride": [
+        1,
+        1
+      ]
+    },
+    "token": {
+      "dtype": "torch.int64",
+      "exact_equal": true,
+      "first_diff_index": null,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "numel": 1,
+      "ref_sha256": "3de4b858873b380f3e43d30f0a46abd21256bccf65068a15d516f32838535068",
+      "rel_l2": 0.0,
+      "sha256": "3de4b858873b380f3e43d30f0a46abd21256bccf65068a15d516f32838535068",
+      "shape": [
+        1
+      ],
+      "stride": [
+        1
+      ]
+    }
+  }
+}

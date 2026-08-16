@@ -1,0 +1,97 @@
+{
+  "after": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "6cfeed70caa83b96b0d185b0032faac2fe698c408f95f9f80cd3c0bd71ca135c",
+    "rel_l2": 0.0,
+    "sha256": "6cfeed70caa83b96b0d185b0032faac2fe698c408f95f9f80cd3c0bd71ca135c",
+    "shape": [
+      1,
+      385
+    ]
+  },
+  "canonical_mass": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "rel_l2": 0.0,
+    "sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "shape": [
+      385
+    ]
+  },
+  "case": "[A,B long] vs [A,D short]",
+  "executed": true,
+  "mapping_long_peer": [
+    {
+      "logical_length": 16,
+      "logical_offset": 0,
+      "physical_length": 16,
+      "physical_offset": 0,
+      "row_valid_length": 16,
+      "segment": "sink"
+    },
+    {
+      "logical_length": 128,
+      "logical_offset": 16,
+      "physical_length": 256,
+      "physical_offset": 16,
+      "row_valid_length": 128,
+      "segment": "packed"
+    },
+    {
+      "logical_length": 113,
+      "logical_offset": 144,
+      "physical_length": 114,
+      "physical_offset": 272,
+      "row_valid_length": 113,
+      "segment": "pending"
+    },
+    {
+      "logical_length": 128,
+      "logical_offset": 257,
+      "physical_length": 128,
+      "physical_offset": 386,
+      "row_valid_length": 128,
+      "segment": "recent"
+    }
+  ],
+  "mapping_short_peer": [
+    {
+      "logical_length": 16,
+      "logical_offset": 0,
+      "physical_length": 16,
+      "physical_offset": 0,
+      "row_valid_length": 16,
+      "segment": "sink"
+    },
+    {
+      "logical_length": 128,
+      "logical_offset": 16,
+      "physical_length": 128,
+      "physical_offset": 16,
+      "row_valid_length": 128,
+      "segment": "packed"
+    },
+    {
+      "logical_length": 113,
+      "logical_offset": 144,
+      "physical_length": 113,
+      "physical_offset": 144,
+      "row_valid_length": 113,
+      "segment": "pending"
+    },
+    {
+      "logical_length": 128,
+      "logical_offset": 257,
+      "physical_length": 128,
+      "physical_offset": 257,
+      "row_valid_length": 128,
+      "segment": "recent"
+    }
+  ]
+}

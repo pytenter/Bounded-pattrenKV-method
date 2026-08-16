@@ -1,0 +1,14 @@
+{
+  "exact_equal": false,
+  "max_abs": 6.103515625e-05,
+  "mean_abs": 3.763329004868865e-06,
+  "mismatch_count": 2313,
+  "ref_sha256": "537a473f42146212edcfede2afad2fdc810641220eddc501f5a942a898ae0200",
+  "rel_l2": 0.00048119149869307876,
+  "sha256": "56a06c9690a266ff2bbf192b5e9c138bb914eff2859d8b44584729562f3b7e55",
+  "shape": [
+    1,
+    1,
+    4096
+  ]
+}

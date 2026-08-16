@@ -1,0 +1,344 @@
+[
+  {
+    "admitted": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "admitted_slots": [
+      0,
+      1,
+      2,
+      3,
+      1
+    ],
+    "decoded": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "decoded_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "A",
+        "row": 0,
+        "slot_id": 0
+      },
+      {
+        "generation": 1,
+        "request_id": "B",
+        "row": 1,
+        "slot_id": 1
+      },
+      {
+        "generation": 1,
+        "request_id": "C",
+        "row": 2,
+        "slot_id": 2
+      },
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 3,
+        "slot_id": 3
+      }
+    ],
+    "finished": [
+      "B"
+    ],
+    "finished_this_iteration": [
+      "B"
+    ],
+    "iteration": 0,
+    "next_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "A",
+        "row": 0,
+        "slot_id": 0
+      },
+      {
+        "generation": 1,
+        "request_id": "C",
+        "row": 1,
+        "slot_id": 2
+      },
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 2,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 3,
+        "slot_id": 1
+      }
+    ],
+    "released_slots": [
+      1
+    ],
+    "running": [
+      "A",
+      "C",
+      "D",
+      "E"
+    ],
+    "waiting": [
+      "F",
+      "G"
+    ]
+  },
+  {
+    "admitted": [
+      "F"
+    ],
+    "admitted_slots": [
+      2
+    ],
+    "decoded": [
+      "A",
+      "C",
+      "D",
+      "E"
+    ],
+    "decoded_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "A",
+        "row": 0,
+        "slot_id": 0
+      },
+      {
+        "generation": 1,
+        "request_id": "C",
+        "row": 1,
+        "slot_id": 2
+      },
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 2,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 3,
+        "slot_id": 1
+      }
+    ],
+    "finished": [
+      "B",
+      "C"
+    ],
+    "finished_this_iteration": [
+      "C"
+    ],
+    "iteration": 1,
+    "next_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "A",
+        "row": 0,
+        "slot_id": 0
+      },
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 1,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 2,
+        "slot_id": 1
+      },
+      {
+        "generation": 2,
+        "request_id": "F",
+        "row": 3,
+        "slot_id": 2
+      }
+    ],
+    "released_slots": [
+      2
+    ],
+    "running": [
+      "A",
+      "D",
+      "E",
+      "F"
+    ],
+    "waiting": [
+      "G"
+    ]
+  },
+  {
+    "admitted": [
+      "G"
+    ],
+    "admitted_slots": [
+      0
+    ],
+    "decoded": [
+      "A",
+      "D",
+      "E",
+      "F"
+    ],
+    "decoded_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "A",
+        "row": 0,
+        "slot_id": 0
+      },
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 1,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 2,
+        "slot_id": 1
+      },
+      {
+        "generation": 2,
+        "request_id": "F",
+        "row": 3,
+        "slot_id": 2
+      }
+    ],
+    "finished": [
+      "B",
+      "C",
+      "A"
+    ],
+    "finished_this_iteration": [
+      "A"
+    ],
+    "iteration": 2,
+    "next_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 0,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 1,
+        "slot_id": 1
+      },
+      {
+        "generation": 2,
+        "request_id": "F",
+        "row": 2,
+        "slot_id": 2
+      },
+      {
+        "generation": 2,
+        "request_id": "G",
+        "row": 3,
+        "slot_id": 0
+      }
+    ],
+    "released_slots": [
+      0
+    ],
+    "running": [
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "waiting": []
+  },
+  {
+    "admitted": [],
+    "admitted_slots": [],
+    "decoded": [
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "decoded_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 0,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 1,
+        "slot_id": 1
+      },
+      {
+        "generation": 2,
+        "request_id": "F",
+        "row": 2,
+        "slot_id": 2
+      },
+      {
+        "generation": 2,
+        "request_id": "G",
+        "row": 3,
+        "slot_id": 0
+      }
+    ],
+    "finished": [
+      "B",
+      "C",
+      "A"
+    ],
+    "finished_this_iteration": [],
+    "iteration": 3,
+    "next_row_to_slot": [
+      {
+        "generation": 1,
+        "request_id": "D",
+        "row": 0,
+        "slot_id": 3
+      },
+      {
+        "generation": 2,
+        "request_id": "E",
+        "row": 1,
+        "slot_id": 1
+      },
+      {
+        "generation": 2,
+        "request_id": "F",
+        "row": 2,
+        "slot_id": 2
+      },
+      {
+        "generation": 2,
+        "request_id": "G",
+        "row": 3,
+        "slot_id": 0
+      }
+    ],
+    "released_slots": [],
+    "running": [
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "waiting": []
+  }
+]

@@ -1,0 +1,86 @@
+{
+  "b1_production_vs_fp32_golden": {
+    "exact_equal": false,
+    "max_abs": 6.103515625e-05,
+    "mean_abs": 1.141976099461317e-06,
+    "mismatch_count": 1813,
+    "ref_sha256": "aec1e894a154f4900c59b18d93c932654b992ec559170a2bf24605213efeb560",
+    "rel_l2": 0.0004110545269213617,
+    "sha256": "e24a0b2694c22268dc5408f21a2cab11c402ed2ba79ec5f3da38cc86f5bdd5eb",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "b1_production_vs_same_dtype_golden": {
+    "exact_equal": false,
+    "max_abs": 0.000640869140625,
+    "mean_abs": 6.990943802520633e-06,
+    "mismatch_count": 3326,
+    "ref_sha256": "5ab9b1a8157cb3aa14e53ad4f8f9d5727afcc1ea6d5cd48a97b956554ce39197",
+    "rel_l2": 0.0025747097097337246,
+    "sha256": "e24a0b2694c22268dc5408f21a2cab11c402ed2ba79ec5f3da38cc86f5bdd5eb",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "fp32_b1_vs_ragged": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "aec1e894a154f4900c59b18d93c932654b992ec559170a2bf24605213efeb560",
+    "rel_l2": 0.0,
+    "sha256": "aec1e894a154f4900c59b18d93c932654b992ec559170a2bf24605213efeb560",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "ragged_production_vs_fp32_golden": {
+    "exact_equal": false,
+    "max_abs": 6.103515625e-05,
+    "mean_abs": 1.1421216186136007e-06,
+    "mismatch_count": 1814,
+    "ref_sha256": "aec1e894a154f4900c59b18d93c932654b992ec559170a2bf24605213efeb560",
+    "rel_l2": 0.0004110554582439363,
+    "sha256": "2d7a908957056c71ae1671ef30b8d98d790f470b4c7dab27405de5ed1cfff54f",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "ragged_production_vs_same_dtype_golden": {
+    "exact_equal": false,
+    "max_abs": 0.000640869140625,
+    "mean_abs": 6.991031114012003e-06,
+    "mismatch_count": 3326,
+    "ref_sha256": "5ab9b1a8157cb3aa14e53ad4f8f9d5727afcc1ea6d5cd48a97b956554ce39197",
+    "rel_l2": 0.002574710641056299,
+    "sha256": "2d7a908957056c71ae1671ef30b8d98d790f470b4c7dab27405de5ed1cfff54f",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "same_dtype_b1_vs_ragged": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "5ab9b1a8157cb3aa14e53ad4f8f9d5727afcc1ea6d5cd48a97b956554ce39197",
+    "rel_l2": 0.0,
+    "sha256": "5ab9b1a8157cb3aa14e53ad4f8f9d5727afcc1ea6d5cd48a97b956554ce39197",
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+git rev-parse --show-toplevel:
+/data/zypan/Bounded-pattrenKV-pseudodecode-3090
+
+git branch --show-current:
+sys/causal-v4-25-kernel-v1
+
+git rev-parse HEAD:
+cc50fdc513181d2137438cc6a7c0dd8322ccf767
+
+git remote -v:
+bounded git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+bounded git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+origin https://github.com/HCOOOH/PatternKV.git (fetch)
+origin https://github.com/HCOOOH/PatternKV.git (push)
+
+worktree_dirty=true
+commit_created=false
+pushed_to_bounded=false
+pushed_to_origin=false
+

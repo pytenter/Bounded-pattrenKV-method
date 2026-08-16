@@ -1,0 +1,25 @@
+{
+  "admission_boundary": "decode_ready_prefill_completed_cache",
+  "dynamic_sequences": [
+    ["A", "B", "C", "D"],
+    ["A", "B", "C", "D"],
+    ["A", "C", "D", "E"],
+    ["A", "D", "E", "F"],
+    ["D", "E", "F", "G"]
+  ],
+  "finish_events": {
+    "t2": ["B"],
+    "t3": ["C"],
+    "t4": ["A"]
+  },
+  "admission_events": {
+    "t2": ["E"],
+    "t3": ["F"],
+    "t4": ["G"]
+  },
+  "row_remap_stress": {
+    "D": [3, 3, 2, 1, 0]
+  },
+  "production_decode_shape": "one true active ragged batch per iteration"
+}
+

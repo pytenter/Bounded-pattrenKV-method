@@ -1,0 +1,41 @@
+{
+  "active_batch_row": 0,
+  "addressing": {
+    "dest_end": 128,
+    "dest_start": 0,
+    "implementation": "append-until-full then shift via cat followed by overflow roll",
+    "ring_index": null,
+    "shift_amount": 1,
+    "source_end": 128,
+    "source_start": 1,
+    "write_index": 127
+  },
+  "after_metadata": {
+    "logical_total_len": 385,
+    "packed_k_valid_len": 128,
+    "pending_valid_len": 113,
+    "physical_recent_capacity": 128,
+    "position_id": 385,
+    "recent_logical_end": 385,
+    "recent_logical_start": 257,
+    "recent_valid_len": 128,
+    "sink_valid_len": 16
+  },
+  "before_metadata": {
+    "logical_total_len": 384,
+    "packed_k_valid_len": 128,
+    "pending_valid_len": 112,
+    "physical_recent_capacity": 128,
+    "position_id": 384,
+    "recent_logical_end": 384,
+    "recent_logical_start": 256,
+    "recent_valid_len": 128,
+    "sink_valid_len": 16
+  },
+  "current_k_hash": "fc3e5783ea6857eb436356a568135c7e80d1c582bbb5744301ce6cf41c40aeea",
+  "new_recent_hash": "7ea2143daf63645a9294738fa5e0b9d84e24ea27a221bbc8f5208880929b1283",
+  "old_recent_hash": "348dac8a0f7e5f9c7e315d03c83e5d2452865682648d1651d1da6be8f64d95bf",
+  "physical_recent_slot": 0,
+  "request_id": "A",
+  "request_slot": 0
+}

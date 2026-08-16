@@ -1,0 +1,9 @@
+{
+  "component": "LOGITS",
+  "found": true,
+  "layer": null,
+  "max_abs": null,
+  "rel_l2": 0.01362898014485836,
+  "request": "A",
+  "step": 15
+}

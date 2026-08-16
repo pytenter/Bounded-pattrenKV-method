@@ -1,0 +1,34 @@
+{
+  "canonical_attention_probs": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "60f9cf72c63ce5a0d497d9a40c2f68978ca3834b42be625ffda96aabe6cd25db",
+    "rel_l2": 0.0,
+    "sha256": "60f9cf72c63ce5a0d497d9a40c2f68978ca3834b42be625ffda96aabe6cd25db",
+    "shape": [
+      32,
+      385
+    ]
+  },
+  "physical_attention_probs": {
+    "exact_equal": false,
+    "max_abs": null,
+    "ref_sha256": "de78eb7af322b7f78f5752f6d7514b8e2d02156089d13fc0ce0ddc44fcb634c5",
+    "ref_shape": [
+      1,
+      32,
+      1,
+      385
+    ],
+    "rel_l2": null,
+    "sha256": "1c04ba7d71a6cab2bd9917238c13479af09b120b2fd1e51d184ddb74f2cd56c8",
+    "shape": [
+      1,
+      32,
+      1,
+      514
+    ]
+  }
+}

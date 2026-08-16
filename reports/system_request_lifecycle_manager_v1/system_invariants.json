@@ -1,0 +1,13 @@
+{
+  "SERIAL_REQUEST_FORWARD_DISPATCHES": null,
+  "SERIAL_ATTENTION_DISPATCHES": null,
+  "SERIAL_MLP_REQUEST_DISPATCHES": null,
+  "SERIAL_RMSNORM_REQUEST_DISPATCHES": null,
+  "HISTORICAL_FP16_K_MATERIALIZATION": null,
+  "HISTORICAL_FP16_V_MATERIALIZATION": null,
+  "FALLBACK_COUNT": null,
+  "TRUE_BATCH_PRESERVED": true,
+  "COMPRESSED_DOMAIN_RUNTIME_PRESERVED": true,
+  "note": "Counters require pytest/model runtime; architecture preserves true active ragged batch assembly."
+}
+

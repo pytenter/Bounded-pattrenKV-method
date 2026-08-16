@@ -1,0 +1,17 @@
+{
+  "b1_total_after_append": 385,
+  "previous_importance": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "1fad53712348b4d0d604e45781e88e17ef6a7e6cb3a72ff16edec2554fb8b5ec",
+    "rel_l2": 0.0,
+    "sha256": "1fad53712348b4d0d604e45781e88e17ef6a7e6cb3a72ff16edec2554fb8b5ec",
+    "shape": [
+      1,
+      385
+    ]
+  },
+  "ragged_a_total_after_append": 385
+}

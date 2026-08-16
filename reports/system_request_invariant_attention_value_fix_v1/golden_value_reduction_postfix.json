@@ -1,0 +1,6 @@
+{
+  "b1_value_reduction_matches_fixed_logical_same_dtype_golden": false,
+  "b1_vs_ragged_production_pre_o_exact": true,
+  "note": "Production fused packed Value uses its own fixed request-local reduction tree; diagnostic tokenwise golden is not bitwise identical to production but is identical across B1/ragged inputs.",
+  "ragged_value_reduction_matches_fixed_logical_same_dtype_golden": false
+}

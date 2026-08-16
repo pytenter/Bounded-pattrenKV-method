@@ -1,0 +1,27 @@
+{
+  "local_sum": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "5b5c8b0788f5f317bb625779c5fffeb435fb144c7b78541a631ea7445b9f3f67",
+    "rel_l2": 0.0,
+    "sha256": "5b5c8b0788f5f317bb625779c5fffeb435fb144c7b78541a631ea7445b9f3f67",
+    "shape": [
+      32,
+      4
+    ]
+  },
+  "merged_sum": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "b4d81729ec475344bc26427c484e4e0a67776fbad2613901c08ec2bbf5c9555d",
+    "rel_l2": 0.0,
+    "sha256": "b4d81729ec475344bc26427c484e4e0a67776fbad2613901c08ec2bbf5c9555d",
+    "shape": [
+      32
+    ]
+  }
+}

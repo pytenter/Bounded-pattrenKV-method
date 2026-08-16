@@ -1,0 +1,8 @@
+{
+  "b2_16step_pass": true,
+  "b2_reorder_16step_pass": true,
+  "requests": [
+    "A",
+    "B"
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "executed": false,
+  "reason": "raw Q projection is already exact for B1 A vs ragged [A,B] A"
+}

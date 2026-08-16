@@ -1,0 +1,5 @@
+{
+  "instrumentation": "scheduler_overhead_s and decode_gpu_wall_s per run",
+  "scope": "Python FIFO bookkeeping plus synthetic batched CUDA KV step timing",
+  "source": "raw_runs.jsonl"
+}

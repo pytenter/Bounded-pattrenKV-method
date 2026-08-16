@@ -1,0 +1,5 @@
+{
+  "first_failure": "# B4 16-Step\n\n{\n  \"metrics\": {\n    \"boundary\": false,\n    \"cosine\": 0.9999306797981262,\n    \"inf\": 0,\n    \"max_abs\": 0.24609375,\n    \"nan\": 0,\n    \"relative_l2\": 0.012000663205981255,\n    \"request\": \"A\",\n    \"step\": 5,\n    \"top1_equal\": true,\n    \"top1_margin\": 7.1875,\n    \"top5_overlap\": 5\n  },\n  \"request\": \"A\",\n  \"step\": 5\n}\n",
+  "pass": false,
+  "source": "reports/system_ragged_multistep_correctness_v1/b4_steps.json"
+}

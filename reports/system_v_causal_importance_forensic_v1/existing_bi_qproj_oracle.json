@@ -1,0 +1,4 @@
+{
+  "executed": false,
+  "reason": "repository has no active BI Q path; raw Q was exact, so BI-Q oracle was unnecessary in this forensic round"
+}

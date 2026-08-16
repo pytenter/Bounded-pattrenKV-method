@@ -1,0 +1,38 @@
+{
+  "b1": {
+    "contiguous": true,
+    "device": "cpu",
+    "dtype": "torch.float16",
+    "requires_grad": false,
+    "sha256": "9f0353518c243f847e01b7ba7ac8551e7a98a1107d1ad76170cdd732afe1f823",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "storage_offset": 0,
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  },
+  "ragged": {
+    "contiguous": true,
+    "device": "cpu",
+    "dtype": "torch.float16",
+    "requires_grad": false,
+    "sha256": "9f0353518c243f847e01b7ba7ac8551e7a98a1107d1ad76170cdd732afe1f823",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "storage_offset": 0,
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  }
+}

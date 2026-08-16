@@ -1,0 +1,26 @@
+{
+  "BI_KPROJ_M1_M2_EXACT": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "rel_l2": 0.0
+  },
+  "BI_KPROJ_M1_M2_REORDER_EXACT": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "rel_l2": 0.0
+  },
+  "BI_KPROJ_M1_M4_EXACT": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "rel_l2": 0.0
+  },
+  "FALLBACK_COUNT": 0,
+  "M1_unique_hash_count": 1,
+  "M2_REORDER_unique_hash_count": 1,
+  "M2_unique_hash_count": 1,
+  "M4_unique_hash_count": 1,
+  "SERIAL_KPROJ_REQUEST_DISPATCHES": 0,
+  "backend": "v2",
+  "repeats": 20,
+  "source": "GPU6 oracle using forensics/step1_layer0_k_path/fixed_layer0_step1_norm_A.pt and real layer0 W_K; output captured in this run transcript"
+}

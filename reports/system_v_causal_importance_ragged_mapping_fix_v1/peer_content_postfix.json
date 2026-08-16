@@ -1,0 +1,29 @@
+{
+  "after": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "6cfeed70caa83b96b0d185b0032faac2fe698c408f95f9f80cd3c0bd71ca135c",
+    "rel_l2": 0.0,
+    "sha256": "6cfeed70caa83b96b0d185b0032faac2fe698c408f95f9f80cd3c0bd71ca135c",
+    "shape": [
+      1,
+      385
+    ]
+  },
+  "canonical_mass": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "rel_l2": 0.0,
+    "sha256": "e11aab9218d4b5f740684334e9c1dc64bd1db2be24dafdb0cb6c354581ac38bc",
+    "shape": [
+      385
+    ]
+  },
+  "case": "[A,B] vs [A,C] with equal peer length",
+  "executed": true
+}

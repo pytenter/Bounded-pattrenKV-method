@@ -1,0 +1,44 @@
+{
+  "ACTIVE_SEMANTIC_CENTROID_HASH_EQUAL": true,
+  "FALSE_POSITIVE_FILTERING_PASS": true,
+  "FULL_PHYSICAL_CENTROID_HASH_EQUAL": false,
+  "active_metrics": {
+    "exact_equal": true,
+    "first_differing_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "num_valid_elements": 32768,
+    "ref_sha256": "cbb2c6d4f859efc7fa97f5a2e4e608752a9ba794b28a09ffa260907c841757ff",
+    "rel_l2": 0.0,
+    "sha256": "cbb2c6d4f859efc7fa97f5a2e4e608752a9ba794b28a09ffa260907c841757ff",
+    "shape": [
+      1,
+      8,
+      32,
+      128
+    ]
+  },
+  "full_metrics": {
+    "exact_equal": false,
+    "first_differing_index": [
+      0,
+      0,
+      32,
+      0
+    ],
+    "max_abs": 512.0,
+    "mean_abs": 57.99483871459961,
+    "mismatch_count": 459280,
+    "num_valid_elements": 557056,
+    "ref_sha256": "7d6a720bee7b1a1c8cc8b120840f5a1f7063407fd532a4902546b19c8ce7af76",
+    "rel_l2": 540.9981689453125,
+    "sha256": "b293018c9868e6c992ba80432e90726868272fdcce66ee1485259dbe557ee014",
+    "shape": [
+      1,
+      8,
+      544,
+      128
+    ]
+  }
+}

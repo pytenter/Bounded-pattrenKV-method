@@ -1,0 +1,69 @@
+{
+  "control_interpretation": "Q/K/V all use normal nn.Linear decode path; K is root-relevant because recent_k consumes post-RoPE K.",
+  "k_proj": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 1024,
+    "ref_sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "rel_l2": 0.0,
+    "sha256": "f3bc8aba5b316c2bf4620e2d8c5bdb7b8ae645e9572073b6eacdd946d23c5c6e",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  },
+  "q_proj": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 4096,
+    "ref_sha256": "953bebe8891e84dd06a62af34526fa8d679b795c681588e83fe25ea00c95c5d4",
+    "rel_l2": 0.0,
+    "sha256": "953bebe8891e84dd06a62af34526fa8d679b795c681588e83fe25ea00c95c5d4",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  },
+  "v_proj": {
+    "dtype": "torch.float16",
+    "exact_equal": true,
+    "first_diff_index": null,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "numel": 1024,
+    "ref_sha256": "dfc65c51a04a62be5e075721072fc0c48a1a8db01c27a58a83cc65d8a33d29cb",
+    "rel_l2": 0.0,
+    "sha256": "dfc65c51a04a62be5e075721072fc0c48a1a8db01c27a58a83cc65d8a33d29cb",
+    "shape": [
+      1,
+      1,
+      1024
+    ],
+    "stride": [
+      1024,
+      1024,
+      1
+    ]
+  }
+}

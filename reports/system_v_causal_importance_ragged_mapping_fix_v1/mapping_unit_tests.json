@@ -1,0 +1,7 @@
+{
+  "mapping_b1_b2_long_pass": true,
+  "mapping_b1_b2_short_pass": true,
+  "mapping_b4_pass": true,
+  "mapping_reorder_pass": true,
+  "pytest_source": "tests/test_ragged_k_valid_lengths.py::test_causal_importance_ragged_segment_mapping_*"
+}

@@ -1,0 +1,135 @@
+{
+  "down_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    "normal_m1_m2_exact": false,
+    "normal_m1_m4_exact": false,
+    "normal_m2_reorder_exact": false
+  },
+  "gate_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        14336
+      ]
+    },
+    "normal_m1_m2_exact": false,
+    "normal_m1_m4_exact": false,
+    "normal_m2_reorder_exact": false
+  },
+  "k_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        1024
+      ]
+    },
+    "normal_m1_m2_exact": false,
+    "normal_m1_m4_exact": false,
+    "normal_m2_reorder_exact": false
+  },
+  "o_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    "normal_m1_m2_exact": true,
+    "normal_m1_m4_exact": true,
+    "normal_m2_reorder_exact": true
+  },
+  "q_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    "normal_m1_m2_exact": true,
+    "normal_m1_m4_exact": true,
+    "normal_m2_reorder_exact": true
+  },
+  "up_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        14336
+      ]
+    },
+    "normal_m1_m2_exact": false,
+    "normal_m1_m4_exact": false,
+    "normal_m2_reorder_exact": false
+  },
+  "v_proj": {
+    "bi_m1_m2_exact": true,
+    "bi_m1_m4_exact": true,
+    "bi_m2_reorder_exact": true,
+    "m1_vs_m2": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        1,
+        1024
+      ]
+    },
+    "normal_m1_m2_exact": false,
+    "normal_m1_m4_exact": false,
+    "normal_m2_reorder_exact": false
+  }
+}

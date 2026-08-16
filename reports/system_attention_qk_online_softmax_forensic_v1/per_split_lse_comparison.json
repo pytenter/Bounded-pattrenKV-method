@@ -1,0 +1,40 @@
+{
+  "dynamic_physical": {
+    "exact_equal": false,
+    "max_abs": 3.814697265625e-06,
+    "mean_abs": 2.980232238769531e-07,
+    "mismatch_count": 15,
+    "ref_sha256": "02f85c9d88f2d93143b23822e5203562066d4e5a480ec16e97c3545f754677d2",
+    "rel_l2": 5.9372471383767333e-08,
+    "sha256": "6e04b781a7979ab066ee2fd2afb8b244a13f3cf68f353db659bae074572a139c",
+    "shape": [
+      32
+    ]
+  },
+  "fixed_split": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "f91031bf0be97ec9172bf94b9098d73bfac24eaffea64fb0572a880f937c8f4c",
+    "rel_l2": 0.0,
+    "sha256": "f91031bf0be97ec9172bf94b9098d73bfac24eaffea64fb0572a880f937c8f4c",
+    "shape": [
+      32,
+      4
+    ]
+  },
+  "logical_no_split": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "c8e4cafbc5d3172c50f2a33ee573b39e30705b2aacdd7bd05b6d53c81105a8a9",
+    "rel_l2": 0.0,
+    "sha256": "c8e4cafbc5d3172c50f2a33ee573b39e30705b2aacdd7bd05b6d53c81105a8a9",
+    "shape": [
+      32,
+      1
+    ]
+  }
+}

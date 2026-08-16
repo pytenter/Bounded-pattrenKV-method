@@ -1,0 +1,7 @@
+{
+  "test": "test_request_lifecycle_release_peer_isolation",
+  "release_request": "B",
+  "peer_requests": ["A", "C", "D"],
+  "status": "implemented_not_executed_in_current_shell"
+}
+

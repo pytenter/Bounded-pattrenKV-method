@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "normalized_hidden",
+    "q_input",
+    "raw_q",
+    "position_ids",
+    "q_rope",
+    "attn_probs",
+    "mass",
+    "segment_valid_lengths",
+    "physical_to_logical_mapping",
+    "previous_importance"
+  ],
+  "target": "request A / decode step1 / layer0 / v_causal_importance"
+}

@@ -1,0 +1,9 @@
+{
+  "component": "MLP_OUTPUT",
+  "found": true,
+  "layer": 0,
+  "max_abs": 6.103515625e-05,
+  "rel_l2": 0.00048119149869307876,
+  "request": "A",
+  "step": 1
+}

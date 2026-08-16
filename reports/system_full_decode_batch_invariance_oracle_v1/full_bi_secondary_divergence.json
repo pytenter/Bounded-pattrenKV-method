@@ -1,0 +1,9 @@
+{
+  "component": "layer0_attention_pre_o_proj",
+  "found": true,
+  "layer": 0,
+  "max_abs": 4.76837158203125e-07,
+  "rel_l2": 8.517238256899873e-07,
+  "request": "A",
+  "step": 1
+}

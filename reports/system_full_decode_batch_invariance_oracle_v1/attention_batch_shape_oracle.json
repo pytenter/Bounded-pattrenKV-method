@@ -1,0 +1,16 @@
+{
+  "attention_m1_m2_exact": false,
+  "attention_pre_o_proj": {
+    "exact_equal": false,
+    "max_abs": 4.76837158203125e-07,
+    "mismatch_count": 2,
+    "rel_l2": 8.517238256899873e-07,
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "executed": true,
+  "oracle": "FULL_BI step1 layer0 boundary trace with exact Q/K/V/RoPE inputs"
+}

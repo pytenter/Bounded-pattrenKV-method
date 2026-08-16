@@ -1,0 +1,27 @@
+{
+  "b1_invalid_count_for_a": 0,
+  "b1_logical_length_a": 385,
+  "b1_mask": {
+    "dtype": "torch.bool",
+    "sha256": "a0cd9eefecaff626c76b6a203a14dd81c70b99c712e4875c4ca287cdaa9da308",
+    "shape": [
+      1,
+      385
+    ]
+  },
+  "b1_physical_width": 385,
+  "dtype": "torch.float16",
+  "invalid_exp_fp32_zero": true,
+  "invalid_sentinel": -65504.0,
+  "ragged_invalid_count_for_a": 129,
+  "ragged_logical_length_a": 385,
+  "ragged_mask": {
+    "dtype": "torch.bool",
+    "sha256": "670659282181091046b107729e502c8cecf2888040059f4da4a79f1ac141df1e",
+    "shape": [
+      2,
+      514
+    ]
+  },
+  "ragged_physical_width": 514
+}

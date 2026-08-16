@@ -1,0 +1,8 @@
+{
+  "minimal_bi_mlp_set": [
+    "gate",
+    "up",
+    "down"
+  ],
+  "reason": "gate-only, up-only, down-only, and gate+up do not make MLP_OUTPUT exact; gate+up+down does."
+}

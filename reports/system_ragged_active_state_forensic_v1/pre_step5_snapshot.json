@@ -1,0 +1,32 @@
+{
+  "A": {
+    "active_k_centroid_count": 32,
+    "active_v_centroid_count": 32,
+    "centroid_slot": 0,
+    "centroid_updates_k": 0,
+    "centroid_updates_v": 0,
+    "last_flush_pos": 0,
+    "packed_k": 128,
+    "packed_v": 128,
+    "packed_v4": 32,
+    "pending": 116,
+    "recent": 128,
+    "sink": 16,
+    "total": 388
+  },
+  "B": {
+    "active_k_centroid_count": 32,
+    "active_v_centroid_count": 32,
+    "centroid_slot": 1,
+    "centroid_updates_k": 0,
+    "centroid_updates_v": 0,
+    "last_flush_pos": 0,
+    "packed_k": 256,
+    "packed_v": 256,
+    "packed_v4": 64,
+    "pending": 117,
+    "recent": 128,
+    "sink": 16,
+    "total": 517
+  }
+}

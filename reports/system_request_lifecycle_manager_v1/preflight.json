@@ -1,0 +1,76 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "git_diff_check_initial_pass": true,
+  "remote_origin_push_url": "https://github.com/HCOOOH/PatternKV.git",
+  "remote_bounded_push_url": "git@github.com:pytenter/Bounded-pattrenKV-method.git",
+  "gpu0_occupied": true,
+  "idle_physical_gpus": [1, 2, 3, 4, 5, 6, 7],
+  "python": "/usr/bin/python3",
+  "torch_available": false,
+  "pytest_available": false,
+  "pip_available": false,
+  "PREEXISTING_RAGGED_PRODUCTION_FIX_FILES": [
+    "models/llama_patternkv.py",
+    "models/segmented_cache.py",
+    "quant/batch_invariant_kproj.py",
+    "quant/csrc/gemv_cuda.cu",
+    "quant/csrc/gemv_cuda.h",
+    "quant/page_batch.py",
+    "bench/run_actual_model_bi_prefill_runtime.py",
+    "bench/run_bi_vproj_cost_benefit.py",
+    "bench/run_prefill_projection_mode_policy.py",
+    "bench/run_ragged_multistep_correctness.py"
+  ],
+  "PREEXISTING_TEST_FILES": [
+    "tests/test_bi_kproj_prefill_runtime.py",
+    "tests/test_bi_mlp_oracle.py",
+    "tests/test_fused_page_batch_operator.py",
+    "tests/test_ragged_k_valid_lengths.py",
+    "tests/test_value_direction_screen.py",
+    "tests/test_b4_request_count_ragged_divergence.py",
+    "tests/test_first_late_step_persistent_divergence.py",
+    "tests/test_request_invariant_rmsnorm.py"
+  ],
+  "PREEXISTING_FORENSIC_FILES": [
+    "forensics/",
+    "scripts/attention_qk_online_softmax_forensic.py",
+    "scripts/attention_value_reduction_forensic.py",
+    "scripts/b4_attention_microtrace.py",
+    "scripts/b4_request_count_ragged_divergence.py",
+    "scripts/centroid_determinism_causal_forensic.py",
+    "scripts/first_late_step_persistent_divergence.py",
+    "scripts/full_decode_batch_invariance_oracle.py",
+    "scripts/late_step_post_attention_rmsnorm_gate.py",
+    "scripts/ragged_active_state_forensic.py",
+    "scripts/recent_k_ownership_forensic.py",
+    "scripts/request_invariant_attention_softmax_fix_gate.py",
+    "scripts/secondary_mlp_batch_invariance_gate.py",
+    "scripts/step1_layer0_k_path_forensic.py",
+    "scripts/v_causal_importance_forensic.py",
+    "reports/system_attention_qk_online_softmax_forensic_v1/",
+    "reports/system_attention_value_reduction_forensic_v1/",
+    "reports/system_b4_request_count_kernel_geometry_fix_v1/",
+    "reports/system_b4_request_count_ragged_divergence_v1/",
+    "reports/system_bi_kproj_ragged_decode_fix_v1/",
+    "reports/system_first_late_step_persistent_divergence_v1/",
+    "reports/system_full_decode_batch_invariance_oracle_v1/",
+    "reports/system_late_step_post_attention_rmsnorm_v1/",
+    "reports/system_ragged_active_state_forensic_v1/",
+    "reports/system_recent_k_ownership_forensic_v1/",
+    "reports/system_request_invariant_attention_softmax_fix_v1/",
+    "reports/system_request_invariant_attention_value_fix_v1/",
+    "reports/system_secondary_mlp_batch_invariance_v1/",
+    "reports/system_step1_layer0_kpath_forensic_v1/",
+    "reports/system_v_causal_importance_forensic_v1/",
+    "reports/system_v_causal_importance_ragged_mapping_fix_v1/"
+  ],
+  "THIS_ROUND_LIFECYCLE_FILES": [
+    "models/request_lifecycle.py",
+    "reports/system_request_lifecycle_manager_v1/"
+  ],
+  "THIS_ROUND_TEST_FILES": [
+    "tests/test_request_lifecycle_manager.py"
+  ]
+}
+

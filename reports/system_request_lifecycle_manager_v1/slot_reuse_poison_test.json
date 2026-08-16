@@ -1,0 +1,22 @@
+{
+  "test": "test_request_lifecycle_slot_reuse_no_state_leak",
+  "poisoned_state": [
+    "recent_k",
+    "recent_v",
+    "pending_k",
+    "pending_v",
+    "packed_k",
+    "packed_v",
+    "v_precision_mask",
+    "v_causal_importance",
+    "request_total_tokens",
+    "request_packed_k_tokens",
+    "request_packed_v_tokens",
+    "centroid counts",
+    "centroid update counts",
+    "last_flush_pos"
+  ],
+  "expected_reuse_behavior": "new request cache equals clean cache and old importance is absent",
+  "status": "implemented_not_executed_in_current_shell"
+}
+

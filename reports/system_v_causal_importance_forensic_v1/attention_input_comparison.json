@@ -1,0 +1,55 @@
+{
+  "attention_k_physical_layout_differs": true,
+  "attention_k_valid_lengths": {
+    "b1": {
+      "packed": [
+        128
+      ],
+      "pending": [
+        113
+      ],
+      "recent": [
+        128
+      ],
+      "sink": [
+        16
+      ]
+    },
+    "ragged_a": {
+      "packed": [
+        128
+      ],
+      "pending": [
+        113
+      ],
+      "recent": [
+        128
+      ],
+      "sink": [
+        16
+      ]
+    }
+  },
+  "attention_mask": {
+    "both_none_for_decode1": true
+  },
+  "attention_q_consumed": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "5e64c595db4144fd038bcb3757c0563b5d2ce7e94875839eae839240ca59448b",
+    "rel_l2": 0.0,
+    "sha256": "5e64c595db4144fd038bcb3757c0563b5d2ce7e94875839eae839240ca59448b",
+    "shape": [
+      1,
+      32,
+      1,
+      128
+    ]
+  },
+  "current_k_state": {
+    "confirmed_by_prior_stage": "S6-B.3.4I final_gate step1_current_k_match=true and step1_recent_k_match=true",
+    "not_reinvestigated": true
+  }
+}

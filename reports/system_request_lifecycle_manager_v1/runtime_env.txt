@@ -1,0 +1,10 @@
+python_executable=/data/zypan/.local/share/mamba/envs/patternkv/bin/python
+python_version=3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]
+torch_version=2.4.1+cu124
+torch_cuda_version=12.4
+torch_cuda_available=True
+pytest_version=9.1.1
+triton_version=3.0.0
+validation_gpu=CUDA_VISIBLE_DEVICES=2
+allocator=PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True for model-level ragged/full pytest runs
+

@@ -1,0 +1,881 @@
+{
+  "bad_request_b_geometry": {
+    "segment_lengths": {
+      "packed": [
+        128,
+        256,
+        384,
+        512
+      ],
+      "pending": [
+        113,
+        114,
+        115,
+        116
+      ],
+      "recent": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "sink": [
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    "segments": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 512,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 256
+      },
+      {
+        "logical_offset": 272,
+        "physical_length": 116,
+        "physical_offset": 528,
+        "segment": "pending",
+        "valid_length": 114
+      },
+      {
+        "logical_offset": 386,
+        "physical_length": 128,
+        "physical_offset": 644,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ],
+    "total_tokens": [
+      385,
+      514,
+      643,
+      772
+    ],
+    "value_meta": {
+      "logical_length": 514,
+      "precision_mask_sha256": "73320d978ca044040e797c7c808d759abfdae76f8035abd512386b725bc21163",
+      "precision_v4_count": 64,
+      "segment_mapping": [
+        {
+          "logical_offset": 0,
+          "physical_length": 16,
+          "physical_offset": 0,
+          "segment": "sink",
+          "valid_length": 16
+        },
+        {
+          "logical_offset": 16,
+          "physical_length": 512,
+          "physical_offset": 16,
+          "segment": "packed",
+          "valid_length": 256
+        },
+        {
+          "logical_offset": 272,
+          "physical_length": 116,
+          "physical_offset": 528,
+          "segment": "pending",
+          "valid_length": 114
+        },
+        {
+          "logical_offset": 386,
+          "physical_length": 128,
+          "physical_offset": 644,
+          "segment": "recent",
+          "valid_length": 128
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "bad_kernel_geometry": {
+      "attention_width": 512,
+      "batch": 4,
+      "grid_blocks": [
+        128,
+        128,
+        1
+      ],
+      "heads": 32,
+      "num_pages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "pages_per_request": 4,
+      "seq_lens": [
+        128,
+        256,
+        384,
+        512
+      ],
+      "threads": [
+        256,
+        1,
+        1
+      ],
+      "v2_tokens": 960,
+      "v4_tokens": 320
+    },
+    "first_bad_attention_subcomponent": null,
+    "good_kernel_geometry": {
+      "attention_width": 256,
+      "batch": 2,
+      "grid_blocks": [
+        64,
+        128,
+        1
+      ],
+      "heads": 32,
+      "num_pages": [
+        1,
+        2
+      ],
+      "pages_per_request": 2,
+      "seq_lens": [
+        128,
+        256
+      ],
+      "threads": [
+        256,
+        1,
+        1
+      ],
+      "v2_tokens": 288,
+      "v4_tokens": 96
+    },
+    "mask_request_local_match": {
+      "contiguous": true,
+      "device": "cpu",
+      "dtype": "torch.bool",
+      "exact_equal": false,
+      "max_abs": null,
+      "mean_abs": null,
+      "mismatch_count": null,
+      "ref": {
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.bool",
+        "sha256": "ca586bb3218ff384a93305633b9966c8b3fcb351851b5b48e13b56db58c510c6",
+        "shape": [
+          514
+        ],
+        "storage_offset": 0,
+        "stride": [
+          1
+        ]
+      },
+      "rel_l2": null,
+      "sha256": "f7fcef6d963ee2d7bc835ccccd9e12327ed2283a3315251877076579a2837323",
+      "shape": [
+        772
+      ],
+      "storage_offset": 0,
+      "stride": [
+        1
+      ]
+    },
+    "rows": [
+      {
+        "component": "request_local_q",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "6b852aa4a12c3cf1b06129bea55e0d38e9a323147da18f89d7ef8868cb9bac53",
+          "shape": [
+            32,
+            128
+          ],
+          "storage_offset": 4096,
+          "stride": [
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "6b852aa4a12c3cf1b06129bea55e0d38e9a323147da18f89d7ef8868cb9bac53",
+        "shape": [
+          32,
+          128
+        ],
+        "storage_offset": 4096,
+        "stride": [
+          128,
+          1
+        ]
+      },
+      {
+        "component": "request_local_current_k",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "1ee6d9ec212b8baf672c8697999d692a696510243adbf2e51cb6b208665367dc",
+          "shape": [
+            8,
+            128
+          ],
+          "storage_offset": 1024,
+          "stride": [
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "1ee6d9ec212b8baf672c8697999d692a696510243adbf2e51cb6b208665367dc",
+        "shape": [
+          8,
+          128
+        ],
+        "storage_offset": 1024,
+        "stride": [
+          128,
+          1
+        ]
+      },
+      {
+        "component": "request_local_current_v",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "5886736f6228bb7c70519f26adb0e676643e98adc83cdbd2d969a5131cb981d5",
+          "shape": [
+            8,
+            128
+          ],
+          "storage_offset": 1024,
+          "stride": [
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "5886736f6228bb7c70519f26adb0e676643e98adc83cdbd2d969a5131cb981d5",
+        "shape": [
+          8,
+          128
+        ],
+        "storage_offset": 1024,
+        "stride": [
+          128,
+          1
+        ]
+      },
+      {
+        "component": "request_local_k_cache",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "5451ac2c35043df9b25747e9251d0b418610c2cec2e90e47d7b00d3ba4154876",
+          "shape": [
+            8,
+            514,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            65792,
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "5451ac2c35043df9b25747e9251d0b418610c2cec2e90e47d7b00d3ba4154876",
+        "shape": [
+          8,
+          514,
+          128
+        ],
+        "storage_offset": 0,
+        "stride": [
+          65792,
+          128,
+          1
+        ]
+      },
+      {
+        "component": "request_local_v_cache",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "4c682ad8ae09352c58192b4492e138629f84289a454b756aee00f9d6970d7799",
+          "shape": [
+            8,
+            514,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            65792,
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "4c682ad8ae09352c58192b4492e138629f84289a454b756aee00f9d6970d7799",
+        "shape": [
+          8,
+          514,
+          128
+        ],
+        "storage_offset": 0,
+        "stride": [
+          65792,
+          128,
+          1
+        ]
+      },
+      {
+        "component": "qk_raw_scores",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "811fe739a19a3dcdce9ba0e60e19a1c6b9aacb37240a34e8cb64137ba53521fd",
+          "shape": [
+            32,
+            514
+          ],
+          "storage_offset": 0,
+          "stride": [
+            514,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "811fe739a19a3dcdce9ba0e60e19a1c6b9aacb37240a34e8cb64137ba53521fd",
+        "shape": [
+          32,
+          514
+        ],
+        "storage_offset": 0,
+        "stride": [
+          514,
+          1
+        ]
+      },
+      {
+        "component": "scaled_scores",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "4f5f35afadb6826b95236844d2fba8f336b9ef37b8596f5dfb00716500b7aae4",
+          "shape": [
+            32,
+            514
+          ],
+          "storage_offset": 0,
+          "stride": [
+            514,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "4f5f35afadb6826b95236844d2fba8f336b9ef37b8596f5dfb00716500b7aae4",
+        "shape": [
+          32,
+          514
+        ],
+        "storage_offset": 0,
+        "stride": [
+          514,
+          1
+        ]
+      },
+      {
+        "component": "production_packed_k_scores",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "8d8abf339901e90b6e554af7456192b2639f59b8c1a86363771df80e0acf0324",
+          "shape": [
+            32,
+            256
+          ],
+          "storage_offset": 0,
+          "stride": [
+            256,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "8d8abf339901e90b6e554af7456192b2639f59b8c1a86363771df80e0acf0324",
+        "shape": [
+          32,
+          256
+        ],
+        "storage_offset": 0,
+        "stride": [
+          256,
+          1
+        ]
+      },
+      {
+        "component": "masked_scores",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "10d8b8dda7ff0f7390dcf8c24a7da8e3a60c3249cccc84ee3dbdb5cf7cb1e695",
+          "shape": [
+            32,
+            514
+          ],
+          "storage_offset": 0,
+          "stride": [
+            514,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "10d8b8dda7ff0f7390dcf8c24a7da8e3a60c3249cccc84ee3dbdb5cf7cb1e695",
+        "shape": [
+          32,
+          514
+        ],
+        "storage_offset": 0,
+        "stride": [
+          514,
+          1
+        ]
+      },
+      {
+        "component": "softmax_probabilities",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "238552bcad94f550d004cd545963b0e933ebfdc64e39813772b3447338c2b251",
+          "shape": [
+            32,
+            514
+          ],
+          "storage_offset": 0,
+          "stride": [
+            514,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "238552bcad94f550d004cd545963b0e933ebfdc64e39813772b3447338c2b251",
+        "shape": [
+          32,
+          514
+        ],
+        "storage_offset": 0,
+        "stride": [
+          514,
+          1
+        ]
+      },
+      {
+        "component": "probability_times_v",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "51e08177bcd49d7880108ed5a6d0f84a7800018ab098e15b133261a5a398e282",
+          "shape": [
+            32,
+            514,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            65792,
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "51e08177bcd49d7880108ed5a6d0f84a7800018ab098e15b133261a5a398e282",
+        "shape": [
+          32,
+          514,
+          128
+        ],
+        "storage_offset": 0,
+        "stride": [
+          65792,
+          128,
+          1
+        ]
+      },
+      {
+        "component": "reference_pre_o_same_dtype",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "5d618113bbdc90c930d99679b3398b0f4878eb0a4ade1c35236270f92906f4da",
+          "shape": [
+            1,
+            1,
+            4096
+          ],
+          "storage_offset": 0,
+          "stride": [
+            4096,
+            4096,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "5d618113bbdc90c930d99679b3398b0f4878eb0a4ade1c35236270f92906f4da",
+        "shape": [
+          1,
+          1,
+          4096
+        ],
+        "storage_offset": 0,
+        "stride": [
+          4096,
+          4096,
+          1
+        ]
+      },
+      {
+        "component": "reference_pre_o_fp32",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "e8238e1b2665c9b43ece9e819b3f9d1e9a345caa7fe7cc4618ce3410ae66ebd0",
+          "shape": [
+            1,
+            1,
+            4096
+          ],
+          "storage_offset": 0,
+          "stride": [
+            4096,
+            4096,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "e8238e1b2665c9b43ece9e819b3f9d1e9a345caa7fe7cc4618ce3410ae66ebd0",
+        "shape": [
+          1,
+          1,
+          4096
+        ],
+        "storage_offset": 0,
+        "stride": [
+          4096,
+          4096,
+          1
+        ]
+      },
+      {
+        "component": "production_packed_value_kernel",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "f642b6f1076b7c39758f85924af4e69ca718447e0fc4b774b9afe4c21d641834",
+          "shape": [
+            1,
+            32,
+            1,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            4096,
+            128,
+            128,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "f642b6f1076b7c39758f85924af4e69ca718447e0fc4b774b9afe4c21d641834",
+        "shape": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "storage_offset": 0,
+        "stride": [
+          4096,
+          128,
+          128,
+          1
+        ]
+      },
+      {
+        "component": "merged_head_pre_o_proj",
+        "contiguous": true,
+        "device": "cpu",
+        "dtype": "torch.float16",
+        "exact_equal": true,
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "ref": {
+          "contiguous": true,
+          "device": "cpu",
+          "dtype": "torch.float16",
+          "sha256": "b678eb0019e88f4d18742ece27cc76c1cfb80ebcbc175911cbe283f54b692163",
+          "shape": [
+            1,
+            1,
+            4096
+          ],
+          "storage_offset": 4096,
+          "stride": [
+            4096,
+            4096,
+            1
+          ]
+        },
+        "rel_l2": 0.0,
+        "sha256": "b678eb0019e88f4d18742ece27cc76c1cfb80ebcbc175911cbe283f54b692163",
+        "shape": [
+          1,
+          1,
+          4096
+        ],
+        "storage_offset": 4096,
+        "stride": [
+          4096,
+          4096,
+          1
+        ]
+      }
+    ],
+    "total_tokens_match": true,
+    "valid_length_match": false
+  },
+  "elapsed_s": 32.372045550029725,
+  "environment": {
+    "branch": "sys/causal-v4-25-kernel-v1",
+    "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+    "nvidia_smi": "Sat Aug 15 11:10:03 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.173.02             Driver Version: 580.173.02     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 3090        Off |   00000000:1A:00.0 Off |                  N/A |\n| 30%   27C    P8             19W /  350W |   18409MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   1  NVIDIA GeForce RTX 3090        Off |   00000000:1C:00.0 Off |                  N/A |\n| 30%   44C    P2            126W /  350W |   19512MiB /  24576MiB |     36%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   2  NVIDIA GeForce RTX 3090        Off |   00000000:1D:00.0 Off |                  N/A |\n| 30%   30C    P8             18W /  350W |      20MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   3  NVIDIA GeForce RTX 3090        Off |   00000000:1E:00.0 Off |                  N/A |\n| 30%   31C    P8             21W /  350W |      18MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   4  NVIDIA GeForce RTX 3090        Off |   00000000:3E:00.0 Off |                  N/A |\n| 30%   30C    P8             16W /  350W |      18MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   5  NVIDIA GeForce RTX 3090        Off |   00000000:3F:00.0 Off |                  N/A |\n| 30%   28C    P8             20W /  350W |      18MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   6  NVIDIA GeForce RTX 3090        Off |   00000000:40:00.0 Off |                  N/A |\n| 30%   30C    P8             15W /  350W |      18MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   7  NVIDIA GeForce RTX 3090        Off |   00000000:41:00.0 Off |                  N/A |\n| 30%   31C    P8             17W /  350W |      18MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|    0   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    0   N/A  N/A          201464      C   python                                18380MiB |\n|    1   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    1   N/A  N/A         2855404      C   python                                19486MiB |\n|    2   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    3   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    4   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    5   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    6   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n|    7   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |\n+-----------------------------------------------------------------------------------------+\n",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "python": "3.10.20",
+    "status_short": "M bench/run_actual_model_bi_prefill_runtime.py\n M bench/run_bi_vproj_cost_benefit.py\n M bench/run_prefill_projection_mode_policy.py\n M bench/run_ragged_multistep_correctness.py\n M models/llama_patternkv.py\n M models/segmented_cache.py\n M quant/batch_invariant_kproj.py\n M quant/csrc/gemv_cuda.cu\n M quant/csrc/gemv_cuda.h\n M quant/page_batch.py\n M reports/system_ragged_multistep_correctness_v1/b2_16step.md\n M reports/system_ragged_multistep_correctness_v1/b2_flush_events.json\n M reports/system_ragged_multistep_correctness_v1/b2_flush_schedule.md\n M reports/system_ragged_multistep_correctness_v1/b2_reorder.md\n M reports/system_ragged_multistep_correctness_v1/b2_reorder_steps.json\n M reports/system_ragged_multistep_correctness_v1/b2_steps.json\n M reports/system_ragged_multistep_correctness_v1/b4_16step.md\n M reports/system_ragged_multistep_correctness_v1/b4_flush_events.json\n M reports/system_ragged_multistep_correctness_v1/b4_flush_schedule.md\n M reports/system_ragged_multistep_correctness_v1/b4_steps.json\n M reports/system_ragged_multistep_correctness_v1/centroid_events.json\n M reports/system_ragged_multistep_correctness_v1/environment.md\n M reports/system_ragged_multistep_correctness_v1/final_gate.json\n M reports/system_ragged_multistep_correctness_v1/free_run.json\n M reports/system_ragged_multistep_correctness_v1/page_events.json\n M reports/system_ragged_multistep_correctness_v1/pytest.md\n M reports/system_ragged_multistep_correctness_v1/runtime_counters.json\n M reports/system_ragged_multistep_correctness_v1/semantic_metrics.json\n M tests/test_bi_kproj_prefill_runtime.py\n M tests/test_bi_mlp_oracle.py\n M tests/test_fused_page_batch_operator.py\n M tests/test_ragged_k_valid_lengths.py\n M tests/test_value_direction_screen.py\n?? forensics/\n?? reports/centroid_determinism_causal_forensic.md\n?? reports/system_attention_qk_online_softmax_forensic_v1/\n?? reports/system_attention_value_reduction_forensic_v1/\n?? reports/system_b4_request_count_kernel_geometry_fix_v1/\n?? reports/system_b4_request_count_ragged_divergence_v1/\n?? reports/system_bi_kproj_ragged_decode_fix_v1/\n?? reports/system_first_late_step_persistent_divergence_v1/\n?? reports/system_full_decode_batch_invariance_oracle_v1/\n?? reports/system_late_step_post_attention_rmsnorm_v1/\n?? reports/system_ragged_active_state_forensic_v1/\n?? reports/system_recent_k_ownership_forensic_v1/\n?? reports/system_request_invariant_attention_softmax_fix_v1/\n?? reports/system_request_invariant_attention_value_fix_v1/\n?? reports/system_secondary_mlp_batch_invariance_v1/\n?? reports/system_step1_layer0_kpath_forensic_v1/\n?? reports/system_v_causal_importance_forensic_v1/\n?? reports/system_v_causal_importance_ragged_mapping_fix_v1/\n?? scripts/attention_qk_online_softmax_forensic.py\n?? scripts/attention_value_reduction_forensic.py\n?? scripts/b4_attention_microtrace.py\n?? scripts/b4_request_count_ragged_divergence.py\n?? scripts/centroid_determinism_causal_forensic.py\n?? scripts/first_late_step_persistent_divergence.py\n?? scripts/full_decode_batch_invariance_oracle.py\n?? scripts/late_step_post_attention_rmsnorm_gate.py\n?? scripts/ragged_active_state_forensic.py\n?? scripts/recent_k_ownership_forensic.py\n?? scripts/request_invariant_attention_softmax_fix_gate.py\n?? scripts/secondary_mlp_batch_invariance_gate.py\n?? scripts/step1_layer0_k_path_forensic.py\n?? scripts/v_causal_importance_forensic.py\n?? tests/test_b4_request_count_ragged_divergence.py\n?? tests/test_first_late_step_persistent_divergence.py\n?? tests/test_request_invariant_rmsnorm.py",
+    "torch": "2.4.1+cu124"
+  },
+  "good_request_b_geometry": {
+    "segment_lengths": {
+      "packed": [
+        128,
+        256
+      ],
+      "pending": [
+        113,
+        114
+      ],
+      "recent": [
+        128,
+        128
+      ],
+      "sink": [
+        16,
+        16
+      ]
+    },
+    "segments": [
+      {
+        "logical_offset": 0,
+        "physical_length": 16,
+        "physical_offset": 0,
+        "segment": "sink",
+        "valid_length": 16
+      },
+      {
+        "logical_offset": 16,
+        "physical_length": 256,
+        "physical_offset": 16,
+        "segment": "packed",
+        "valid_length": 256
+      },
+      {
+        "logical_offset": 272,
+        "physical_length": 114,
+        "physical_offset": 272,
+        "segment": "pending",
+        "valid_length": 114
+      },
+      {
+        "logical_offset": 386,
+        "physical_length": 128,
+        "physical_offset": 386,
+        "segment": "recent",
+        "valid_length": 128
+      }
+    ],
+    "total_tokens": [
+      385,
+      514
+    ],
+    "value_meta": {
+      "logical_length": 514,
+      "precision_mask_sha256": "73320d978ca044040e797c7c808d759abfdae76f8035abd512386b725bc21163",
+      "precision_v4_count": 64,
+      "segment_mapping": [
+        {
+          "logical_offset": 0,
+          "physical_length": 16,
+          "physical_offset": 0,
+          "segment": "sink",
+          "valid_length": 16
+        },
+        {
+          "logical_offset": 16,
+          "physical_length": 256,
+          "physical_offset": 16,
+          "segment": "packed",
+          "valid_length": 256
+        },
+        {
+          "logical_offset": 272,
+          "physical_length": 114,
+          "physical_offset": 272,
+          "segment": "pending",
+          "valid_length": 114
+        },
+        {
+          "logical_offset": 386,
+          "physical_length": 128,
+          "physical_offset": 386,
+          "segment": "recent",
+          "valid_length": 128
+        }
+      ]
+    }
+  },
+  "target": {
+    "bad": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "good": [
+      "A",
+      "B"
+    ],
+    "layer": 0,
+    "request": "B",
+    "step": 1
+  }
+}

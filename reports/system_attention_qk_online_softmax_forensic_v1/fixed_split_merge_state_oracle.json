@@ -1,0 +1,40 @@
+{
+  "local_lse": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "f91031bf0be97ec9172bf94b9098d73bfac24eaffea64fb0572a880f937c8f4c",
+    "rel_l2": 0.0,
+    "sha256": "f91031bf0be97ec9172bf94b9098d73bfac24eaffea64fb0572a880f937c8f4c",
+    "shape": [
+      32,
+      4
+    ]
+  },
+  "local_max": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "a95270ae53ff23e4a8b02e31519f3be1e976348492315bde45bb021e06dd5d4a",
+    "rel_l2": 0.0,
+    "sha256": "a95270ae53ff23e4a8b02e31519f3be1e976348492315bde45bb021e06dd5d4a",
+    "shape": [
+      32,
+      4
+    ]
+  },
+  "merged_lse": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "mismatch_count": 0,
+    "ref_sha256": "2a8b25242559441b5dcbd714a421e150f2670e9d3261d99cf0533f0242c3df27",
+    "rel_l2": 0.0,
+    "sha256": "2a8b25242559441b5dcbd714a421e150f2670e9d3261d99cf0533f0242c3df27",
+    "shape": [
+      32
+    ]
+  }
+}
