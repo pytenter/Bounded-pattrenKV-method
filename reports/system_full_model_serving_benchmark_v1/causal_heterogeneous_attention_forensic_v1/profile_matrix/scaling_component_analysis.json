@@ -1,0 +1,138 @@
+{
+  "c2048_b1_mean_tpot_ms": {
+    "CAUSAL_V4_25_FULL_MODEL": 259.6145366260316,
+    "FP16_FULL_MODEL": 59.642858628649265
+  },
+  "decode_root_cause": "MULTI_COMPONENT",
+  "memory_root_cause": "PREFILL_NON_KV_PEAK_DOMINATED",
+  "model_parameter_bytes": {},
+  "persistent_cache_bytes_B2": {
+    "CAUSAL_V4_25_FULL_MODEL": 0,
+    "FP16_FULL_MODEL": 0
+  },
+  "profile_component_buckets": {
+    "('CAUSAL_V4_25_FULL_MODEL', 2048, 1)": {
+      "attention_softmax_ms": 147.73043155670166,
+      "attention_total_ms": 1320.6241602897644,
+      "cache_append_ms": 154.03612846136093,
+      "k_proj_ms": 34.78527984768152,
+      "lm_head_ms": 9.499647855758667,
+      "mixed_value_ms": 48.68710418045521,
+      "o_proj_ms": 26.273791424930096,
+      "output_projection_ms": 34.96243166923523,
+      "q_proj_ms": 25.600000150501728,
+      "qk_fp16_regions_ms": 98.30486412346363,
+      "rope_ms": 97.33734399080276,
+      "v_proj_ms": 14.342143960297108,
+      "value_fp16_tail_ms": 337.2902399599552
+    },
+    "('CAUSAL_V4_25_FULL_MODEL', 2048, 2)": {
+      "attention_softmax_ms": 151.54790315032005,
+      "attention_total_ms": 1403.08070230484,
+      "cache_append_ms": 180.82668751478195,
+      "k_proj_ms": 17.997824233025312,
+      "lm_head_ms": 9.670655846595764,
+      "mixed_value_ms": 81.11206391453743,
+      "o_proj_ms": 26.18367935717106,
+      "output_projection_ms": 34.9511674195528,
+      "q_proj_ms": 25.58259215950966,
+      "qk_fp16_regions_ms": 96.22937652468681,
+      "rope_ms": 103.3103360235691,
+      "v_proj_ms": 16.30207996070385,
+      "value_fp16_tail_ms": 332.80614429712296
+    },
+    "('CAUSAL_V4_25_FULL_MODEL', 4096, 1)": {
+      "attention_softmax_ms": 148.87731236219406,
+      "attention_total_ms": 1349.3678064346313,
+      "cache_append_ms": 155.30569595098495,
+      "k_proj_ms": 34.83135934174061,
+      "lm_head_ms": 9.497599840164185,
+      "mixed_value_ms": 83.31980794668198,
+      "o_proj_ms": 26.245119474828243,
+      "output_projection_ms": 34.93580740690231,
+      "q_proj_ms": 25.424896232783794,
+      "qk_fp16_regions_ms": 97.75907211750746,
+      "rope_ms": 99.63929599523544,
+      "v_proj_ms": 14.427135970443487,
+      "value_fp16_tail_ms": 323.71609604358673
+    },
+    "('FP16_FULL_MODEL', 2048, 1)": {
+      "attention_total_ms": 251.3940473794937,
+      "k_proj_ms": 31.491072442382574,
+      "lm_head_ms": 9.79148805141449,
+      "mlp_ms": 137.72595167160034,
+      "o_proj_ms": 24.363008342683315,
+      "q_proj_ms": 22.716416127979755,
+      "rmsnorm_ms": 41.69932765327394,
+      "v_proj_ms": 12.597760118544102
+    },
+    "('FP16_FULL_MODEL', 2048, 2)": {
+      "attention_total_ms": 196.7708165347576,
+      "k_proj_ms": 15.275008011609316,
+      "lm_head_ms": 10.023936033248901,
+      "mlp_ms": 135.2785922884941,
+      "o_proj_ms": 24.581120386719704,
+      "q_proj_ms": 23.52128016576171,
+      "rmsnorm_ms": 49.15199988335371,
+      "v_proj_ms": 14.777343962341547
+    },
+    "('FP16_FULL_MODEL', 4096, 1)": {
+      "attention_total_ms": 208.62259125709534,
+      "k_proj_ms": 31.058943822979927,
+      "lm_head_ms": 9.875455856323242,
+      "mlp_ms": 138.7161607146263,
+      "o_proj_ms": 24.24217640608549,
+      "q_proj_ms": 23.812096253037453,
+      "rmsnorm_ms": 42.493951639160514,
+      "v_proj_ms": 12.699648138135672
+    }
+  },
+  "repaired_final_gate": {
+    "CAUSAL_MAX_SUCCESS_B": 2,
+    "CAUSAL_OWN_MAX_DECODE_TOK_S": 9.279297595854336,
+    "CAUSAL_TO_FP16_DECODE_RATIO_AT_MAX_COMMON_B": 0.1497382285332895,
+    "COMMIT_CREATED": false,
+    "CONCURRENCY_CAPACITY_RATIO": 1.0,
+    "FP16_MAX_SUCCESS_B": 2,
+    "FP16_OWN_MAX_DECODE_TOK_S": 59.93710126882105,
+    "FULL_MODEL_CONCURRENCY_ADVANTAGE": "NOT_SUPPORTED",
+    "FULL_MODEL_MEMORY_TO_DECODE_THROUGHPUT_TRANSLATION": "NOT_SUPPORTED",
+    "MATCHED_MAX_COMMON_B": 4,
+    "OWN_MAX_DECODE_THROUGHPUT_RATIO": 0.1548172567478063,
+    "PUSHED": false,
+    "REPORT_DIR": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_scaling_decode_only_protocol_repair_v1",
+    "SUPPORTED": true,
+    "TASK_CLASSIFICATION": "FULL_MODEL_SCALING_DECODE_ONLY_PROTOCOL_REPAIR_V1_SUPPORTED",
+    "branch": "sys/causal-v4-25-kernel-v1",
+    "capacity_has_boundaries": true,
+    "context_complete": true,
+    "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+    "matched_b_complete": true,
+    "protocol_validation": {
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "decode_only_protocol_valid": true,
+      "fixed_membership_in_timed_window": true,
+      "initial_prefill_outside_timing": true,
+      "protocol_failures": [],
+      "refill_prefill_outside_timing": true
+    },
+    "structural_counters": {
+      "COMPRESSED_DOMAIN_RUNTIME_PRESERVED": true,
+      "FALLBACK_COUNT": 0,
+      "HISTORICAL_FP16_K_MATERIALIZATION": 0,
+      "HISTORICAL_FP16_V_MATERIALIZATION": 0,
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "SERIAL_ATTENTION_DISPATCHES": 0,
+      "SERIAL_MLP_REQUEST_DISPATCHES": 0,
+      "SERIAL_REQUEST_FORWARD_DISPATCHES": 0,
+      "SERIAL_RMSNORM_REQUEST_DISPATCHES": 0,
+      "TRUE_BATCH_PRESERVED": true
+    }
+  }
+}

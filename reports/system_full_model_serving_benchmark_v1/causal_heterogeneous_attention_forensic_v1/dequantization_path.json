@@ -1,0 +1,22 @@
+{
+  "classification": "PARTIALLY_FUSED",
+  "global_fp16_dequant_intermediate": "NOT_FOUND for full historical K/V. The fused page Value kernel does not write a dequantized historical V tensor to global memory.",
+  "global_intermediates_that_do_exist": [
+    "QK score tensor for concatenated segments",
+    "softmax probability tensor over all physical segments",
+    "final per-segment Value output tensors before Python addition",
+    "wrapper dtype/layout contiguous copies when inputs are not already compliant"
+  ],
+  "historical_k": "cuda_bmm_fA_qB_outer_with_base consumes INT2 packed K in CUDA and returns QK scores; no full historical FP16 K cache materialization.",
+  "historical_v_page_pool": "patternkv_fused_page_batch_decode calls attn_v_forward_cuda_page_mixed_pool; page_mixed_pool_value_kernel branches per token on V4 prefix counts, unpacks INT2/INT4 code, applies half scale/zero as float, optionally adds centroid, and immediately accumulates alpha*value into a register sum before writing final [B,H,1,D] output.",
+  "low_bit_instruction_pattern": [
+    "load packed uint32 payload",
+    "mask/shift extract 2-bit or 4-bit code",
+    "load FP16 scale/zero",
+    "convert to float",
+    "scale*code+zero",
+    "optional precision-pattern centroid load/add",
+    "multiply by FP16 attention weight converted to float",
+    "block reduce and write FP16 output"
+  ]
+}

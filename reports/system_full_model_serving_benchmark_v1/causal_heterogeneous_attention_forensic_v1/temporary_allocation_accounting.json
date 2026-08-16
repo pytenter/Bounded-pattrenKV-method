@@ -1,0 +1,41 @@
+{
+  "profiled_temp_allocations": {
+    "causal_c2048_b1": [],
+    "causal_c2048_b2": [],
+    "causal_c2048_b4": [],
+    "causal_c4096_b1": [],
+    "causal_c8192_b1": [],
+    "fp16_c2048_b1": [],
+    "fp16_c2048_b2": [],
+    "fp16_c4096_b1": [],
+    "long_c2048_b1_d136": []
+  },
+  "static_hot_path_findings": [
+    {
+      "classification": "global logits concatenation before unified softmax",
+      "lifetime": "per layer per decode token",
+      "operation": "torch.cat(score_parts, dim=-1)",
+      "site": "models/llama_patternkv.py:1365"
+    },
+    {
+      "classification": "global probability tensor output, not exposed attention state",
+      "operation": "fixed split softmax wrapper returns full probability tensor",
+      "site": "models/segmented_cache.py:294"
+    },
+    {
+      "classification": "wrapper dtype/layout normalization for fused page Value",
+      "operation": "attn.to(torch.float16).contiguous()",
+      "site": "quant/page_batch.py:677"
+    },
+    {
+      "classification": "potential no-op if already correct dtype/contiguous; otherwise wrapper temp copies",
+      "operation": "to(...).contiguous() on page-pool metadata/payload views",
+      "site": "quant/csrc/gemv_cuda.cu:2851-2867"
+    },
+    {
+      "classification": "FP16 tail materializes per-segment contrib tensor inside PyTorch expression",
+      "operation": "request_invariant_full_value_attention split loop",
+      "site": "models/segmented_cache.py:408"
+    }
+  ]
+}

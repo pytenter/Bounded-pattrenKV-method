@@ -1,0 +1,8 @@
+{
+  "can_map_to_flashinfer_style": "Mathematically yes because segments are disjoint and current fixed-split already uses online max/sum merge internally. Production ABI would need to expose per-segment or per-split state (m,l,O) and merge before normalization/output rather than returning full probabilities.",
+  "current_history_tail_merge": "QK scores for FP16 sink, INT2 history, FP16 pending, FP16 recent are concatenated into a single logits tensor; one global softmax produces probabilities; Value outputs for packed history and FP16 segments are computed separately using those global probabilities and summed.",
+  "current_softmax_merge": "request_invariant_fixed_split_softmax_kernel has internal merged_max and merged_sum and maps logical split positions to physical segment positions, but returns normalized probabilities, not (O,m,l) or LSE.",
+  "determinism_risk": "Moderate: deterministic merge order and request-local logical ordering must match fixed-split semantics exactly.",
+  "state_merge_architecture": "SUPPORTED_WITH_MODERATE_ABI_CHANGE",
+  "would_require_kernel_rewrite": "Not a full algorithm rewrite, but requires attention/softmax/value ABI changes and likely new kernels to avoid materialized probabilities."
+}

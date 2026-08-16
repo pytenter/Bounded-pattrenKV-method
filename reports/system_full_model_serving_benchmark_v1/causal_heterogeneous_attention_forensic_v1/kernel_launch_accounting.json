@@ -1,0 +1,650 @@
+{
+  "causal_c2048_b1": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "attention_softmax": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "cache_append": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_int2_history": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 8
+  },
+  "causal_c2048_b2": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "attention_softmax": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "cache_append": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "qk_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "qk_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "qk_int2_history": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "value_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "value_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      },
+      "value_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 16.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 16
+  },
+  "causal_c2048_b4": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "attention_softmax": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "cache_append": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "qk_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "qk_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "qk_int2_history": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "value_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "value_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      },
+      "value_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 8.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 32
+  },
+  "causal_c4096_b1": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "attention_softmax": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "cache_append": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_int2_history": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 8
+  },
+  "causal_c8192_b1": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "attention_softmax": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "cache_append": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_int2_history": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_pending": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_recent": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_sink": {
+        "calls": 256,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 8
+  },
+  "fp16_c2048_b1": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "attention_softmax": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "cache_append": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_int2_history": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 8
+  },
+  "fp16_c2048_b2": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "attention_softmax": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "cache_append": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_int2_history": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 16
+  },
+  "fp16_c4096_b1": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "attention_softmax": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "cache_append": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "pack_window": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "page_batch_pack": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "qk_int2_history": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_pending": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_recent": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      },
+      "value_fp16_sink": {
+        "calls": 0,
+        "calls_per_layer_per_decode_iteration": 0.0,
+        "calls_per_output_token": 0.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 8
+  },
+  "long_c2048_b1_d136": {
+    "components": {
+      "attention_score_concat": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "attention_softmax": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "cache_append": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "mixed_v_page_pool_operator": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "pack_window": {
+        "calls": 32,
+        "calls_per_layer_per_decode_iteration": 0.007352941176470588,
+        "calls_per_output_token": 0.23529411764705882
+      },
+      "page_batch_pack": {
+        "calls": 32,
+        "calls_per_layer_per_decode_iteration": 0.007352941176470588,
+        "calls_per_output_token": 0.23529411764705882
+      },
+      "qk_fp16_pending": {
+        "calls": 4320,
+        "calls_per_layer_per_decode_iteration": 0.9926470588235294,
+        "calls_per_output_token": 31.764705882352942
+      },
+      "qk_fp16_recent": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_fp16_sink": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "qk_int2_history": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_pending": {
+        "calls": 4320,
+        "calls_per_layer_per_decode_iteration": 0.9926470588235294,
+        "calls_per_output_token": 31.764705882352942
+      },
+      "value_fp16_recent": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      },
+      "value_fp16_sink": {
+        "calls": 4352,
+        "calls_per_layer_per_decode_iteration": 1.0,
+        "calls_per_output_token": 32.0
+      }
+    },
+    "layers": 32,
+    "note": "range-level launch proxy from profile calls; PyTorch ranges can contain multiple CUDA kernels, so this is a lower-bound/proxy, not Nsight kernel count.",
+    "output_tokens": 136
+  }
+}

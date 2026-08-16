@@ -1,0 +1,8 @@
+{
+  "COMMIT_CREATED": false,
+  "DECODE_ROOT_CAUSE": "MULTI_COMPONENT",
+  "MEMORY_ROOT_CAUSE": "PREFILL_NON_KV_PEAK_DOMINATED",
+  "PUSHED": false,
+  "REPORT_DIR": "reports/system_full_model_serving_benchmark_v1/causal_heterogeneous_attention_forensic_v1/profile_matrix",
+  "TASK_CLASSIFICATION": "FULL_MODEL_POST_SCALING_BOTTLENECK_FORENSIC_V1_SUPPORTED"
+}

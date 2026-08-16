@@ -1,0 +1,21 @@
+{
+  "boundary_maintenance_importance_decode8": "LOW",
+  "boundary_maintenance_importance_long_decode_ge_128": "MEDIUM",
+  "boundary_separated": true,
+  "classification": "CAUSAL_HETEROGENEOUS_ATTENTION_FORENSIC_V1_SUPPORTED",
+  "decode_only_profile_attribution_correct": true,
+  "dequant_path_classification": "PARTIALLY_FUSED",
+  "fp16_baseline_comparison": true,
+  "full_pytest": "PASS_via_repository_checkpoint_full_pytest_1025_passed",
+  "git_diff_check": "PASS",
+  "heterogeneous_attention_root_cause": "MULTI_COMPONENT",
+  "history_vs_tail_split": true,
+  "kernel_launch_accounting": "RANGE_LEVEL_PROXY",
+  "next_optimization": "SEGMENTED_HETEROGENEOUS_ATTENTION_STATE_MERGE_V1",
+  "prefill_counters_zero": true,
+  "semantic_tests": "PASS_via_repository_checkpoint_targeted_pytest_177_passed",
+  "state_merge_feasibility": "SUPPORTED_WITH_MODERATE_ABI_CHANGE",
+  "task": "CAUSAL_HETEROGENEOUS_ATTENTION_FORENSIC_V1",
+  "temp_allocation_accounting": true,
+  "validation_blocker": "RESOLVED_IN_REPOSITORY_CHECKPOINT_AND_BRANCH_HYGIENE_V1"
+}
