@@ -1,0 +1,20 @@
+# Batch Scaling
+
+| Method | Context | Batch | Decode | Median TPOT ms | Throughput tok/s | Valid runs |
+|---|---:|---:|---:|---:|---:|---:|
+| CAUSAL_V4_25_FULL_MODEL | 2048 | 1 | 8 | 165.168 | 6.054 | 3 |
+| CAUSAL_V4_25_FULL_MODEL | 2048 | 2 | 8 | 165.100 | 12.113 | 3 |
+| CAUSAL_V4_25_FULL_MODEL | 2048 | 4 | 8 | 165.709 | 24.138 | 3 |
+| CAUSAL_V4_25_FULL_MODEL | 2048 | 8 | 8 | 165.923 | 48.213 | 3 |
+| FP16_FULL_MODEL | 2048 | 1 | 8 | 30.604 | 32.671 | 3 |
+| FP16_FULL_MODEL | 2048 | 2 | 8 | 28.226 | 70.845 | 3 |
+| FP16_FULL_MODEL | 2048 | 4 | 8 | 31.554 | 126.747 | 3 |
+| FP16_FULL_MODEL | 2048 | 8 | 8 | 40.338 | 198.288 | 3 |
+| KIVI_PAPER_G128_FULL_MODEL | 2048 | 1 | 8 | 68.967 | 14.499 | 3 |
+| KIVI_PAPER_G128_FULL_MODEL | 2048 | 2 | 8 | 61.843 | 32.337 | 3 |
+| KIVI_PAPER_G128_FULL_MODEL | 2048 | 4 | 8 | 62.328 | 64.171 | 3 |
+| KIVI_PAPER_G128_FULL_MODEL | 2048 | 8 | 8 | 62.916 | 127.137 | 3 |
+| PATTERNKV_PAPER_FULL_MODEL | 2048 | 1 | 8 | 162.753 | 6.144 | 3 |
+| PATTERNKV_PAPER_FULL_MODEL | 2048 | 2 | 8 | 162.789 | 12.285 | 3 |
+| PATTERNKV_PAPER_FULL_MODEL | 2048 | 4 | 8 | 158.926 | 25.168 | 3 |
+| PATTERNKV_PAPER_FULL_MODEL | 2048 | 8 | 8 | 164.123 | 48.741 | 3 |

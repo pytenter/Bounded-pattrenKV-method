@@ -1,0 +1,8 @@
+# Matched B4 Memory @ C4096 D8
+
+| Method | TPOT ms | Throughput tok/s | Peak allocated | Peak reserved | Relative allocated vs FP16 |
+|---|---:|---:|---:|---:|---:|
+| FP16_FULL_MODEL | 40.627 | 98.445 | 20405783552 | 20786970624 | 1.000 |
+| KIVI_PAPER_G128_FULL_MODEL | 67.763 | 59.023 | 18408726528 | 18886950912 | 0.902 |
+| PATTERNKV_PAPER_FULL_MODEL | 166.080 | 24.084 | 19181068288 | 19941818368 | 0.940 |
+| CAUSAL_V4_25_FULL_MODEL | 173.523 | 23.051 | 19267788800 | 19700645888 | 0.944 |

@@ -1,0 +1,30 @@
+{
+  "capacity_oom_rows": [
+    {
+      "batch": 8,
+      "method": "FP16_FULL_MODEL"
+    },
+    {
+      "batch": 16,
+      "method": "KIVI_PAPER_G128_FULL_MODEL"
+    },
+    {
+      "batch": 16,
+      "method": "PATTERNKV_PAPER_FULL_MODEL"
+    },
+    {
+      "batch": 16,
+      "method": "CAUSAL_V4_25_FULL_MODEL"
+    }
+  ],
+  "historical_CAUSAL_B2_reference_tpot_ms": 216.8267,
+  "historical_CAUSAL_B2_reproduced": false,
+  "new_CAUSAL_B2_median_tpot_ms": 165.09995338856243,
+  "new_CAUSAL_B2_repeat_tpot_ms": [
+    165.09995338856243,
+    166.2747487425804,
+    164.8688406276051
+  ],
+  "new_anomalies": [],
+  "unresolved_primary_anomaly": false
+}

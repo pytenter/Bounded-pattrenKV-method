@@ -1,0 +1,56 @@
+{
+  "FINAL_PAPER_SYSTEM_NUMBERS_V1": [
+    {
+      "c2048_b1_tpot_ms": 30.604021856561303,
+      "c2048_b4_throughput_tokens_s": 126.74733629692822,
+      "c2048_b4_tpot_ms": 31.553811364574358,
+      "c4096_first_failure_B": "8",
+      "c4096_max_success_B": "4",
+      "capacity_ratio_vs_FP16": "1.0",
+      "long_decode_c4096_b1_d256_tpot_ms": 28.663047660302254,
+      "method": "FP16_FULL_MODEL"
+    },
+    {
+      "c2048_b1_tpot_ms": 68.9668008708395,
+      "c2048_b4_throughput_tokens_s": 64.17142884541053,
+      "c2048_b4_tpot_ms": 62.327605875907466,
+      "c4096_first_failure_B": "16",
+      "c4096_max_success_B": "8",
+      "capacity_ratio_vs_FP16": "2.0",
+      "long_decode_c4096_b1_d256_tpot_ms": 56.831604874787445,
+      "method": "KIVI_PAPER_G128_FULL_MODEL"
+    },
+    {
+      "c2048_b1_tpot_ms": 162.75336360558867,
+      "c2048_b4_throughput_tokens_s": 25.16789399783627,
+      "c2048_b4_tpot_ms": 158.92638938385062,
+      "c4096_first_failure_B": "16",
+      "c4096_max_success_B": "8",
+      "capacity_ratio_vs_FP16": "2.0",
+      "long_decode_c4096_b1_d256_tpot_ms": 154.64627086657856,
+      "method": "PATTERNKV_PAPER_FULL_MODEL"
+    },
+    {
+      "c2048_b1_tpot_ms": 165.16838225652464,
+      "c2048_b4_throughput_tokens_s": 24.137850552291873,
+      "c2048_b4_tpot_ms": 165.7085524930153,
+      "c4096_first_failure_B": "16",
+      "c4096_max_success_B": "8",
+      "capacity_ratio_vs_FP16": "2.0",
+      "long_decode_c4096_b1_d256_tpot_ms": 159.53037909730483,
+      "method": "CAUSAL_V4_25_FULL_MODEL"
+    }
+  ],
+  "allocator_protocol": "expandable_segments:True",
+  "capacity_stop_rows": 4,
+  "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_SUPPORTED",
+  "formal_matrix_run": true,
+  "methods": [
+    "FP16_FULL_MODEL",
+    "KIVI_PAPER_G128_FULL_MODEL",
+    "PATTERNKV_PAPER_FULL_MODEL",
+    "CAUSAL_V4_25_FULL_MODEL"
+  ],
+  "same_gpu": true,
+  "valid_rows": 119
+}

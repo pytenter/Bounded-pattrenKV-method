@@ -1,0 +1,3 @@
+# Paper Interpretation
+
+At C2048/B4, `FP16_FULL_MODEL` has the lowest matched-B TPOT. KIVI's B4 throughput is 64.171 tok/s versus FP16's 126.747 tok/s, so it does not provide a full-model decode speedup over FP16 in this RTX3090 / DeepSeek-R1-Distill-Llama-8B harness. PatternKV-paper is also below FP16 at 25.168 tok/s. CAUSAL is 0.376x KIVI throughput and 0.959x PatternKV-paper throughput at B4. The highest observed C4096 capacity is `KIVI_PAPER_G128_FULL_MODEL` at B8, while the smallest matched C4096/B4 full-lifecycle peak is `KIVI_PAPER_G128_FULL_MODEL`. The reconciled CAUSAL capacity is B8 versus FP16 B4. Frozen quality claims remain sourced through `docs/PAPER_EVIDENCE_MAP.md`; this task does not recompute quality.

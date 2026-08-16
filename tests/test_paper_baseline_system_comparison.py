@@ -15,6 +15,13 @@ from bench.full_model_serving_benchmark import (
     model_supports_selective_prefill,
 )
 from bench.paper_baseline_system_comparison import write_blocked_smoke_reports
+from bench.paper_baseline_system_comparison import (
+    REQUIRED_ALLOCATOR_CONF,
+    allocator_protocol_valid,
+    formal_worker_env,
+    launch_worker,
+    valid_protocol,
+)
 from bench.paper_config import apply_method_defaults
 
 
@@ -110,6 +117,87 @@ def test_blocked_smoke_reports_classify_patternkv_true_batch_limitation(tmp_path
     }
     write_blocked_smoke_reports(tmp_path, [row], row)
     gate = __import__("json").loads((tmp_path / "final_gate.json").read_text(encoding="utf-8"))
-    assert gate["classification"] == "PAPER_BASELINE_SYSTEM_COMPARISON_V1_PARTIAL"
+    assert gate["classification"] == "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_PARTIAL"
     assert gate["patternkv_status"] == "PATTERNKV_PAPER_FULL_MODEL_BASELINE_BLOCKED"
     assert gate["blocked_status"] == "BASELINE_TRUE_BATCH_RUNTIME_NOT_SUPPORTED"
+
+
+def test_allocator_protocol_match_is_explicit() -> None:
+    assert allocator_protocol_valid(REQUIRED_ALLOCATOR_CONF)
+    assert allocator_protocol_valid(f"max_split_size_mb:64,{REQUIRED_ALLOCATOR_CONF}")
+    assert not allocator_protocol_valid("")
+    assert not allocator_protocol_valid("max_split_size_mb:64")
+
+
+def test_parent_worker_env_sets_reconciled_allocator_for_all_methods() -> None:
+    base = {"PYTORCH_CUDA_ALLOC_CONF": "max_split_size_mb:64"}
+    for method in METHOD_ADAPTERS:
+        env = formal_worker_env(base, gpu=1, gpu_uuid="GPU-test")
+        assert method
+        assert env["CUDA_VISIBLE_DEVICES"] == "1"
+        assert env["PAPER_BASELINE_GPU_UUID"] == "GPU-test"
+        assert env["PYTORCH_CUDA_ALLOC_CONF"] == REQUIRED_ALLOCATOR_CONF
+        assert env["PATTERNKV_FP16_TAIL_VALUE_FUSION"] == "1"
+        assert env["PATTERNKV_FIXED_SPLIT_SOFTMAX"] == "1"
+        assert env["PATTERNKV_SELECTIVE_PREFILL_LOGITS"] == "1"
+        assert env["PATTERNKV_ACTIVE_BATCH_CACHE"] == "1"
+        assert env["PATTERNKV_SYSTEM_PROFILE"] == "0"
+
+
+def test_invalid_allocator_protocol_rejects_formal_row() -> None:
+    row = {
+        "status": "PASS",
+        "run_valid": True,
+        "allocator_protocol_valid": False,
+        "full_model_forward_executed": True,
+        "completed_requests": 2,
+        "active_capacity": 2,
+        "output_tokens": 8,
+        "decode_length": 4,
+        "true_batch_preserved": True,
+        "fallback_count": 0,
+        "serial_request_forward_dispatches": 0,
+        "serial_attention_dispatches": 0,
+        "serial_mlp_request_dispatches": 0,
+        "serial_rmsnorm_request_dispatches": 0,
+        "prefill_calls_in_timed_window": 0,
+        "prefill_tokens_in_timed_window": 0,
+        "refill_calls_in_timed_window": 0,
+        "membership_changes_in_timed_window": 0,
+        "min_active_batch_size": 2,
+        "max_active_batch_size": 2,
+        "decode_only_wall_ms": 1.0,
+    }
+    assert valid_protocol(row) is False
+    row["allocator_protocol_valid"] = True
+    assert valid_protocol(row) is True
+
+
+def test_launch_worker_records_missing_output_allocator_metadata(monkeypatch, tmp_path) -> None:
+    class Proc:
+        returncode = 7
+        stderr = "worker failed"
+
+    seen = {}
+
+    def fake_run(cmd, cwd, env, text, capture_output):
+        seen["env"] = env
+        return Proc()
+
+    monkeypatch.setattr("bench.paper_baseline_system_comparison.subprocess.run", fake_run)
+    args = Namespace(gpu=1, gpu_uuid="GPU-test")
+    output = tmp_path / "missing.json"
+    row = launch_worker(
+        args,
+        method="FP16_FULL_MODEL",
+        phase="test",
+        context=512,
+        decode=4,
+        batch=1,
+        run_index=0,
+        warmup=False,
+        output=output,
+    )
+    assert seen["env"]["PYTORCH_CUDA_ALLOC_CONF"] == REQUIRED_ALLOCATOR_CONF
+    assert row["pytorch_cuda_alloc_conf"] == REQUIRED_ALLOCATOR_CONF
+    assert row["allocator_protocol_valid"] is True

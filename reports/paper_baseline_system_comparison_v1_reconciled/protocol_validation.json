@@ -1,0 +1,7 @@
+{
+  "allocator_protocol": "expandable_segments:True",
+  "decode_only_protocol": true,
+  "formal_sanity_pass": true,
+  "same_gpu_all_methods": true,
+  "subprocess_isolation": true
+}

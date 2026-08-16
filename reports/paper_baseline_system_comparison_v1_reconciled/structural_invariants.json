@@ -1,0 +1,9 @@
+{
+  "allocator_protocol_valid_all_rows": true,
+  "decode_only_protocol_valid": true,
+  "same_gpu_all_methods": true,
+  "subprocess_isolation": true,
+  "true_batch_supported": true,
+  "zero_fallback": true,
+  "zero_serial_dispatch": true
+}

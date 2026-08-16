@@ -28,12 +28,46 @@ from bench.full_model_serving_benchmark import (
 
 
 REPORT_DIR = REPO_ROOT / "reports/paper_baseline_system_comparison_v1"
+RECONCILED_REPORT_DIR = REPO_ROOT / "reports/paper_baseline_system_comparison_v1_reconciled"
+REQUIRED_ALLOCATOR_CONF = "expandable_segments:True"
 METHODS = (
     "FP16_FULL_MODEL",
     "KIVI_PAPER_G128_FULL_MODEL",
     "PATTERNKV_PAPER_FULL_MODEL",
     "CAUSAL_V4_25_FULL_MODEL",
 )
+
+
+def allocator_protocol_valid(value: str | None) -> bool:
+    return REQUIRED_ALLOCATOR_CONF in str(value or "")
+
+
+def formal_worker_env(base_env: dict[str, str], *, gpu: int, gpu_uuid: str) -> dict[str, str]:
+    env = dict(base_env)
+    env["CUDA_VISIBLE_DEVICES"] = str(gpu)
+    env["PAPER_BASELINE_GPU_UUID"] = gpu_uuid
+    env["PYTORCH_CUDA_ALLOC_CONF"] = REQUIRED_ALLOCATOR_CONF
+    env["PATTERNKV_FP16_TAIL_VALUE_FUSION"] = "1"
+    env["PATTERNKV_FIXED_SPLIT_SOFTMAX"] = "1"
+    env["PATTERNKV_SELECTIVE_PREFILL_LOGITS"] = "1"
+    env["PATTERNKV_ACTIVE_BATCH_CACHE"] = "1"
+    env["PATTERNKV_SYSTEM_PROFILE"] = "0"
+    return env
+
+
+def annotate_row_protocol(row: dict[str, Any]) -> None:
+    alloc_conf = os.environ.get("PYTORCH_CUDA_ALLOC_CONF", "")
+    row["git_sha"] = git_text("rev-parse", "HEAD")
+    row["batch_size"] = row.get("active_capacity")
+    row["pytorch_cuda_alloc_conf"] = alloc_conf
+    row["allocator_protocol_valid"] = allocator_protocol_valid(alloc_conf)
+    row["selective_prefill_enabled"] = os.environ.get("PATTERNKV_SELECTIVE_PREFILL_LOGITS", "1")
+    row["active_batch_cache_enabled"] = os.environ.get("PATTERNKV_ACTIVE_BATCH_CACHE", "1")
+    row["system_profile_enabled"] = os.environ.get("PATTERNKV_SYSTEM_PROFILE", "0")
+    row["fixed_split_softmax_enabled"] = os.environ.get("PATTERNKV_FIXED_SPLIT_SOFTMAX", "")
+    row["fp16_tail_value_fusion_enabled"] = os.environ.get("PATTERNKV_FP16_TAIL_VALUE_FUSION", "")
+    row["cache_mode"] = os.environ.get("PATTERNKV_CACHE_MODE", "")
+    row["mixed_v_backend"] = os.environ.get("PATTERNKV_MIXED_V_BACKEND", "")
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -46,7 +80,11 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     if not rows:
         path.write_text("", encoding="utf-8")
         return
-    columns = list(rows[0].keys())
+    columns: list[str] = []
+    for row in rows:
+        for key in row:
+            if key not in columns:
+                columns.append(key)
     with path.open("w", encoding="utf-8", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=columns, lineterminator="\n")
         writer.writeheader()
@@ -98,6 +136,17 @@ def worker(args: argparse.Namespace) -> int:
         active_capacity=args.batch,
         total_requests=args.batch,
     )
+    alloc_conf = os.environ.get("PYTORCH_CUDA_ALLOC_CONF", "")
+    if not allocator_protocol_valid(alloc_conf):
+        row = asdict(invalid_run_result(cfg, device, args.run_index, warmup=False, reason=f"INVALID_ALLOCATOR_PROTOCOL: {alloc_conf}"))
+        row["status"] = "RUNTIME_FAILURE"
+        row["failure_class"] = "INVALID_ALLOCATOR_PROTOCOL"
+        row["phase"] = args.phase
+        row["gpu_uuid"] = os.environ.get("PAPER_BASELINE_GPU_UUID", "")
+        row["subprocess_isolation"] = True
+        annotate_row_protocol(row)
+        write_json(args.output, row)
+        return 2
     try:
         method_name, tokenizer, model, model_cfg, _ = _load_method(args.method, device)
         adapter = METHOD_ADAPTERS[method_name]
@@ -124,16 +173,13 @@ def worker(args: argparse.Namespace) -> int:
     row["phase"] = args.phase
     row["gpu_uuid"] = os.environ.get("PAPER_BASELINE_GPU_UUID", "")
     row["subprocess_isolation"] = True
-    row["selective_prefill_enabled"] = os.environ.get("PATTERNKV_SELECTIVE_PREFILL_LOGITS", "1")
-    row["system_profile_enabled"] = os.environ.get("PATTERNKV_SYSTEM_PROFILE", "0")
+    annotate_row_protocol(row)
     write_json(args.output, row)
     return 0 if row["status"] == "PASS" else 2
 
 
 def launch_worker(args: argparse.Namespace, *, method: str, phase: str, context: int, decode: int, batch: int, run_index: int, warmup: bool, output: Path) -> dict[str, Any]:
-    env = os.environ.copy()
-    env["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-    env["PAPER_BASELINE_GPU_UUID"] = args.gpu_uuid
+    env = formal_worker_env(os.environ, gpu=args.gpu, gpu_uuid=args.gpu_uuid)
     cmd = [
         sys.executable,
         str(Path(__file__).resolve()),
@@ -170,6 +216,8 @@ def launch_worker(args: argparse.Namespace, *, method: str, phase: str, context:
             "failure_class": "RUNTIME_FAILURE",
             "invalid_reason": proc.stderr[-4000:],
             "run_valid": False,
+            "pytorch_cuda_alloc_conf": env.get("PYTORCH_CUDA_ALLOC_CONF", ""),
+            "allocator_protocol_valid": allocator_protocol_valid(env.get("PYTORCH_CUDA_ALLOC_CONF", "")),
         }
         write_json(output, row)
     row["returncode"] = proc.returncode
@@ -198,11 +246,14 @@ def summarize_phase(rows: list[dict[str, Any]], phase: str) -> list[dict[str, An
                 "median_tpot_ms": statistics.median(tpot),
                 "mean_tpot_ms": statistics.mean(tpot),
                 "std_tpot_ms": statistics.pstdev(tpot) if len(tpot) > 1 else 0.0,
+                "min_tpot_ms": min(tpot),
+                "max_tpot_ms": max(tpot),
                 "throughput_tokens_s": statistics.median(throughput),
                 "peak_allocated_bytes": max(peak),
                 "decode_window_peak_allocated_bytes": max(int(item.get("decode_window_peak_cuda_allocated_bytes") or 0) for item in items),
                 "decode_window_peak_reserved_bytes": max(int(item.get("decode_window_peak_cuda_reserved_bytes") or 0) for item in items),
                 "full_lifecycle_peak_reserved_bytes": max(int(item.get("full_lifecycle_peak_cuda_reserved_bytes") or 0) for item in items),
+                "allocator_protocol_valid": all(bool(item.get("allocator_protocol_valid")) for item in items),
                 "true_batch": all(bool(item.get("true_batch_preserved")) for item in items),
                 "decode_only_protocol": all(
                     int(item.get(key, 0)) == 0
@@ -218,6 +269,7 @@ def valid_protocol(row: dict[str, Any]) -> bool:
     return bool(
         row.get("status") == "PASS"
         and row.get("run_valid")
+        and row.get("allocator_protocol_valid")
         and row.get("full_model_forward_executed")
         and int(row.get("completed_requests", 0)) == int(row.get("active_capacity", 0))
         and int(row.get("output_tokens", 0)) == int(row.get("active_capacity", 0)) * int(row.get("decode_length", 0))
@@ -276,6 +328,7 @@ def normalize_vs_fp16(summary_rows: list[dict[str, Any]]) -> list[dict[str, Any]
                 "tpot_ratio_vs_fp16": row["median_tpot_ms"] / fp16["median_tpot_ms"] if fp16["median_tpot_ms"] else None,
                 "throughput_speedup_vs_fp16": row["throughput_tokens_s"] / fp16["throughput_tokens_s"] if fp16["throughput_tokens_s"] else None,
                 "peak_allocated_ratio_vs_fp16": row["peak_allocated_bytes"] / fp16["peak_allocated_bytes"] if fp16["peak_allocated_bytes"] else None,
+                "peak_reserved_ratio_vs_fp16": row["full_lifecycle_peak_reserved_bytes"] / fp16["full_lifecycle_peak_reserved_bytes"] if fp16.get("full_lifecycle_peak_reserved_bytes") else None,
                 "peak_memory_reduction_vs_fp16": 1.0 - (row["peak_allocated_bytes"] / fp16["peak_allocated_bytes"]) if fp16["peak_allocated_bytes"] else None,
             }
         )
@@ -302,6 +355,21 @@ def pairwise_comparisons(summary_rows: list[dict[str, Any]]) -> list[dict[str, A
                     "causal_vs_peer_throughput_ratio": row["throughput_tokens_s"] / peer_row["throughput_tokens_s"] if peer_row["throughput_tokens_s"] else None,
                 }
             )
+        for numerator, denominator in (("PATTERNKV_PAPER_FULL_MODEL", "KIVI_PAPER_G128_FULL_MODEL"),):
+            numerator_row = by_key.get((row["context_length"], row["decode_length"], row["batch_size"], numerator))
+            denominator_row = by_key.get((row["context_length"], row["decode_length"], row["batch_size"], denominator))
+            if numerator_row and denominator_row:
+                out.append(
+                    {
+                        "context_length": row["context_length"],
+                        "decode_length": row["decode_length"],
+                        "batch_size": row["batch_size"],
+                        "peer": f"{numerator}/{denominator}",
+                        "causal_vs_peer_tpot_ratio": None,
+                        "causal_vs_peer_throughput_ratio": None,
+                        "throughput_ratio": numerator_row["throughput_tokens_s"] / denominator_row["throughput_tokens_s"] if denominator_row["throughput_tokens_s"] else None,
+                    }
+                )
     return out
 
 
@@ -325,6 +393,33 @@ def format_float(value: Any, digits: int = 3) -> str:
         return str(value)
 
 
+def final_paper_numbers(summaries: dict[str, list[dict[str, Any]]], capacity_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    batch = summaries.get("batch_scaling", [])
+    long_decode = summaries.get("long_decode", [])
+    capacity_summary = {row["method"]: row for row in capacity_rows}
+    by_batch = {(row["method"], row["batch_size"]): row for row in batch if row["context_length"] == 2048 and row["decode_length"] == 8}
+    long_by = {row["method"]: row for row in long_decode if row["context_length"] == 4096 and row["batch_size"] == 1 and row["decode_length"] == 256}
+    out = []
+    for method in METHODS:
+        b1 = by_batch.get((method, 1), {})
+        b4 = by_batch.get((method, 4), {})
+        cap = capacity_summary.get(method, {})
+        long_row = long_by.get(method, {})
+        out.append(
+            {
+                "method": method,
+                "c2048_b1_tpot_ms": b1.get("median_tpot_ms"),
+                "c2048_b4_tpot_ms": b4.get("median_tpot_ms"),
+                "c2048_b4_throughput_tokens_s": b4.get("throughput_tokens_s"),
+                "c4096_max_success_B": cap.get("max_success_B"),
+                "c4096_first_failure_B": cap.get("first_failure_B"),
+                "capacity_ratio_vs_FP16": cap.get("capacity_ratio_vs_FP16"),
+                "long_decode_c4096_b1_d256_tpot_ms": long_row.get("median_tpot_ms"),
+            }
+        )
+    return out
+
+
 def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], summaries: dict[str, list[dict[str, Any]]], capacity_rows: list[dict[str, Any]]) -> None:
     batch = summaries.get("batch_scaling", [])
     context = summaries.get("context_scaling", [])
@@ -336,13 +431,17 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
     write_csv(report_dir / "pairwise_comparison.csv", pairwise)
     write_json(report_dir / "structural_invariants.json", {
         "true_batch_supported": all(row.get("true_batch_preserved") for row in all_rows if row.get("status") == "PASS"),
+        "allocator_protocol_valid_all_rows": all(bool(row.get("allocator_protocol_valid")) for row in all_rows),
         "zero_serial_dispatch": all(int(row.get(key, 0)) == 0 for row in all_rows if row.get("status") == "PASS" for key in ("serial_request_forward_dispatches", "serial_attention_dispatches", "serial_mlp_request_dispatches", "serial_rmsnorm_request_dispatches")),
         "zero_fallback": all(int(row.get("fallback_count", 0)) == 0 for row in all_rows if row.get("status") == "PASS"),
         "decode_only_protocol_valid": all(int(row.get(key, 0)) == 0 for row in all_rows if row.get("status") == "PASS" for key in ("prefill_calls_in_timed_window", "prefill_tokens_in_timed_window", "refill_calls_in_timed_window", "membership_changes_in_timed_window")),
         "subprocess_isolation": all(bool(row.get("subprocess_isolation")) for row in all_rows),
         "same_gpu_all_methods": len({str(row.get("physical_gpu")) for row in all_rows if row.get("status") == "PASS"}) == 1,
     })
-    paper_lines = ["# Paper Table", "", "| Method | Effective KV bits | C2048 B1 TPOT | C2048 B4 TPOT | C2048 B4 throughput | C4096 max B | Capacity vs FP16 | C4096 peak memory | True batch | Notes |", "|---|---:|---:|---:|---:|---:|---:|---:|---|---|"]
+    capacity_summary = summarize_phase(all_rows, "capacity")
+    c4096_b4 = {row["method"]: row for row in capacity_summary if row["context_length"] == 4096 and row["batch_size"] == 4}
+    long_by = {row["method"]: row for row in long_decode if row["context_length"] == 4096 and row["batch_size"] == 1 and row["decode_length"] == 256}
+    paper_lines = ["# Paper Table", "", "| Method | Effective KV bits | C2048 B1 TPOT | C2048 B4 TPOT | C2048 B4 throughput | C4096 B4 peak allocated | C4096 B4 peak reserved | C4096 max B | Capacity vs FP16 | Long Decode D256 TPOT | True batch | Notes |", "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|"]
     bits = {
         "FP16_FULL_MODEL": "16",
         "KIVI_PAPER_G128_FULL_MODEL": "2.25 quantized region",
@@ -351,22 +450,48 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
     }
     cap = {row["method"]: row for row in capacity_rows}
     by = {(row["method"], row["batch_size"]): row for row in batch if row["context_length"] == 2048}
-    c4096 = {row["method"]: row for row in context if row["context_length"] == 4096 and row["batch_size"] == 1}
     for method in METHODS:
         b1 = by.get((method, 1), {})
         b4 = by.get((method, 4), {})
         cap_row = cap.get(method, {})
         paper_lines.append(
-            f"| {method} | {bits[method]} | {format_float(b1.get('median_tpot_ms'))} | {format_float(b4.get('median_tpot_ms'))} | {format_float(b4.get('throughput_tokens_s'))} | {cap_row.get('max_success_B', 'NA')} | {format_float(cap_row.get('capacity_ratio_vs_FP16'), 2)} | {c4096.get(method, {}).get('peak_allocated_bytes', 'NA')} | {b1.get('true_batch', 'NA')} | same-harness |"
+            f"| {method} | {bits[method]} | {format_float(b1.get('median_tpot_ms'))} | {format_float(b4.get('median_tpot_ms'))} | {format_float(b4.get('throughput_tokens_s'))} | {c4096_b4.get(method, {}).get('peak_allocated_bytes', 'NA')} | {c4096_b4.get(method, {}).get('full_lifecycle_peak_reserved_bytes', 'NA')} | {cap_row.get('max_success_B', 'NA')} | {format_float(cap_row.get('capacity_ratio_vs_FP16'), 2)} | {format_float(long_by.get(method, {}).get('median_tpot_ms'))} | {b1.get('true_batch', 'NA')} | reconciled allocator protocol |"
         )
     (report_dir / "paper_table.md").write_text("\n".join(paper_lines) + "\n", encoding="utf-8")
+    fp16_memory = c4096_b4.get("FP16_FULL_MODEL", {})
+    matched_memory_rows = []
+    for method in METHODS:
+        row = c4096_b4.get(method, {})
+        matched_memory_rows.append(
+            {
+                "method": method,
+                "tpot_ms": row.get("median_tpot_ms"),
+                "throughput_tokens_s": row.get("throughput_tokens_s"),
+                "peak_allocated_bytes": row.get("peak_allocated_bytes"),
+                "peak_reserved_bytes": row.get("full_lifecycle_peak_reserved_bytes"),
+                "relative_allocated_vs_FP16": row.get("peak_allocated_bytes") / fp16_memory.get("peak_allocated_bytes") if row.get("peak_allocated_bytes") and fp16_memory.get("peak_allocated_bytes") else None,
+            }
+        )
+    write_csv(report_dir / "matched_memory_c4096_b4.csv", matched_memory_rows)
+    (report_dir / "matched_memory_c4096_b4.md").write_text(
+        "# Matched B4 Memory @ C4096 D8\n\n"
+        "| Method | TPOT ms | Throughput tok/s | Peak allocated | Peak reserved | Relative allocated vs FP16 |\n"
+        "|---|---:|---:|---:|---:|---:|\n"
+        + "\n".join(
+            f"| {row['method']} | {format_float(row.get('tpot_ms'))} | {format_float(row.get('throughput_tokens_s'))} | {row.get('peak_allocated_bytes')} | {row.get('peak_reserved_bytes')} | {format_float(row.get('relative_allocated_vs_FP16'), 3)} |"
+            for row in matched_memory_rows
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    write_csv(report_dir / "capacity_summary.csv", capacity_rows)
     fp16_b4 = by.get(("FP16_FULL_MODEL", 4), {})
     kivi_b4 = by.get(("KIVI_PAPER_G128_FULL_MODEL", 4), {})
     pattern_b4 = by.get(("PATTERNKV_PAPER_FULL_MODEL", 4), {})
     causal_b4 = by.get(("CAUSAL_V4_25_FULL_MODEL", 4), {})
     fastest_b4 = min((row for row in by.values() if row), key=lambda row: float(row["median_tpot_ms"]), default=None)
     best_capacity = max(capacity_rows, key=lambda row: int(row.get("max_success_B") or 0), default=None)
-    smallest_c4096_peak = min((row for row in c4096.values() if row), key=lambda row: int(row.get("peak_allocated_bytes") or 0), default=None)
+    smallest_c4096_peak = min((row for row in c4096_b4.values() if row), key=lambda row: int(row.get("peak_allocated_bytes") or 0), default=None)
     (report_dir / "paper_tradeoff.md").write_text(
         "# Paper Trade-off Table\n\n"
         "| Method | Effective KV bits | C2048 B4 throughput tok/s | C4096 max concurrency | Quality evidence | Primary interpretation |\n"
@@ -383,8 +508,8 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
         f"KIVI's B4 throughput is {format_float(kivi_b4.get('throughput_tokens_s'))} tok/s versus FP16's {format_float(fp16_b4.get('throughput_tokens_s'))} tok/s, so it does not provide a full-model decode speedup over FP16 in this RTX3090 / DeepSeek-R1-Distill-Llama-8B harness. "
         f"PatternKV-paper is also below FP16 at {format_float(pattern_b4.get('throughput_tokens_s'))} tok/s. "
         f"CAUSAL is {format_float(float(causal_b4.get('throughput_tokens_s', 0.0)) / max(float(kivi_b4.get('throughput_tokens_s', 0.0)), 1e-9), 3)}x KIVI throughput and {format_float(float(causal_b4.get('throughput_tokens_s', 0.0)) / max(float(pattern_b4.get('throughput_tokens_s', 0.0)), 1e-9), 3)}x PatternKV-paper throughput at B4. "
-        f"The highest observed C4096 capacity is `{best_capacity.get('method') if best_capacity else 'NA'}` at B{best_capacity.get('max_success_B') if best_capacity else 'NA'}, while the smallest C4096/B1 full-lifecycle peak is `{smallest_c4096_peak.get('method') if smallest_c4096_peak else 'NA'}`. "
-        "The resumed CAUSAL capacity does not reproduce the historical 2x advantage over FP16; the current matched run observes B4 for both. "
+        f"The highest observed C4096 capacity is `{best_capacity.get('method') if best_capacity else 'NA'}` at B{best_capacity.get('max_success_B') if best_capacity else 'NA'}, while the smallest matched C4096/B4 full-lifecycle peak is `{smallest_c4096_peak.get('method') if smallest_c4096_peak else 'NA'}`. "
+        f"The reconciled CAUSAL capacity is B{cap.get('CAUSAL_V4_25_FULL_MODEL', {}).get('max_success_B', 'NA')} versus FP16 B{cap.get('FP16_FULL_MODEL', {}).get('max_success_B', 'NA')}. "
         "Frozen quality claims remain sourced through `docs/PAPER_EVIDENCE_MAP.md`; this task does not recompute quality.\n",
         encoding="utf-8",
     )
@@ -426,6 +551,7 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
     for row in capacity_rows:
         capacity_lines.append(f"| {row['method']} | {row.get('max_success_B')} | {row.get('first_OOM_B')} | {format_float(row.get('capacity_ratio_vs_FP16'), 2)} | {format_float(row.get('TPOT_at_max_success_B'))} | {format_float(row.get('throughput_at_max_success_B'))} | {row.get('peak_allocated_at_max_success_B')} |")
     (report_dir / "capacity/capacity.md").write_text("\n".join(capacity_lines) + "\n", encoding="utf-8")
+    (report_dir / "capacity_summary.md").write_text("\n".join(capacity_lines) + "\n", encoding="utf-8")
     causal_b2_rows = sorted(
         (
             row
@@ -459,12 +585,13 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
             "unresolved_primary_anomaly": False,
         },
     )
+    anomaly_sentence = "One elevated protocol-valid repeat is retained in raw evidence." if causal_b2_outlier else "No C2048/B2 CAUSAL outlier exceeds the 1.3x audit threshold."
     (report_dir / "anomaly_audit.md").write_text(
         "# Anomaly Audit\n\n"
         f"CAUSAL C2048 B2 repeats were {causal_b2_tpot} ms/token; the median is {format_float(causal_b2_median)} ms/token. "
         "All repeats preserved decode-only timing, true batch, zero serial dispatch, and zero fallback. "
-        "The elevated repeat is retained in raw evidence and the reported primary statistic is the median across all repeats. "
-        "The resumed median differs from the frozen historical B2 reference (216.8267 ms/token); this report does not overwrite the frozen result or attribute the difference to a new optimization.\n",
+        f"{anomaly_sentence} "
+        "The median-based primary statistic is retained, and no unresolved primary anomaly remains.\n",
         encoding="utf-8",
     )
     (report_dir / "correctness_summary.md").write_text(
@@ -473,14 +600,36 @@ def write_markdown_reports(report_dir: Path, all_rows: list[dict[str, Any]], sum
         f"{len(expected_capacity_failures)} CUDA OOM rows are expected capacity-stop probes and are excluded from summary statistics.\n",
         encoding="utf-8",
     )
-    (report_dir / "limitations.md").write_text("# Limitations\n\nThis comparison uses same-harness full-model serving measurements only. External paper numbers are not mixed into the formal table. If any method fails smoke or capacity with a runtime error, the affected comparison is non-primary.\n", encoding="utf-8")
+    (report_dir / "allocator_protocol.md").write_text(
+        "# Allocator Protocol\n\n"
+        f"Every worker subprocess is launched with `PYTORCH_CUDA_ALLOC_CONF={REQUIRED_ALLOCATOR_CONF}`. "
+        "`allocator_protocol_valid` is true only when the worker environment explicitly contains that value; invalid allocator rows fail formal validation.\n",
+        encoding="utf-8",
+    )
+    (report_dir / "superseded_results.md").write_text(
+        "# Superseded Results\n\n"
+        "The earlier `reports/paper_baseline_system_comparison_v1/` CAUSAL rows are retained for provenance but are superseded for the primary paper system table: "
+        "C2048/B1 ~274.967 ms/token, C2048/B4 ~315.989 ms/token, C4096/B1 ~359.284 ms/token, C4096/B1/D256 ~372.118 ms/token, and C4096 capacity B4. "
+        "They were not reproduced after `CAUSAL_FROZEN_VS_RESUMED_PROVENANCE_RECONCILIATION_V1`; the capacity loss was traced to allocator protocol drift.\n",
+        encoding="utf-8",
+    )
+    (report_dir / "final_system_provenance.md").write_text(
+        "# Final System Provenance\n\n"
+        "- Frozen historical system SHA: `8d60485b5d2c93b7c1d478efc449de56d28159c3`\n"
+        "- PatternKV true-batch support: `3bbe9437f5d3b192fe45641cc8d464a41637d3e4`\n"
+        "- Initial four-method table: `50a9a2748789dc4313c880f5f7643ae6f1b8d256`\n"
+        "- Provenance reconciliation: `0978f629f1397e337b3d58b0b9741535ce3df2ee`\n"
+        f"- Final reconciled benchmark source HEAD: `{git_text('rev-parse', 'HEAD')}`\n\n"
+        "The 8d historical numbers remain useful provenance. The final cross-method paper system numbers come from this reconciled same-harness rerun with the allocator protocol applied to every method.\n",
+        encoding="utf-8",
+    )
+    (report_dir / "limitations.md").write_text("# Limitations\n\nThis comparison uses same-harness full-model serving measurements only. External paper numbers are not mixed into the formal table. Capacity failures are stop-probe results, not primary matched-throughput rows.\n", encoding="utf-8")
     (report_dir / "summary.md").write_text(
         "# Summary\n\n"
-        "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RESUME is supported. "
+        "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RERUN_WITH_RECONCILED_ALLOCATOR_PROTOCOL is supported. "
         f"The same-GPU formal comparison contains {len(valid_rows)} valid rows across FP16, KIVI-paper-g128, PatternKV-paper, and CAUSAL-V4@25%. "
-        "All valid rows preserve true batch, zero serial dispatch, zero fallback, decode-only timing, and subprocess isolation. "
-        "KIVI has the highest observed C4096 capacity (B8); FP16 has the best matched-B decode throughput. "
-        "The resumed CAUSAL capacity is B4, equal to FP16 rather than the historical 2x result. "
+        "All valid rows preserve the reconciled allocator protocol, true batch, zero serial dispatch, zero fallback, decode-only timing, and subprocess isolation. "
+        f"The highest observed C4096 capacity is `{best_capacity.get('method') if best_capacity else 'NA'}` at B{best_capacity.get('max_success_B') if best_capacity else 'NA'}. "
         "CAUSAL C2048/B2 includes one elevated protocol-valid repeat; raw rows and the median-based primary statistic are retained in `anomaly_audit.md`.\n",
         encoding="utf-8",
     )
@@ -503,10 +652,12 @@ def render_existing(report_dir: Path) -> int:
     write_json(
         report_dir / "final_gate.json",
         {
-            "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_SUPPORTED",
+            "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_SUPPORTED",
             "methods": list(METHODS),
             "same_gpu": True,
             "formal_matrix_run": True,
+            "allocator_protocol": REQUIRED_ALLOCATOR_CONF,
+            "FINAL_PAPER_SYSTEM_NUMBERS_V1": final_paper_numbers(summaries, capacity_rows),
             "valid_rows": sum(row.get("status") == "PASS" and row.get("run_valid") for row in all_rows),
             "capacity_stop_rows": sum(row.get("phase") == "capacity" and row.get("status") == "CUDA_OOM" for row in all_rows),
         },
@@ -533,7 +684,7 @@ def write_blocked_smoke_reports(report_dir: Path, all_rows: list[dict[str, Any]]
     write_json(
         report_dir / "final_gate.json",
         {
-            "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_PARTIAL",
+            "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_PARTIAL",
             "kivi_status": "KIVI_PAPER_FULL_MODEL_BASELINE_SUPPORTED" if any(row.get("method") == "KIVI_PAPER_G128_FULL_MODEL" and row.get("status") == "PASS" for row in all_rows) else "KIVI_PAPER_FULL_MODEL_BASELINE_BLOCKED",
             "patternkv_status": "PATTERNKV_PAPER_FULL_MODEL_BASELINE_BLOCKED" if method == "PATTERNKV_PAPER_FULL_MODEL" else "UNKNOWN",
             "blocked_method": method,
@@ -605,10 +756,11 @@ def parent(args: argparse.Namespace) -> int:
         "untracked": git_text("ls-files", "--others", "--exclude-standard"),
         "remotes": git_text("remote", "-v"),
         "nvidia_smi": nvidia_smi_text(),
+        "allocator_protocol": REQUIRED_ALLOCATOR_CONF,
     }
-    write_json(report_dir / "environment.json", {"gpu": gpu_query(args.gpu), "model": str(MODEL_PATH), "torch": torch.__version__, "cuda": torch.version.cuda})
+    write_json(report_dir / "environment.json", {"gpu": gpu_query(args.gpu), "model": str(MODEL_PATH), "torch": torch.__version__, "cuda": torch.version.cuda, "allocator_protocol": REQUIRED_ALLOCATOR_CONF})
     (report_dir / "preflight.md").write_text("# Preflight\n\n```json\n" + json.dumps(preflight, indent=2, sort_keys=True) + "\n```\n", encoding="utf-8")
-    (report_dir / "protocol_definition.md").write_text("# Protocol Definition\n\nFresh subprocess per measured point. Initial prefill is completed before the timed decode window. Selective prefill logits are enabled for all supported methods. Hot-path profiling is disabled during formal timing to avoid CUDA-event instrumentation bias.\n", encoding="utf-8")
+    (report_dir / "protocol_definition.md").write_text(f"# Protocol Definition\n\nFresh subprocess per measured point. Initial prefill is completed before the timed decode window. Selective prefill logits are enabled for all supported methods. Hot-path profiling is disabled during formal timing to avoid CUDA-event instrumentation bias. Every worker receives `PYTORCH_CUDA_ALLOC_CONF={REQUIRED_ALLOCATOR_CONF}` and rows are invalid if the worker does not observe that allocator protocol.\n", encoding="utf-8")
     (report_dir / "method_identity_audit.md").write_text("# Method Identity Audit\n\n- FP16_FULL_MODEL: FP16 model and FP16 KV cache.\n- KIVI_PAPER_G128_FULL_MODEL: canonical `kivi_paper_g128`, official KIVI backend, K/V INT2, group 128, residual 128.\n- PATTERNKV_PAPER_FULL_MODEL: canonical `patternkv_paper`, base V2 selector, V4 fraction 0.\n- CAUSAL_V4_25_FULL_MODEL: frozen CAUSAL-V4@25%, no algorithm changes.\n", encoding="utf-8")
 
     all_rows: list[dict[str, Any]] = []
@@ -627,8 +779,8 @@ def parent(args: argparse.Namespace) -> int:
         write_csv(report_dir / "formal_sanity/formal_sanity_raw.csv", all_rows)
         write_csv(report_dir / "formal_sanity/formal_sanity_summary.csv", formal_sanity_summary)
         write_markdown_reports(report_dir, all_rows, {"formal_sanity": formal_sanity_summary}, [])
-        write_json(report_dir / "protocol_validation.json", {"formal_sanity_pass": True, "decode_only_protocol": True, "subprocess_isolation": True, "same_gpu_all_methods": True})
-        write_json(report_dir / "final_gate.json", {"classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_SANITY_PASS", "methods": list(METHODS), "formal_matrix_run": False})
+        write_json(report_dir / "protocol_validation.json", {"formal_sanity_pass": True, "decode_only_protocol": True, "subprocess_isolation": True, "same_gpu_all_methods": True, "allocator_protocol": REQUIRED_ALLOCATOR_CONF})
+        write_json(report_dir / "final_gate.json", {"classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_SANITY_PASS", "methods": list(METHODS), "formal_matrix_run": False, "allocator_protocol": REQUIRED_ALLOCATOR_CONF})
         (report_dir / "summary.md").write_text("# Summary\n\nFormal sanity passed for C2048 D8 B1/B4 across all four methods. Full matrix not run in this invocation.\n", encoding="utf-8")
         return 0
 
@@ -717,8 +869,8 @@ def parent(args: argparse.Namespace) -> int:
     write_csv(report_dir / "long_decode/long_decode_summary.csv", summaries["long_decode"])
     write_csv(report_dir / "capacity/capacity.csv", capacity_rows)
     write_markdown_reports(report_dir, all_rows, summaries, capacity_rows)
-    write_json(report_dir / "protocol_validation.json", {"formal_sanity_pass": True, "decode_only_protocol": True, "subprocess_isolation": True, "same_gpu_all_methods": True})
-    write_json(report_dir / "final_gate.json", {"classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_SUPPORTED", "methods": list(METHODS), "same_gpu": True, "formal_matrix_run": True})
+    write_json(report_dir / "protocol_validation.json", {"formal_sanity_pass": True, "decode_only_protocol": True, "subprocess_isolation": True, "same_gpu_all_methods": True, "allocator_protocol": REQUIRED_ALLOCATOR_CONF})
+    write_json(report_dir / "final_gate.json", {"classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_SUPPORTED", "methods": list(METHODS), "same_gpu": True, "formal_matrix_run": True, "allocator_protocol": REQUIRED_ALLOCATOR_CONF, "FINAL_PAPER_SYSTEM_NUMBERS_V1": final_paper_numbers(summaries, capacity_rows)})
     return 0
 
 
@@ -735,7 +887,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--gpu", type=int, default=1)
     parser.add_argument("--repeats", type=int, default=3)
-    parser.add_argument("--report-dir", type=Path, default=REPORT_DIR)
+    parser.add_argument("--report-dir", type=Path, default=RECONCILED_REPORT_DIR)
     parser.add_argument("--stop-after-sanity", action="store_true")
     parser.add_argument("--render-only", action="store_true")
     return parser.parse_args()
