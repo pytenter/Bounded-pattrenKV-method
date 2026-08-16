@@ -1,0 +1,6 @@
+compileall models/segmented_cache.py: PASS
+focused fixed-split/ragged tests: PASS (3 passed; earlier 5 passed)
+dynamic add/remove + continuous batching + lifecycle: PASS (47 passed)
+ragged valid lengths + cache assembly: PASS (62 passed)
+full pytest: PASS (1007 passed)
+git diff --check: PASS

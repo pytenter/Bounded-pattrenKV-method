@@ -1,0 +1,6 @@
+compileall models/quant/bench/scripts/tests: pass
+Focused fixed-split/full-model/continuous/dynamic/lifecycle/ragged-cache pytest gate: 115 passed
+Full pytest: 1007 passed
+git diff --check: pass
+Ragged hard gate with opt-in kernel: FAIL B2 reorder, B4, independent flush
+Ragged hard gate with kernel disabled control: FAIL B4, independent flush in current dirty tree

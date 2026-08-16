@@ -1,0 +1,4 @@
+Focused serving/ragged/lifecycle gate: 112 passed
+Centroid-local rerun: 33 passed
+Full pytest: 1004 passed
+git diff --check: pass

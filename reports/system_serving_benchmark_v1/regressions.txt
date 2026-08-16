@@ -1,0 +1,5 @@
+serving harness: 6 passed
+continuous batching: 15 passed
+dynamic add/remove: 10 passed
+lifecycle: 22 passed
+ragged: pass

@@ -1,0 +1,21 @@
+{
+  "arrival_protocol": "saturated_steady_state",
+  "context_length": 256,
+  "decode_length": 16,
+  "model": "DeepSeek-R1-Distill-Llama-8B",
+  "prompt_signature": [
+    0,
+    1,
+    2,
+    3,
+    0
+  ],
+  "request_ids": [
+    "R0000",
+    "R0001",
+    "R0002",
+    "R0003",
+    "R0004"
+  ],
+  "scheduler_policy": "FIFO"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "context_length": 256,
+    "decode_length": 4,
+    "first_oom_concurrency": null,
+    "max_successful_concurrency": 1,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_memory_at_max_bytes": 20858534400
+  }
+]

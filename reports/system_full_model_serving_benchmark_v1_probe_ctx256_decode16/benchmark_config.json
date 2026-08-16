@@ -1,0 +1,17 @@
+{
+  "concurrency_points": [
+    1
+  ],
+  "context_length": 256,
+  "decode_length": 16,
+  "max_concurrency_sweep": [
+    1
+  ],
+  "measured_runs": 1,
+  "methods": [
+    "FP16_FULL_MODEL",
+    "CAUSAL_V4_25_FULL_MODEL"
+  ],
+  "total_requests": 5,
+  "warmup_runs": 1
+}

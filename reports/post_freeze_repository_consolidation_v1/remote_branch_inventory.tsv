@@ -1,0 +1,13 @@
+branch	HEAD	last_date	last_subject	merged_into_final_system	branch_only_commits	system_only_commits	classification	recommended_action
+analysis/patternkv-vgate-layer-head-opportunity	995034340dc48c3068f141ca157a9f1c37c5b5df	2026-08-05 22:30:28 +0800	analysis: localize cross-hardware V gate false negatives	false	2	118	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+exp/aime-int2-wave1-v100-8gpu	20caa33d93c470ae1382a63300de509197892c29	2026-08-10 23:04:07 +0800	docs: report AIME24 full30 Sink validation	false	2	83	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+exp/aime-pattern-hadamard-mechanism-3090	2d9928fcbd5dfd2dfecb5f2cf1b70a641983f3eb	2026-08-09 16:21:21 +0800	run: complete Hadamard accumulation diagnostic	false	2	76	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+exp/aime-pattern-varn-mechanism-3090	2f63bddef151df0f32a40d51c73f125a8089800e	2026-08-09 18:15:48 +0800	run: complete Pattern S16 VarN diagnostic	false	2	75	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+exp/aime24-full-causal25-quality-4gpu	d59c349b7ef9d02a45ea12870d3e9e717e96ec8e	2026-08-12 12:51:33 +0800	docs: freeze CAUSAL-V4@25 AIME24 v1	true	0	58	FROZEN_SCIENTIFIC	KEEP
+exp/causal-v4-25-generalization-v1	3dcedb42674140296c47cd56cf6ccbc1017474bc	2026-08-14 17:08:46 +0800	Add CAUSAL V4 25 generalization results	true	0	15	FROZEN_SCIENTIFIC	KEEP
+exp/patternkv-4090-range-aware-targeted	03db01ee96ec7a46da5baa0dcc6395eefa410370	2026-08-06 00:12:53 +0800	feat: prepare 4090 targeted range-aware collection	false	5	118	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+exp/patternkv-insight-wave-a-4090-runtime6c88	6d6cdcb74d0e4611a9274660dfdc132161b5318b	2026-08-05 17:41:31 +0800	fix: preserve single-4090 sample selection	false	3	120	HISTORICAL_EXPERIMENT_UNIQUE	KEEP
+main	c7324746d7447be532bd6bdbe0c8d58dd5e30c67	2026-08-04 19:55:52 +0800	document standard paper baseline methods	true	0	127	CORE	KEEP
+release/causal-v4-25-system-final	8d60485b5d2c93b7c1d478efc449de56d28159c3	2026-08-16 17:23:35 +0800	bench: freeze final CAUSAL full-model serving results	true	0	0	FINAL_RELEASE	KEEP
+release/causal-v4-25-system-v1	0ca6debff700f68ae8ff536e77ddb2cb1e68d69d	2026-08-16 13:11:20 +0800	test: profile heterogeneous causal attention path	true	0	3	FROZEN_SCIENTIFIC	KEEP
+sys/causal-v4-25-kernel-v1	8d60485b5d2c93b7c1d478efc449de56d28159c3	2026-08-16 17:23:35 +0800	bench: freeze final CAUSAL full-model serving results	true	0	0	CORE	KEEP

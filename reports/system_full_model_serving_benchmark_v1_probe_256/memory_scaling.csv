@@ -1,0 +1,2 @@
+method,B,context,decode,peak_allocated_gb,peak_reserved_gb,kv_pool_gb,valid
+FP16_FULL_MODEL,1,256,16,16.444333056,16.519266304,16.444333056,True

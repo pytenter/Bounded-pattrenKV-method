@@ -1,0 +1,65 @@
+Sun Aug 16 00:02:39 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.173.02             Driver Version: 580.173.02     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3090        Off |   00000000:1A:00.0 Off |                  N/A |
+| 30%   32C    P2            102W /  350W |   19507MiB /  24576MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 3090        Off |   00000000:1C:00.0 Off |                  N/A |
+| 30%   38C    P2            116W /  350W |    2133MiB /  24576MiB |     25%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce RTX 3090        Off |   00000000:1D:00.0 Off |                  N/A |
+| 30%   40C    P2            113W /  350W |    2134MiB /  24576MiB |     27%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce RTX 3090        Off |   00000000:1E:00.0 Off |                  N/A |
+| 30%   38C    P2            112W /  350W |    2132MiB /  24576MiB |     22%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA GeForce RTX 3090        Off |   00000000:3E:00.0 Off |                  N/A |
+| 30%   38C    P2            110W /  350W |    2133MiB /  24576MiB |     21%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA GeForce RTX 3090        Off |   00000000:3F:00.0 Off |                  N/A |
+| 47%   62C    P2            178W /  350W |     364MiB /  24576MiB |     88%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA GeForce RTX 3090        Off |   00000000:40:00.0 Off |                  N/A |
+| 30%   30C    P8             16W /  350W |      21MiB /  24576MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA GeForce RTX 3090        Off |   00000000:41:00.0 Off |                  N/A |
+| 30%   32C    P8             18W /  350W |      21MiB /  24576MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    0   N/A  N/A          201464      C   python                                18380MiB |
+|    0   N/A  N/A         3471280    C+G   .../policy/pi05/.venv/bin/python        260MiB |
+|    0   N/A  N/A         3471281    C+G   .../policy/pi05/.venv/bin/python        260MiB |
+|    0   N/A  N/A         3471282    C+G   .../policy/pi05/.venv/bin/python        260MiB |
+|    0   N/A  N/A         3471283    C+G   .../policy/pi05/.venv/bin/python        260MiB |
+|    1   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    1   N/A  N/A         3471280    C+G   .../policy/pi05/.venv/bin/python       2075MiB |
+|    2   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    2   N/A  N/A         3471281    C+G   .../policy/pi05/.venv/bin/python       2075MiB |
+|    3   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    3   N/A  N/A         3471282    C+G   .../policy/pi05/.venv/bin/python       2075MiB |
+|    4   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    4   N/A  N/A         3471283    C+G   .../policy/pi05/.venv/bin/python       2075MiB |
+|    5   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    5   N/A  N/A         3464102      C   ...mba/envs/patternkv/bin/python        338MiB |
+|    6   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
+|    7   N/A  N/A            3731      G   /usr/lib/xorg/Xorg                        4MiB |
++-----------------------------------------------------------------------------------------+

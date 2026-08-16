@@ -1,0 +1,9 @@
+compileall: pass
+full_model_targeted_tests: 4 passed
+continuous_batch_regression: 15 passed
+dynamic_add_remove_regression: 10 passed
+lifecycle_regression: 22 passed
+ragged_regression: 42 passed via tests/test_ragged_k_valid_lengths.py; formal ragged gate previously rerun and preserved
+full_pytest: 999 passed
+git_diff_check: pass
+all_regressions_preserved: true

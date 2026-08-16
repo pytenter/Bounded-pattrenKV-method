@@ -1,0 +1,19 @@
+{
+  "decision": "STOP: fixed-split CUDA path remains opt-in because enabled run regressed B2 reorder and did not close B4/flush hard gate.",
+  "disabled_kernel_control": {
+    "b2_16step_pass": true,
+    "b2_reorder_16step_pass": true,
+    "b4_16step_pass": false,
+    "classification": "RAGGED_MULTI_STEP_SEMANTIC_DRIFT_UNEXPLAINED",
+    "independent_request_flush_schedule_pass": false,
+    "max_logit_relative_l2": 0.01593458652496338
+  },
+  "enabled_kernel": {
+    "b2_16step_pass": true,
+    "b2_reorder_16step_pass": false,
+    "b4_16step_pass": false,
+    "classification": "RAGGED_MULTI_STEP_SEMANTIC_DRIFT_UNEXPLAINED",
+    "independent_request_flush_schedule_pass": false,
+    "max_logit_relative_l2": 0.08112655580043793
+  }
+}

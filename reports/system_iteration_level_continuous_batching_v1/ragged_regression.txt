@@ -1,0 +1,17 @@
+{
+  "b2_16step_pass": true,
+  "b2_reorder_16step_pass": true,
+  "b4_16step_pass": true,
+  "bi_kproj_serial_request_dispatches": 0,
+  "fallback_calls": 0,
+  "historical_fp16_k_materialization": 0,
+  "historical_fp16_v_materialization": 0,
+  "independent_request_flush_schedule_pass": true,
+  "observed_flush_steps_b4": {
+    "A": 16,
+    "B": 15,
+    "C": 14,
+    "D": 13
+  },
+  "serial_request_dispatches": 0
+}

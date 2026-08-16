@@ -1,0 +1,81 @@
+{
+  "evidence": [
+    {
+      "causal_invalid_reason": "",
+      "causal_peak_allocated_gb": 20.3336576,
+      "causal_throughput_tokens_s": 2.9682935052151405,
+      "causal_valid": true,
+      "context_length": 256,
+      "fp16_invalid_reason": "",
+      "fp16_peak_allocated_gb": 16.33710848,
+      "fp16_throughput_tokens_s": 28.39655416794614,
+      "fp16_valid": true,
+      "memory_reduction_pct": -0.24463013910280385,
+      "peak_memory_delta_gb": 3.9965491199999974,
+      "throughput_ratio_causal_over_fp16": 0.1045300597973867,
+      "workload_hash_match": true
+    },
+    {
+      "causal_invalid_reason": "",
+      "causal_peak_allocated_gb": 20.91764224,
+      "causal_throughput_tokens_s": 1.0020988833365718,
+      "causal_valid": true,
+      "context_length": 2048,
+      "fp16_invalid_reason": "",
+      "fp16_peak_allocated_gb": 18.200243712,
+      "fp16_throughput_tokens_s": 10.97439193051135,
+      "fp16_valid": true,
+      "memory_reduction_pct": -0.14930561211157478,
+      "peak_memory_delta_gb": 2.7173985280000004,
+      "throughput_ratio_causal_over_fp16": 0.09131247450261959,
+      "workload_hash_match": true
+    },
+    {
+      "causal_invalid_reason": "",
+      "causal_peak_allocated_gb": 22.710690816,
+      "causal_throughput_tokens_s": 0.611709266483553,
+      "causal_valid": true,
+      "context_length": 4096,
+      "fp16_invalid_reason": "",
+      "fp16_peak_allocated_gb": 20.330077696,
+      "fp16_throughput_tokens_s": 6.739792638728148,
+      "fp16_valid": true,
+      "memory_reduction_pct": -0.11709808273228539,
+      "peak_memory_delta_gb": 2.3806131199999996,
+      "throughput_ratio_causal_over_fp16": 0.09076084373405698,
+      "workload_hash_match": true
+    },
+    {
+      "causal_invalid_reason": "not_run_after_highest_matched_context_4096_showed_persistent_bottleneck_and_fp16_8192_prefill_oom",
+      "causal_peak_allocated_gb": null,
+      "causal_throughput_tokens_s": null,
+      "causal_valid": false,
+      "context_length": 8192,
+      "fp16_invalid_reason": "OOM: CUDA out of memory. Tried to allocate 3.91 GiB. GPU 0 has a total capacity of 23.56 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 22.44 GiB memory in use. Of the allocated memory 18.99 GiB is allocated by PyTorch, and 3.14 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+      "fp16_peak_allocated_gb": 23.51414528,
+      "fp16_throughput_tokens_s": null,
+      "fp16_valid": false,
+      "memory_reduction_pct": null,
+      "peak_memory_delta_gb": null,
+      "throughput_ratio_causal_over_fp16": null,
+      "workload_hash_match": false
+    },
+    {
+      "causal_invalid_reason": "not_run_after_fp16_8192_prefill_oom",
+      "causal_peak_allocated_gb": null,
+      "causal_throughput_tokens_s": null,
+      "causal_valid": false,
+      "context_length": 16384,
+      "fp16_invalid_reason": "not_run_after_fp16_8192_prefill_oom",
+      "fp16_peak_allocated_gb": null,
+      "fp16_throughput_tokens_s": null,
+      "fp16_valid": false,
+      "memory_reduction_pct": null,
+      "peak_memory_delta_gb": null,
+      "throughput_ratio_causal_over_fp16": null,
+      "workload_hash_match": false
+    }
+  ],
+  "measurement_note": "Detailed page-pool active-vs-capacity inventory was not measured in fresh runs to avoid retaining cache tensors and contaminating peak memory. kv_pool_gb in context_scaling.csv is the harness peak-allocation proxy, not isolated KV bytes.",
+  "page_pool_overallocation": "suspected_from_peak_memory"
+}

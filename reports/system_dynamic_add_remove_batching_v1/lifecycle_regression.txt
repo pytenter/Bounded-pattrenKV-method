@@ -1,0 +1,8 @@
+Command:
+PYTHONPATH=/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant:/data/zypan/Bounded-pattrenKV-pseudodecode-3090 CUDA_VISIBLE_DEVICES=1 /data/zypan/.local/share/mamba/envs/patternkv/bin/python -m pytest -q tests/test_request_lifecycle_manager.py tests/test_dynamic_add_remove_batching.py
+
+Result:
+32 passed in 2.92s
+
+REQUEST_LIFECYCLE_GATE_PRESERVED=true
+

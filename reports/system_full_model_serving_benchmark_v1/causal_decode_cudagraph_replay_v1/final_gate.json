@@ -1,0 +1,9 @@
+{
+  "classification": "CAUSAL_DECODE_CUDAGRAPH_REPLAY_V1_BLOCKED",
+  "graph_granularity": "BLOCKED",
+  "graph_supported": false,
+  "next_task": "FP16_TAIL_VALUE_LAUNCH_FUSION_V1",
+  "project_level_decision": "ONE_FINAL_TARGETED_OPTIMIZATION",
+  "runtime_value": "NONE",
+  "stop_go": "STOP"
+}

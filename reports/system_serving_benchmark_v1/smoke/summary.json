@@ -1,0 +1,62 @@
+[
+  {
+    "active_capacity": 1,
+    "context_length": 512,
+    "decode_length": 16,
+    "kv_pool_bytes": 10487807,
+    "mean_first_token_ms_mean": 0.11066652950830758,
+    "mean_tpot_ms_mean": 0.09984920143324416,
+    "method": "CAUSAL_V4_25",
+    "p95_tpot_ms_mean": 0.10379756713518873,
+    "peak_cuda_allocated_bytes_max": 10494976,
+    "runs": 2,
+    "throughput_tokens_s_mean": 9975.99410520059,
+    "throughput_tokens_s_std": 9.137312959685005,
+    "workload_hash": "27b732d5c6f357426584d0708129e482bb7a82ea9c54e2ef953f22d15148d1f3"
+  },
+  {
+    "active_capacity": 2,
+    "context_length": 512,
+    "decode_length": 16,
+    "kv_pool_bytes": 20975614,
+    "mean_first_token_ms_mean": 0.12302654795348644,
+    "mean_tpot_ms_mean": 0.10190332614001818,
+    "method": "CAUSAL_V4_25",
+    "p95_tpot_ms_mean": 0.10414196731289849,
+    "peak_cuda_allocated_bytes_max": 20988928,
+    "runs": 2,
+    "throughput_tokens_s_mean": 19510.652336722625,
+    "throughput_tokens_s_std": 48.986796572689855,
+    "workload_hash": "850c565feeebb06835e4a567d484813ddb3785eb6d17a405b85464cb1cb8cfd9"
+  },
+  {
+    "active_capacity": 1,
+    "context_length": 512,
+    "decode_length": 16,
+    "kv_pool_bytes": 67108864,
+    "mean_first_token_ms_mean": 5.694231920642778,
+    "mean_tpot_ms_mean": 0.4508581005211454,
+    "method": "FP16_KV_RUNTIME",
+    "p95_tpot_ms_mean": 1.5039983700262383,
+    "peak_cuda_allocated_bytes_max": 67116032,
+    "runs": 2,
+    "throughput_tokens_s_mean": 5559.819803780494,
+    "throughput_tokens_s_std": 4311.83325438847,
+    "workload_hash": "27b732d5c6f357426584d0708129e482bb7a82ea9c54e2ef953f22d15148d1f3"
+  },
+  {
+    "active_capacity": 2,
+    "context_length": 512,
+    "decode_length": 16,
+    "kv_pool_bytes": 134217728,
+    "mean_first_token_ms_mean": 0.16224419232457876,
+    "mean_tpot_ms_mean": 0.10469370681676082,
+    "method": "FP16_KV_RUNTIME",
+    "p95_tpot_ms_mean": 0.10812372056534514,
+    "peak_cuda_allocated_bytes_max": 134231040,
+    "runs": 2,
+    "throughput_tokens_s_mean": 18989.306510902028,
+    "throughput_tokens_s_std": 343.232425703176,
+    "workload_hash": "850c565feeebb06835e4a567d484813ddb3785eb6d17a405b85464cb1cb8cfd9"
+  }
+]

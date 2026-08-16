@@ -1,0 +1,74 @@
+# Final Git State
+
+```text
+ M .gitignore
+ M docs/BRANCH_MAP.md
+?? bench/cudagraph_decode.py
+?? docs/PAPER_EVIDENCE_MAP.md
+?? forensics/
+?? reports/post_freeze_repository_consolidation_v1/
+?? reports/segmented_heterogeneous_attention_state_merge_v1/
+?? reports/system_dynamic_add_remove_batching_v1/lifecycle_regression.txt
+?? reports/system_dynamic_add_remove_batching_v1/ragged_regression.txt
+?? reports/system_full_model_serving_benchmark_v1/bottleneck_profile/gpu_state_before_profile.txt
+?? reports/system_full_model_serving_benchmark_v1/causal_attention_kernel_launch_forensic_v1/
+?? reports/system_full_model_serving_benchmark_v1/causal_decode_cudagraph_replay_v1/
+?? reports/system_full_model_serving_benchmark_v1/context_scaling_probe.json
+?? reports/system_full_model_serving_benchmark_v1/context_scaling_probe_report.md
+?? reports/system_full_model_serving_benchmark_v1/context_scaling_probe_runs/
+?? reports/system_full_model_serving_benchmark_v1/direct_compressed_page_append_v1/formal_smoke_no_optimization/
+?? reports/system_full_model_serving_benchmark_v1/full_model_b_concurrency_scaling_v1/gpu_state_after_capacity.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_b_concurrency_scaling_v1/gpu_state_after_matched_b.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_b_concurrency_scaling_v1/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_context_scaling_v2/gpu_state_after_grid.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_context_scaling_v2/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_after.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_after_phase_profile.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_after_projection_profile.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_before.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_before_phase_profile.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/gpu5_state_before_projection_profile.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/invalid_gpu1_attempt.txt
+?? reports/system_full_model_serving_benchmark_v1/full_model_post_optimization_bottleneck_profile_v2/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/gpu_state.txt
+?? reports/system_full_model_serving_benchmark_v1/integration_optimization_v1/correctness_regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/integration_optimization_v1/preflight.txt
+?? reports/system_full_model_serving_benchmark_v1/memory_breakdown_probe.json
+?? reports/system_full_model_serving_benchmark_v1/multi_request_low_copy_v1/preflight.txt
+?? reports/system_full_model_serving_benchmark_v1/multi_request_low_copy_v1/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/preflight.txt
+?? reports/system_full_model_serving_benchmark_v1/probe_final_gate.json
+?? reports/system_full_model_serving_benchmark_v1/probe_gpu_state.txt
+?? reports/system_full_model_serving_benchmark_v1/probe_preflight.json
+?? reports/system_full_model_serving_benchmark_v1/raw_runs.json
+?? reports/system_full_model_serving_benchmark_v1/raw_runs.jsonl
+?? reports/system_full_model_serving_benchmark_v1/regression_validation.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/preflight.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/ragged_gate.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/semantic_fix_v1/preflight.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/semantic_fix_v1/ragged_gate.txt
+?? reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/semantic_fix_v1/regressions.txt
+?? reports/system_full_model_serving_benchmark_v1/segmented_heterogeneous_attention_state_merge_v1/
+?? reports/system_full_model_serving_benchmark_v1_probe_256/
+?? reports/system_full_model_serving_benchmark_v1_probe_ctx256_decode16/
+?? reports/system_full_model_serving_benchmark_v1_probe_ctx4096_decode16/
+?? reports/system_full_model_serving_benchmark_v1_smoke/
+?? reports/system_full_model_serving_benchmark_v1_smoke_causal/
+?? reports/system_iteration_level_continuous_batching_v1/dynamic_add_remove_regression.txt
+?? reports/system_iteration_level_continuous_batching_v1/git_diff_check.txt
+?? reports/system_iteration_level_continuous_batching_v1/lifecycle_regression.txt
+?? reports/system_iteration_level_continuous_batching_v1/ragged_regression.txt
+?? reports/system_request_lifecycle_manager_v1/ragged_regression.txt
+?? reports/system_serving_benchmark_v1/git_diff_check.txt
+?? reports/system_serving_benchmark_v1/gpu_state_before.txt
+?? reports/system_serving_benchmark_v1/preflight.txt
+?? reports/system_serving_benchmark_v1/raw_runs.json
+?? reports/system_serving_benchmark_v1/raw_runs.jsonl
+?? reports/system_serving_benchmark_v1/regressions.txt
+?? reports/system_serving_benchmark_v1/smoke/
+?? scripts/causal_attention_kernel_launch_forensic.py
+?? scripts/causal_decode_cudagraph_replay.py
+?? tests/test_cudagraph_decode.py
+
+```

@@ -1,0 +1,2 @@
+method,B,context,decode,throughput_tokens_s,throughput_std,mean_tpot_ms,median_tpot_ms,p95_tpot_ms,decode_first_token_ms,valid
+FP16_FULL_MODEL,1,4096,16,10.29859939299669,0.0,101.13673445011955,101.10726387938485,101.26802480954211,1123.1943480670452,True

@@ -1,0 +1,5 @@
+B,FP16_decode_tok_s,CAUSAL_decode_tok_s,FP16_iteration_ms,CAUSAL_iteration_ms,FP16_ms_per_output_token,CAUSAL_ms_per_output_token,CAUSAL_to_FP16_decode_ratio,FP16_peak_allocated_GB,CAUSAL_peak_allocated_GB,success,FP16_status,CAUSAL_status
+1,,,,,,,,,,PARTIAL,,
+2,,,,,,,,,,PARTIAL,,
+4,,,,,,,,,,PARTIAL,,
+8,,,,,,,,,,PARTIAL,,

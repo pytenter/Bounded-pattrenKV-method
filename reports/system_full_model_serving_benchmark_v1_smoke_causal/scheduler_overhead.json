@@ -1,0 +1,3 @@
+{
+  "note": "prefill_prep_s and scheduler_overhead_s are recorded in raw runs; decode wall time excludes prefill preparation."
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "active_capacity": 1,
+    "context_length": 256,
+    "decode_length": 16,
+    "kv_pool_bytes": 16444333056,
+    "mean_decode_first_token_ms_mean": 96.99203460477293,
+    "mean_tpot_ms_mean": 34.4500771490857,
+    "median_tpot_ms_mean": 34.715996313025244,
+    "method": "FP16_FULL_MODEL",
+    "p95_tpot_ms_mean": 34.99476554861758,
+    "peak_cuda_allocated_bytes_max": 16444333056,
+    "peak_cuda_reserved_bytes_max": 16519266304,
+    "runs": 1,
+    "throughput_tokens_s_mean": 29.355928811407807,
+    "throughput_tokens_s_std": 0.0,
+    "workload_hash": "9e3a139d4473b8275638d90a3cd769b9ca7e52ccb49f8b34e8a34c30d6b33631"
+  }
+]

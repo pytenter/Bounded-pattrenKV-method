@@ -1,0 +1,53 @@
+{
+  "amdahl": {
+    "all_attention_orchestration_free_saved_ms_per_token": 108.86403039785009,
+    "all_attention_orchestration_free_speedup": 2.31425965917591,
+    "all_attention_orchestration_free_tpot_ms": 82.83296960214992,
+    "launch_gaps_free_saved_ms_per_token": 71.61789174999981,
+    "launch_gaps_free_speedup": 1.5964225816941782,
+    "launch_gaps_free_tpot_ms": 120.07910825000019,
+    "qk_tail_fragmentation_free_saved_ms_per_token": 37.24613864785027,
+    "qk_tail_fragmentation_free_tpot_ms": 154.45086135214973,
+    "softmax_wrapper_free_saved_ms_per_token": 16.408360874999936,
+    "tiny_lt_10_free_saved_ms_per_token": 23.526884875002725,
+    "tiny_lt_10_free_speedup": 1.1398993207414747,
+    "tiny_lt_10_free_tpot_ms": 168.17011512499727,
+    "value_tail_fragmentation_free_saved_ms_per_token": 37.34249912499988,
+    "value_tail_fragmentation_free_tpot_ms": 154.35450087500013
+  },
+  "attention_kernels_per_token": 4768.0,
+  "cache_append": {
+    "calls_per_token": 512.0,
+    "classification": "orchestration-dominated",
+    "gpu_ms_per_token": 1.3929682500000078,
+    "orchestration_ms_per_token": 17.867031749999995
+  },
+  "classification": "CAUSAL_ATTENTION_KERNEL_LAUNCH_FORENSIC_V1_SUPPORTED",
+  "copy_cast_ms_per_token": 1.9669093750000075,
+  "explained_fraction": 1.0,
+  "idle_gap_ms_per_token": 324.5458599243164,
+  "kernel_busy_ms_per_token": 72.92878174998928,
+  "kernels_per_layer": 149.0,
+  "kernels_per_token": 12599.0,
+  "next_task": "ATTENTION_KERNEL_LAUNCH_FUSION_V1: FP16_TAIL_VALUE_LAUNCH_FUSION",
+  "project_decision": "ONE_FINAL_TARGETED_OPTIMIZATION",
+  "qk_tail": {
+    "calls_per_token": 288.0,
+    "classification": "launch/orchestration-dominated",
+    "gpu_ms_per_token": 1.1093573750000023,
+    "launch_gap_ms_per_token": 37.24613864785027
+  },
+  "root_cause": "LAUNCH_FRAGMENTATION_DOMINATED",
+  "softmax": {
+    "calls_per_token": 928.0,
+    "classification": "wrapper dominated",
+    "gpu_ms_per_token": 2.0616391250000627
+  },
+  "sync_ms_per_token": 3.1448611250000034,
+  "value_tail": {
+    "calls_per_token": 2560.0,
+    "classification": "launch/orchestration-dominated",
+    "gpu_ms_per_token": 4.817500875000115,
+    "launch_gap_ms_per_token": 37.34249912499988
+  }
+}

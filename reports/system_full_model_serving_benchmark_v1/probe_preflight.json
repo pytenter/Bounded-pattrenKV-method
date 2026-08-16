@@ -1,0 +1,10 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "cuda_version": "12.4",
+  "cuda_visible_devices": "1",
+  "device": "cuda:0",
+  "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "physical_gpu": 1,
+  "torch_version": "2.4.1+cu124",
+  "worktree_dirty": true
+}

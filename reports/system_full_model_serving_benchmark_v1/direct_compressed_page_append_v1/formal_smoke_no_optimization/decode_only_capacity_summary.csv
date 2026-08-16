@@ -1,0 +1,3 @@
+method,context,max_successful_full_lifecycle_B,first_OOM_B,OOM_phase,OOM_error,decode_tok_s_at_max_B,decode_iteration_ms_at_max_B,decode_ms_per_output_token_at_max_B,full_lifecycle_peak_allocated_GB,full_lifecycle_peak_reserved_GB
+FP16_FULL_MODEL,4096,0,,,,,,,,
+CAUSAL_V4_25_FULL_MODEL,4096,0,,,,,,,,

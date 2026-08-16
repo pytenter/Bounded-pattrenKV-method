@@ -1,0 +1,30 @@
+Command:
+PYTHONPATH=/data/zypan/Bounded-pattrenKV-pseudodecode-3090/quant:/data/zypan/Bounded-pattrenKV-pseudodecode-3090 CUDA_VISIBLE_DEVICES=2 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True /data/zypan/.local/share/mamba/envs/patternkv/bin/python bench/run_ragged_multistep_correctness.py --device cuda:0
+
+Result:
+PATTERNKV_RAGGED_MULTI_STEP_CORRECTNESS_SUPPORTED
+
+B2_16STEP_REGRESSION=PASS
+B2_REORDER_REGRESSION=PASS
+B4_16STEP_REGRESSION=PASS
+INDEPENDENT_FLUSH_REGRESSION=PASS
+
+Observed B4 flush:
+D=13
+C=14
+B=15
+A=16
+
+Counters:
+serial_request_dispatches=0
+bi_kproj_serial_request_dispatches=0
+historical_fp16_k_materialization=0
+historical_fp16_v_materialization=0
+fallback_calls=0
+normal_decode_kproj_calls=0
+legacy_mixed_v_operator_calls=0
+python_page_dispatches=0
+
+Note:
+An initial run on CUDA_VISIBLE_DEVICES=1 failed with torch.OutOfMemoryError during B4 selector temporary allocation. The successful rerun used idle GPU2 and PyTorch expandable segments allocator. No algorithm, selector, or lifecycle code was changed for this.
+

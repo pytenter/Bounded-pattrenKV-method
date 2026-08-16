@@ -1,0 +1,2 @@
+method,B,context,decode,throughput_tokens_s,throughput_std,mean_tpot_ms,median_tpot_ms,p95_tpot_ms,decode_first_token_ms,valid
+CAUSAL_V4_25_FULL_MODEL,1,256,4,2.202007557742822,0.0,492.49088228680193,494.00207871804014,497.1944699645974,1138.7930559925735,True

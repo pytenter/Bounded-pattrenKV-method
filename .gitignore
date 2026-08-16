@@ -8,6 +8,8 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.DS_Store
+quant/build/
 logs/*.tmp
 logs/longbench/
 logs/

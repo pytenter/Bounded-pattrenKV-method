@@ -1,0 +1,34 @@
+# Attention Component Timeline
+
+- `attention_score_concat`: calls=256 total_wall_ms=29.810 mean_wall_us=116.444
+- `attention_softmax`: calls=256 total_wall_ms=333.568 mean_wall_us=1302.999
+- `cache_append`: calls=256 total_wall_ms=422.077 mean_wall_us=1648.738
+- `cache_mutation`: calls=1024 total_wall_ms=75.615 mean_wall_us=73.842
+- `decode_decoder_model_forward`: calls=8 total_wall_ms=5467.808 mean_wall_us=683475.946
+- `decode_k_projection`: calls=256 total_wall_ms=35.655 mean_wall_us=139.276
+- `decode_layer_attention_residual_add`: calls=256 total_wall_ms=20.016 mean_wall_us=78.186
+- `decode_layer_input_rmsnorm`: calls=256 total_wall_ms=811.808 mean_wall_us=3171.123
+- `decode_layer_mlp`: calls=256 total_wall_ms=157.104 mean_wall_us=613.689
+- `decode_layer_mlp_residual_add`: calls=256 total_wall_ms=17.632 mean_wall_us=68.874
+- `decode_layer_post_attention_rmsnorm`: calls=256 total_wall_ms=804.289 mean_wall_us=3141.753
+- `decode_layer_self_attention`: calls=256 total_wall_ms=3496.528 mean_wall_us=13658.312
+- `decode_lm_head`: calls=8 total_wall_ms=1.751 mean_wall_us=218.872
+- `decode_q_projection`: calls=256 total_wall_ms=38.281 mean_wall_us=149.535
+- `decode_v_projection`: calls=256 total_wall_ms=36.838 mean_wall_us=143.897
+- `fixed_split_softmax_kernel`: calls=256 total_wall_ms=60.270 mean_wall_us=235.431
+- `harness_assemble`: calls=8 total_wall_ms=3.300 mean_wall_us=412.500
+- `importance_update`: calls=256 total_wall_ms=96.124 mean_wall_us=375.486
+- `mixed_v_page_pool_operator`: calls=256 total_wall_ms=41.479 mean_wall_us=162.028
+- `model_decode`: calls=8 total_wall_ms=5486.363 mean_wall_us=685795.419
+- `output_projection`: calls=256 total_wall_ms=41.341 mean_wall_us=161.487
+- `qk_fp16_pending`: calls=256 total_wall_ms=66.778 mean_wall_us=260.852
+- `qk_fp16_recent`: calls=256 total_wall_ms=63.493 mean_wall_us=248.018
+- `qk_fp16_regions`: calls=768 total_wall_ms=276.895 mean_wall_us=360.540
+- `qk_fp16_sink`: calls=256 total_wall_ms=65.383 mean_wall_us=255.403
+- `qk_int2_history`: calls=256 total_wall_ms=121.006 mean_wall_us=472.680
+- `qk_quantized_history`: calls=256 total_wall_ms=80.907 mean_wall_us=316.043
+- `rope_position`: calls=256 total_wall_ms=232.570 mean_wall_us=908.478
+- `value_fp16_pending`: calls=256 total_wall_ms=321.604 mean_wall_us=1256.264
+- `value_fp16_recent`: calls=256 total_wall_ms=298.634 mean_wall_us=1166.540
+- `value_fp16_sink`: calls=256 total_wall_ms=430.793 mean_wall_us=1682.786
+- `value_fp16_tail`: calls=768 total_wall_ms=1142.082 mean_wall_us=1487.085

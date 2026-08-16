@@ -1,0 +1,58 @@
+[
+  {
+    "CAUSAL_decode_ms_per_token": null,
+    "CAUSAL_decode_tok_s": null,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": null,
+    "CAUSAL_status": null,
+    "CAUSAL_to_FP16_decode_ratio": null,
+    "FP16_decode_ms_per_token": null,
+    "FP16_decode_tok_s": null,
+    "FP16_full_lifecycle_peak_allocated_GB": null,
+    "FP16_status": null,
+    "context": 256,
+    "memory_delta_GB": null,
+    "success": "PARTIAL"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": null,
+    "CAUSAL_decode_tok_s": null,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": null,
+    "CAUSAL_status": null,
+    "CAUSAL_to_FP16_decode_ratio": null,
+    "FP16_decode_ms_per_token": null,
+    "FP16_decode_tok_s": null,
+    "FP16_full_lifecycle_peak_allocated_GB": null,
+    "FP16_status": null,
+    "context": 2048,
+    "memory_delta_GB": null,
+    "success": "PARTIAL"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": null,
+    "CAUSAL_decode_tok_s": null,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": null,
+    "CAUSAL_status": null,
+    "CAUSAL_to_FP16_decode_ratio": null,
+    "FP16_decode_ms_per_token": null,
+    "FP16_decode_tok_s": null,
+    "FP16_full_lifecycle_peak_allocated_GB": null,
+    "FP16_status": null,
+    "context": 4096,
+    "memory_delta_GB": null,
+    "success": "PARTIAL"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": null,
+    "CAUSAL_decode_tok_s": null,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": null,
+    "CAUSAL_status": null,
+    "CAUSAL_to_FP16_decode_ratio": null,
+    "FP16_decode_ms_per_token": null,
+    "FP16_decode_tok_s": null,
+    "FP16_full_lifecycle_peak_allocated_GB": null,
+    "FP16_status": null,
+    "context": 8192,
+    "memory_delta_GB": null,
+    "success": "PARTIAL"
+  }
+]

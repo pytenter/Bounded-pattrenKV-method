@@ -1,0 +1,98 @@
+REPO=/data/zypan/Bounded-pattrenKV-pseudodecode-3090
+BRANCH=sys/causal-v4-25-kernel-v1
+HEAD=cc50fdc513181d2137438cc6a7c0dd8322ccf767
+STATUS_SHORT:
+M bench/run_actual_model_bi_prefill_runtime.py
+ M bench/run_bi_vproj_cost_benefit.py
+ M bench/run_prefill_projection_mode_policy.py
+ M bench/run_ragged_multistep_correctness.py
+ M models/llama_patternkv.py
+ M models/segmented_cache.py
+ M quant/batch_invariant_kproj.py
+ M quant/csrc/gemv_cuda.cu
+ M quant/csrc/gemv_cuda.h
+ M quant/csrc/pybind.cpp
+ M quant/matmul.py
+ M quant/page_batch.py
+ M reports/system_ragged_multistep_correctness_v1/b2_16step.md
+ M reports/system_ragged_multistep_correctness_v1/b2_flush_events.json
+ M reports/system_ragged_multistep_correctness_v1/b2_flush_schedule.md
+ M reports/system_ragged_multistep_correctness_v1/b2_reorder.md
+ M reports/system_ragged_multistep_correctness_v1/b2_reorder_steps.json
+ M reports/system_ragged_multistep_correctness_v1/b2_steps.json
+ M reports/system_ragged_multistep_correctness_v1/b4_16step.md
+ M reports/system_ragged_multistep_correctness_v1/b4_flush_events.json
+ M reports/system_ragged_multistep_correctness_v1/b4_flush_schedule.md
+ M reports/system_ragged_multistep_correctness_v1/b4_steps.json
+ M reports/system_ragged_multistep_correctness_v1/centroid_events.json
+ M reports/system_ragged_multistep_correctness_v1/environment.md
+ M reports/system_ragged_multistep_correctness_v1/final_gate.json
+ M reports/system_ragged_multistep_correctness_v1/free_run.json
+ M reports/system_ragged_multistep_correctness_v1/page_events.json
+ M reports/system_ragged_multistep_correctness_v1/pytest.md
+ M reports/system_ragged_multistep_correctness_v1/runtime_counters.json
+ M reports/system_ragged_multistep_correctness_v1/semantic_metrics.json
+ M tests/test_bi_kproj_prefill_runtime.py
+ M tests/test_bi_mlp_oracle.py
+ M tests/test_fused_page_batch_operator.py
+ M tests/test_ragged_cache_assembly.py
+ M tests/test_ragged_k_valid_lengths.py
+ M tests/test_value_direction_screen.py
+?? bench/full_model_serving_benchmark.py
+?? bench/serving_benchmark_v1.py
+?? forensics/
+?? models/request_lifecycle.py
+?? reports/centroid_determinism_causal_forensic.md
+?? reports/system_attention_qk_online_softmax_forensic_v1/
+?? reports/system_attention_value_reduction_forensic_v1/
+?? reports/system_b4_request_count_kernel_geometry_fix_v1/
+?? reports/system_b4_request_count_ragged_divergence_v1/
+?? reports/system_bi_kproj_ragged_decode_fix_v1/
+?? reports/system_dynamic_add_remove_batching_v1/
+?? reports/system_first_late_step_persistent_divergence_v1/
+?? reports/system_full_decode_batch_invariance_oracle_v1/
+?? reports/system_full_model_serving_benchmark_v1/
+?? reports/system_full_model_serving_benchmark_v1_probe_256/
+?? reports/system_full_model_serving_benchmark_v1_probe_ctx256_decode16/
+?? reports/system_full_model_serving_benchmark_v1_probe_ctx4096_decode16/
+?? reports/system_full_model_serving_benchmark_v1_smoke/
+?? reports/system_full_model_serving_benchmark_v1_smoke_causal/
+?? reports/system_iteration_level_continuous_batching_v1/
+?? reports/system_late_step_post_attention_rmsnorm_v1/
+?? reports/system_ragged_active_state_forensic_v1/
+?? reports/system_recent_k_ownership_forensic_v1/
+?? reports/system_request_invariant_attention_softmax_fix_v1/
+?? reports/system_request_invariant_attention_value_fix_v1/
+?? reports/system_request_lifecycle_manager_v1/
+?? reports/system_secondary_mlp_batch_invariance_v1/
+?? reports/system_serving_benchmark_v1/
+?? reports/system_step1_layer0_kpath_forensic_v1/
+?? reports/system_v_causal_importance_forensic_v1/
+?? reports/system_v_causal_importance_ragged_mapping_fix_v1/
+?? scripts/attention_qk_online_softmax_forensic.py
+?? scripts/attention_value_reduction_forensic.py
+?? scripts/b4_attention_microtrace.py
+?? scripts/b4_request_count_ragged_divergence.py
+?? scripts/centroid_determinism_causal_forensic.py
+?? scripts/first_late_step_persistent_divergence.py
+?? scripts/full_decode_batch_invariance_oracle.py
+?? scripts/late_step_post_attention_rmsnorm_gate.py
+?? scripts/ragged_active_state_forensic.py
+?? scripts/recent_k_ownership_forensic.py
+?? scripts/request_invariant_attention_softmax_fix_gate.py
+?? scripts/secondary_mlp_batch_invariance_gate.py
+?? scripts/step1_layer0_k_path_forensic.py
+?? scripts/v_causal_importance_forensic.py
+?? tests/test_b4_request_count_ragged_divergence.py
+?? tests/test_dynamic_add_remove_batching.py
+?? tests/test_first_late_step_persistent_divergence.py
+?? tests/test_full_model_serving_benchmark.py
+?? tests/test_iteration_level_continuous_batching.py
+?? tests/test_request_invariant_rmsnorm.py
+?? tests/test_request_lifecycle_manager.py
+?? tests/test_serving_benchmark_harness.py
+REMOTE_V:
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+origin	https://github.com/HCOOOH/PatternKV.git (fetch)
+origin	https://github.com/HCOOOH/PatternKV.git (push)

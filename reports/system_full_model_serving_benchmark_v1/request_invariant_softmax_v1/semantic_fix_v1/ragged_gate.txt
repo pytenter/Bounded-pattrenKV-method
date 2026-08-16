@@ -1,0 +1,80 @@
+{
+  "algorithm_configuration_changed": false,
+  "all_top1_match": true,
+  "authoritative_start_head": "6b9f32de7ad8bcbbd654dc15742eed192e3ee55f",
+  "b2_16step_pass": true,
+  "b2_contexts": [
+    384,
+    513
+  ],
+  "b2_reorder_16step_pass": true,
+  "b4_16step_pass": true,
+  "b4_contexts": [
+    384,
+    513,
+    642,
+    771
+  ],
+  "bi_decode_kproj_calls": 512,
+  "bi_kproj_serial_request_dispatches": 0,
+  "boundary_step_semantics_pass": true,
+  "classification": "PATTERNKV_RAGGED_MULTI_STEP_CORRECTNESS_SUPPORTED",
+  "compileall_pass": null,
+  "cross_request_centroid_update_detected": false,
+  "cross_request_page_contamination_detected": false,
+  "decode_steps": 16,
+  "equal_length_multistep_regression_pass": true,
+  "expected_flush_steps_b2": {
+    "A": 16,
+    "B": 15
+  },
+  "expected_flush_steps_b4": {
+    "A": 16,
+    "B": 15,
+    "C": 14,
+    "D": 13
+  },
+  "fallback_calls": 0,
+  "forced_reference_replay": true,
+  "free_run_first_divergence": {
+    "A": null,
+    "B": null
+  },
+  "generalization_branch_touched": false,
+  "historical_fp16_k_materialization": 0,
+  "historical_fp16_v_materialization": 0,
+  "independent_request_flush_schedule_pass": true,
+  "initial_pending_lengths_b2": [
+    112,
+    113
+  ],
+  "initial_pending_lengths_b4": [
+    112,
+    113,
+    114,
+    115
+  ],
+  "max_logit_relative_l2": 9.336424409411848e-05,
+  "max_logit_relative_l2_request": "A",
+  "max_logit_relative_l2_step": 9,
+  "min_top5_overlap": 5,
+  "next_task": "IMPLEMENT_DYNAMIC_REQUEST_ADD_REMOVE_MVP",
+  "non_boundary_step_semantics_pass": true,
+  "normal_decode_kproj_calls": 0,
+  "observed_flush_steps_b2": {
+    "A": 16,
+    "B": 15
+  },
+  "observed_flush_steps_b4": {
+    "A": 16,
+    "B": 15,
+    "C": 14,
+    "D": 13
+  },
+  "pytest_result": "",
+  "root_cause_if_failed": "",
+  "runtime_state_semantics_changed": true,
+  "serial_request_dispatches": 0,
+  "start_head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "valid_prefix_compact_all_steps": true
+}

@@ -1,0 +1,16 @@
+{
+  "all_attention_orchestration_free_saved_ms_per_token": 108.86403039785009,
+  "all_attention_orchestration_free_speedup": 2.31425965917591,
+  "all_attention_orchestration_free_tpot_ms": 82.83296960214992,
+  "launch_gaps_free_saved_ms_per_token": 71.61789174999981,
+  "launch_gaps_free_speedup": 1.5964225816941782,
+  "launch_gaps_free_tpot_ms": 120.07910825000019,
+  "qk_tail_fragmentation_free_saved_ms_per_token": 37.24613864785027,
+  "qk_tail_fragmentation_free_tpot_ms": 154.45086135214973,
+  "softmax_wrapper_free_saved_ms_per_token": 16.408360874999936,
+  "tiny_lt_10_free_saved_ms_per_token": 23.526884875002725,
+  "tiny_lt_10_free_speedup": 1.1398993207414747,
+  "tiny_lt_10_free_tpot_ms": 168.17011512499727,
+  "value_tail_fragmentation_free_saved_ms_per_token": 37.34249912499988,
+  "value_tail_fragmentation_free_tpot_ms": 154.35450087500013
+}
