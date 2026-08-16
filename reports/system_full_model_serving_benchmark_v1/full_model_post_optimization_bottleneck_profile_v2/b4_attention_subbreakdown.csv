@@ -1,0 +1,14 @@
+component,profile_key,inclusive_ms_per_iteration,inclusive_ms_per_output_token,percent_model_decode,percent_attention,calls,bytes,notes
+Mixed V FP16 tail,value_fp16_tail,37.6092160269618,9.40230400674045,14.629830264474396,22.754603235230316,384.0,0.0,inclusive nested timer
+Cache append/update wrapper,cache_append,23.528551995754242,5.8821379989385605,9.152509901295915,14.23541679196561,128.0,0.0,inclusive nested timer
+RoPE/position,rope_position,22.468607932329178,5.6171519830822945,8.740196022521381,13.594121674367715,160.0,0.0,inclusive nested timer
+Fixed-split softmax wrapper,attention_softmax,14.746879979968071,3.6867199949920177,5.736475625624389,8.922265294261233,128.0,0.0,inclusive nested timer
+FP16 sink/pending/recent QK,qk_fp16_regions,8.026040069758892,2.006510017439723,3.1220965582549103,4.855973525385322,384.0,0.0,inclusive nested timer
+Compressed historical QK,qk_quantized_history,4.953600063920021,1.2384000159800053,1.9269300397350992,2.9970633782875287,128.0,0.0,inclusive nested timer
+Importance update,importance_update,4.328191954642534,1.0820479886606336,1.6836488589150527,2.618674385108231,128.0,0.0,inclusive nested timer
+Output projection,output_projection,3.4137599635869265,0.8534399908967316,1.32793857747876,2.0654180468970003,128.0,0.0,inclusive nested timer
+Attention score concat,attention_score_concat,3.28217601403594,0.820544003508985,1.2767529625996825,1.9858061623522445,128.0,0.0,inclusive nested timer
+Q projection,decode_q_projection,3.177984017878771,0.7944960044696927,1.2362227048670198,1.9227671579990724,128.0,0.0,inclusive nested timer
+Fixed-split CUDA kernel,fixed_split_softmax_kernel,2.4860160425305367,0.6215040106326342,0.9670500100536183,1.5041076273338525,128.0,0.0,inclusive nested timer; fixed_split_cuda_kernel is included in softmax wrapper
+K projection,decode_k_projection,2.01753600127995,0.5043840003199875,0.7848132019032807,1.2206644028157108,128.0,0.0,inclusive nested timer
+V projection,decode_v_projection,1.7817599978297949,0.4454399994574487,0.6930973068301401,1.078013478982296,128.0,0.0,inclusive nested timer

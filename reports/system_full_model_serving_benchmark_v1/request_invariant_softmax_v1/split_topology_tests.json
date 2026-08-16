@@ -1,0 +1,18 @@
+{
+  "batch_composition_invariant_signature_tests": "passed in tests/test_ragged_k_valid_lengths.py",
+  "cuda_equivalence_b1_b2_b4": "allclose atol=2e-5 passed",
+  "lengths_tested": [
+    127,
+    128,
+    129,
+    255,
+    256,
+    257,
+    384,
+    513,
+    642,
+    771
+  ],
+  "logical_split_size": 128,
+  "merge_order": "left_to_right"
+}

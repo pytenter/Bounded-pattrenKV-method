@@ -1,0 +1,28 @@
+[
+  {
+    "OOM_error": "CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 23.56 GiB of which 2.11 GiB is free. Including non-PyTorch memory, this process has 21.42 GiB memory in use. Of the allocated memory 21.00 GiB is allocated by PyTorch, and 113.10 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "OOM_phase": "PREFILL_OR_DECODE_OOM",
+    "context": 4096,
+    "decode_iteration_ms_at_max_B": 266.94650994613767,
+    "decode_ms_per_output_token_at_max_B": 33.36393475183286,
+    "decode_tok_s_at_max_B": 59.93710126882105,
+    "first_OOM_B": 4,
+    "full_lifecycle_peak_allocated_GB": 23.514079744,
+    "full_lifecycle_peak_reserved_GB": 23.722983424,
+    "max_successful_full_lifecycle_B": 2,
+    "method": "FP16_FULL_MODEL"
+  },
+  {
+    "OOM_error": "CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 23.56 GiB of which 3.48 GiB is free. Including non-PyTorch memory, this process has 20.05 GiB memory in use. Of the allocated memory 19.58 GiB is allocated by PyTorch, and 170.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "OOM_phase": "PREFILL_OR_DECODE_OOM",
+    "context": 4096,
+    "decode_iteration_ms_at_max_B": 1724.2684410884976,
+    "decode_ms_per_output_token_at_max_B": 215.5274375109002,
+    "decode_tok_s_at_max_B": 9.279297595854336,
+    "first_OOM_B": 4,
+    "full_lifecycle_peak_allocated_GB": 22.747865088,
+    "full_lifecycle_peak_reserved_GB": 23.402119168,
+    "max_successful_full_lifecycle_B": 2,
+    "method": "CAUSAL_V4_25_FULL_MODEL"
+  }
+]

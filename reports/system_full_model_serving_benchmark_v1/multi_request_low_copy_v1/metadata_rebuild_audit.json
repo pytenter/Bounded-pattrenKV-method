@@ -1,0 +1,8 @@
+{
+  "b2_after_layer_metadata_rebuilds_per_iteration": 0.0,
+  "b2_before_layer_metadata_rebuilds_per_iteration": 32.0,
+  "b4_after_layer_metadata_rebuilds_per_iteration": 0.0,
+  "b4_before_layer_metadata_rebuilds_per_iteration": 32.0,
+  "new_branch": "ActiveBatchState.matches(running) records iteration_plan_builds/cache_assemble_calls and reuses current cache without layer rebuild",
+  "old_branch": "PatternKVAdapter.assemble_batch len(caches)>1 records layer_metadata_rebuilds=num_layers"
+}

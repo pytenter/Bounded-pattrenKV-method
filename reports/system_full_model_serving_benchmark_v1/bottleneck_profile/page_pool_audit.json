@@ -1,0 +1,44 @@
+[
+  {
+    "logical_kv_bytes": 0,
+    "method": "FP16_FULL_MODEL",
+    "page_pool_bytes": null,
+    "page_pool_utilization": null
+  },
+  {
+    "centroid_state_bytes": 1212164608,
+    "importance_bytes": 0,
+    "logical_kv_bytes": 70254592,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "num_active_pages": 448,
+    "num_allocated_pages": 448,
+    "num_free_pages": 0,
+    "page_metadata_bytes": 131328,
+    "page_pool_bytes": 58265344,
+    "page_pool_utilization": 1.2057697968795997,
+    "page_size": 128,
+    "precision_selector_metadata_bytes": 2351104,
+    "sample_layers": [
+      {
+        "layer": 0,
+        "logical_kv_bytes": 2195456,
+        "num_pages": 14,
+        "page_pool_bytes": 1820792,
+        "seq_lens": [
+          1792
+        ]
+      },
+      {
+        "layer": 31,
+        "logical_kv_bytes": 2195456,
+        "num_pages": 14,
+        "page_pool_bytes": 1820792,
+        "seq_lens": [
+          1792
+        ]
+      }
+    ],
+    "v2_pool_bytes": 14106624,
+    "v4_pool_bytes": 8372224
+  }
+]

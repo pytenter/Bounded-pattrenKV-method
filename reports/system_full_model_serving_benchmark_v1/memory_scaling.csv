@@ -1,0 +1,3 @@
+method,B,context,decode,peak_allocated_gb,peak_reserved_gb,kv_pool_gb,valid
+CAUSAL_V4_25_FULL_MODEL,1,256,4,20.8585344,21.531459584,20.8585344,True
+FP16_FULL_MODEL,1,256,4,16.4380416,16.487809024,16.4380416,True

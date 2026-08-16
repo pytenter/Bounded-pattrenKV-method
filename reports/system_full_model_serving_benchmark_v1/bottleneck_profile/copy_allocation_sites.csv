@@ -1,0 +1,5 @@
+method,site,calls,total_bytes,bytes_per_token,calls_per_token
+CAUSAL_V4_25_FULL_MODEL,_cat_optional_by_batch,3328,334201600,83550400.0,832.0
+CAUSAL_V4_25_FULL_MODEL,_merge_operator_ready_page_pools,128,568605696,142151424.0,32.0
+CAUSAL_V4_25_FULL_MODEL,_slice_tokens_for_request,3200,318473472,79618368.0,800.0
+CAUSAL_V4_25_FULL_MODEL,_slice_operator_ready_page_pools_for_request,128,568605696,142151424.0,32.0

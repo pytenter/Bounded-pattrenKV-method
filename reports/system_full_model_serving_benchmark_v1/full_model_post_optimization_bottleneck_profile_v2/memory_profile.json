@@ -1,0 +1,26 @@
+{
+  "B1": {
+    "cache_cat_events_bytes": 127664128.0,
+    "cache_cat_largest_bytes": 264192.0,
+    "centroid_capacity_bytes": 44830656.0,
+    "centroid_logical_bytes": 25169856.0,
+    "merge_workspace_bytes_total_profile": 32768.0,
+    "partial_state_workspace_bytes_total_profile": 557056.0,
+    "peak_allocated_gb_profile_off": 17.78028544,
+    "peak_allocated_gb_profile_on": 17.78028544,
+    "peak_reserved_gb_profile_off": 18.335399936,
+    "peak_reserved_gb_profile_on": 18.333302784
+  },
+  "B4": {
+    "cache_cat_events_bytes": 510656512.0,
+    "cache_cat_largest_bytes": 1056768.0,
+    "centroid_capacity_bytes": 179322624.0,
+    "centroid_logical_bytes": 100679424.0,
+    "merge_workspace_bytes_total_profile": 131072.0,
+    "partial_state_workspace_bytes_total_profile": 2228224.0,
+    "peak_allocated_gb_profile_off": 22.863290368,
+    "peak_allocated_gb_profile_on": 22.863290368,
+    "peak_reserved_gb_profile_off": 24.66250752,
+    "peak_reserved_gb_profile_on": 24.660410368
+  }
+}

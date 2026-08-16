@@ -1,0 +1,11 @@
+{
+  "CENTROID_ALLOCATED_BYTES_AFTER_FORMULA": 7471104,
+  "CENTROID_ALLOCATED_BYTES_BEFORE_FORMULA": 1140850688,
+  "CENTROID_CAPACITY_UTILIZATION": 0.8421052631578947,
+  "CENTROID_LOGICALLY_USED_BYTES_ESTIMATE": 6291456,
+  "CENTROID_RETAINED_OVERHEAD_FROM_ROOT_CAUSE_BYTES": 1212000000,
+  "CENTROID_STATE_CAPACITY_RULE_AFTER": "max_slots=max(B, max(active_slot_id)+1) unless explicit env override; max_dynamic defaults to max(16, ceil((total_tokens+recent)/group)+8) and grows geometrically on demand",
+  "CENTROID_STATE_CAPACITY_RULE_BEFORE": "max_slots=max(PATTERNKV_CENTROID_MAX_SLOTS default 16, B); max_dynamic=PATTERNKV_CENTROID_MAX_DYNAMIC default 512",
+  "CENTROID_STATE_SHAPE_AFTER": "[layers=32, slots=required active slot-id range, heads=8, centroids=32+context-derived dynamic default, dim=128] for K and V pools",
+  "CENTROID_STATE_SHAPE_BEFORE": "[layers=32, slots=16, heads=8, centroids=32+512, dim=128] for K and V pools"
+}

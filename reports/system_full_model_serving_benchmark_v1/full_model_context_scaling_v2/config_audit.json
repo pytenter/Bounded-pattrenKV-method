@@ -1,0 +1,24 @@
+{
+  "arrival_protocol": "saturated_steady_state",
+  "flags": {
+    "PATTERNKV_ACTIVE_BATCH_CACHE": "1",
+    "PATTERNKV_FIXED_SPLIT_SOFTMAX": "1"
+  },
+  "old_active_capacity": 1,
+  "old_context_values": [
+    256,
+    2048,
+    4096,
+    8192
+  ],
+  "old_decode_length": 8,
+  "old_measured_runs": 1,
+  "old_total_requests": 2,
+  "scheduler_policy": "FIFO",
+  "source": "reports/system_full_model_serving_benchmark_v1/context_scaling.csv and context_scaling_probe.json",
+  "v2_active_capacity": 1,
+  "v2_decode_length": 8,
+  "v2_measured_runs": 3,
+  "v2_total_requests": 2,
+  "v2_warmup_runs": 1
+}

@@ -1,0 +1,318 @@
+{
+  "active_batch_cache_enabled": true,
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 56.20799970347434,
+      "tokens": 65856.0,
+      "total_us": 7194.623962044716
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 452.8320000972599,
+      "tokens": 65856.0,
+      "total_us": 57962.496012449265
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 781.6120008938015,
+      "tokens": 0.0,
+      "total_us": 100046.33611440659
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 1056768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 45.32031270719017,
+      "tokens": 0.0,
+      "total_us": 23204.000106081367
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 151011072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 100679424.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 228938.24005126953,
+      "tokens": 0.0,
+      "total_us": 915752.9602050781
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 1215.999960899353,
+      "tokens": 0.0,
+      "total_us": 4863.999843597412
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 73.54400132317096,
+      "tokens": 65856.0,
+      "total_us": 9413.632169365883
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 2560.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 139.00800031842664,
+      "tokens": 0.0,
+      "total_us": 556.0320012737066
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 132.62399996165186,
+      "tokens": 65856.0,
+      "total_us": 16975.87199509144
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 131072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 230222.33963012695,
+      "tokens": 0.0,
+      "total_us": 920889.3585205078
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 107.88799921283498,
+      "tokens": 0.0,
+      "total_us": 13809.663899242878
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 431.9039946421981,
+      "tokens": 8192.0,
+      "total_us": 13820.927828550339
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 14180.101037025452,
+      "tokens": 8192.0,
+      "total_us": 453763.23318481445
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 256.0,
+      "mean_us": 362.6359994523227,
+      "tokens": 24576.0,
+      "total_us": 92834.81585979462
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 242.0,
+      "mean_us": 354.1897527935091,
+      "tokens": 8192.0,
+      "total_us": 85713.9201760292
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 42816.35224819183,
+      "tokens": 8192.0,
+      "total_us": 1370123.2719421387
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 13541.920065879822,
+      "tokens": 0.0,
+      "total_us": 433341.4421081543
+    },
+    "partial_state_workspace": {
+      "bytes": 655360.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 4105455.56640625,
+      "tokens": 0.0,
+      "total_us": 4105455.56640625
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 29600.767135620117,
+      "tokens": 0.0,
+      "total_us": 29600.767135620117
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 86.24299997851874,
+      "tokens": 33088.0,
+      "total_us": 33117.311991751194
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 102.46400069445372,
+      "tokens": 0.0,
+      "total_us": 13115.392088890076
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 160.0,
+      "mean_us": 376.64000019431114,
+      "tokens": 0.0,
+      "total_us": 60262.40003108978
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1140.1600055396557,
+      "tokens": 8192.0,
+      "total_us": 36485.12017726898
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 58.46400081645697,
+      "tokens": 8192.0,
+      "total_us": 1870.8480261266232
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 25489.376068115234,
+      "tokens": 8192.0,
+      "total_us": 815660.0341796875
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 26880.99217414856,
+      "tokens": 8192.0,
+      "total_us": 860191.7495727539
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 408.33066621174413,
+      "tokens": 33088.0,
+      "total_us": 156798.97582530975
+    }
+  },
+  "result": {
+    "active_capacity": 4,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 4,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 512,
+    "decode_length": 4,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 17890369536,
+    "mean_decode_first_token_ms": 4378.056959016249,
+    "mean_tpot_ms": 1264.2636295058765,
+    "median_tpot_ms": 1264.2636295058765,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 1264.2636295058765,
+    "peak_cuda_allocated_bytes": 17890369536,
+    "peak_cuda_reserved_bytes": 18568183808,
+    "physical_gpu": 1,
+    "prefill_prep_s": 4.094773221993819,
+    "run_index": 0,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 4.094818426063284,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 16.627188492590992,
+    "total_requests": 4,
+    "true_batch_preserved": true,
+    "wall_time_s": 0.9622793418820947,
+    "warmup": false,
+    "workload_hash": "cfded4280402351f6a77ff9cd9d9155decc595ad03c46fee400bcecf7a84572b"
+  }
+}

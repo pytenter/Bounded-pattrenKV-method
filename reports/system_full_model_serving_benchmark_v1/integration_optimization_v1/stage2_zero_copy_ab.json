@@ -1,0 +1,32 @@
+{
+  "after": {
+    "causal_ms_per_token": 316.2771280040033,
+    "causal_tok_per_s": 3.161903403630886,
+    "centroid_allocated_gb": 0.007471104,
+    "centroid_logical_gb": 0.006291456,
+    "decode_peak_allocated_gb": 17.78028544,
+    "decode_peak_reserved_gb": 18.333302784,
+    "harness_assemble_ms_per_token": 0.18214400095166638,
+    "harness_split_ms_per_token": 0.01740800030529499,
+    "iteration_plan_builds_per_token": 1.0,
+    "layer_metadata_rebuilds_per_token": 0.0,
+    "model_decode_ms_per_token": 304.60569763183594,
+    "row_slice_bytes_per_token": 0.0,
+    "row_slice_calls_per_token": 0.0
+  },
+  "before": {
+    "causal_ms_per_token": 788.231,
+    "causal_tok_per_s": 1.2686636277943901,
+    "centroid_allocated_gb": 1.212,
+    "centroid_logical_gb": null,
+    "decode_peak_allocated_gb": 19.257,
+    "decode_peak_reserved_gb": 20.122,
+    "harness_assemble_ms_per_token": 119.335,
+    "harness_split_ms_per_token": 162.619,
+    "iteration_plan_builds_per_token": null,
+    "layer_metadata_rebuilds_per_token": 32.0,
+    "model_decode_ms_per_token": 502.638,
+    "row_slice_bytes_per_token": 221769792.0,
+    "row_slice_calls_per_token": 832.0
+  }
+}

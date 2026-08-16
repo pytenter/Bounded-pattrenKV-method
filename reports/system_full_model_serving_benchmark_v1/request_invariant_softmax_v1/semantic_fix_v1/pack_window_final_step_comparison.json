@@ -1,0 +1,93 @@
+{
+  "after_assign_cmp": {
+    "exact_equal": false,
+    "max_abs": 32.0,
+    "mismatch_count": 1003,
+    "rel_l2": 0.5494554042816162,
+    "shape": [
+      1,
+      8,
+      512
+    ]
+  },
+  "after_scale_cmp": {
+    "exact_equal": false,
+    "max_abs": 2.609375,
+    "mismatch_count": 1000,
+    "rel_l2": 0.11528882384300232,
+    "shape": [
+      1,
+      8,
+      128,
+      4
+    ]
+  },
+  "after_zero_cmp": {
+    "exact_equal": false,
+    "max_abs": 5.203125,
+    "mismatch_count": 1019,
+    "rel_l2": 0.2265118807554245,
+    "shape": [
+      1,
+      8,
+      128,
+      4
+    ]
+  },
+  "b1_before": {
+    "packed_before": 384,
+    "slot": [
+      0
+    ]
+  },
+  "b4_before": {
+    "packed_before": 384,
+    "slot": [
+      2
+    ]
+  },
+  "centroids_32_cmp": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1,
+      8,
+      32,
+      128
+    ]
+  },
+  "counts_cmp": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1
+    ]
+  },
+  "post_merge_assign_cmp": {
+    "exact_equal": false,
+    "max_abs": 32.0,
+    "mismatch_count": 1003,
+    "rel_l2": 0.5494554042816162,
+    "shape": [
+      1,
+      8,
+      512
+    ]
+  },
+  "window_cmp": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ]
+  }
+}

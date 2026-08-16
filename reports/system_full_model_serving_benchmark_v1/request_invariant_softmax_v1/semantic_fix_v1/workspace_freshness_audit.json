@@ -1,0 +1,140 @@
+{
+  "cache_state_comparison": [
+    {
+      "b1_lengths": {
+        "packed": 384,
+        "pending": 126,
+        "recent": 128,
+        "sink": 16
+      },
+      "b1_total": 654,
+      "b4_lengths": {
+        "packed": 384,
+        "pending": 126,
+        "recent": 128,
+        "sink": 16
+      },
+      "b4_total": 654,
+      "segments": {
+        "packed": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            384,
+            128
+          ]
+        },
+        "pending": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            126,
+            128
+          ]
+        },
+        "recent": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            128,
+            128
+          ]
+        },
+        "sink": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            16,
+            128
+          ]
+        }
+      },
+      "start_step": 13
+    },
+    {
+      "b1_lengths": {
+        "packed": 384,
+        "pending": 127,
+        "recent": 128,
+        "sink": 16
+      },
+      "b1_total": 655,
+      "b4_lengths": {
+        "packed": 384,
+        "pending": 127,
+        "recent": 128,
+        "sink": 16
+      },
+      "b4_total": 655,
+      "segments": {
+        "packed": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            384,
+            128
+          ]
+        },
+        "pending": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            127,
+            128
+          ]
+        },
+        "recent": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            128,
+            128
+          ]
+        },
+        "sink": {
+          "exact_equal": true,
+          "max_abs": 0.0,
+          "mismatch_count": 0,
+          "rel_l2": 0.0,
+          "shape": [
+            1,
+            8,
+            16,
+            128
+          ]
+        }
+      },
+      "start_step": 14
+    }
+  ],
+  "request": "C",
+  "row_in_b4": 2
+}

@@ -1,0 +1,445 @@
+{
+  "physical_gpu": 5,
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 102.56800043862313,
+      "tokens": 262464.0,
+      "total_us": 13128.70405614376
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 460.8399993740022,
+      "tokens": 262464.0,
+      "total_us": 58987.519919872284
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 735.2672498673201,
+      "tokens": 0.0,
+      "total_us": 94114.20798301697
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 1056768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 31.478000189963495,
+      "tokens": 0.0,
+      "total_us": 16116.73609726131
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 179322624.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 100679424.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 255789.05868530273,
+      "tokens": 0.0,
+      "total_us": 1023156.2347412109
+    },
+    "decode_k_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 63.04800003999844,
+      "tokens": 0.0,
+      "total_us": 8070.144005119801
+    },
+    "decode_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 30.13600029225927,
+      "tokens": 0.0,
+      "total_us": 3857.4080374091864
+    },
+    "decode_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 419.4719986990094,
+      "tokens": 0.0,
+      "total_us": 53692.415833473206
+    },
+    "decode_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 1149.1839913651347,
+      "tokens": 0.0,
+      "total_us": 147095.55089473724
+    },
+    "decode_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 4.423999951541191,
+      "tokens": 0.0,
+      "total_us": 566.2719937972724
+    },
+    "decode_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 1086.135994642973,
+      "tokens": 0.0,
+      "total_us": 139025.40731430054
+    },
+    "decode_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 5165.056005120277,
+      "tokens": 0.0,
+      "total_us": 661127.1686553955
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 1214.4639492034912,
+      "tokens": 0.0,
+      "total_us": 4857.855796813965
+    },
+    "decode_q_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 99.31200055871159,
+      "tokens": 0.0,
+      "total_us": 12711.936071515083
+    },
+    "decode_v_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 55.67999993218109,
+      "tokens": 0.0,
+      "total_us": 7127.0399913191795
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 77.68800132907927,
+      "tokens": 262464.0,
+      "total_us": 9944.064170122147
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 8704.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 142.8479997557588,
+      "tokens": 0.0,
+      "total_us": 571.3919990230352
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 135.2559985825792,
+      "tokens": 262464.0,
+      "total_us": 17312.767818570137
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 131072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 257072.12829589844,
+      "tokens": 0.0,
+      "total_us": 1028288.5131835938
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 106.67999886209145,
+      "tokens": 0.0,
+      "total_us": 13655.039854347706
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 452.06400100141764,
+      "tokens": 57344.0,
+      "total_us": 14466.048032045364
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 92075.6630897522,
+      "tokens": 57344.0,
+      "total_us": 2946421.2188720703
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 1751.0,
+      "mean_us": 310.277263192978,
+      "tokens": 172032.0,
+      "total_us": 543295.4878509045
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 1738.0,
+      "mean_us": 304.6040594131955,
+      "tokens": 57344.0,
+      "total_us": 529401.8552601337
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 277553.2822608948,
+      "tokens": 57344.0,
+      "total_us": 8881705.032348633
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 90258.81493091583,
+      "tokens": 0.0,
+      "total_us": 2888282.0777893066
+    },
+    "partial_state_workspace": {
+      "bytes": 2228224.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 17313701.171875,
+      "tokens": 0.0,
+      "total_us": 17313701.171875
+    },
+    "prefill_k_projection": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1018.2399898767471,
+      "tokens": 0.0,
+      "total_us": 32583.67967605591
+    },
+    "prefill_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 242.17600282281637,
+      "tokens": 0.0,
+      "total_us": 7749.632090330124
+    },
+    "prefill_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1466.3040228188038,
+      "tokens": 0.0,
+      "total_us": 46921.72873020172
+    },
+    "prefill_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 37707.199931144714,
+      "tokens": 0.0,
+      "total_us": 1206630.3977966309
+    },
+    "prefill_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 242.11200280115008,
+      "tokens": 0.0,
+      "total_us": 7747.584089636803
+    },
+    "prefill_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1452.7359753847122,
+      "tokens": 0.0,
+      "total_us": 46487.55121231079
+    },
+    "prefill_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 499858.2363128662,
+      "tokens": 0.0,
+      "total_us": 15995463.562011719
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 126432.25860595703,
+      "tokens": 0.0,
+      "total_us": 126432.25860595703
+    },
+    "prefill_q_projection": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 3765.9199610352516,
+      "tokens": 0.0,
+      "total_us": 120509.43875312805
+    },
+    "prefill_v_projection": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1024.7359946370125,
+      "tokens": 0.0,
+      "total_us": 32791.5518283844
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 83.60458405998845,
+      "tokens": 33088.0,
+      "total_us": 32104.16027903557
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 154.80000199750066,
+      "tokens": 0.0,
+      "total_us": 19814.400255680084
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 160.0,
+      "mean_us": 561.7151983082294,
+      "tokens": 0.0,
+      "total_us": 89874.43172931671
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 3189.9199411273003,
+      "tokens": 57344.0,
+      "total_us": 102077.43811607361
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 7.104000105755404,
+      "tokens": 57344.0,
+      "total_us": 227.32800338417292
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 179587.16821670532,
+      "tokens": 57344.0,
+      "total_us": 5746789.38293457
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 182941.05529785156,
+      "tokens": 57344.0,
+      "total_us": 5854113.76953125
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 391.76266694751877,
+      "tokens": 33088.0,
+      "total_us": 150436.8641078472
+    }
+  },
+  "profile_enabled": true,
+  "result": {
+    "active_capacity": 4,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 4,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 2048,
+    "decode_length": 4,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 22863290368,
+    "mean_decode_first_token_ms": 17707.826413214207,
+    "mean_tpot_ms": 4617.478452040814,
+    "median_tpot_ms": 4617.478452040814,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 4617.478452040814,
+    "peak_cuda_allocated_bytes": 22863290368,
+    "peak_cuda_reserved_bytes": 24660410368,
+    "physical_gpu": 5,
+    "prefill_prep_s": 17.27126754913479,
+    "run_index": 44,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 17.271323998924345,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 13.348562587631008,
+    "total_requests": 4,
+    "true_batch_preserved": true,
+    "wall_time_s": 1.1986309308558702,
+    "warmup": false,
+    "workload_hash": "318a6de0dea73ca605e2eea4f03f5b13f4d46de8076583c51f2b0ab5048afdcb"
+  }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "context": 4096,
+    "first_OOM_B": 2,
+    "iteration_ms_at_max_success_B": 145.05079308582935,
+    "max_successful_B": 1,
+    "method": "FP16_FULL_MODEL",
+    "ms_per_output_token_at_max_success_B": 145.05079308582935,
+    "oom_peak_allocated_GB": 23.51414528,
+    "oom_reason": "OOM: CUDA out of memory. Tried to allocate 3.91 GiB. GPU 0 has a total capacity of 23.56 GiB of which 992.50 MiB is free. Including non-PyTorch memory, this process has 22.56 GiB memory in use. Of the allocated memory 19.99 GiB is allocated by PyTorch, and 2.27 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "peak_allocated_at_max_success_B": 20.867354112,
+    "peak_reserved_at_max_success_B": 22.663921664,
+    "throughput_at_max_success_B": 6.894141835786842
+  },
+  {
+    "context": 4096,
+    "first_OOM_B": 4,
+    "iteration_ms_at_max_success_B": 1547.1219876926625,
+    "max_successful_B": 2,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "ms_per_output_token_at_max_success_B": 773.5609938463313,
+    "oom_peak_allocated_GB": 21.033951232,
+    "oom_reason": "OOM: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 23.56 GiB of which 3.04 GiB is free. Including non-PyTorch memory, this process has 20.49 GiB memory in use. Of the allocated memory 19.59 GiB is allocated by PyTorch, and 608.46 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "peak_allocated_at_max_success_B": 23.142556672,
+    "peak_reserved_at_max_success_B": 24.708644864,
+    "throughput_at_max_success_B": 1.2929293450877055
+  }
+]

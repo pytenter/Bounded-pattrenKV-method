@@ -1,0 +1,202 @@
+[
+  {
+    "batch_size": 1,
+    "category": "compressed_v2_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 47185920,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 47185920,
+    "tensor_count": 64
+  },
+  {
+    "batch_size": 1,
+    "category": "fp16_tail_sink_recent_pending",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 33554432,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 33554432,
+    "tensor_count": 192
+  },
+  {
+    "batch_size": 1,
+    "category": "compressed_k_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 31457280,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 31457280,
+    "tensor_count": 32
+  },
+  {
+    "batch_size": 1,
+    "category": "compressed_v4_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 31457280,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 31457280,
+    "tensor_count": 64
+  },
+  {
+    "batch_size": 1,
+    "category": "precision_assignment_pattern_metadata",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 22748160,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 22748160,
+    "tensor_count": 416
+  },
+  {
+    "batch_size": 1,
+    "category": "centroid_state",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 13763488,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 13763488,
+    "tensor_count": 352
+  },
+  {
+    "batch_size": 1,
+    "category": "quant_scale",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 5898240,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 5898240,
+    "tensor_count": 160
+  },
+  {
+    "batch_size": 1,
+    "category": "quant_zero",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 5898240,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 5898240,
+    "tensor_count": 160
+  },
+  {
+    "batch_size": 1,
+    "category": "page_metadata",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 273152,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 273152,
+    "tensor_count": 384
+  },
+  {
+    "batch_size": 2,
+    "category": "fp16_tail_sink_recent_pending",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 67108864,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 67108864,
+    "tensor_count": 192
+  },
+  {
+    "batch_size": 2,
+    "category": "compressed_k_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 62914560,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 62914560,
+    "tensor_count": 32
+  },
+  {
+    "batch_size": 2,
+    "category": "compressed_v2_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 47185920,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 47185920,
+    "tensor_count": 32
+  },
+  {
+    "batch_size": 2,
+    "category": "centroid_state",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 38274880,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 38274880,
+    "tensor_count": 352
+  },
+  {
+    "batch_size": 2,
+    "category": "precision_assignment_pattern_metadata",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 35665920,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 35665920,
+    "tensor_count": 288
+  },
+  {
+    "batch_size": 2,
+    "category": "compressed_v4_payload",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 31457280,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 31457280,
+    "tensor_count": 32
+  },
+  {
+    "batch_size": 2,
+    "category": "quant_scale",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 7864320,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 7864320,
+    "tensor_count": 96
+  },
+  {
+    "batch_size": 2,
+    "category": "quant_zero",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 7864320,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 7864320,
+    "tensor_count": 96
+  },
+  {
+    "batch_size": 2,
+    "category": "page_metadata",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 546176,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "physical_allocated_bytes": 546176,
+    "tensor_count": 384
+  },
+  {
+    "batch_size": 1,
+    "category": "fp16_historical_kv",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 536870912,
+    "method": "FP16_FULL_MODEL",
+    "physical_allocated_bytes": 545423872,
+    "tensor_count": 1
+  },
+  {
+    "batch_size": 2,
+    "category": "fp16_historical_kv",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "logical_used_bytes": 1073741824,
+    "method": "FP16_FULL_MODEL",
+    "physical_allocated_bytes": 1082327552,
+    "tensor_count": 1
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "method": "FP16_FULL_MODEL",
+    "context": 4096,
+    "B": 2,
+    "before_status": "PASS",
+    "after_status": "PASS",
+    "before_prefill_peak_allocated_GB": "23.514",
+    "after_prefill_peak_allocated_GB": "18.118",
+    "after_decode_peak_allocated_GB": "19.311",
+    "before_first_oom_B": "4",
+    "after_first_oom_B": "8",
+    "before_oom_attempt": "",
+    "after_oom_attempt": ""
+  },
+  {
+    "method": "FP16_FULL_MODEL",
+    "context": 4096,
+    "B": 4,
+    "before_status": "OOM",
+    "after_status": "PASS",
+    "before_prefill_peak_allocated_GB": "",
+    "after_prefill_peak_allocated_GB": "20.165",
+    "after_decode_peak_allocated_GB": "22.553",
+    "before_first_oom_B": "4",
+    "after_first_oom_B": "8",
+    "before_oom_attempt": "7.83 GiB",
+    "after_oom_attempt": "none at B4"
+  },
+  {
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "context": 4096,
+    "B": 2,
+    "before_status": "PASS",
+    "after_status": "PASS",
+    "before_prefill_peak_allocated_GB": "22.748",
+    "after_prefill_peak_allocated_GB": "17.685",
+    "after_decode_peak_allocated_GB": "16.514",
+    "before_first_oom_B": "4",
+    "after_first_oom_B": "16",
+    "before_oom_attempt": "",
+    "after_oom_attempt": ""
+  },
+  {
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "context": 4096,
+    "B": 4,
+    "before_status": "OOM",
+    "after_status": "PASS",
+    "before_prefill_peak_allocated_GB": "",
+    "after_prefill_peak_allocated_GB": "19.268",
+    "after_decode_peak_allocated_GB": "16.959",
+    "before_first_oom_B": "4",
+    "after_first_oom_B": "16",
+    "before_oom_attempt": "7.83 GiB",
+    "after_oom_attempt": "none at B4"
+  }
+]

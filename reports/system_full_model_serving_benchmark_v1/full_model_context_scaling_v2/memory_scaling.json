@@ -1,0 +1,68 @@
+[
+  {
+    "allocated_GB_delta": 2.0976189440000006,
+    "allocated_GB_per_token": 0.001170546285714286,
+    "both_points_valid": true,
+    "from_context": 256,
+    "method": "FP16_FULL_MODEL",
+    "notes": "",
+    "reserved_GB_delta": 2.7095203839999975,
+    "reserved_GB_per_token": 0.0015120091428571414,
+    "to_context": 2048
+  },
+  {
+    "allocated_GB_delta": 2.398154752,
+    "allocated_GB_per_token": 0.001170974,
+    "both_points_valid": true,
+    "from_context": 2048,
+    "method": "FP16_FULL_MODEL",
+    "notes": "",
+    "reserved_GB_delta": 3.3449574400000017,
+    "reserved_GB_per_token": 0.0016332800000000008,
+    "to_context": 4096
+  },
+  {
+    "allocated_GB_delta": 2.646791168,
+    "allocated_GB_per_token": 0.00064618925,
+    "both_points_valid": false,
+    "from_context": 4096,
+    "method": "FP16_FULL_MODEL",
+    "notes": "uses OOM peak or invalid endpoint; do not treat as completed-run slope",
+    "reserved_GB_delta": 1.0989076480000008,
+    "reserved_GB_per_token": 0.0002682880000000002,
+    "to_context": 8192
+  },
+  {
+    "allocated_GB_delta": 1.5324712960000006,
+    "allocated_GB_per_token": 0.0008551737142857146,
+    "both_points_valid": true,
+    "from_context": 256,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "notes": "",
+    "reserved_GB_delta": 1.841299455999998,
+    "reserved_GB_per_token": 0.001027510857142856,
+    "to_context": 2048
+  },
+  {
+    "allocated_GB_delta": 1.7510399999999997,
+    "allocated_GB_per_token": 0.0008549999999999999,
+    "both_points_valid": true,
+    "from_context": 2048,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "notes": "",
+    "reserved_GB_delta": 2.355101696000002,
+    "reserved_GB_per_token": 0.001149952000000001,
+    "to_context": 4096
+  },
+  {
+    "allocated_GB_delta": 3.1353067520000018,
+    "allocated_GB_per_token": 0.0007654557500000004,
+    "both_points_valid": false,
+    "from_context": 4096,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "notes": "uses OOM peak or invalid endpoint; do not treat as completed-run slope",
+    "reserved_GB_delta": 2.5920798719999993,
+    "reserved_GB_per_token": 0.0006328319999999998,
+    "to_context": 8192
+  }
+]

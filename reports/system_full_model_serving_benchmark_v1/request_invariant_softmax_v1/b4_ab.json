@@ -1,0 +1,15 @@
+{
+  "low_copy_audit": {
+    "B": 4,
+    "cache_assemble_calls_per_token": 0.25,
+    "cache_split_calls_per_token": 0.5,
+    "iteration_plan_builds_per_token": 0.25,
+    "layer_metadata_rebuilds_per_token": 8.0,
+    "peak_allocated_gb": 17.479008256,
+    "row_slice_bytes_per_token": 12845056.0,
+    "row_slice_calls_per_token": 2.0,
+    "run_valid": true,
+    "total_ms_per_token": 208.02100049331784
+  },
+  "softmax_perf_ab": "not run as final perf because low-copy pre-gate failed and ragged hard gate did not close"
+}

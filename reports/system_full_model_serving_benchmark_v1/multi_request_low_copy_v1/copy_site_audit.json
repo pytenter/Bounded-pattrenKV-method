@@ -1,0 +1,35 @@
+[
+  {
+    "bytes_per_call_B2_before": 6422528,
+    "calls_per_output_token_B2_before": 2,
+    "classification": "C_UNNECESSARY_PERSISTENT_CACHE_STATE_MATERIALIZATION_IN_STEADY_DECODE",
+    "dtype": "mixed int32/fp16/uint8",
+    "file": "bench/full_model_serving_benchmark.py",
+    "fix": "steady active batch cache skips split until membership changes",
+    "function": "PatternKVAdapter.split_batch",
+    "shape": "operator_ready_page_pools per active row/layer",
+    "site": "extract_request_cache(layer_cache, row)"
+  },
+  {
+    "bytes_per_call": "not fully counted by old row-slice counter",
+    "calls_per_iteration_before": 32,
+    "classification": "C_UNNECESSARY_ACTIVE_CACHE_REASSEMBLY_IN_STEADY_DECODE",
+    "dtype": "compressed K/V + metadata",
+    "file": "bench/full_model_serving_benchmark.py",
+    "fix": "ActiveBatchState reuses decoded batched cache",
+    "function": "PatternKVAdapter.assemble_batch",
+    "shape": "32 layer PatternQuantizedKVCache active batch",
+    "site": "assemble_ragged_patternkv_cache([...]) per layer"
+  },
+  {
+    "bytes_per_call": "active compressed pool size",
+    "calls_per_iteration_after_steady": 0,
+    "classification": "C_NECESSARY_ONLY_AT_MEMBERSHIP_ASSEMBLY_BOUNDARY",
+    "dtype": "mixed",
+    "file": "models/segmented_cache.py",
+    "fix": "not invoked on steady membership reuse",
+    "function": "_merge_operator_ready_page_pools",
+    "shape": "compressed page pools",
+    "site": "torch.cat pool attrs"
+  }
+]

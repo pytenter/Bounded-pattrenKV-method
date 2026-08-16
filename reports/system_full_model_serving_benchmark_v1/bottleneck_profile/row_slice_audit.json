@@ -1,0 +1,41 @@
+{
+  "all_cache_copy_bytes_per_token": 447471616.0,
+  "all_cache_copy_calls_per_token": 1696.0,
+  "evidence": [
+    {
+      "bytes_per_token": "83550400.0",
+      "calls": "3328",
+      "calls_per_token": "832.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_cat_optional_by_batch",
+      "total_bytes": "334201600"
+    },
+    {
+      "bytes_per_token": "142151424.0",
+      "calls": "128",
+      "calls_per_token": "32.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_merge_operator_ready_page_pools",
+      "total_bytes": "568605696"
+    },
+    {
+      "bytes_per_token": "79618368.0",
+      "calls": "3200",
+      "calls_per_token": "800.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_slice_tokens_for_request",
+      "total_bytes": "318473472"
+    },
+    {
+      "bytes_per_token": "142151424.0",
+      "calls": "128",
+      "calls_per_token": "32.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_slice_operator_ready_page_pools_for_request",
+      "total_bytes": "568605696"
+    }
+  ],
+  "row_slice_bytes_per_token": 221769792.0,
+  "row_slice_calls_per_token": 832.0,
+  "row_slice_real_copy": true
+}

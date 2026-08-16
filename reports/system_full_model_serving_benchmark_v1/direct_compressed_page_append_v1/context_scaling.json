@@ -1,0 +1,58 @@
+[
+  {
+    "context": "256",
+    "FP16_decode_ms_per_token": "",
+    "CAUSAL_decode_ms_per_token": "",
+    "FP16_decode_tok_s": "",
+    "CAUSAL_decode_tok_s": "",
+    "CAUSAL_to_FP16_decode_ratio": "",
+    "FP16_full_lifecycle_peak_allocated_GB": "",
+    "CAUSAL_full_lifecycle_peak_allocated_GB": "",
+    "memory_delta_GB": "",
+    "success": "PARTIAL",
+    "FP16_status": "",
+    "CAUSAL_status": ""
+  },
+  {
+    "context": "2048",
+    "FP16_decode_ms_per_token": "",
+    "CAUSAL_decode_ms_per_token": "",
+    "FP16_decode_tok_s": "",
+    "CAUSAL_decode_tok_s": "",
+    "CAUSAL_to_FP16_decode_ratio": "",
+    "FP16_full_lifecycle_peak_allocated_GB": "",
+    "CAUSAL_full_lifecycle_peak_allocated_GB": "",
+    "memory_delta_GB": "",
+    "success": "PARTIAL",
+    "FP16_status": "",
+    "CAUSAL_status": ""
+  },
+  {
+    "context": "4096",
+    "FP16_decode_ms_per_token": "",
+    "CAUSAL_decode_ms_per_token": "",
+    "FP16_decode_tok_s": "",
+    "CAUSAL_decode_tok_s": "",
+    "CAUSAL_to_FP16_decode_ratio": "",
+    "FP16_full_lifecycle_peak_allocated_GB": "",
+    "CAUSAL_full_lifecycle_peak_allocated_GB": "",
+    "memory_delta_GB": "",
+    "success": "PARTIAL",
+    "FP16_status": "",
+    "CAUSAL_status": ""
+  },
+  {
+    "context": "8192",
+    "FP16_decode_ms_per_token": "",
+    "CAUSAL_decode_ms_per_token": "",
+    "FP16_decode_tok_s": "",
+    "CAUSAL_decode_tok_s": "",
+    "CAUSAL_to_FP16_decode_ratio": "",
+    "FP16_full_lifecycle_peak_allocated_GB": "",
+    "CAUSAL_full_lifecycle_peak_allocated_GB": "",
+    "memory_delta_GB": "",
+    "success": "PARTIAL",
+    "FP16_status": "",
+    "CAUSAL_status": ""
+  }
+]

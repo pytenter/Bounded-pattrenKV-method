@@ -1,0 +1,324 @@
+{
+  "env": {
+    "PATTERNKV_ACTIVE_BATCH_CACHE": "1",
+    "PATTERNKV_FIXED_SPLIT_SOFTMAX": "1",
+    "PATTERNKV_SYSTEM_PROFILE": "1"
+  },
+  "model_load_s": 7.837129263207316,
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 54.66399935539812,
+      "tokens": 262464.0,
+      "total_us": 6996.991917490959
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 439.5120001863688,
+      "tokens": 262464.0,
+      "total_us": 56257.53602385521
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 744.338249322027,
+      "tokens": 0.0,
+      "total_us": 95275.29591321945
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 1056768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 510656512.0,
+      "calls": 512.0,
+      "mean_us": 41.201187363185454,
+      "tokens": 0.0,
+      "total_us": 21095.007929950953
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 179322624.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 100679424.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 233567.74520874023,
+      "tokens": 0.0,
+      "total_us": 934270.9808349609
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 1214.4639790058136,
+      "tokens": 0.0,
+      "total_us": 4857.855916023254
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 74.87200200557709,
+      "tokens": 262464.0,
+      "total_us": 9583.616256713867
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 8704.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 196.35200110496953,
+      "tokens": 0.0,
+      "total_us": 785.4080044198781
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 127.93600076111034,
+      "tokens": 262464.0,
+      "total_us": 16375.808097422123
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 131072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 234854.65240478516,
+      "tokens": 0.0,
+      "total_us": 939418.6096191406
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 105.75999837601557,
+      "tokens": 0.0,
+      "total_us": 13537.279792129993
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 484.7999997437,
+      "tokens": 57344.0,
+      "total_us": 15513.5999917984
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 103565.78183174133,
+      "tokens": 57344.0,
+      "total_us": 3314105.0186157227
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 1751.0,
+      "mean_us": 336.7281599871299,
+      "tokens": 172032.0,
+      "total_us": 589611.0081374645
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 1738.0,
+      "mean_us": 332.53192155695893,
+      "tokens": 57344.0,
+      "total_us": 577940.4796659946
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 336055.23014068604,
+      "tokens": 57344.0,
+      "total_us": 10753767.364501953
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 101539.20030593872,
+      "tokens": 0.0,
+      "total_us": 3249254.409790039
+    },
+    "partial_state_workspace": {
+      "bytes": 2228224.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 20654865.234375,
+      "tokens": 0.0,
+      "total_us": 20654865.234375
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 126898.17810058594,
+      "tokens": 0.0,
+      "total_us": 126898.17810058594
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 77.8452506638132,
+      "tokens": 33088.0,
+      "total_us": 29892.57625490427
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 152.40800147876143,
+      "tokens": 0.0,
+      "total_us": 19508.224189281464
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 160.0,
+      "mean_us": 548.4544012695551,
+      "tokens": 0.0,
+      "total_us": 87752.70420312881
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 3217.7920043468475,
+      "tokens": 57344.0,
+      "total_us": 102969.34413909912
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 7.456000079400837,
+      "tokens": 57344.0,
+      "total_us": 238.5920025408268
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 226300.60958862305,
+      "tokens": 57344.0,
+      "total_us": 7241619.5068359375
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 229686.4938735962,
+      "tokens": 57344.0,
+      "total_us": 7349967.803955078
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 379.31300040024024,
+      "tokens": 33088.0,
+      "total_us": 145656.19215369225
+    }
+  },
+  "profile_enabled": true,
+  "result": {
+    "active_capacity": 4,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 4,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 2048,
+    "decode_length": 4,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 22863290368,
+    "mean_decode_first_token_ms": 21026.05173899792,
+    "mean_tpot_ms": 5430.922733503394,
+    "median_tpot_ms": 5430.922733503394,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 5430.922733503394,
+    "peak_cuda_allocated_bytes": 22863290368,
+    "peak_cuda_reserved_bytes": 24660410368,
+    "physical_gpu": 1,
+    "prefill_prep_s": 20.612609174801037,
+    "run_index": 0,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 20.612689074827358,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 14.400754131492405,
+    "total_requests": 4,
+    "true_batch_preserved": true,
+    "wall_time_s": 1.1110529249999672,
+    "warmup": false,
+    "workload_hash": "318a6de0dea73ca605e2eea4f03f5b13f4d46de8076583c51f2b0ab5048afdcb"
+  }
+}

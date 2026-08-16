@@ -1,0 +1,94 @@
+[
+  {
+    "method": "FP16_FULL_MODEL",
+    "B": 1,
+    "context": 32,
+    "hidden_states_shape": [
+      1,
+      32,
+      4096
+    ],
+    "lm_head_input_shape": [
+      1,
+      4096
+    ],
+    "logits_shape": [
+      1,
+      128256
+    ],
+    "rows_before_lm_head": 32,
+    "rows_after_lm_head": 1,
+    "max_abs": 0.0078125,
+    "relative_l2": 4.9012486928005686e-05,
+    "top1_match": true
+  },
+  {
+    "method": "FP16_FULL_MODEL",
+    "B": 2,
+    "context": 32,
+    "hidden_states_shape": [
+      2,
+      32,
+      4096
+    ],
+    "lm_head_input_shape": [
+      2,
+      4096
+    ],
+    "logits_shape": [
+      2,
+      128256
+    ],
+    "rows_before_lm_head": 64,
+    "rows_after_lm_head": 2,
+    "max_abs": 0.0078125,
+    "relative_l2": 5.0309197173058095e-05,
+    "top1_match": true
+  },
+  {
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "B": 1,
+    "context": 32,
+    "hidden_states_shape": [
+      1,
+      32,
+      4096
+    ],
+    "lm_head_input_shape": [
+      1,
+      4096
+    ],
+    "logits_shape": [
+      1,
+      128256
+    ],
+    "rows_before_lm_head": 32,
+    "rows_after_lm_head": 1,
+    "max_abs": 0.0078125,
+    "relative_l2": 4.9012486928005686e-05,
+    "top1_match": true
+  },
+  {
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "B": 2,
+    "context": 32,
+    "hidden_states_shape": [
+      2,
+      32,
+      4096
+    ],
+    "lm_head_input_shape": [
+      2,
+      4096
+    ],
+    "logits_shape": [
+      2,
+      128256
+    ],
+    "rows_before_lm_head": 64,
+    "rows_after_lm_head": 2,
+    "max_abs": 0.0078125,
+    "relative_l2": 5.0309197173058095e-05,
+    "top1_match": true
+  }
+]

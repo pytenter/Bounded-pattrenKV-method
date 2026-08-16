@@ -1,0 +1,121 @@
+{
+  "k_segments": {
+    "packed": {
+      "exact_equal": false,
+      "max_abs": 4.15234375,
+      "mismatch_count": 129528,
+      "rel_l2": 0.16086918115615845,
+      "shape": [
+        1,
+        8,
+        512,
+        128
+      ]
+    },
+    "pending": {
+      "both_none": false,
+      "exact_equal": false
+    },
+    "recent": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        8,
+        128,
+        128
+      ]
+    },
+    "sink": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        8,
+        16,
+        128
+      ]
+    }
+  },
+  "post_append_lengths_b1": {
+    "packed": 512,
+    "pending": 0,
+    "recent": 128,
+    "sink": 16
+  },
+  "post_append_lengths_b4": {
+    "packed": 512,
+    "pending": 0,
+    "recent": 128,
+    "sink": 16
+  },
+  "request": "C",
+  "score_cmp": {
+    "exact_equal": false,
+    "max_abs": 4.6640625,
+    "mismatch_count": 4087,
+    "rel_l2": 0.06902696192264557,
+    "shape": [
+      32,
+      656
+    ]
+  },
+  "score_parts_b1": [
+    [
+      "sink",
+      16,
+      16,
+      0,
+      0
+    ],
+    [
+      "packed",
+      512,
+      512,
+      16,
+      16
+    ],
+    [
+      "recent",
+      128,
+      128,
+      528,
+      528
+    ]
+  ],
+  "score_parts_b4": [
+    [
+      "sink",
+      16,
+      16,
+      0,
+      0
+    ],
+    [
+      "packed",
+      640,
+      512,
+      16,
+      16
+    ],
+    [
+      "pending",
+      127,
+      0,
+      656,
+      528
+    ],
+    [
+      "recent",
+      128,
+      128,
+      783,
+      528
+    ]
+  ],
+  "step": 14
+}

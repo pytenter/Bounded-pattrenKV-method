@@ -1,0 +1,30 @@
+field,profile_v2,context_scaling,b_scaling
+context,2048,2048,2048 matched-B / 4096 capacity
+decode,4,8,8
+B,"1,4",1,"1,2,4,8 matched / powers of two capacity"
+active_capacity,B,1,B
+total_requests,B (B1=1),2,"max(2*B, B+1)"
+scheduler,FIFO,FIFO,FIFO
+steady-state protocol,"single admitted request, no measured refill for B1","saturated replacement, one measured refill for B1",saturated replacement until total_requests complete
+warmup,"formal repeats, profile off/on",1 warmup,1 warmup
+measured iterations,decode * B tokens only; B1 decode=4 gives 4 iterations,total_requests*decode tokens; B1 decode=8 gives 16 iterations,total_requests*decode tokens
+cache initialization,initial prefill before measured wall,initial prefill before measured wall; refill prefill inside measured wall,same saturated refill protocol
+prefill handling,excluded from wall for B1,"initial excluded, replacement refill included","initial excluded, replacement refill included"
+request replacement,none for B1,yes after first request finishes,yes
+flush behavior,no boundary flush in decode4 at 2048 observed,no persistent copy; refill prefill dominates,no persistent copy on successful CAUSAL points
+membership transitions,none for B1,finish+admit at iteration 7 for decode8,finish+admit/refill
+fixed-split flag,PATTERNKV_FIXED_SPLIT_SOFTMAX=1,PATTERNKV_FIXED_SPLIT_SOFTMAX=1,PATTERNKV_FIXED_SPLIT_SOFTMAX=1
+CUDA softmax flag,enabled,enabled,enabled
+low-copy flag,PATTERNKV_ACTIVE_BATCH_CACHE=1,PATTERNKV_ACTIVE_BATCH_CACHE=1,PATTERNKV_ACTIVE_BATCH_CACHE=1
+ActiveBatchState,enabled,enabled,enabled
+iteration-plan reuse,"1 per iteration, 0 layer rebuilds","1 per iteration, 0 layer rebuilds in structural checks","1 per iteration, 0 layer rebuilds"
+page-batch backend,fused_page,fused_page,fused_page
+centroid backend,"slot-local counts, trimmed tensors","slot-local counts, trimmed tensors","slot-local counts, trimmed tensors"
+importance update mode,historical causal importance,historical causal importance,historical causal importance
+profiling flag,"off for headline, on for attribution","off for headline, on only structural checks","off for headline, on only structural checks"
+timing mode,wall after initial prefill,"wall after initial prefill, includes refill prefill",same as context scaling
+model mode,eval + inference_mode,eval + inference_mode,eval + inference_mode
+autocast,none identified,none identified,none identified
+CUDA graph,not used,not used,not used
+compile mode,eager,eager,eager
+cache reset semantics,fresh request cache per run,fresh cache per request; second request cache built in measured window,same saturated refill semantics

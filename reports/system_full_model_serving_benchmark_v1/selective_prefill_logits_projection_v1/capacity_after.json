@@ -1,0 +1,28 @@
+[
+  {
+    "OOM_error": "CUDA out of memory. Tried to allocate 66.00 MiB. GPU 0 has a total capacity of 23.56 GiB of which 102.19 MiB is free. Including non-PyTorch memory, this process has 23.43 GiB memory in use. Of the allocated memory 22.97 GiB is allocated by PyTorch, and 164.55 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "OOM_phase": "PREFILL_OR_DECODE_OOM",
+    "context": 4096,
+    "decode_iteration_ms_at_max_B": 323.5986209474504,
+    "decode_ms_per_output_token_at_max_B": 40.44361025444232,
+    "decode_tok_s_at_max_B": 98.88793687163619,
+    "first_OOM_B": 8,
+    "full_lifecycle_peak_allocated_GB": 20.405783552,
+    "full_lifecycle_peak_reserved_GB": 20.786970624,
+    "max_successful_full_lifecycle_B": 4,
+    "method": "FP16_FULL_MODEL"
+  },
+  {
+    "OOM_error": "CUDA out of memory. Tried to allocate 1.75 GiB. GPU 0 has a total capacity of 23.56 GiB of which 1.34 GiB is free. Including non-PyTorch memory, this process has 22.19 GiB memory in use. Of the allocated memory 21.82 GiB is allocated by PyTorch, and 65.06 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "OOM_phase": "PREFILL_OR_DECODE_OOM",
+    "context": 4096,
+    "decode_iteration_ms_at_max_B": 2398.2236080337316,
+    "decode_ms_per_output_token_at_max_B": 299.7696578677278,
+    "decode_tok_s_at_max_B": 26.686418975114943,
+    "first_OOM_B": 16,
+    "full_lifecycle_peak_allocated_GB": 22.432702464,
+    "full_lifecycle_peak_reserved_GB": 23.55101696,
+    "max_successful_full_lifecycle_B": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL"
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "before_process_exit": {
+    "allocated_bytes": 16086097920,
+    "max_allocated_bytes": 21020975104,
+    "max_reserved_bytes": 21873295360,
+    "mem_get_info_free_bytes": 3735224320,
+    "mem_get_info_total_bytes": 25296044032,
+    "phase": "before_process_exit",
+    "reserved_bytes": 21200109568
+  },
+  "memory_lifecycle": [
+    {
+      "allocated_bytes": 0,
+      "max_allocated_bytes": 0,
+      "max_reserved_bytes": 0,
+      "mem_get_info_free_bytes": 25000345600,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "process_start",
+      "reserved_bytes": 0
+    },
+    {
+      "allocated_bytes": 16060538880,
+      "max_allocated_bytes": 16060538880,
+      "max_reserved_bytes": 16066281472,
+      "mem_get_info_free_bytes": 8934064128,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "after_model_load",
+      "reserved_bytes": 16066281472
+    },
+    {
+      "allocated_bytes": 16060669952,
+      "max_allocated_bytes": 16060669952,
+      "max_reserved_bytes": 16066281472,
+      "mem_get_info_free_bytes": 8934064128,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "before_prefill",
+      "reserved_bytes": 16066281472
+    },
+    {
+      "allocated_bytes": 21020975104,
+      "max_allocated_bytes": 21020975104,
+      "max_reserved_bytes": 21873295360,
+      "mem_get_info_free_bytes": 3735224320,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "oom_caught",
+      "reserved_bytes": 21200109568
+    }
+  ],
+  "model_parameter_bytes": 16060530688,
+  "oom_error": "CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 23.56 GiB of which 3.48 GiB is free. Including non-PyTorch memory, this process has 20.05 GiB memory in use. Of the allocated memory 19.58 GiB is allocated by PyTorch, and 170.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+  "oom_phase": "initial_prefill",
+  "point": {
+    "batch_size": 4,
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "phase": "memory"
+  },
+  "status": "OOM",
+  "tensor_rows": [],
+  "tensor_summary": [],
+  "traceback": "Traceback (most recent call last):\n  File \"/data/zypan/Bounded-pattrenKV-pseudodecode-3090/scripts/full_model_post_scaling_bottleneck_forensic.py\", line 269, in run_lifecycle_forensic\n    batch_cache, next_tokens = adapter.prefill_active_batch(model, batch_input)\n  File \"/data/zypan/Bounded-pattrenKV-pseudodecode-3090/bench/full_model_serving_benchmark.py\", line 323, in prefill_active_batch\n    output = model(input_ids=input_ids, use_cache=True, return_dict=True)\n  File \"/data/zypan/.local/share/mamba/envs/patternkv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1553, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"/data/zypan/.local/share/mamba/envs/patternkv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1562, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/data/zypan/Bounded-pattrenKV-pseudodecode-3090/models/llama_patternkv.py\", line 2637, in forward\n    logits = logits.float()\ntorch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.83 GiB. GPU 0 has a total capacity of 23.56 GiB of which 3.48 GiB is free. Including non-PyTorch memory, this process has 20.05 GiB memory in use. Of the allocated memory 19.58 GiB is allocated by PyTorch, and 170.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)\n"
+}

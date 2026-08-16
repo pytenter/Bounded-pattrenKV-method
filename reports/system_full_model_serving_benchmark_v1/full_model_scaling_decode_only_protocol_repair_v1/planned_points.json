@@ -1,0 +1,50 @@
+[
+  {
+    "active_capacity": 1,
+    "arrival_protocol": "decode_only_fixed_membership",
+    "batch_size": 1,
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "measured_runs": 1,
+    "method": "FP16_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "phase": "smoke",
+    "point_key": "smoke__fp16_full_model__c2048__b1__d8__ac1__tr1__w0__m1",
+    "protocol_class": "DECODE_ONLY_FULL_MODEL",
+    "scheduler_policy": "FIFO",
+    "total_requests": 1,
+    "warmup_runs": 0
+  },
+  {
+    "active_capacity": 1,
+    "arrival_protocol": "decode_only_fixed_membership",
+    "batch_size": 1,
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "measured_runs": 1,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "phase": "smoke",
+    "point_key": "smoke__causal_v4_25_full_model__c2048__b1__d8__ac1__tr1__w0__m1",
+    "protocol_class": "DECODE_ONLY_FULL_MODEL",
+    "scheduler_policy": "FIFO",
+    "total_requests": 1,
+    "warmup_runs": 0
+  },
+  {
+    "active_capacity": 1,
+    "arrival_protocol": "decode_only_fixed_membership",
+    "batch_size": 1,
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "measured_runs": 1,
+    "method": "FP16_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "phase": "smoke_repeat",
+    "point_key": "smoke_repeat__fp16_full_model__c2048__b1__d8__ac1__tr1__w0__m1",
+    "protocol_class": "DECODE_ONLY_FULL_MODEL",
+    "scheduler_policy": "FIFO",
+    "total_requests": 1,
+    "warmup_runs": 0
+  }
+]

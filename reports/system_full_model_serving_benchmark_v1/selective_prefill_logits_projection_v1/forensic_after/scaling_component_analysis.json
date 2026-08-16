@@ -1,0 +1,69 @@
+{
+  "c2048_b1_mean_tpot_ms": {
+    "CAUSAL_V4_25_FULL_MODEL": null,
+    "FP16_FULL_MODEL": null
+  },
+  "decode_root_cause": "MULTI_COMPONENT",
+  "memory_root_cause": "PREFILL_NON_KV_PEAK_DOMINATED",
+  "model_parameter_bytes": {
+    "CAUSAL_V4_25_FULL_MODEL_B1": 16060530688,
+    "CAUSAL_V4_25_FULL_MODEL_B2": 16060530688,
+    "CAUSAL_V4_25_FULL_MODEL_B4": 16060530688,
+    "FP16_FULL_MODEL_B1": 16060530944,
+    "FP16_FULL_MODEL_B2": 16060530944,
+    "FP16_FULL_MODEL_B4": 16060530944
+  },
+  "persistent_cache_bytes_B2": {
+    "CAUSAL_V4_25_FULL_MODEL": 298882240,
+    "FP16_FULL_MODEL": 1082327552
+  },
+  "profile_component_buckets": {},
+  "repaired_final_gate": {
+    "CAUSAL_MAX_SUCCESS_B": 2,
+    "CAUSAL_OWN_MAX_DECODE_TOK_S": 9.279297595854336,
+    "CAUSAL_TO_FP16_DECODE_RATIO_AT_MAX_COMMON_B": 0.1497382285332895,
+    "COMMIT_CREATED": false,
+    "CONCURRENCY_CAPACITY_RATIO": 1.0,
+    "FP16_MAX_SUCCESS_B": 2,
+    "FP16_OWN_MAX_DECODE_TOK_S": 59.93710126882105,
+    "FULL_MODEL_CONCURRENCY_ADVANTAGE": "NOT_SUPPORTED",
+    "FULL_MODEL_MEMORY_TO_DECODE_THROUGHPUT_TRANSLATION": "NOT_SUPPORTED",
+    "MATCHED_MAX_COMMON_B": 4,
+    "OWN_MAX_DECODE_THROUGHPUT_RATIO": 0.1548172567478063,
+    "PUSHED": false,
+    "REPORT_DIR": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_scaling_decode_only_protocol_repair_v1",
+    "SUPPORTED": true,
+    "TASK_CLASSIFICATION": "FULL_MODEL_SCALING_DECODE_ONLY_PROTOCOL_REPAIR_V1_SUPPORTED",
+    "branch": "sys/causal-v4-25-kernel-v1",
+    "capacity_has_boundaries": true,
+    "context_complete": true,
+    "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+    "matched_b_complete": true,
+    "protocol_validation": {
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "decode_only_protocol_valid": true,
+      "fixed_membership_in_timed_window": true,
+      "initial_prefill_outside_timing": true,
+      "protocol_failures": [],
+      "refill_prefill_outside_timing": true
+    },
+    "structural_counters": {
+      "COMPRESSED_DOMAIN_RUNTIME_PRESERVED": true,
+      "FALLBACK_COUNT": 0,
+      "HISTORICAL_FP16_K_MATERIALIZATION": 0,
+      "HISTORICAL_FP16_V_MATERIALIZATION": 0,
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "SERIAL_ATTENTION_DISPATCHES": 0,
+      "SERIAL_MLP_REQUEST_DISPATCHES": 0,
+      "SERIAL_REQUEST_FORWARD_DISPATCHES": 0,
+      "SERIAL_RMSNORM_REQUEST_DISPATCHES": 0,
+      "TRUE_BATCH_PRESERVED": true
+    }
+  }
+}

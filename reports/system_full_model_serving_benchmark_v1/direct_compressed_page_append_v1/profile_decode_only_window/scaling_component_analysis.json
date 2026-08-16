@@ -1,0 +1,141 @@
+{
+  "c2048_b1_mean_tpot_ms": {
+    "CAUSAL_V4_25_FULL_MODEL": 327.47030901373364,
+    "FP16_FULL_MODEL": 54.10932161612436
+  },
+  "decode_root_cause": "MULTI_COMPONENT",
+  "memory_root_cause": "PREFILL_NON_KV_PEAK_DOMINATED",
+  "model_parameter_bytes": {},
+  "persistent_cache_bytes_B2": {
+    "CAUSAL_V4_25_FULL_MODEL": 0,
+    "FP16_FULL_MODEL": 0
+  },
+  "profile_component_buckets": {
+    "('CAUSAL_V4_25_FULL_MODEL', 2048, 1)": {
+      "attention_softmax_ms": 185.57337641716003,
+      "attention_total_ms": 14023.83973312378,
+      "cache_append_ms": 185.95974451303482,
+      "k_proj_ms": 45.642752610147,
+      "lm_head_ms": 20.392959594726562,
+      "mixed_value_ms": 51.163135930895805,
+      "o_proj_ms": 71.22819155454636,
+      "output_projection_ms": 37.90950407087803,
+      "q_proj_ms": 164.87014568597078,
+      "qk_fp16_regions_ms": 87.44668789207935,
+      "rmsnorm_ms": 61.29049667716026,
+      "rope_ms": 126.29913640022278,
+      "v_proj_ms": 25.459711894392967,
+      "value_fp16_tail_ms": 426.22566428780556
+    },
+    "('CAUSAL_V4_25_FULL_MODEL', 2048, 2)": {
+      "attention_softmax_ms": 184.52787405252457,
+      "attention_total_ms": 17324.990505695343,
+      "cache_append_ms": 210.49695974588394,
+      "k_proj_ms": 36.573184579610825,
+      "lm_head_ms": 11.198463678359985,
+      "mixed_value_ms": 87.49977603554726,
+      "o_proj_ms": 99.09926404803991,
+      "output_projection_ms": 37.571584060788155,
+      "q_proj_ms": 190.12710067629814,
+      "qk_fp16_regions_ms": 81.62899222970009,
+      "rmsnorm_ms": 80.24883109331131,
+      "rope_ms": 129.0373123884201,
+      "v_proj_ms": 34.741248428821564,
+      "value_fp16_tail_ms": 384.5898247361183
+    },
+    "('CAUSAL_V4_25_FULL_MODEL', 4096, 1)": {
+      "attention_softmax_ms": 147.06278410553932,
+      "attention_total_ms": 17956.64701271057,
+      "cache_append_ms": 151.66095995903015,
+      "k_proj_ms": 51.979264598339796,
+      "lm_head_ms": 20.58240008354187,
+      "mixed_value_ms": 88.66713613271713,
+      "o_proj_ms": 92.0338231921196,
+      "output_projection_ms": 35.104767590761185,
+      "q_proj_ms": 182.9375956878066,
+      "qk_fp16_regions_ms": 67.37622389942408,
+      "rmsnorm_ms": 81.86163175106049,
+      "rope_ms": 97.99270430207253,
+      "v_proj_ms": 29.6437759809196,
+      "value_fp16_tail_ms": 296.6538236737251
+    },
+    "('FP16_FULL_MODEL', 2048, 1)": {
+      "attention_total_ms": 512.184312582016,
+      "k_proj_ms": 39.87046357616782,
+      "lm_head_ms": 22.341631531715393,
+      "mlp_ms": 501.8798072338104,
+      "o_proj_ms": 60.22041553258896,
+      "q_proj_ms": 231.0451152920723,
+      "rmsnorm_ms": 117.15071900002658,
+      "v_proj_ms": 20.919296093285084
+    },
+    "('FP16_FULL_MODEL', 2048, 2)": {
+      "attention_total_ms": 621.3734403252602,
+      "k_proj_ms": 32.587776239961386,
+      "lm_head_ms": 11.501568078994751,
+      "mlp_ms": 822.6027510762215,
+      "o_proj_ms": 90.97523295879364,
+      "q_proj_ms": 262.2812115587294,
+      "rmsnorm_ms": 162.93478355929255,
+      "v_proj_ms": 31.75014427676797
+    },
+    "('FP16_FULL_MODEL', 4096, 1)": {
+      "attention_total_ms": 541.9642845988274,
+      "k_proj_ms": 44.78668763488531,
+      "lm_head_ms": 19.595264077186584,
+      "mlp_ms": 822.5259563326836,
+      "o_proj_ms": 88.90060887485743,
+      "q_proj_ms": 169.6112676896155,
+      "rmsnorm_ms": 122.46630454063416,
+      "v_proj_ms": 28.08422403782606
+    }
+  },
+  "repaired_final_gate": {
+    "CAUSAL_MAX_SUCCESS_B": 2,
+    "CAUSAL_OWN_MAX_DECODE_TOK_S": 9.279297595854336,
+    "CAUSAL_TO_FP16_DECODE_RATIO_AT_MAX_COMMON_B": 0.1497382285332895,
+    "COMMIT_CREATED": false,
+    "CONCURRENCY_CAPACITY_RATIO": 1.0,
+    "FP16_MAX_SUCCESS_B": 2,
+    "FP16_OWN_MAX_DECODE_TOK_S": 59.93710126882105,
+    "FULL_MODEL_CONCURRENCY_ADVANTAGE": "NOT_SUPPORTED",
+    "FULL_MODEL_MEMORY_TO_DECODE_THROUGHPUT_TRANSLATION": "NOT_SUPPORTED",
+    "MATCHED_MAX_COMMON_B": 4,
+    "OWN_MAX_DECODE_THROUGHPUT_RATIO": 0.1548172567478063,
+    "PUSHED": false,
+    "REPORT_DIR": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_scaling_decode_only_protocol_repair_v1",
+    "SUPPORTED": true,
+    "TASK_CLASSIFICATION": "FULL_MODEL_SCALING_DECODE_ONLY_PROTOCOL_REPAIR_V1_SUPPORTED",
+    "branch": "sys/causal-v4-25-kernel-v1",
+    "capacity_has_boundaries": true,
+    "context_complete": true,
+    "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+    "matched_b_complete": true,
+    "protocol_validation": {
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "decode_only_protocol_valid": true,
+      "fixed_membership_in_timed_window": true,
+      "initial_prefill_outside_timing": true,
+      "protocol_failures": [],
+      "refill_prefill_outside_timing": true
+    },
+    "structural_counters": {
+      "COMPRESSED_DOMAIN_RUNTIME_PRESERVED": true,
+      "FALLBACK_COUNT": 0,
+      "HISTORICAL_FP16_K_MATERIALIZATION": 0,
+      "HISTORICAL_FP16_V_MATERIALIZATION": 0,
+      "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+      "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+      "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+      "SERIAL_ATTENTION_DISPATCHES": 0,
+      "SERIAL_MLP_REQUEST_DISPATCHES": 0,
+      "SERIAL_REQUEST_FORWARD_DISPATCHES": 0,
+      "SERIAL_RMSNORM_REQUEST_DISPATCHES": 0,
+      "TRUE_BATCH_PRESERVED": true
+    }
+  }
+}

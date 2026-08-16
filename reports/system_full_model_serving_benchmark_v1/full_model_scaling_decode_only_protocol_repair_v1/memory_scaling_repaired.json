@@ -1,0 +1,50 @@
+[
+  {
+    "context": 256,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": 16.301715968
+  },
+  {
+    "context": 256,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": 16.316510208
+  },
+  {
+    "context": 2048,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": 17.93031424
+  },
+  {
+    "context": 2048,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": 17.779236864
+  },
+  {
+    "context": 4096,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": 19.791569408
+  },
+  {
+    "context": 4096,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": 19.451420672
+  },
+  {
+    "context": 8192,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": 23.514079744
+  },
+  {
+    "context": 8192,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": 22.795804672
+  }
+]

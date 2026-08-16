@@ -1,0 +1,467 @@
+{
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 54.91399976745015,
+      "tokens": 2099456.0,
+      "total_us": 28115.967880934477
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 444.3639992387034,
+      "tokens": 2099456.0,
+      "total_us": 227514.36761021614
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 584.6399986185133,
+      "tokens": 0.0,
+      "total_us": 299335.67929267883
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 514850816.0,
+      "calls": 2048.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 264192.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 514850816.0,
+      "calls": 2048.0,
+      "mean_us": 31.15890637764096,
+      "tokens": 0.0,
+      "total_us": 63813.44026140869
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 114827136.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 50339712.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 230393.7282562256,
+      "tokens": 0.0,
+      "total_us": 3686299.6520996094
+    },
+    "decode_k_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 57.438000265392475,
+      "tokens": 0.0,
+      "total_us": 29408.256135880947
+    },
+    "decode_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 30.27800014751847,
+      "tokens": 0.0,
+      "total_us": 15502.336075529456
+    },
+    "decode_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 363.21200025849976,
+      "tokens": 0.0,
+      "total_us": 185964.54413235188
+    },
+    "decode_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1137.9099977202713,
+      "tokens": 0.0,
+      "total_us": 582609.9188327789
+    },
+    "decode_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 4.443999951945443,
+      "tokens": 0.0,
+      "total_us": 2275.327975396067
+    },
+    "decode_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1032.5320026604459,
+      "tokens": 0.0,
+      "total_us": 528656.3853621483
+    },
+    "decode_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 4498.419997282326,
+      "tokens": 0.0,
+      "total_us": 2303191.038608551
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 1190.7200068235397,
+      "tokens": 0.0,
+      "total_us": 19051.520109176636
+    },
+    "decode_q_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 98.586000764044,
+      "tokens": 0.0,
+      "total_us": 50476.03239119053
+    },
+    "decode_v_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 50.28800020227209,
+      "tokens": 0.0,
+      "total_us": 25747.45610356331
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 91.82400086137932,
+      "tokens": 2099456.0,
+      "total_us": 47013.88844102621
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 16896.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 209.6640014933655,
+      "tokens": 0.0,
+      "total_us": 3354.624023893848
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 137.14799881563522,
+      "tokens": 2099456.0,
+      "total_us": 70219.77539360523
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 131072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 231724.80010986328,
+      "tokens": 0.0,
+      "total_us": 3707596.8017578125
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 106.1979986843653,
+      "tokens": 0.0,
+      "total_us": 54373.375326395035
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 351.0399991646409,
+      "tokens": 245760.0,
+      "total_us": 22466.559946537018
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 48404.81597185135,
+      "tokens": 245760.0,
+      "total_us": 3097908.2221984863
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 1900.0,
+      "mean_us": 298.4383331945068,
+      "tokens": 368640.0,
+      "total_us": 567032.8330695629
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 1920.0,
+      "mean_us": 294.37919954458874,
+      "tokens": 122880.0,
+      "total_us": 565208.0631256104
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 148766.5765285492,
+      "tokens": 245760.0,
+      "total_us": 9521060.897827148
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 46067.05617904663,
+      "tokens": 0.0,
+      "total_us": 2948291.5954589844
+    },
+    "partial_state_workspace": {
+      "bytes": 4325376.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 15586681.15234375,
+      "tokens": 0.0,
+      "total_us": 31173362.3046875
+    },
+    "prefill_k_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 486.4639979787171,
+      "tokens": 0.0,
+      "total_us": 31133.695870637894
+    },
+    "prefill_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 123.02399694453925,
+      "tokens": 0.0,
+      "total_us": 7873.535804450512
+    },
+    "prefill_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 746.992003172636,
+      "tokens": 0.0,
+      "total_us": 47807.488203048706
+    },
+    "prefill_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 20185.50404906273,
+      "tokens": 0.0,
+      "total_us": 1291872.2591400146
+    },
+    "prefill_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 123.2799970312044,
+      "tokens": 0.0,
+      "total_us": 7889.919809997082
+    },
+    "prefill_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 746.7200048267841,
+      "tokens": 0.0,
+      "total_us": 47790.080308914185
+    },
+    "prefill_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 465094.783782959,
+      "tokens": 0.0,
+      "total_us": 29766066.162109375
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 60079.61654663086,
+      "tokens": 0.0,
+      "total_us": 120159.23309326172
+    },
+    "prefill_q_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1927.6799857616425,
+      "tokens": 0.0,
+      "total_us": 123371.51908874512
+    },
+    "prefill_v_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 489.0239969827235,
+      "tokens": 0.0,
+      "total_us": 31297.535806894302
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 88.01729158343126,
+      "tokens": 133376.0,
+      "total_us": 135194.55987215042
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 115.93000130960718,
+      "tokens": 0.0,
+      "total_us": 59356.160670518875
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 576.0,
+      "mean_us": 405.85777753343183,
+      "tokens": 0.0,
+      "total_us": 233774.07985925674
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1876.1760108172894,
+      "tokens": 245760.0,
+      "total_us": 120075.26469230652
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 7.552000075520482,
+      "tokens": 245760.0,
+      "total_us": 483.32800483331084
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 96373.50404262543,
+      "tokens": 245760.0,
+      "total_us": 6167904.258728027
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 98566.94376468658,
+      "tokens": 245760.0,
+      "total_us": 6308284.400939941
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 373.6106663903532,
+      "tokens": 133376.0,
+      "total_us": 573865.9835755825
+    }
+  },
+  "result": {
+    "active_capacity": 1,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 2,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 4096,
+    "decode_length": 8,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 19678487552,
+    "mean_decode_first_token_ms": 15880.520191974938,
+    "mean_tpot_ms": 2187.9298329295125,
+    "median_tpot_ms": 2187.9298329295125,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 2195.232596481219,
+    "peak_cuda_allocated_bytes": 19678487552,
+    "peak_cuda_reserved_bytes": 20793262080,
+    "physical_gpu": 5,
+    "prefill_prep_s": 31.131156729068607,
+    "run_index": 999,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 31.13126326026395,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 0.8190734418791904,
+    "total_requests": 2,
+    "true_batch_preserved": true,
+    "wall_time_s": 19.534267846960574,
+    "warmup": false,
+    "workload_hash": "62d0bdbbff152a078f3bdbfebde4fda0f5a751fad48a698ba837fe57962f4b05"
+  },
+  "structural": {
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 4096,
+    "fallback_count": 0,
+    "fixed_split_softmax_requests_per_iteration": 32.0,
+    "fixed_split_softmax_splits_per_iteration": 1056.0,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "iteration_plan_builds_per_iteration": 1.0,
+    "iterations": 16.0,
+    "layer_metadata_rebuilds_per_iteration": 0.0,
+    "logical_split_size": 128,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "output_tokens": 16,
+    "row_slice_bytes_per_iteration": 0.0,
+    "row_slice_calls_per_iteration": 0.0,
+    "run_valid": true,
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "true_batch_preserved": true
+  }
+}

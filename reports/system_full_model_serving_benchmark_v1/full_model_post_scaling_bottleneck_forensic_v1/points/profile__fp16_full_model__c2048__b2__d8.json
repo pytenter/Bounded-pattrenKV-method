@@ -1,0 +1,189 @@
+{
+  "cache_mutations": [],
+  "module_profile": [
+    {
+      "calls": 288,
+      "component": "attention_total",
+      "mean_ms": 2.1600142125454216,
+      "total_ms": 622.0840932130814
+    },
+    {
+      "calls": 9,
+      "component": "embedding",
+      "mean_ms": 9.01518192033594,
+      "total_ms": 81.13663728302345
+    },
+    {
+      "calls": 9,
+      "component": "final_norm",
+      "mean_ms": 0.1290239973200692,
+      "total_ms": 1.1612159758806229
+    },
+    {
+      "calls": 288,
+      "component": "input_rmsnorm",
+      "mean_ms": 0.3001777746572366,
+      "total_ms": 86.45119910128415
+    },
+    {
+      "calls": 288,
+      "component": "k_proj",
+      "mean_ms": 0.10531555596066432,
+      "total_ms": 30.330880116671324
+    },
+    {
+      "calls": 288,
+      "component": "layer_total",
+      "mean_ms": 5.638815951016214,
+      "total_ms": 1623.9789938926697
+    },
+    {
+      "calls": 9,
+      "component": "lm_head",
+      "mean_ms": 8.020195603370667,
+      "total_ms": 72.181760430336
+    },
+    {
+      "calls": 288,
+      "component": "mlp",
+      "mean_ms": 2.856081767111189,
+      "total_ms": 822.5515489280224
+    },
+    {
+      "calls": 288,
+      "component": "mlp_down_proj",
+      "mean_ms": 0.9038755592579643,
+      "total_ms": 260.3161610662937
+    },
+    {
+      "calls": 288,
+      "component": "mlp_gate_proj",
+      "mean_ms": 0.9346631128961841,
+      "total_ms": 269.18297651410103
+    },
+    {
+      "calls": 288,
+      "component": "mlp_up_proj",
+      "mean_ms": 0.8992746671040853,
+      "total_ms": 258.99110412597656
+    },
+    {
+      "calls": 288,
+      "component": "o_proj",
+      "mean_ms": 0.31121422385331243,
+      "total_ms": 89.62969646975398
+    },
+    {
+      "calls": 288,
+      "component": "post_attention_rmsnorm",
+      "mean_ms": 0.2216142227084169,
+      "total_ms": 63.824896140024066
+    },
+    {
+      "calls": 288,
+      "component": "q_proj",
+      "mean_ms": 0.9837333106099524,
+      "total_ms": 283.3151934556663
+    },
+    {
+      "calls": 288,
+      "component": "v_proj",
+      "mean_ms": 0.10677333359813525,
+      "total_ms": 30.75072007626295
+    }
+  ],
+  "point": {
+    "batch_size": 2,
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "method": "FP16_FULL_MODEL",
+    "phase": "profile"
+  },
+  "profile_rows": [
+    {
+      "bytes": 0,
+      "calls": 8,
+      "calls_per_generated_token": 0.5,
+      "component": "harness_assemble",
+      "mean_us": 1923.5839992761612,
+      "percent_decode_time": 3.6325193682857386,
+      "tokens": 0,
+      "total_us": 15388.67199420929
+    },
+    {
+      "bytes": 0,
+      "calls": 7,
+      "calls_per_generated_token": 0.4375,
+      "component": "harness_split",
+      "mean_us": 240.05485432488578,
+      "percent_decode_time": 0.39665718762476976,
+      "tokens": 0,
+      "total_us": 1680.3839802742004
+    },
+    {
+      "bytes": 0,
+      "calls": 8,
+      "calls_per_generated_token": 0.5,
+      "component": "model_decode",
+      "mean_us": 50581.504821777344,
+      "percent_decode_time": 95.51872754778832,
+      "tokens": 0,
+      "total_us": 404652.03857421875
+    }
+  ],
+  "run_result": {
+    "active_capacity": 2,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 2,
+    "compressed_domain_runtime_preserved": false,
+    "context_length": 2048,
+    "decode_length": 8,
+    "decode_only_wall_ms": 423.6363370437175,
+    "decode_window_peak_cuda_allocated_bytes": 17155259392,
+    "decode_window_peak_cuda_reserved_bytes": 19908263936,
+    "fallback_count": 0,
+    "full_lifecycle_peak_cuda_allocated_bytes": 19791569408,
+    "full_lifecycle_peak_cuda_reserved_bytes": 19908263936,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": null,
+    "historical_fp16_v_materialization": null,
+    "initial_prefill_ms": 1471.87038208358,
+    "invalid_reason": "",
+    "kv_pool_bytes": 19791569408,
+    "max_active_batch_size": 2,
+    "mean_active_batch_size": 2.0,
+    "mean_decode_first_token_ms": 65.07472204975784,
+    "mean_tpot_ms": 52.945664880098775,
+    "median_tpot_ms": 52.945664880098775,
+    "membership_changes_in_timed_window": 0,
+    "method": "FP16_FULL_MODEL",
+    "min_active_batch_size": 2,
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 52.945664880098775,
+    "peak_cuda_allocated_bytes": 19791569408,
+    "peak_cuda_reserved_bytes": 19908263936,
+    "physical_gpu": 1,
+    "prefill_calls_in_timed_window": 0,
+    "prefill_prep_s": 1.4717695298604667,
+    "prefill_tokens_in_timed_window": 0,
+    "refill_calls_in_timed_window": 0,
+    "run_index": 0,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 0.0,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 37.768242714148634,
+    "total_requests": 2,
+    "true_batch_preserved": true,
+    "wall_time_s": 0.4236363370437175,
+    "warmup": false,
+    "workload_hash": "a5a671008333da73b6edcd2567a71a050dd9d97c8477024b440b17cd694248b9"
+  },
+  "status": "PASS",
+  "temp_allocations": []
+}

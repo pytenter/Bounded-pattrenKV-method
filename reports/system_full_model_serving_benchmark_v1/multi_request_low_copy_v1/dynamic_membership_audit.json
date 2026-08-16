@@ -1,0 +1,8 @@
+{
+  "continuous_batching_regression": "passed targeted pytest",
+  "membership_changed_policy": "split once at boundary for survivors, clear active cache, rebuild next active plan",
+  "membership_unchanged_policy": "reuse ActiveBatchState cache, no row split",
+  "reorder_semantics": "active cache key is ordered request_id tuple; reordered membership rebuilds plan instead of reusing stale active rows",
+  "slot_reuse_reset": "covered by request lifecycle tests",
+  "survivor_slot_page_ownership": "preserved by existing extract_request_cache path at boundary"
+}

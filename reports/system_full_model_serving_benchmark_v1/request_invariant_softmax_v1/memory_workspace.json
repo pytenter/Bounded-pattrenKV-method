@@ -1,0 +1,8 @@
+{
+  "merge_workspace_mb_after_opt_in_profile": 0.032768,
+  "partial_workspace_mb_after_opt_in_profile": 0.557056,
+  "peak_allocated_gb_after_opt_in": 17.78028544,
+  "peak_allocated_gb_before": 17.78028544,
+  "peak_reserved_gb_after_opt_in": 18.333302784,
+  "workspace_policy": "profile counters only; kernel itself uses per-block shared scalars and writes no persistent global partial workspace"
+}

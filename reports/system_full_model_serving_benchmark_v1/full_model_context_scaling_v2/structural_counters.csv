@@ -1,0 +1,4 @@
+compressed_domain_runtime_preserved,context_length,fallback_count,fixed_split_softmax_requests_per_iteration,fixed_split_softmax_splits_per_iteration,historical_fp16_k_materialization,historical_fp16_v_materialization,invalid_reason,iteration_plan_builds_per_iteration,iterations,layer_metadata_rebuilds_per_iteration,logical_split_size,method,output_tokens,row_slice_bytes_per_iteration,row_slice_calls_per_iteration,run_valid,serial_attention_dispatches,serial_mlp_request_dispatches,serial_request_forward_dispatches,serial_rmsnorm_request_dispatches,true_batch_preserved
+True,256,0,32.0,96.0,0,0,,1.0,16.0,0.0,128,CAUSAL_V4_25_FULL_MODEL,16,0.0,0.0,True,0,0,0,0,True
+True,2048,0,32.0,544.0,0,0,,1.0,16.0,0.0,128,CAUSAL_V4_25_FULL_MODEL,16,0.0,0.0,True,0,0,0,0,True
+True,4096,0,32.0,1056.0,0,0,,1.0,16.0,0.0,128,CAUSAL_V4_25_FULL_MODEL,16,0.0,0.0,True,0,0,0,0,True

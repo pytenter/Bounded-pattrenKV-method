@@ -1,0 +1,62 @@
+[
+  {
+    "B1_ms_per_iteration": 185.63891172409058,
+    "B1_percent_total": 66.2087505892773,
+    "B4_ms_per_iteration": 165.28179216384888,
+    "B4_ms_per_output_token": 41.32044804096222,
+    "B4_percent_total": 64.29393698161012,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "Attention aggregate",
+    "iteration_ratio_B4_over_B1": 0.8903402343227595
+  },
+  {
+    "B1_ms_per_iteration": 46.13324800133705,
+    "B1_percent_total": 16.45358013805585,
+    "B4_ms_per_iteration": 48.179455786943436,
+    "B4_ms_per_output_token": 12.044863946735859,
+    "B4_percent_total": 18.74161003229697,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "RMSNorm aggregate",
+    "iteration_ratio_B4_over_B1": 1.0443542970472637
+  },
+  {
+    "B1_ms_per_iteration": 41.57900831103325,
+    "B1_percent_total": 14.829295030053993,
+    "B4_ms_per_iteration": 36.77388772368431,
+    "B4_ms_per_output_token": 9.193471930921078,
+    "B4_percent_total": 14.304890992055103,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "MLP aggregate",
+    "iteration_ratio_B4_over_B1": 0.884433978044785
+  },
+  {
+    "B1_ms_per_iteration": 1.1919360160827637,
+    "B1_percent_total": 0.4251080426742203,
+    "B4_ms_per_iteration": 1.2144639492034912,
+    "B4_ms_per_output_token": 0.3036159873008728,
+    "B4_percent_total": 0.4724214784597743,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "LM head",
+    "iteration_ratio_B4_over_B1": 1.0189002872778057
+  },
+  {
+    "B1_ms_per_iteration": 1.184256001492031,
+    "B1_percent_total": 0.42236893929423724,
+    "B4_ms_per_iteration": 1.1059200078016147,
+    "B4_ms_per_output_token": 0.2764800019504037,
+    "B4_percent_total": 0.4301983319361112,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "Residual adds",
+    "iteration_ratio_B4_over_B1": 0.9338521454890484
+  },
+  {
+    "B1_ms_per_iteration": 0.24703999963821843,
+    "B1_percent_total": 0.08810765787041291,
+    "B4_ms_per_iteration": 0.1428479997557588,
+    "B4_ms_per_output_token": 0.0357119999389397,
+    "B4_percent_total": 0.055567284054744384,
+    "batch_scaling_classification": "NEAR_CONSTANT_PER_ITERATION",
+    "component": "Harness assemble/control",
+    "iteration_ratio_B4_over_B1": 0.5782383418270514
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "task": "SELECTIVE_PREFILL_LOGITS_PROJECTION_V1",
+  "classification": "SELECTIVE_PREFILL_LOGITS_PROJECTION_V1_SUPPORTED",
+  "lm_head_pruning_before_projection": true,
+  "full_sequence_full_vocab_generation_prefill_materialization_removed": true,
+  "old_b4_logits_float_7_83_gib_allocation_present_before": true,
+  "old_b4_logits_float_7_83_gib_allocation_present_after": false,
+  "correctness_top1_all_match": true,
+  "correctness_max_abs_max": 0.0078125,
+  "correctness_relative_l2_max": 5.0309197173058095e-05,
+  "protocol_invariants_preserved": true,
+  "before_capacity": {
+    "FP16_MAX_PASS_B": 2,
+    "FP16_FIRST_OOM_B": 4,
+    "CAUSAL_MAX_PASS_B": 2,
+    "CAUSAL_FIRST_OOM_B": 4
+  },
+  "after_capacity": {
+    "FP16_MAX_PASS_B": 4,
+    "FP16_FIRST_OOM_B": 8,
+    "CAUSAL_MAX_PASS_B": 8,
+    "CAUSAL_FIRST_OOM_B": 16
+  },
+  "capacity_ratio": 2.0,
+  "post_p0_full_model_concurrency_advantage": "SUPPORTED",
+  "post_p0_full_model_memory_to_decode_throughput_translation": "NOT_SUPPORTED",
+  "fp16_own_max_decode_tok_s": 98.88793687163619,
+  "causal_own_max_decode_tok_s": 26.686418975114943,
+  "own_max_decode_throughput_ratio": 0.2698652618241584,
+  "new_capacity_blocker": "FP16 first OOM B8 near full device with 66 MiB allocation; CAUSAL first OOM B16 with 1.75 GiB allocation",
+  "commit_created": false,
+  "pushed": false
+}

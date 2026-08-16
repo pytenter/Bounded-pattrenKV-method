@@ -1,0 +1,80 @@
+[
+  {
+    "append_bytes": 0,
+    "batch_size": 1,
+    "calls": 256,
+    "category": "causal_importance",
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 1838592,
+    "largest_result_bytes": 8224,
+    "mean_copy_bytes": 7182.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 1838592
+  },
+  {
+    "append_bytes": 2097152,
+    "batch_size": 1,
+    "calls": 1024,
+    "category": "recent_pending",
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 257425408,
+    "largest_result_bytes": 264192,
+    "mean_copy_bytes": 251392.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 255328256
+  },
+  {
+    "append_bytes": 0,
+    "batch_size": 2,
+    "calls": 256,
+    "category": "causal_importance",
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 3677184,
+    "largest_result_bytes": 16448,
+    "mean_copy_bytes": 14364.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 3677184
+  },
+  {
+    "append_bytes": 4194304,
+    "batch_size": 2,
+    "calls": 1024,
+    "category": "recent_pending",
+    "context_length": 2048,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 514850816,
+    "largest_result_bytes": 528384,
+    "mean_copy_bytes": 502784.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 510656512
+  },
+  {
+    "append_bytes": 0,
+    "batch_size": 1,
+    "calls": 256,
+    "category": "causal_importance",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 3673600,
+    "largest_result_bytes": 16416,
+    "mean_copy_bytes": 14350.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 3673600
+  },
+  {
+    "append_bytes": 2097152,
+    "batch_size": 1,
+    "calls": 1024,
+    "category": "recent_pending",
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "estimated_copy_bytes": 257425408,
+    "largest_result_bytes": 264192,
+    "mean_copy_bytes": 251392.0,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "old_bytes": 255328256
+  }
+]

@@ -1,0 +1,3 @@
+stage,method,context,B,decode_tokens,page_batch_pack_calls_per_token,page_batch_pack_bytes_per_token,page_batch_pack_ms,recent_pending_calls_per_token,recent_pending_bytes_per_token,recent_pending_estimated_copy_bytes,cache_append_ms,cache_mutation_ms,causal_importance_estimated_copy_bytes,model_decode_ms,notes
+decode_only_before_direct_append,CAUSAL_V4_25_FULL_MODEL,2048,1,8,0,0,0,128.0,32178176.0,257425408,185.95974451303482,38.960480347275734,1838592,2616.469512939453,page_batch_pack absent after resetting profile at decode timing start
+decode_only_before_direct_append,CAUSAL_V4_25_FULL_MODEL,2048,2,8,0,0,0,64.0,32178176.0,514850816,210.49695974588394,40.0211522616446,3677184,2653.032440185547,page_batch_pack absent after resetting profile at decode timing start

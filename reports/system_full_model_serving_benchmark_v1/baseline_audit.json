@@ -1,0 +1,22 @@
+{
+  "CAUSAL_V4_25_FULL_MODEL": {
+    "available": true,
+    "notes": "PatternKV LlamaForCausalLM_PatternKV full-model decode serving with CAUSAL-V4@25% config.",
+    "serving_comparable": true
+  },
+  "FP16_FULL_MODEL": {
+    "available": true,
+    "notes": "Native LlamaForCausalLM full-model decode serving on the same scheduler and workload.",
+    "serving_comparable": true
+  },
+  "KIVI_FULL_MODEL": {
+    "available": false,
+    "notes": "No same-policy production serving harness identified.",
+    "serving_comparable": false
+  },
+  "ORIGINAL_PATTERNKV_FULL_MODEL": {
+    "available": false,
+    "notes": "No same-policy production serving harness identified.",
+    "serving_comparable": false
+  }
+}

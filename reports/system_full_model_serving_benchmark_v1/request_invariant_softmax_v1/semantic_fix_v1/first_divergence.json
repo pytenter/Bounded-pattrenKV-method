@@ -1,0 +1,320 @@
+{
+  "b1_order": [
+    "C"
+  ],
+  "b4_order": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "first_divergence": {
+    "component": "ATTENTION_PRE_O_PROJ",
+    "exact_equal": false,
+    "layer": 0,
+    "max_abs": 0.00235748291015625,
+    "rel_l2": 0.02914005145430565,
+    "shape": [
+      1,
+      1,
+      4096
+    ]
+  },
+  "identity": {
+    "active_row": 2,
+    "request": "C",
+    "segments": {
+      "packed": 512,
+      "pending": 0,
+      "recent": 128,
+      "sink": 16
+    },
+    "split_signature": [
+      656,
+      128,
+      [
+        [
+          0,
+          128
+        ],
+        [
+          128,
+          256
+        ],
+        [
+          256,
+          384
+        ],
+        [
+          384,
+          512
+        ],
+        [
+          512,
+          640
+        ],
+        [
+          640,
+          656
+        ]
+      ],
+      "left_to_right"
+    ],
+    "total_tokens": 656
+  },
+  "logit_cmp": {
+    "exact_equal": false,
+    "max_abs": 0.203125,
+    "rel_l2": 0.01752515509724617,
+    "shape": [
+      1,
+      128256
+    ]
+  },
+  "request": "C",
+  "rows": [
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.00235748291015625,
+      "rel_l2": 0.02914005145430565,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.001445770263671875,
+      "rel_l2": 0.01700109988451004,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.001445770263671875,
+      "rel_l2": 0.01410372368991375,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM_INPUT",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.001445770263671875,
+      "rel_l2": 0.01410372368991375,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.011554718017578125,
+      "rel_l2": 0.021192016080021858,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.001678466796875,
+      "rel_l2": 0.025560254231095314,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "LAYER_OUTPUT",
+      "exact_equal": false,
+      "layer": 0,
+      "max_abs": 0.00225830078125,
+      "rel_l2": 0.016428180038928986,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "LAYER_INPUT",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.00225830078125,
+      "rel_l2": 0.016428180038928986,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "INPUT_RMSNORM",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.060546875,
+      "rel_l2": 0.014339711517095566,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "Q_PROJ",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.060546875,
+      "rel_l2": 0.005755497142672539,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "K_PROJ",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.083984375,
+      "rel_l2": 0.007596750743687153,
+      "shape": [
+        1,
+        1,
+        1024
+      ]
+    },
+    {
+      "component": "V_PROJ",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.01348876953125,
+      "rel_l2": 0.017879385501146317,
+      "shape": [
+        1,
+        1,
+        1024
+      ]
+    },
+    {
+      "component": "Q_POST_ROPE",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.060546875,
+      "rel_l2": 0.0057682981714606285,
+      "shape": [
+        1,
+        32,
+        1,
+        128
+      ]
+    },
+    {
+      "component": "K_POST_ROPE",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.083984375,
+      "rel_l2": 0.00759828882291913,
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ]
+    },
+    {
+      "component": "ATTENTION_PRE_O_PROJ",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.00262451171875,
+      "rel_l2": 0.0127463573589921,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "ATTENTION_VALUE_OUTPUT",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.00244140625,
+      "rel_l2": 0.015867222100496292,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "ATTENTION_RESIDUAL_OUTPUT",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.001953125,
+      "rel_l2": 0.014996337704360485,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM_INPUT",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.001953125,
+      "rel_l2": 0.014996337704360485,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "POST_ATTENTION_RMSNORM",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.0101318359375,
+      "rel_l2": 0.02068469673395157,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    },
+    {
+      "component": "MLP_OUTPUT",
+      "exact_equal": false,
+      "layer": 1,
+      "max_abs": 0.0013580322265625,
+      "rel_l2": 0.022426748648285866,
+      "shape": [
+        1,
+        1,
+        4096
+      ]
+    }
+  ],
+  "step": 14
+}

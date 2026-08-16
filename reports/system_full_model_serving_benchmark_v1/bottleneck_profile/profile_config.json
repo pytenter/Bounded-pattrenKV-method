@@ -1,0 +1,9 @@
+{
+  "B": 1,
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "context": 2048,
+  "cuda_visible_devices": "1",
+  "decode": 4,
+  "head": "cc50fdc513181d2137438cc6a7c0dd8322ccf767",
+  "physical_gpu": 1
+}

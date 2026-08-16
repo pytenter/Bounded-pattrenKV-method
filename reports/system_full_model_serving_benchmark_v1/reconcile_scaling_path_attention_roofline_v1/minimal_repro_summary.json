@@ -1,0 +1,50 @@
+[
+  {
+    "decode": 4,
+    "mean_decode_only_ms_per_output_token": 208.3683001200358,
+    "mean_initial_prefill_ms_excluded": 8560.23496009099,
+    "mean_measured_refill_ms_per_output_token": 0.0,
+    "mean_measured_refill_prefill_ms_total": 0.0,
+    "mean_tok_s": 4.799707850165958,
+    "mean_wall_ms_per_output_token": 208.83500550795966,
+    "peak_allocated_GB": 17.78028544,
+    "protocol": "profile_v2_protocol",
+    "runs": 3
+  },
+  {
+    "decode": 8,
+    "mean_decode_only_ms_per_output_token": 201.40646362304688,
+    "mean_initial_prefill_ms_excluded": 8287.22539334558,
+    "mean_measured_refill_ms_per_output_token": 0.0,
+    "mean_measured_refill_prefill_ms_total": 0.0,
+    "mean_tok_s": 4.9557319305903755,
+    "mean_wall_ms_per_output_token": 201.8473244194562,
+    "peak_allocated_GB": 17.78028544,
+    "protocol": "profile_v2_protocol",
+    "runs": 3
+  },
+  {
+    "decode": 4,
+    "mean_decode_only_ms_per_output_token": 197.01691754659018,
+    "mean_initial_prefill_ms_excluded": 8354.852915353453,
+    "mean_measured_refill_ms_per_output_token": 1044.279229293655,
+    "mean_measured_refill_prefill_ms_total": 8354.23383434924,
+    "mean_tok_s": 0.8053024637058361,
+    "mean_wall_ms_per_output_token": 1241.7730202529735,
+    "peak_allocated_GB": 17.926398976,
+    "protocol": "scaling_protocol",
+    "runs": 3
+  },
+  {
+    "decode": 8,
+    "mean_decode_only_ms_per_output_token": 199.13580894470215,
+    "mean_initial_prefill_ms_excluded": 8382.57374901635,
+    "mean_measured_refill_ms_per_output_token": 523.1250250362791,
+    "mean_measured_refill_prefill_ms_total": 8370.000400580466,
+    "mean_tok_s": 1.3836983652892871,
+    "mean_wall_ms_per_output_token": 722.7105713100173,
+    "peak_allocated_GB": 17.927447552,
+    "protocol": "scaling_protocol",
+    "runs": 3
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "context": 2048,
+  "decode_tokens": 8,
+  "rows": [
+    {
+      "B": 1,
+      "FP16_tok_s": 34.784718000322236,
+      "CAUSAL_tok_s": 5.112521432567776,
+      "FP16_ms_per_output_token": 28.751611137219395,
+      "CAUSAL_ms_per_output_token": 195.64594003410699,
+      "ratio": 0.14697607818814043,
+      "status": "PASS"
+    },
+    {
+      "B": 2,
+      "FP16_tok_s": 69.57199179592173,
+      "CAUSAL_tok_s": 9.841298904186386,
+      "FP16_ms_per_output_token": 28.752745041856542,
+      "CAUSAL_ms_per_output_token": 203.25895936305946,
+      "ratio": 0.14145489657755173,
+      "status": "PASS"
+    },
+    {
+      "B": 4,
+      "FP16_tok_s": 126.37226980293826,
+      "CAUSAL_tok_s": 18.999407388261247,
+      "FP16_ms_per_output_token": 31.647152830070507,
+      "CAUSAL_ms_per_output_token": 210.57023599860258,
+      "ratio": 0.15034475061568844,
+      "status": "PASS"
+    },
+    {
+      "B": 8,
+      "FP16_tok_s": 200.01565244113996,
+      "CAUSAL_tok_s": 35.40155819507351,
+      "FP16_ms_per_output_token": 39.98911861951152,
+      "CAUSAL_ms_per_output_token": 225.97807912582843,
+      "ratio": 0.17699393903930286,
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "old_forensic_profile_window": "prefill_plus_decode_profile_attribution",
+  "corrected_decode_only_profile_dir": "reports/system_full_model_serving_benchmark_v1/direct_compressed_page_append_v1/profile_decode_only_window",
+  "old_page_batch_pack_c2048_b1_ms": 994.7381725311279,
+  "corrected_page_batch_pack_c2048_b1_ms": 0.0,
+  "old_page_batch_pack_c2048_b2_ms": 1682.5825233459473,
+  "corrected_page_batch_pack_c2048_b2_ms": 0.0,
+  "corrected_cache_append_c2048_b1_ms": 185.95974451303482,
+  "corrected_cache_append_c2048_b2_ms": 210.49695974588394,
+  "corrected_cache_mutation_c2048_b1_ms": 38.960480347275734,
+  "corrected_cache_mutation_c2048_b2_ms": 40.0211522616446
+}

@@ -1,0 +1,319 @@
+{
+  "order_index": 1,
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 55.039999540895224,
+      "tokens": 262464.0,
+      "total_us": 7045.119941234589
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 546.8480016570538,
+      "tokens": 262464.0,
+      "total_us": 69996.54421210289
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 583.4832494147122,
+      "tokens": 0.0,
+      "total_us": 74685.85592508316
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 127664128.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 264192.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 127664128.0,
+      "calls": 512.0,
+      "mean_us": 30.179749985109083,
+      "tokens": 0.0,
+      "total_us": 15452.03199237585
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 44830656.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 25169856.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 218160.38131713867,
+      "tokens": 0.0,
+      "total_us": 872641.5252685547
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 1190.4000043869019,
+      "tokens": 0.0,
+      "total_us": 4761.600017547607
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 75.68000169703737,
+      "tokens": 262464.0,
+      "total_us": 9687.040217220783
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 2176.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 143.1039979797788,
+      "tokens": 0.0,
+      "total_us": 572.4159919191152
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 132.9839990939945,
+      "tokens": 262464.0,
+      "total_us": 17021.951884031296
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 32768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 4.0,
+      "mean_us": 219419.13604736328,
+      "tokens": 0.0,
+      "total_us": 877676.5441894531
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 104.93599815526977,
+      "tokens": 0.0,
+      "total_us": 13431.80776387453
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 313.24799824506044,
+      "tokens": 57344.0,
+      "total_us": 10023.935943841934
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 23118.943750858307,
+      "tokens": 57344.0,
+      "total_us": 739806.2000274658
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 471.0,
+      "mean_us": 290.4616216565393,
+      "tokens": 86016.0,
+      "total_us": 136807.42380023003
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 464.0,
+      "mean_us": 284.25489622971105,
+      "tokens": 28672.0,
+      "total_us": 131894.27185058594
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 70398.8162279129,
+      "tokens": 57344.0,
+      "total_us": 2252762.119293213
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 21371.2956905365,
+      "tokens": 0.0,
+      "total_us": 683881.462097168
+    },
+    "partial_state_workspace": {
+      "bytes": 557056.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 7865823.2421875,
+      "tokens": 0.0,
+      "total_us": 7865823.2421875
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 1.0,
+      "mean_us": 32787.45651245117,
+      "tokens": 0.0,
+      "total_us": 32787.45651245117
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 94.46933320335422,
+      "tokens": 33088.0,
+      "total_us": 36276.223950088024
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 102.13599994312972,
+      "tokens": 0.0,
+      "total_us": 13073.407992720604
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 160.0,
+      "mean_us": 361.3376007415354,
+      "tokens": 0.0,
+      "total_us": 57814.01611864567
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 1120.224006474018,
+      "tokens": 57344.0,
+      "total_us": 35847.16820716858
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 58.14400070812553,
+      "tokens": 57344.0,
+      "total_us": 1860.608022660017
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 44305.98425865173,
+      "tokens": 57344.0,
+      "total_us": 1417791.4962768555
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 32.0,
+      "mean_us": 45762.65549659729,
+      "tokens": 57344.0,
+      "total_us": 1464404.9758911133
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "mean_us": 397.78933379178244,
+      "tokens": 33088.0,
+      "total_us": 152751.10417604446
+    }
+  },
+  "profile_enabled": true,
+  "result": {
+    "active_capacity": 1,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 1,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 2048,
+    "decode_length": 4,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 17780285440,
+    "mean_decode_first_token_ms": 8128.985305083916,
+    "mean_tpot_ms": 2194.461772509385,
+    "median_tpot_ms": 2194.461772509385,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 4,
+    "p95_tpot_ms": 2194.461772509385,
+    "peak_cuda_allocated_bytes": 17780285440,
+    "peak_cuda_reserved_bytes": 18333302784,
+    "physical_gpu": 1,
+    "prefill_prep_s": 7.853454923024401,
+    "run_index": 1,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 7.853490036912262,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 4.327154278140411,
+    "total_requests": 1,
+    "true_batch_preserved": true,
+    "wall_time_s": 0.9243950510863215,
+    "warmup": false,
+    "workload_hash": "06b126d726c78794a49166fba4d8078377c1866f31698f0b92cb5978129bdfc0"
+  }
+}

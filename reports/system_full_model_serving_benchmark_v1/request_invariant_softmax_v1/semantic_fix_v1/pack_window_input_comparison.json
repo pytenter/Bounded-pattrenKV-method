@@ -1,0 +1,54 @@
+{
+  "b1_capture_count": 32,
+  "b1_meta": {
+    "packed_before": 384,
+    "slot": [
+      0
+    ],
+    "total": 656
+  },
+  "b4_capture_count": 160,
+  "b4_meta": {
+    "packed_before": 384,
+    "slot": [
+      2
+    ],
+    "total": 656
+  },
+  "centroids_valid_cmp": {
+    "exact_equal": false,
+    "ref_shape": [
+      1,
+      8,
+      32,
+      128
+    ],
+    "shape": [
+      1,
+      8,
+      33,
+      128
+    ]
+  },
+  "counts_cmp": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1
+    ]
+  },
+  "k_window_cmp": {
+    "exact_equal": true,
+    "max_abs": 0.0,
+    "mismatch_count": 0,
+    "rel_l2": 0.0,
+    "shape": [
+      1,
+      8,
+      128,
+      128
+    ]
+  }
+}

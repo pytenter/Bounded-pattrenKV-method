@@ -1,0 +1,390 @@
+{
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 64.05999968774267,
+      "tokens": 133376.0,
+      "total_us": 32798.71984012425
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 728.973996010609,
+      "tokens": 133376.0,
+      "total_us": 373234.6859574318
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 499.30400032462785,
+      "tokens": 0.0,
+      "total_us": 255643.64816620946
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 514850816.0,
+      "calls": 2048.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 264192.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 514850816.0,
+      "calls": 2048.0,
+      "mean_us": 35.6735001787456,
+      "tokens": 0.0,
+      "total_us": 73059.32836607099
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 37752768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 25169856.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 276153.1562805176,
+      "tokens": 0.0,
+      "total_us": 4418450.500488281
+    },
+    "decode_k_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 63.1740004682797,
+      "tokens": 0.0,
+      "total_us": 32345.088239759207
+    },
+    "decode_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 35.22600018186495,
+      "tokens": 0.0,
+      "total_us": 18035.712093114853
+    },
+    "decode_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 715.1399994036183,
+      "tokens": 0.0,
+      "total_us": 366151.67969465256
+    },
+    "decode_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1311.4059818908572,
+      "tokens": 0.0,
+      "total_us": 671439.8627281189
+    },
+    "decode_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 4.625999934432912,
+      "tokens": 0.0,
+      "total_us": 2368.511966429651
+    },
+    "decode_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1525.9100021794438,
+      "tokens": 0.0,
+      "total_us": 781265.9211158752
+    },
+    "decode_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 4902.703993022442,
+      "tokens": 0.0,
+      "total_us": 2510184.4444274902
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 1192.5760209560394,
+      "tokens": 0.0,
+      "total_us": 19081.21633529663
+    },
+    "decode_q_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 103.60199786373414,
+      "tokens": 0.0,
+      "total_us": 53044.22290623188
+    },
+    "decode_v_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 56.66600009863032,
+      "tokens": 0.0,
+      "total_us": 29012.992050498724
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 96.71000082744285,
+      "tokens": 133376.0,
+      "total_us": 49515.52042365074
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 163.1360020401189,
+      "tokens": 0.0,
+      "total_us": 2610.1760326419026
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 169.76200047065504,
+      "tokens": 133376.0,
+      "total_us": 86918.14424097538
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 131072.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 277425.78887939453,
+      "tokens": 0.0,
+      "total_us": 4438812.6220703125
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 112.96400064020418,
+      "tokens": 0.0,
+      "total_us": 57837.56832778454
+    },
+    "partial_state_workspace": {
+      "bytes": 393216.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 1185800.1708984375,
+      "tokens": 0.0,
+      "total_us": 2371600.341796875
+    },
+    "prefill_k_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 47.10400104522705,
+      "tokens": 0.0,
+      "total_us": 3014.6560668945312
+    },
+    "prefill_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 8.335999998962507,
+      "tokens": 0.0,
+      "total_us": 533.5039999336004
+    },
+    "prefill_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 65.11999916983768,
+      "tokens": 0.0,
+      "total_us": 4167.679946869612
+    },
+    "prefill_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1643.2959903031588,
+      "tokens": 0.0,
+      "total_us": 105170.94337940216
+    },
+    "prefill_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 8.608000120148063,
+      "tokens": 0.0,
+      "total_us": 550.912007689476
+    },
+    "prefill_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 163.88799995183945,
+      "tokens": 0.0,
+      "total_us": 10488.831996917725
+    },
+    "prefill_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 35113.66409063339,
+      "tokens": 0.0,
+      "total_us": 2247274.501800537
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 4364.287853240967,
+      "tokens": 0.0,
+      "total_us": 8728.575706481934
+    },
+    "prefill_q_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 174.01600209996104,
+      "tokens": 0.0,
+      "total_us": 11137.024134397507
+    },
+    "prefill_v_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 46.92800098564476,
+      "tokens": 0.0,
+      "total_us": 3003.3920630812645
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 105.01000055107095,
+      "tokens": 133376.0,
+      "total_us": 161295.36084644496
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 576.0,
+      "mean_us": 428.8551114603049,
+      "tokens": 0.0,
+      "total_us": 247020.54420113564
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 552.4486668873578,
+      "tokens": 133376.0,
+      "total_us": 848561.1523389816
+    }
+  },
+  "result": {
+    "active_capacity": 1,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 2,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 256,
+    "decode_length": 8,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 16394976256,
+    "mean_decode_first_token_ms": 1502.1816479275003,
+    "mean_tpot_ms": 426.5057703742059,
+    "median_tpot_ms": 426.5057703742059,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 16,
+    "p95_tpot_ms": 432.4794419808313,
+    "peak_cuda_allocated_bytes": 16394976256,
+    "peak_cuda_reserved_bytes": 16596860928,
+    "physical_gpu": 5,
+    "prefill_prep_s": 2.3702706047333777,
+    "run_index": 999,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 2.37034711567685,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 2.8404194342767695,
+    "total_requests": 2,
+    "true_batch_preserved": true,
+    "wall_time_s": 5.632970893988386,
+    "warmup": false,
+    "workload_hash": "c45874506ca9155fa8a24040424536b4e83df7f867b75032635719af6e1c01b4"
+  },
+  "structural": {
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 256,
+    "fallback_count": 0,
+    "fixed_split_softmax_requests_per_iteration": 32.0,
+    "fixed_split_softmax_splits_per_iteration": 96.0,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "iteration_plan_builds_per_iteration": 1.0,
+    "iterations": 16.0,
+    "layer_metadata_rebuilds_per_iteration": 0.0,
+    "logical_split_size": 128,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "output_tokens": 16,
+    "row_slice_bytes_per_iteration": 0.0,
+    "row_slice_calls_per_iteration": 0.0,
+    "run_valid": true,
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "true_batch_preserved": true
+  }
+}

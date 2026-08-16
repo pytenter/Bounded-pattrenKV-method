@@ -1,0 +1,13 @@
+{
+  "B1": {
+    "coverage": 0.9842721039722601,
+    "total_ms_per_iteration_uninstrumented": 217.1817030175589,
+    "unattributed_fraction": 0.01572789602773994
+  },
+  "B4": {
+    "coverage": 0.9829862510041283,
+    "total_ms_per_iteration_uninstrumented": 268.62874877406284,
+    "unattributed_fraction": 0.017013748995871714
+  },
+  "timing_notes": "Top-level component coverage uses decode-only coarse wrappers from profiling ON runs. Headline throughput uses profiling OFF runs. Nested attention sub-breakdown is inclusive and not summed as total."
+}

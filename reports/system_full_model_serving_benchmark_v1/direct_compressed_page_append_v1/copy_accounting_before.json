@@ -1,0 +1,38 @@
+[
+  {
+    "stage": "decode_only_before_direct_append",
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "context": 2048,
+    "B": 1,
+    "decode_tokens": 8,
+    "page_batch_pack_calls_per_token": 0,
+    "page_batch_pack_bytes_per_token": 0,
+    "page_batch_pack_ms": 0,
+    "recent_pending_calls_per_token": 128.0,
+    "recent_pending_bytes_per_token": 32178176.0,
+    "recent_pending_estimated_copy_bytes": 257425408,
+    "cache_append_ms": 185.95974451303482,
+    "cache_mutation_ms": 38.960480347275734,
+    "causal_importance_estimated_copy_bytes": 1838592,
+    "model_decode_ms": 2616.469512939453,
+    "notes": "page_batch_pack absent after resetting profile at decode timing start"
+  },
+  {
+    "stage": "decode_only_before_direct_append",
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "context": 2048,
+    "B": 2,
+    "decode_tokens": 8,
+    "page_batch_pack_calls_per_token": 0,
+    "page_batch_pack_bytes_per_token": 0,
+    "page_batch_pack_ms": 0,
+    "recent_pending_calls_per_token": 64.0,
+    "recent_pending_bytes_per_token": 32178176.0,
+    "recent_pending_estimated_copy_bytes": 514850816,
+    "cache_append_ms": 210.49695974588394,
+    "cache_mutation_ms": 40.0211522616446,
+    "causal_importance_estimated_copy_bytes": 3677184,
+    "model_decode_ms": 2653.032440185547,
+    "notes": "page_batch_pack absent after resetting profile at decode timing start"
+  }
+]

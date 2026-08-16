@@ -1,0 +1,58 @@
+[
+  {
+    "CAUSAL_decode_ms_per_token": 228.04502767394297,
+    "CAUSAL_decode_tok_s": 4.385134417855158,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": 16.316510208,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.12537488333197536,
+    "FP16_decode_ms_per_token": 28.62451287607352,
+    "FP16_decode_tok_s": 34.97617944930747,
+    "FP16_full_lifecycle_peak_allocated_GB": 16.301715968,
+    "FP16_status": "PASS",
+    "context": 256,
+    "memory_delta_GB": -0.01479424,
+    "success": "PASS"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": 187.95530440790267,
+    "CAUSAL_decode_tok_s": 5.320760246327256,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": 17.779236864,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.15472724572725738,
+    "FP16_decode_ms_per_token": 29.08992359880358,
+    "FP16_decode_tok_s": 34.38799819203354,
+    "FP16_full_lifecycle_peak_allocated_GB": 17.93031424,
+    "FP16_status": "PASS",
+    "context": 2048,
+    "memory_delta_GB": 0.151077376,
+    "success": "PASS"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": 193.84936549856016,
+    "CAUSAL_decode_tok_s": 5.161631695078612,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": 19.451420672,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.15570834332014255,
+    "FP16_decode_ms_per_token": 30.162195946710806,
+    "FP16_decode_tok_s": 33.14935850589645,
+    "FP16_full_lifecycle_peak_allocated_GB": 19.791569408,
+    "FP16_status": "PASS",
+    "context": 4096,
+    "memory_delta_GB": 0.340148736,
+    "success": "PASS"
+  },
+  {
+    "CAUSAL_decode_ms_per_token": 198.19125600042753,
+    "CAUSAL_decode_tok_s": 5.047304608041209,
+    "CAUSAL_full_lifecycle_peak_allocated_GB": 22.795804672,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.15582776212372906,
+    "FP16_decode_ms_per_token": 30.870080459862947,
+    "FP16_decode_tok_s": 32.39027846677019,
+    "FP16_full_lifecycle_peak_allocated_GB": 23.514079744,
+    "FP16_status": "PASS",
+    "context": 8192,
+    "memory_delta_GB": 0.718275072,
+    "success": "PASS"
+  }
+]

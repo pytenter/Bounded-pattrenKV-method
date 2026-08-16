@@ -1,0 +1,5 @@
+kernel,production_component,count_per_decode_iteration,torch_profiler_avg_us,measured_profile_range_ms_per_iteration,bound_classification,evidence,confidence
+page_mixed_pool_value_kernel<2>,mixed V2/V4 Value,32,149.69,5.992,INT2_UNPACK_AND_METADATA_LOAD_BOUND_SECONDARY,"per token loads v4 prefix, page tables, payload, scale/zero, pattern, assignment, optional centroid; branch selects V2/V4; no ncu counters available",medium
+bgemv_kernel_outer_dim_with_base_tiled<2>,compressed historical QK,32,21.01,3.762,INT2_UNPACK_COMPUTE_BOUND_SECONDARY,inner loop unpacks 16 INT2 values via shift+mask for each 32-bit word and does FP32 fmaf with scale/zero; wrapper includes contiguous transforms,medium
+request_invariant_fixed_split_softmax_kernel,fixed split partial+merge softmax,32,23.54,2.679 kernel / 17.895 wrapper,LATENCY_BOUND_SECONDARY,small per-layer kernel with deterministic split loop; wrapper/control dominates kernel range,medium
+_bi_linear_persistent_kernel,Q/K/V/O and MLP projections,96 in one profiled decode op sample,395.20,various projection ranges,CUDA_CORE_COMPUTE_BOUND,dominant custom dense projection kernel in torch profiler,medium

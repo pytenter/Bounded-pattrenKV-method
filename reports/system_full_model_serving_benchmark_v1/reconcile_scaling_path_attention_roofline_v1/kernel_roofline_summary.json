@@ -1,0 +1,42 @@
+[
+  {
+    "bound_classification": "INT2_UNPACK_AND_METADATA_LOAD_BOUND_SECONDARY",
+    "confidence": "medium",
+    "count_per_decode_iteration": "32",
+    "evidence": "per token loads v4 prefix, page tables, payload, scale/zero, pattern, assignment, optional centroid; branch selects V2/V4; no ncu counters available",
+    "kernel": "page_mixed_pool_value_kernel<2>",
+    "measured_profile_range_ms_per_iteration": "5.992",
+    "production_component": "mixed V2/V4 Value",
+    "torch_profiler_avg_us": "149.69"
+  },
+  {
+    "bound_classification": "INT2_UNPACK_COMPUTE_BOUND_SECONDARY",
+    "confidence": "medium",
+    "count_per_decode_iteration": "32",
+    "evidence": "inner loop unpacks 16 INT2 values via shift+mask for each 32-bit word and does FP32 fmaf with scale/zero; wrapper includes contiguous transforms",
+    "kernel": "bgemv_kernel_outer_dim_with_base_tiled<2>",
+    "measured_profile_range_ms_per_iteration": "3.762",
+    "production_component": "compressed historical QK",
+    "torch_profiler_avg_us": "21.01"
+  },
+  {
+    "bound_classification": "LATENCY_BOUND_SECONDARY",
+    "confidence": "medium",
+    "count_per_decode_iteration": "32",
+    "evidence": "small per-layer kernel with deterministic split loop; wrapper/control dominates kernel range",
+    "kernel": "request_invariant_fixed_split_softmax_kernel",
+    "measured_profile_range_ms_per_iteration": "2.679 kernel / 17.895 wrapper",
+    "production_component": "fixed split partial+merge softmax",
+    "torch_profiler_avg_us": "23.54"
+  },
+  {
+    "bound_classification": "CUDA_CORE_COMPUTE_BOUND",
+    "confidence": "medium",
+    "count_per_decode_iteration": "96 in one profiled decode op sample",
+    "evidence": "dominant custom dense projection kernel in torch profiler",
+    "kernel": "_bi_linear_persistent_kernel",
+    "measured_profile_range_ms_per_iteration": "various projection ranges",
+    "production_component": "Q/K/V/O and MLP projections",
+    "torch_profiler_avg_us": "395.20"
+  }
+]

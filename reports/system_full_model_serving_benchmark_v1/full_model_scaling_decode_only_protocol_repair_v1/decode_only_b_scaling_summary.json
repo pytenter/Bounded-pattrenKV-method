@@ -1,0 +1,62 @@
+[
+  {
+    "B": 1,
+    "CAUSAL_decode_tok_s": 5.323434687037698,
+    "CAUSAL_iteration_ms": 1502.8309479821473,
+    "CAUSAL_ms_per_output_token": 187.84879734933688,
+    "CAUSAL_peak_allocated_GB": 17.779236864,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.1490506743578294,
+    "FP16_decode_tok_s": 35.71560283087083,
+    "FP16_iteration_ms": 224.04841675112644,
+    "FP16_ms_per_output_token": 28.00127038305315,
+    "FP16_peak_allocated_GB": 17.93031424,
+    "FP16_status": "PASS",
+    "success": "PASS"
+  },
+  {
+    "B": 2,
+    "CAUSAL_decode_tok_s": 10.22526939239456,
+    "CAUSAL_iteration_ms": 1564.8722850407164,
+    "CAUSAL_ms_per_output_token": 195.60327837825753,
+    "CAUSAL_peak_allocated_GB": 19.450667008,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.14226564645729706,
+    "FP16_decode_tok_s": 71.87448022080167,
+    "FP16_iteration_ms": 222.63013967312872,
+    "FP16_ms_per_output_token": 27.824121750503156,
+    "FP16_peak_allocated_GB": 19.791569408,
+    "FP16_status": "PASS",
+    "success": "PASS"
+  },
+  {
+    "B": 4,
+    "CAUSAL_decode_tok_s": 18.869567443593564,
+    "CAUSAL_iteration_ms": 1696.7800479227055,
+    "CAUSAL_ms_per_output_token": 212.0900688266071,
+    "CAUSAL_peak_allocated_GB": 22.83196416,
+    "CAUSAL_status": "PASS",
+    "CAUSAL_to_FP16_decode_ratio": 0.1497382285332895,
+    "FP16_decode_tok_s": 126.01703404951475,
+    "FP16_iteration_ms": 253.93548693197468,
+    "FP16_ms_per_output_token": 31.73670182392622,
+    "FP16_peak_allocated_GB": 23.514079744,
+    "FP16_status": "PASS",
+    "success": "PASS"
+  },
+  {
+    "B": 8,
+    "CAUSAL_decode_tok_s": null,
+    "CAUSAL_iteration_ms": null,
+    "CAUSAL_ms_per_output_token": null,
+    "CAUSAL_peak_allocated_GB": null,
+    "CAUSAL_status": "OOM",
+    "CAUSAL_to_FP16_decode_ratio": null,
+    "FP16_decode_tok_s": null,
+    "FP16_iteration_ms": null,
+    "FP16_ms_per_output_token": null,
+    "FP16_peak_allocated_GB": null,
+    "FP16_status": "OOM",
+    "success": "OOM"
+  }
+]

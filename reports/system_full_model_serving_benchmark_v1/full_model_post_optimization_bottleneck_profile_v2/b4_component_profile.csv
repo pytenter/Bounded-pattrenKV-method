@@ -1,0 +1,7 @@
+component,ms_per_iteration,ms_per_output_token,percent_total,timing_type,notes
+Attention aggregate,165.28179216384888,41.32044804096222,64.29393698161012,exclusive/coarse-wrapper,decode-only phase timer
+RMSNorm aggregate,48.179455786943436,12.044863946735859,18.74161003229697,exclusive/coarse-wrapper,decode-only phase timer
+MLP aggregate,36.77388772368431,9.193471930921078,14.304890992055103,exclusive/coarse-wrapper,decode-only phase timer
+LM head,1.2144639492034912,0.3036159873008728,0.4724214784597743,exclusive/coarse-wrapper,decode-only phase timer
+Residual adds,1.1059200078016147,0.2764800019504037,0.4301983319361112,exclusive/coarse-wrapper,decode-only phase timer
+Harness assemble/control,0.1428479997557588,0.0357119999389397,0.055567284054744384,exclusive/coarse-wrapper,decode-only phase timer

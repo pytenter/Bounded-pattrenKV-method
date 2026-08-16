@@ -1,0 +1,67 @@
+{
+  "audit": {
+    "CAUSAL_V4_25_FULL_MODEL": {
+      "adapter": "CAUSAL_V4_25_FULL_MODEL",
+      "attention_included": true,
+      "audit_counts": {
+        "embedding": 2,
+        "final_norm": 2,
+        "layer0_input_layernorm": 1,
+        "layer0_mlp_down_proj": 1,
+        "layer0_mlp_gate_proj": 1,
+        "layer0_mlp_up_proj": 1,
+        "layer0_post_attention_layernorm": 1,
+        "layer0_self_attn": 2,
+        "layer_last_input_layernorm": 1,
+        "layer_last_mlp_down_proj": 1,
+        "layer_last_mlp_gate_proj": 1,
+        "layer_last_mlp_up_proj": 1,
+        "layer_last_post_attention_layernorm": 1,
+        "layer_last_self_attn": 2,
+        "lm_head": 2
+      },
+      "embedding_included": true,
+      "full_model_forward_executed": true,
+      "lm_head_included": true,
+      "mlp_included": true,
+      "rmsnorm_included": true,
+      "sampling_or_token_selection_included": true,
+      "scheduler_included": true,
+      "transformer_layers_included": true
+    },
+    "FP16_FULL_MODEL": {
+      "adapter": "FP16_FULL_MODEL",
+      "attention_included": true,
+      "audit_counts": {
+        "embedding": 2,
+        "final_norm": 2,
+        "layer0_input_layernorm": 2,
+        "layer0_mlp": 2,
+        "layer0_mlp_down_proj": 2,
+        "layer0_mlp_gate_proj": 2,
+        "layer0_mlp_up_proj": 2,
+        "layer0_post_attention_layernorm": 2,
+        "layer0_self_attn": 2,
+        "layer_last_input_layernorm": 2,
+        "layer_last_mlp": 2,
+        "layer_last_mlp_down_proj": 2,
+        "layer_last_mlp_gate_proj": 2,
+        "layer_last_mlp_up_proj": 2,
+        "layer_last_post_attention_layernorm": 2,
+        "layer_last_self_attn": 2,
+        "lm_head": 2
+      },
+      "embedding_included": true,
+      "full_model_forward_executed": true,
+      "lm_head_included": true,
+      "mlp_included": true,
+      "rmsnorm_included": true,
+      "sampling_or_token_selection_included": true,
+      "scheduler_included": true,
+      "transformer_layers_included": true
+    }
+  },
+  "fp16_and_causal_use_same_harness_scheduler_arrival_decode_loop": true,
+  "full_model_path_parity": true,
+  "source": "reports/system_full_model_serving_benchmark_v1/full_model_path_audit.json"
+}

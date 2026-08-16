@@ -1,0 +1,3 @@
+run_index,phase,group_size,active_after,prefill_ms
+900,initial_prefill,1,1,11045.961876865476
+900,measured_refill,1,1,8694.41685685888

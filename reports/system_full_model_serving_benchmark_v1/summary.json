@@ -1,0 +1,36 @@
+[
+  {
+    "active_capacity": 1,
+    "context_length": 256,
+    "decode_length": 4,
+    "kv_pool_bytes": 20858534400,
+    "mean_decode_first_token_ms_mean": 1577.1848660428077,
+    "mean_tpot_ms_mean": 685.5540406075306,
+    "median_tpot_ms_mean": 681.8923390237615,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "p95_tpot_ms_mean": 694.0360905136913,
+    "peak_cuda_allocated_bytes_max": 20858534400,
+    "peak_cuda_reserved_bytes_max": 21531459584,
+    "runs": 1,
+    "throughput_tokens_s_mean": 1.582589797467152,
+    "throughput_tokens_s_std": 0.0,
+    "workload_hash": "24f5d46c451324e69f361d904ef5ed526319b4aa44faf8b1d34f7339b83d0d58"
+  },
+  {
+    "active_capacity": 1,
+    "context_length": 256,
+    "decode_length": 4,
+    "kv_pool_bytes": 16438041600,
+    "mean_decode_first_token_ms_mean": 97.24368513561785,
+    "mean_tpot_ms_mean": 45.642611593939364,
+    "median_tpot_ms_mean": 45.320364471990615,
+    "method": "FP16_FULL_MODEL",
+    "p95_tpot_ms_mean": 46.56217904994264,
+    "peak_cuda_allocated_bytes_max": 16438041600,
+    "peak_cuda_reserved_bytes_max": 16487809024,
+    "runs": 1,
+    "throughput_tokens_s_mean": 22.61823246272645,
+    "throughput_tokens_s_std": 0.0,
+    "workload_hash": "24f5d46c451324e69f361d904ef5ed526319b4aa44faf8b1d34f7339b83d0d58"
+  }
+]

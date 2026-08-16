@@ -1,0 +1,13 @@
+{
+  "A_tiny_metadata_indexing": [
+    "request length and packed-token scalar lookup"
+  ],
+  "B_layer_local_views": [
+    "singleton active batch direct tuple reuse"
+  ],
+  "C_unnecessary_physical_materialization": [
+    "PatternKVAdapter.split_batch -> extract_request_cache -> _slice_ragged_request_cache",
+    "_slice_operator_ready_page_pools_for_request per row/page cat materialization"
+  ],
+  "after_classification": "B=1 active plan bypasses physical row slicing; B>1 still uses existing ragged assembly path."
+}

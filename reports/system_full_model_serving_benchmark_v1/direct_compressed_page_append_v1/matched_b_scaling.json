@@ -1,0 +1,62 @@
+[
+  {
+    "B": "1",
+    "FP16_decode_tok_s": "34.784718000322236",
+    "CAUSAL_decode_tok_s": "5.112521432567776",
+    "FP16_iteration_ms": "230.04486644640565",
+    "CAUSAL_iteration_ms": "1565.2122804118942",
+    "FP16_ms_per_output_token": "28.751611137219395",
+    "CAUSAL_ms_per_output_token": "195.64594003410699",
+    "CAUSAL_to_FP16_decode_ratio": "0.14697607818814043",
+    "FP16_peak_allocated_GB": "16.612160512",
+    "CAUSAL_peak_allocated_GB": "16.513622016",
+    "success": "PASS",
+    "FP16_status": "PASS",
+    "CAUSAL_status": "PASS"
+  },
+  {
+    "B": "2",
+    "FP16_decode_tok_s": "69.57199179592173",
+    "CAUSAL_decode_tok_s": "9.841298904186386",
+    "FP16_iteration_ms": "230.0578886643052",
+    "CAUSAL_iteration_ms": "1626.1175139031063",
+    "FP16_ms_per_output_token": "28.752745041856542",
+    "CAUSAL_ms_per_output_token": "203.25895936305946",
+    "CAUSAL_to_FP16_decode_ratio": "0.14145489657755173",
+    "FP16_peak_allocated_GB": "17.155259392",
+    "CAUSAL_peak_allocated_GB": "16.91103232",
+    "success": "PASS",
+    "FP16_status": "PASS",
+    "CAUSAL_status": "PASS"
+  },
+  {
+    "B": "4",
+    "FP16_decode_tok_s": "126.37226980293826",
+    "CAUSAL_decode_tok_s": "18.999407388261247",
+    "FP16_iteration_ms": "253.22065269574523",
+    "CAUSAL_iteration_ms": "1684.604922387128",
+    "FP16_ms_per_output_token": "31.647152830070507",
+    "CAUSAL_ms_per_output_token": "210.57023599860258",
+    "CAUSAL_to_FP16_decode_ratio": "0.15034475061568844",
+    "FP16_peak_allocated_GB": "18.241457152",
+    "CAUSAL_peak_allocated_GB": "17.744289792",
+    "success": "PASS",
+    "FP16_status": "PASS",
+    "CAUSAL_status": "PASS"
+  },
+  {
+    "B": "8",
+    "FP16_decode_tok_s": "200.01565244113996",
+    "CAUSAL_decode_tok_s": "35.40155819507351",
+    "FP16_iteration_ms": "319.97507127622765",
+    "CAUSAL_iteration_ms": "1807.8889149862032",
+    "FP16_ms_per_output_token": "39.98911861951152",
+    "CAUSAL_ms_per_output_token": "225.97807912582843",
+    "CAUSAL_to_FP16_decode_ratio": "0.17699393903930286",
+    "FP16_peak_allocated_GB": "20.413852672",
+    "CAUSAL_peak_allocated_GB": "19.410804736",
+    "success": "PASS",
+    "FP16_status": "PASS",
+    "CAUSAL_status": "PASS"
+  }
+]

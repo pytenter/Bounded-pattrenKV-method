@@ -1,0 +1,50 @@
+[
+  {
+    "context": 256,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 256,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 2048,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 2048,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 4096,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 4096,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 8192,
+    "decode": 8,
+    "method": "FP16_FULL_MODEL",
+    "peak_allocated_GB": null
+  },
+  {
+    "context": 8192,
+    "decode": 8,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "peak_allocated_GB": null
+  }
+]

@@ -1,0 +1,89 @@
+{
+  "b1_parts": [
+    {
+      "logical_offset": 0,
+      "name": "sink",
+      "physical": 16,
+      "physical_offset": 0,
+      "valid": 16
+    },
+    {
+      "logical_offset": 16,
+      "name": "packed",
+      "physical": 512,
+      "physical_offset": 16,
+      "valid": 512
+    },
+    {
+      "logical_offset": 528,
+      "name": "recent",
+      "physical": 128,
+      "physical_offset": 528,
+      "valid": 128
+    }
+  ],
+  "b1_shape": [
+    1,
+    32,
+    1,
+    656
+  ],
+  "b4_parts": [
+    {
+      "logical_offset": 0,
+      "name": "sink",
+      "physical": 16,
+      "physical_offset": 0,
+      "valid": 16
+    },
+    {
+      "logical_offset": 16,
+      "name": "packed",
+      "physical": 640,
+      "physical_offset": 16,
+      "valid": 512
+    },
+    {
+      "logical_offset": 528,
+      "name": "pending",
+      "physical": 127,
+      "physical_offset": 656,
+      "valid": 0
+    },
+    {
+      "logical_offset": 528,
+      "name": "recent",
+      "physical": 128,
+      "physical_offset": 783,
+      "valid": 128
+    }
+  ],
+  "b4_shape": [
+    4,
+    32,
+    1,
+    911
+  ],
+  "prob_cmp": {
+    "exact_equal": false,
+    "max_abs": 0.0119781494140625,
+    "mismatch_count": 18098,
+    "rel_l2": 0.015753917396068573,
+    "shape": [
+      32,
+      656
+    ]
+  },
+  "request": "C",
+  "score_cmp": {
+    "exact_equal": false,
+    "max_abs": 4.6640625,
+    "mismatch_count": 4087,
+    "rel_l2": 0.06902696192264557,
+    "shape": [
+      32,
+      656
+    ]
+  },
+  "step": 14
+}

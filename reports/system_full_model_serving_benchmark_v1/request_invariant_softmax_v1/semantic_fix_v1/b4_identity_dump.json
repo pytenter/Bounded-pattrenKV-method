@@ -1,0 +1,97 @@
+{
+  "comparisons": {
+    "start13_centroids_b4_vs_b1": {
+      "exact_equal": false,
+      "ref_shape": [
+        1,
+        8,
+        48,
+        128
+      ],
+      "shape": [
+        1,
+        8,
+        64,
+        128
+      ]
+    },
+    "start14_centroids_b4_vs_b1": {
+      "exact_equal": false,
+      "ref_shape": [
+        1,
+        8,
+        48,
+        128
+      ],
+      "shape": [
+        1,
+        8,
+        80,
+        128
+      ]
+    },
+    "start14_pending_b4_vs_b1": {
+      "exact_equal": true,
+      "max_abs": 0.0,
+      "mismatch_count": 0,
+      "rel_l2": 0.0,
+      "shape": [
+        1,
+        8,
+        127,
+        128
+      ]
+    }
+  },
+  "request": "C",
+  "states": {
+    "b1_start13": {
+      "k_counts": 32,
+      "last_flush_pos": 0,
+      "lengths": {
+        "packed": 384,
+        "pending": 126,
+        "recent": 128,
+        "sink": 16
+      },
+      "slot": 0,
+      "updates": 0
+    },
+    "b1_start14": {
+      "k_counts": 32,
+      "last_flush_pos": 0,
+      "lengths": {
+        "packed": 384,
+        "pending": 127,
+        "recent": 128,
+        "sink": 16
+      },
+      "slot": 0,
+      "updates": 0
+    },
+    "b4_after_D13_start14": {
+      "k_counts": 32,
+      "last_flush_pos": 0,
+      "lengths": {
+        "packed": 384,
+        "pending": 127,
+        "recent": 128,
+        "sink": 16
+      },
+      "slot": 2,
+      "updates": 0
+    },
+    "b4_before_D13": {
+      "k_counts": 32,
+      "last_flush_pos": 0,
+      "lengths": {
+        "packed": 384,
+        "pending": 126,
+        "recent": 128,
+        "sink": 16
+      },
+      "slot": 2,
+      "updates": 0
+    }
+  }
+}

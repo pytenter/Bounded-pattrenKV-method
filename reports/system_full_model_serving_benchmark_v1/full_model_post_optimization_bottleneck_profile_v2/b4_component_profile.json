@@ -1,0 +1,247 @@
+{
+  "attention_subbreakdown_inclusive": [
+    {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "component": "Mixed V FP16 tail",
+      "inclusive_ms_per_iteration": 37.6092160269618,
+      "inclusive_ms_per_output_token": 9.40230400674045,
+      "notes": "inclusive nested timer",
+      "percent_attention": 22.754603235230316,
+      "percent_model_decode": 14.629830264474396,
+      "profile_key": "value_fp16_tail"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Cache append/update wrapper",
+      "inclusive_ms_per_iteration": 23.528551995754242,
+      "inclusive_ms_per_output_token": 5.8821379989385605,
+      "notes": "inclusive nested timer",
+      "percent_attention": 14.23541679196561,
+      "percent_model_decode": 9.152509901295915,
+      "profile_key": "cache_append"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 160.0,
+      "component": "RoPE/position",
+      "inclusive_ms_per_iteration": 22.468607932329178,
+      "inclusive_ms_per_output_token": 5.6171519830822945,
+      "notes": "inclusive nested timer",
+      "percent_attention": 13.594121674367715,
+      "percent_model_decode": 8.740196022521381,
+      "profile_key": "rope_position"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Fixed-split softmax wrapper",
+      "inclusive_ms_per_iteration": 14.746879979968071,
+      "inclusive_ms_per_output_token": 3.6867199949920177,
+      "notes": "inclusive nested timer",
+      "percent_attention": 8.922265294261233,
+      "percent_model_decode": 5.736475625624389,
+      "profile_key": "attention_softmax"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 384.0,
+      "component": "FP16 sink/pending/recent QK",
+      "inclusive_ms_per_iteration": 8.026040069758892,
+      "inclusive_ms_per_output_token": 2.006510017439723,
+      "notes": "inclusive nested timer",
+      "percent_attention": 4.855973525385322,
+      "percent_model_decode": 3.1220965582549103,
+      "profile_key": "qk_fp16_regions"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Compressed historical QK",
+      "inclusive_ms_per_iteration": 4.953600063920021,
+      "inclusive_ms_per_output_token": 1.2384000159800053,
+      "notes": "inclusive nested timer",
+      "percent_attention": 2.9970633782875287,
+      "percent_model_decode": 1.9269300397350992,
+      "profile_key": "qk_quantized_history"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Importance update",
+      "inclusive_ms_per_iteration": 4.328191954642534,
+      "inclusive_ms_per_output_token": 1.0820479886606336,
+      "notes": "inclusive nested timer",
+      "percent_attention": 2.618674385108231,
+      "percent_model_decode": 1.6836488589150527,
+      "profile_key": "importance_update"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Output projection",
+      "inclusive_ms_per_iteration": 3.4137599635869265,
+      "inclusive_ms_per_output_token": 0.8534399908967316,
+      "notes": "inclusive nested timer",
+      "percent_attention": 2.0654180468970003,
+      "percent_model_decode": 1.32793857747876,
+      "profile_key": "output_projection"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Attention score concat",
+      "inclusive_ms_per_iteration": 3.28217601403594,
+      "inclusive_ms_per_output_token": 0.820544003508985,
+      "notes": "inclusive nested timer",
+      "percent_attention": 1.9858061623522445,
+      "percent_model_decode": 1.2767529625996825,
+      "profile_key": "attention_score_concat"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Q projection",
+      "inclusive_ms_per_iteration": 3.177984017878771,
+      "inclusive_ms_per_output_token": 0.7944960044696927,
+      "notes": "inclusive nested timer",
+      "percent_attention": 1.9227671579990724,
+      "percent_model_decode": 1.2362227048670198,
+      "profile_key": "decode_q_projection"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "Fixed-split CUDA kernel",
+      "inclusive_ms_per_iteration": 2.4860160425305367,
+      "inclusive_ms_per_output_token": 0.6215040106326342,
+      "notes": "inclusive nested timer; fixed_split_cuda_kernel is included in softmax wrapper",
+      "percent_attention": 1.5041076273338525,
+      "percent_model_decode": 0.9670500100536183,
+      "profile_key": "fixed_split_softmax_kernel"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "K projection",
+      "inclusive_ms_per_iteration": 2.01753600127995,
+      "inclusive_ms_per_output_token": 0.5043840003199875,
+      "notes": "inclusive nested timer",
+      "percent_attention": 1.2206644028157108,
+      "percent_model_decode": 0.7848132019032807,
+      "profile_key": "decode_k_projection"
+    },
+    {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "component": "V projection",
+      "inclusive_ms_per_iteration": 1.7817599978297949,
+      "inclusive_ms_per_output_token": 0.4454399994574487,
+      "notes": "inclusive nested timer",
+      "percent_attention": 1.078013478982296,
+      "percent_model_decode": 0.6930973068301401,
+      "profile_key": "decode_v_projection"
+    }
+  ],
+  "headline": {
+    "instrumentation_overhead_percent": 11.550879822621841,
+    "ms_per_iteration": 268.62874877406284,
+    "ms_per_output_token": 67.15718719351571,
+    "peak_allocated_gb": 22.863290368,
+    "peak_reserved_gb": 24.66250752,
+    "profile_on_ms_per_iteration": 299.65773271396756,
+    "runs": [
+      {
+        "B": 4,
+        "components": 0,
+        "iteration_plan_builds": 0,
+        "key": "formal_b4_profile_off_0",
+        "layer_metadata_rebuilds": 0,
+        "ms_per_iteration": 265.5487597803585,
+        "ms_per_output_token": 66.38718994508963,
+        "peak_allocated_gb": 22.863290368,
+        "peak_reserved_gb": 24.658313216,
+        "profile_enabled": false,
+        "row_slice_bytes": 0,
+        "row_slice_calls": 0,
+        "tokens_s": 15.06314698403597,
+        "valid": true,
+        "wall_s": 1.062195039121434
+      },
+      {
+        "B": 4,
+        "components": 0,
+        "iteration_plan_builds": 0,
+        "key": "formal_b4_profile_off_1",
+        "layer_metadata_rebuilds": 0,
+        "ms_per_iteration": 271.70873776776716,
+        "ms_per_output_token": 67.92718444194179,
+        "peak_allocated_gb": 22.863290368,
+        "peak_reserved_gb": 24.66250752,
+        "profile_enabled": false,
+        "row_slice_bytes": 0,
+        "row_slice_calls": 0,
+        "tokens_s": 14.72164654277276,
+        "valid": true,
+        "wall_s": 1.0868349510710686
+      }
+    ],
+    "tokens_s": 14.892396763404365
+  },
+  "profile_accounting": {
+    "accounted_profile_ms": 1010.79347052495,
+    "coverage": 0.9829862510041283,
+    "rows": [
+      {
+        "component": "Attention aggregate",
+        "ms_per_iteration": 165.28179216384888,
+        "ms_per_output_token": 41.32044804096222,
+        "notes": "decode-only phase timer",
+        "percent_total": 64.29393698161012,
+        "timing_type": "exclusive/coarse-wrapper"
+      },
+      {
+        "component": "RMSNorm aggregate",
+        "ms_per_iteration": 48.179455786943436,
+        "ms_per_output_token": 12.044863946735859,
+        "notes": "decode-only phase timer",
+        "percent_total": 18.74161003229697,
+        "timing_type": "exclusive/coarse-wrapper"
+      },
+      {
+        "component": "MLP aggregate",
+        "ms_per_iteration": 36.77388772368431,
+        "ms_per_output_token": 9.193471930921078,
+        "notes": "decode-only phase timer",
+        "percent_total": 14.304890992055103,
+        "timing_type": "exclusive/coarse-wrapper"
+      },
+      {
+        "component": "LM head",
+        "ms_per_iteration": 1.2144639492034912,
+        "ms_per_output_token": 0.3036159873008728,
+        "notes": "decode-only phase timer",
+        "percent_total": 0.4724214784597743,
+        "timing_type": "exclusive/coarse-wrapper"
+      },
+      {
+        "component": "Residual adds",
+        "ms_per_iteration": 1.1059200078016147,
+        "ms_per_output_token": 0.2764800019504037,
+        "notes": "decode-only phase timer",
+        "percent_total": 0.4301983319361112,
+        "timing_type": "exclusive/coarse-wrapper"
+      },
+      {
+        "component": "Harness assemble/control",
+        "ms_per_iteration": 0.1428479997557588,
+        "ms_per_output_token": 0.0357119999389397,
+        "notes": "decode-only phase timer",
+        "percent_total": 0.055567284054744384,
+        "timing_type": "exclusive/coarse-wrapper"
+      }
+    ],
+    "total_profile_model_decode_ms": 1028.2885131835938
+  }
+}

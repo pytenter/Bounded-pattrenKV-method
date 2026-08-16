@@ -1,0 +1,8 @@
+{
+  "old_p0_c2048_b1_mean_tpot_ms": 195.64594003410699,
+  "new_no_optimization_smoke_c2048_b1_mean_tpot_ms": 191.73377199331298,
+  "old_p0_c2048_b1_throughput_tok_s": 5.112521432567776,
+  "new_no_optimization_smoke_c2048_b1_throughput_tok_s": 5.215449454372099,
+  "speedup": 1.0204041677171534,
+  "interpretation": "profile-window instrumentation only; no direct append runtime optimization was applied"
+}

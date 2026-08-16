@@ -1,0 +1,38 @@
+[
+  {
+    "active_ctas_per_sm": "not measured",
+    "cta_count_B1_context2048": "B*nh*OC = 4096",
+    "kernel": "page_mixed_pool_value_kernel<2>",
+    "registers_per_thread": "not available without ncu/nvcc metadata",
+    "shared_memory": "static reduction shared array; no dynamic shmem",
+    "tail_wave_utilization": "high CTA count; tail not primary at B1",
+    "threads_per_cta": "256",
+    "warps_per_cta": "8",
+    "waves_on_82SM_3090": "~50 CTAs/SM before occupancy limits",
+    "work_per_cta": "one output channel for one query head; loop over valid context tokens"
+  },
+  {
+    "active_ctas_per_sm": "not measured",
+    "cta_count_B1_context2048": "B*nh*ceil((T/16)/8) approx 512 for T=2048",
+    "kernel": "bgemv_kernel_outer_dim_with_base_tiled<2>",
+    "registers_per_thread": "not available without ncu/nvcc metadata",
+    "shared_memory": "M_centroids*4 + 128*2 bytes dynamic",
+    "tail_wave_utilization": "moderate; lower than page Value",
+    "threads_per_cta": "32x8 = 256",
+    "warps_per_cta": "8",
+    "waves_on_82SM_3090": "~6.2 CTAs/SM before occupancy limits",
+    "work_per_cta": "8 packed INT2 output groups, 128-dim input tile"
+  },
+  {
+    "active_ctas_per_sm": "not measured",
+    "cta_count_B1_context2048": "B*H = 32",
+    "kernel": "request_invariant_fixed_split_softmax_kernel",
+    "registers_per_thread": "not available",
+    "shared_memory": "two 128-float shared reductions",
+    "tail_wave_utilization": "low at B1",
+    "threads_per_cta": "128",
+    "warps_per_cta": "4",
+    "waves_on_82SM_3090": "<1 wave; low-B underutilized but small total time",
+    "work_per_cta": "all logical splits for one head/request"
+  }
+]

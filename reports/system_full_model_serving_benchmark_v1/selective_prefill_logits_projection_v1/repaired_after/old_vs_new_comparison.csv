@@ -1,0 +1,9 @@
+workload,old_protocol_ms_or_tok_s,new_decode_only_ms_or_tok_s,old_prefill_contaminated,difference,interpretation
+C2048 B1 FP16_FULL_MODEL,11.3709468329842,34.784718000322236,True,23.413771167338034,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B1 CAUSAL_V4_25_FULL_MODEL,1.485507820581823,5.112521432567776,True,3.6270136119859533,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B2 FP16_FULL_MODEL,13.921402474401942,69.57199179592173,True,55.65058932151979,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B2 CAUSAL_V4_25_FULL_MODEL,2.3430839986323053,9.841298904186386,True,7.4982149055540805,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B4 FP16_FULL_MODEL,0.0,126.37226980293826,True,126.37226980293826,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B4 CAUSAL_V4_25_FULL_MODEL,3.2365642719663863,18.999407388261247,True,15.76284311629486,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B8 FP16_FULL_MODEL,0.0,200.01565244113996,True,200.01565244113996,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership
+C2048 B8 CAUSAL_V4_25_FULL_MODEL,0.0,35.40155819507351,True,35.40155819507351,old throughput may include refill-prefill; repaired measurement is decode-only fixed membership

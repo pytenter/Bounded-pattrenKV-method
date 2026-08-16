@@ -1,0 +1,74 @@
+[
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__fp16_full_model__c2048__b1__d8.log",
+    "point": {
+      "batch_size": 1,
+      "context_length": 2048,
+      "decode_tokens": 8,
+      "method": "FP16_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  },
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__causal_v4_25_full_model__c2048__b1__d8.log",
+    "point": {
+      "batch_size": 1,
+      "context_length": 2048,
+      "decode_tokens": 8,
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  },
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__fp16_full_model__c2048__b2__d8.log",
+    "point": {
+      "batch_size": 2,
+      "context_length": 2048,
+      "decode_tokens": 8,
+      "method": "FP16_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  },
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__causal_v4_25_full_model__c2048__b2__d8.log",
+    "point": {
+      "batch_size": 2,
+      "context_length": 2048,
+      "decode_tokens": 8,
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  },
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__fp16_full_model__c4096__b1__d8.log",
+    "point": {
+      "batch_size": 1,
+      "context_length": 4096,
+      "decode_tokens": 8,
+      "method": "FP16_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  },
+  {
+    "log_path": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/reports/system_full_model_serving_benchmark_v1/full_model_post_scaling_bottleneck_forensic_v1/logs/profile__causal_v4_25_full_model__c4096__b1__d8.log",
+    "point": {
+      "batch_size": 1,
+      "context_length": 4096,
+      "decode_tokens": 8,
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "phase": "profile"
+    },
+    "return_code": 0,
+    "status": "PASS"
+  }
+]

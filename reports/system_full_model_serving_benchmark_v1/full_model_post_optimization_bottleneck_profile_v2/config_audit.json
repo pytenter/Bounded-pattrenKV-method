@@ -1,0 +1,27 @@
+{
+  "flags": {
+    "PATTERNKV_ACTIVE_BATCH_CACHE": "1",
+    "PATTERNKV_FIXED_SPLIT_SOFTMAX": "1"
+  },
+  "historical_primary_batch": 1,
+  "historical_primary_context": 2048,
+  "historical_primary_decode": 4,
+  "multi_request_low_copy_batches": [
+    2,
+    4,
+    8
+  ],
+  "multi_request_low_copy_context": 512,
+  "multi_request_low_copy_decode": 4,
+  "previous_physical_gpu": 1,
+  "reports/system_full_model_serving_benchmark_v1/bottleneck_profile/profile_config.json": "{\n  \"B\": 1,\n  \"branch\": \"sys/causal-v4-25-kernel-v1\",\n  \"context\": 2048,\n  \"cuda_visible_devices\": \"1\",\n  \"decode\": 4,\n  \"head\": \"cc50fdc513181d2137438cc6a7c0dd8322ccf767\",\n  \"physical_gpu\": 1\n}\n",
+  "reports/system_full_model_serving_benchmark_v1/integration_optimization_v1/final_report.md": "# Final Report\n\nClassification: `FULL_MODEL_INTEGRATION_OVERHEAD_OPTIMIZATION_V1_SUPPORTED`. The matched context=2048, B=1, decode=4 after-profile reduced decode wall TPOT from `788.231` ms/token to `316.277` ms/token. Harness assemble fell from `119.335` to `0.182` ms/token and split fell from `162.619` to `0.017` ms/token. Row-slice copy bytes fell from `221769792` bytes/token to `0`.\n\nCentroid physical capacity now sizes to the required active slot-id range and context-derived dynamic budget with geometric growth. For the matched B=1 profile, formula capacity falls from `1140850688` bytes to `7471104` bytes while preserving centroid counts, values, reset, and grow semantics.\n\nRemaining top blocker is model decode at `304.606` ms/token, so the next task is `OPTIMIZE_REQUEST_INVARIANT_FIXED_SPLIT_SOFTMAX`. The full model serving benchmark remains `PATTERNKV_FULL_MODEL_SERVING_BENCHMARK_V1_NOT_CLOSED`.\n\nDerived metrics: `{\"ASSEMBLE_REDUCTION\": 0.9984736749406992, \"CENTROID_CAPACITY_REDUCTION_FORMULA\": 0.9934512867647058, \"PEAK_ALLOCATED_REDUCTION\": 0.07668455938100438, \"ROW_SLICE_BYTE_REDUCTION\": 1.0, \"SPLIT_REDUCTION\": 0.999892952236176, \"TOTAL_RUNTIME_SPEEDUP\": 2.4922162565926134}`\n",
+  "reports/system_full_model_serving_benchmark_v1/multi_request_low_copy_v1/final_report.md": "# Multi-Request Low-Copy V1 Final Report\n\n## Root Cause\n\nB1 stayed on an optimized singleton path where assemble/split returned the cache object directly. B2/B4 diverged at `PatternKVAdapter.assemble_batch(len(caches) > 1)` and `PatternKVAdapter.split_batch(batch_size > 1)`, causing every decode token to rebuild all 32 layer metadata objects and extract every active request row from compressed page pools.\n\nClassification: `MULTI_COMPONENT`: `MULTI_REQUEST_ACTIVE_ROW_MATERIALIZATION`, `SEGMENTED_CACHE_ROW_SLICE_DEPENDENCY`, `MULTI_REQUEST_METADATA_REBUILD_LEGACY_PATH`, plus stale B8 `PAGE_BATCH_MVP_LIMIT`.\n\n## Fix\n\nAdded `ActiveBatchState` to keep the current PatternKV batched compressed cache while active membership is unchanged. Empty-active prefill now starts directly from a batched cache via `prefill_active_batch`. Membership changes still rebuild explicitly through the existing safe extraction path. The B8 page-pack guard now accepts any positive batch size.\n\n## Measured Structural Result\n\n- B2 after: plan builds/iteration=1.0, layer rebuilds/iteration=0.0, row-slice bytes/iteration=0.0\n- B4 after: plan builds/iteration=1.0, layer rebuilds/iteration=0.0, row-slice bytes/iteration=0.0\n- B8 sanity: plan builds/iteration=1.0, layer rebuilds/iteration=0.0, row-slice bytes/iteration=0.0\n\n## Validation\n\n- Focused semantic/low-copy tests: 117 passed\n- Full pytest: 1008 passed\n- `git diff --check`: PASS\n\nStatus: `FULL_MODEL_MULTI_REQUEST_LOW_COPY_INTEGRATION_SUPPORTED`. Formal serving benchmark remains not closed.\n",
+  "reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/final_report.md": "# Final Report\n\nThe fixed split CUDA softmax path was implemented and measured, but this round is **not closed** because the opt-in path failed the ragged hard gate. It is disabled by default to preserve production correctness.\n\nOpt-in B1 A/B at context=2048, B=1, decode=4: total `317.907` -> `232.278` ms/token, model decode `306.253` -> `220.533` ms/token, softmax `102.694` -> `15.806` ms/token. Derived opt-in speedups: `{\"CAUSAL_VS_FP16_GAP_AFTER_OPT_IN\": 4.020533992931963, \"MODEL_DECODE_SPEEDUP_OPT_IN\": 1.3812288473706698, \"SOFTMAX_REDUCTION_SPEEDUP_OPT_IN\": 6.496971369673773, \"TOTAL_SPEEDUP_OPT_IN\": 1.3616295016577993}`.\n\nSemantic blocker: opt-in ragged hard gate failed B2 reorder, B4, and independent flush. The disabled-kernel control also failed B4/flush in the current dirty tree, but the opt-in path worsened B2 reorder and max logit drift, so it cannot be production-enabled.\n\nB>1 low-copy pre-gate: B2/B4 full-model serving still shows layer metadata rebuilds and row-slice bytes, so `MULTI_REQUEST_LOW_COPY_GENERALIZATION_PENDING` remains true for the serving harness.\n\nNext task: `FIX_FIXED_SPLIT_DETERMINISTIC_MERGE_SEMANTICS`.\n",
+  "source_reports": [
+    "reports/system_full_model_serving_benchmark_v1/bottleneck_profile/profile_config.json",
+    "reports/system_full_model_serving_benchmark_v1/integration_optimization_v1/final_report.md",
+    "reports/system_full_model_serving_benchmark_v1/request_invariant_softmax_v1/final_report.md",
+    "reports/system_full_model_serving_benchmark_v1/multi_request_low_copy_v1/final_report.md"
+  ]
+}

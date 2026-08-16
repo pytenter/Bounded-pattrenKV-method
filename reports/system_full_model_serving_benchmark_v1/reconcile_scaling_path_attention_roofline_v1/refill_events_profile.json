@@ -1,0 +1,16 @@
+[
+  {
+    "active_after": 1,
+    "group_size": 1,
+    "phase": "initial_prefill",
+    "prefill_ms": 11045.961876865476,
+    "run_index": 900
+  },
+  {
+    "active_after": 1,
+    "group_size": 1,
+    "phase": "measured_refill",
+    "prefill_ms": 8694.41685685888,
+    "run_index": 900
+  }
+]

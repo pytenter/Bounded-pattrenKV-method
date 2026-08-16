@@ -1,0 +1,466 @@
+{
+  "profile": {
+    "active_batch_cache_reuses": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "attention_score_concat": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 55.611999800021295,
+      "tokens": 1050880.0,
+      "total_us": 28473.343897610903
+    },
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 440.40999963181093,
+      "tokens": 1050880.0,
+      "total_us": 225489.9198114872
+    },
+    "cache_append": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 662.0071267243475,
+      "tokens": 0.0,
+      "total_us": 338947.6488828659
+    },
+    "cache_assemble_calls": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_events": {
+      "bytes": 2059403264.0,
+      "calls": 2048.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_cat_largest_bytes": {
+      "bytes": 1056768.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "cache_mutation": {
+      "bytes": 2059403264.0,
+      "calls": 2048.0,
+      "mean_us": 30.825999987428077,
+      "tokens": 0.0,
+      "total_us": 63131.6479742527
+    },
+    "centroid_capacity_bytes": {
+      "bytes": 358645248.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "centroid_logical_bytes": {
+      "bytes": 201358848.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "decode_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 250411.90338134766,
+      "tokens": 0.0,
+      "total_us": 4006590.4541015625
+    },
+    "decode_k_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 61.526000463345554,
+      "tokens": 0.0,
+      "total_us": 31501.312237232924
+    },
+    "decode_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 29.14000003511319,
+      "tokens": 0.0,
+      "total_us": 14919.680017977953
+    },
+    "decode_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 362.98399936640635,
+      "tokens": 0.0,
+      "total_us": 185847.80767560005
+    },
+    "decode_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1147.4739981349558,
+      "tokens": 0.0,
+      "total_us": 587506.6870450974
+    },
+    "decode_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 4.423999952450686,
+      "tokens": 0.0,
+      "total_us": 2265.087975654751
+    },
+    "decode_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 1050.2099974546582,
+      "tokens": 0.0,
+      "total_us": 537707.518696785
+    },
+    "decode_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 5097.241997718811,
+      "tokens": 0.0,
+      "total_us": 2609787.9028320312
+    },
+    "decode_lm_head": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 1214.9119600653648,
+      "tokens": 0.0,
+      "total_us": 19438.591361045837
+    },
+    "decode_q_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 97.53800168982707,
+      "tokens": 0.0,
+      "total_us": 49939.45686519146
+    },
+    "decode_v_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 55.073999719752464,
+      "tokens": 0.0,
+      "total_us": 28197.88785651326
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 75.72200194408651,
+      "tokens": 1050880.0,
+      "total_us": 38769.664995372295
+    },
+    "fixed_split_softmax_requests": {
+      "bytes": 0.0,
+      "calls": 2048.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "fixed_split_softmax_splits": {
+      "bytes": 0.0,
+      "calls": 34816.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "harness_assemble": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 207.36000071337912,
+      "tokens": 0.0,
+      "total_us": 3317.760011414066
+    },
+    "importance_update": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 131.72400032635778,
+      "tokens": 1050880.0,
+      "total_us": 67442.68816709518
+    },
+    "iteration_plan_builds": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "merge_workspace": {
+      "bytes": 524288.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "model_decode": {
+      "bytes": 0.0,
+      "calls": 16.0,
+      "mean_us": 251767.80796051025,
+      "tokens": 0.0,
+      "total_us": 4028284.927368164
+    },
+    "output_projection": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 104.58399809431285,
+      "tokens": 0.0,
+      "total_us": 53547.00702428818
+    },
+    "pack_k": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 446.01600151509047,
+      "tokens": 114688.0,
+      "total_us": 28545.02409696579
+    },
+    "pack_total": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 85469.89768743515,
+      "tokens": 114688.0,
+      "total_us": 5470073.45199585
+    },
+    "pack_v2": {
+      "bytes": 0.0,
+      "calls": 3502.0,
+      "mean_us": 285.3550565355101,
+      "tokens": 344064.0,
+      "total_us": 999313.4079873562
+    },
+    "pack_v4": {
+      "bytes": 0.0,
+      "calls": 3476.0,
+      "mean_us": 281.9046074110839,
+      "tokens": 114688.0,
+      "total_us": 979900.4153609276
+    },
+    "pack_window": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 260600.01730918884,
+      "tokens": 114688.0,
+      "total_us": 16678401.107788086
+    },
+    "page_batch_pack": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 83802.09624767303,
+      "tokens": 0.0,
+      "total_us": 5363334.159851074
+    },
+    "partial_state_workspace": {
+      "bytes": 8912896.0,
+      "calls": 0.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "prefill_decoder_model_forward": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 16380473.14453125,
+      "tokens": 0.0,
+      "total_us": 32760946.2890625
+    },
+    "prefill_k_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1032.2559969499707,
+      "tokens": 0.0,
+      "total_us": 66064.38380479813
+    },
+    "prefill_layer_attention_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 242.3360024113208,
+      "tokens": 0.0,
+      "total_us": 15509.504154324532
+    },
+    "prefill_layer_input_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1464.3360264599323,
+      "tokens": 0.0,
+      "total_us": 93717.50569343567
+    },
+    "prefill_layer_mlp": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 38242.655992507935,
+      "tokens": 0.0,
+      "total_us": 2447529.983520508
+    },
+    "prefill_layer_mlp_residual_add": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 242.4320017453283,
+      "tokens": 0.0,
+      "total_us": 15515.648111701012
+    },
+    "prefill_layer_post_attention_rmsnorm": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1454.111985862255,
+      "tokens": 0.0,
+      "total_us": 93063.16709518433
+    },
+    "prefill_layer_self_attention": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 470165.04096984863,
+      "tokens": 0.0,
+      "total_us": 30090562.622070312
+    },
+    "prefill_lm_head": {
+      "bytes": 0.0,
+      "calls": 2.0,
+      "mean_us": 127263.22937011719,
+      "tokens": 0.0,
+      "total_us": 254526.45874023438
+    },
+    "prefill_q_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 3798.0479411780834,
+      "tokens": 0.0,
+      "total_us": 243075.06823539734
+    },
+    "prefill_v_projection": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 1033.4399975836277,
+      "tokens": 0.0,
+      "total_us": 66140.15984535217
+    },
+    "qk_fp16_regions": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 79.34220893851791,
+      "tokens": 133376.0,
+      "total_us": 121869.63292956352
+    },
+    "qk_quantized_history": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 153.02200193400495,
+      "tokens": 0.0,
+      "total_us": 78347.26499021053
+    },
+    "rope_position": {
+      "bytes": 0.0,
+      "calls": 576.0,
+      "mean_us": 470.91911267489195,
+      "tokens": 0.0,
+      "total_us": 271249.40890073776
+    },
+    "selector_gain": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 3185.8399361371994,
+      "tokens": 114688.0,
+      "total_us": 203893.75591278076
+    },
+    "selector_score": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 7.216000100015663,
+      "tokens": 114688.0,
+      "total_us": 461.8240064010024
+    },
+    "selector_topk": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 169467.2646522522,
+      "tokens": 114688.0,
+      "total_us": 10845904.93774414
+    },
+    "selector_total": {
+      "bytes": 0.0,
+      "calls": 64.0,
+      "mean_us": 172798.86412620544,
+      "tokens": 114688.0,
+      "total_us": 11059127.304077148
+    },
+    "softmax_kernel_launches": {
+      "bytes": 0.0,
+      "calls": 512.0,
+      "mean_us": 0.0,
+      "tokens": 0.0,
+      "total_us": 0.0
+    },
+    "value_fp16_tail": {
+      "bytes": 0.0,
+      "calls": 1536.0,
+      "mean_us": 376.3913333726426,
+      "tokens": 133376.0,
+      "total_us": 578137.088060379
+    }
+  },
+  "result": {
+    "active_capacity": 4,
+    "arrival_protocol": "saturated_steady_state",
+    "completed_requests": 8,
+    "compressed_domain_runtime_preserved": true,
+    "context_length": 2048,
+    "decode_length": 8,
+    "fallback_count": 0,
+    "full_model_forward_executed": true,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "kv_pool_bytes": 23380648960,
+    "mean_decode_first_token_ms": 16762.682209606282,
+    "mean_tpot_ms": 2315.5973997636465,
+    "median_tpot_ms": 2315.5973997636465,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "model": "DeepSeek-R1-Distill-Llama-8B",
+    "output_tokens": 64,
+    "p95_tpot_ms": 2319.0182386315428,
+    "peak_cuda_allocated_bytes": 23380648960,
+    "peak_cuda_reserved_bytes": 24891097088,
+    "physical_gpu": 5,
+    "prefill_prep_s": 32.67378216306679,
+    "run_index": 999,
+    "run_valid": true,
+    "scheduler": "FIFO",
+    "scheduler_overhead_s": 32.6738802336622,
+    "scope": "full_model_decode_serving",
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "throughput_tokens_s": 3.077607815074632,
+    "total_requests": 8,
+    "true_batch_preserved": true,
+    "wall_time_s": 20.79537219996564,
+    "warmup": false,
+    "workload_hash": "48cbdbda5881ebdfcbbf4fb0d7780858a55be017bd217944bce093af378f0bef"
+  },
+  "structural": {
+    "B": 4,
+    "compressed_domain_runtime_preserved": true,
+    "context": 2048,
+    "fallback_count": 0,
+    "historical_fp16_k_materialization": 0,
+    "historical_fp16_v_materialization": 0,
+    "invalid_reason": "",
+    "iteration_plan_builds_per_iteration": 1.0,
+    "iterations": 16.0,
+    "layer_metadata_rebuilds_per_iteration": 0.0,
+    "logical_split_size": 128,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "row_slice_bytes_per_iteration": 0.0,
+    "row_slice_calls_per_iteration": 0.0,
+    "run_valid": true,
+    "serial_attention_dispatches": 0,
+    "serial_mlp_request_dispatches": 0,
+    "serial_request_forward_dispatches": 0,
+    "serial_rmsnorm_request_dispatches": 0,
+    "study": "matched_b",
+    "true_batch_preserved": true
+  }
+}

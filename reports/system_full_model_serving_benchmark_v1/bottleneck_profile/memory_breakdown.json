@@ -1,0 +1,20 @@
+{
+  "causal_after_model_load_gb": 16.33805568,
+  "causal_after_prefill_gb": 17.675664384,
+  "causal_centroid_state_gb": 1.212164608,
+  "causal_decode_peak_gb": 19.257063936,
+  "causal_extra_after_prefill_gb": 1.3381529600000022,
+  "causal_extra_decode_peak_gb": 2.348018176,
+  "causal_logical_kv_gb": 0.070254592,
+  "causal_page_pool_gb": 0.058265344,
+  "causal_precision_selector_metadata_gb": 0.002351104,
+  "decode_peak_extra_explained_by_centroid_state_fraction": 0.5162500956721725,
+  "diagnosis": "Retained extra memory is dominated by centroid-state overcapacity. Decode peak also includes transient assemble/split copies and allocator reservation; exact peak decomposition is incomplete.",
+  "fp16_after_model_load_gb": 16.060539392,
+  "fp16_after_prefill_gb": 16.337511424,
+  "fp16_decode_peak_gb": 16.90904576,
+  "profile_B": 1,
+  "profile_context": 2048,
+  "profile_decode": 4,
+  "retained_extra_memory_explained_by_centroid_state_fraction": 0.9058490652667973
+}

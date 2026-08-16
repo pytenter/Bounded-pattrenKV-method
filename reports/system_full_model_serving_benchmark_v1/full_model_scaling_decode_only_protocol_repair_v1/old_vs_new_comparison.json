@@ -1,0 +1,114 @@
+[
+  {
+    "difference": 6.4168435307595395,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 34.97617944930747,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 28.559335918547934,
+    "workload": "C256 B1 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 1.059286437319789,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 4.385134417855158,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 3.3258479805353693,
+    "workload": "C256 B1 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 23.91684062651018,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 34.38799819203354,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 10.471157565523361,
+    "workload": "C2048 B1 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 3.8263238034998124,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 5.320760246327256,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 1.494436442827444,
+    "workload": "C2048 B1 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 26.334269582478278,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 33.14935850589645,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 6.815088923418174,
+    "workload": "C4096 B1 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 4.291209419336091,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 5.161631695078612,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 0.8704222757425215,
+    "workload": "C4096 B1 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 32.39027846677019,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 32.39027846677019,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 0.0,
+    "workload": "C8192 B1 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 5.047304608041209,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 5.047304608041209,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 0.0,
+    "workload": "C8192 B1 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 24.344655997886626,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 35.71560283087083,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 11.3709468329842,
+    "workload": "C2048 B1 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 3.8379268664558746,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 5.323434687037698,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 1.485507820581823,
+    "workload": "C2048 B1 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 57.95307774639973,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 71.87448022080167,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 13.921402474401942,
+    "workload": "C2048 B2 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 7.882185393762255,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 10.22526939239456,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 2.3430839986323053,
+    "workload": "C2048 B2 CAUSAL_V4_25_FULL_MODEL"
+  },
+  {
+    "difference": 126.01703404951475,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 126.01703404951475,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 0.0,
+    "workload": "C2048 B4 FP16_FULL_MODEL"
+  },
+  {
+    "difference": 15.633003171627177,
+    "interpretation": "old throughput may include refill-prefill; repaired measurement is decode-only fixed membership",
+    "new_decode_only_ms_or_tok_s": 18.869567443593564,
+    "old_prefill_contaminated": true,
+    "old_protocol_ms_or_tok_s": 3.2365642719663863,
+    "workload": "C2048 B4 CAUSAL_V4_25_FULL_MODEL"
+  }
+]

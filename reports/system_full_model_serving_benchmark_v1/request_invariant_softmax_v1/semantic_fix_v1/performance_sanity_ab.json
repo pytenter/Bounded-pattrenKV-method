@@ -1,0 +1,29 @@
+{
+  "B": 1,
+  "attention_softmax_ms_per_token": 14.48524796962738,
+  "context": 2048,
+  "decode": 4,
+  "decode_wall_ms_per_token": 233.29585348255932,
+  "fixed_split_kernel_ms_per_token": 2.435328058898449,
+  "model_decode_ms_per_token": 0.0,
+  "peak_allocated_gb": 17.998951936,
+  "peak_reserved_gb": 18.509463552,
+  "prefill_s": 7.9792396042030305,
+  "profile_components": {
+    "attention_softmax": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 452.66399905085564,
+      "tokens": 262464.0,
+      "total_us": 57940.99187850952
+    },
+    "fixed_split_softmax_kernel": {
+      "bytes": 0.0,
+      "calls": 128.0,
+      "mean_us": 76.10400184057653,
+      "tokens": 262464.0,
+      "total_us": 9741.312235593796
+    }
+  },
+  "total_ms_per_token": 2228.105947782751
+}

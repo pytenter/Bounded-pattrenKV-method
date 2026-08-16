@@ -1,0 +1,29 @@
+{
+  "attention_ms_total_profiled": 2121.6929889805615,
+  "canonical_profile": {
+    "B": 1,
+    "completed_requests": 2,
+    "context": 2048,
+    "decode": 8,
+    "decode_cuda_ms_per_iteration": 267.74521827697754,
+    "decode_cuda_ms_total": 4283.923492431641,
+    "decode_only_ms_per_output_token": 267.74521827697754,
+    "initial_prefill_ms_excluded_from_wall": 11045.961876865476,
+    "iterations": 16,
+    "measured_refill_ms_per_output_token": 543.40105355368,
+    "measured_refill_prefill_ms_total": 8694.41685685888,
+    "method": "CAUSAL_V4_25_FULL_MODEL",
+    "ms_per_output_token": 826.3877304416383,
+    "output_tokens": 16,
+    "peak_allocated_GB": 17.927447552,
+    "peak_reserved_GB": 18.438160384,
+    "profile_enabled": true,
+    "protocol": "scaling_protocol",
+    "run_index": 900,
+    "tok_s": 1.2100857299340346,
+    "total_requests": 2,
+    "wall_ms": 13222.203687066212
+  },
+  "note": "Headline matrix runs have PATTERNKV_SYSTEM_PROFILE disabled; canonical profile run enables CUDA-event profile ranges and is diagnostic only.",
+  "physical_gpu": 5
+}

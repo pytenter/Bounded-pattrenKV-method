@@ -1,0 +1,11 @@
+{
+  "B1": "PASS via targeted/full existing gates and smoke",
+  "B2": "PASS via existing tests",
+  "B2_reorder": "PASS via existing tests",
+  "B4": "PASS via existing tests",
+  "independent_flush": "PASS via existing tests",
+  "dynamic_add_remove": "PASS via existing tests",
+  "continuous_batching": "PASS via existing tests",
+  "slot_reuse": "PASS via existing tests",
+  "production_semantics_changed": false
+}

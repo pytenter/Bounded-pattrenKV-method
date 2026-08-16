@@ -1,0 +1,25 @@
+{
+  "evidence": [
+    {
+      "bytes_per_token": "142151424.0",
+      "calls": "128",
+      "calls_per_token": "32.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_merge_operator_ready_page_pools",
+      "total_bytes": "568605696"
+    },
+    {
+      "bytes_per_token": "142151424.0",
+      "calls": "128",
+      "calls_per_token": "32.0",
+      "method": "CAUSAL_V4_25_FULL_MODEL",
+      "site": "_slice_operator_ready_page_pools_for_request",
+      "total_bytes": "568605696"
+    }
+  ],
+  "expected": "once per iteration, reused across layers where possible",
+  "metadata_rebuild_frequency": "per layer per decode token in full-model harness assemble/split",
+  "observed_merge_operator_ready_page_pools_calls_per_token": 32.0,
+  "observed_slice_operator_ready_page_pools_calls_per_token": 32.0,
+  "redundant_per_layer_metadata_rebuild": true
+}

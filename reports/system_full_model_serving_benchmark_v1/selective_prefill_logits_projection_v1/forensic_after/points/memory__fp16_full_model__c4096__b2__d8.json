@@ -1,0 +1,114 @@
+{
+  "before_process_exit": {
+    "allocated_bytes": 18218771968,
+    "max_allocated_bytes": 19311229952,
+    "max_reserved_bytes": 19528679424,
+    "mem_get_info_free_bytes": 5410848768,
+    "mem_get_info_total_bytes": 25296044032,
+    "phase": "before_process_exit",
+    "reserved_bytes": 19528679424
+  },
+  "decode_only_wall_ms": 273.76736886799335,
+  "historical_fp16_k_materialization": null,
+  "historical_fp16_v_materialization": null,
+  "initial_prefill_ms": 2325.508294161409,
+  "mean_tpot_ms": 17.110460554249585,
+  "memory_lifecycle": [
+    {
+      "allocated_bytes": 0,
+      "max_allocated_bytes": 0,
+      "max_reserved_bytes": 0,
+      "mem_get_info_free_bytes": 25000345600,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "process_start",
+      "reserved_bytes": 0
+    },
+    {
+      "allocated_bytes": 16060539392,
+      "max_allocated_bytes": 16060539392,
+      "max_reserved_bytes": 16066281472,
+      "mem_get_info_free_bytes": 8934064128,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "after_model_load",
+      "reserved_bytes": 16066281472
+    },
+    {
+      "allocated_bytes": 16060604928,
+      "max_allocated_bytes": 16060604928,
+      "max_reserved_bytes": 16066281472,
+      "mem_get_info_free_bytes": 8934064128,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "before_prefill",
+      "reserved_bytes": 16066281472
+    },
+    {
+      "allocated_bytes": 17142932480,
+      "max_allocated_bytes": 18118140416,
+      "max_reserved_bytes": 18270388224,
+      "mem_get_info_free_bytes": 6669139968,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "after_prefill",
+      "reserved_bytes": 18270388224
+    },
+    {
+      "allocated_bytes": 17142932480,
+      "max_allocated_bytes": 18118140416,
+      "max_reserved_bytes": 18270388224,
+      "mem_get_info_free_bytes": 6669139968,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "before_decode_window",
+      "reserved_bytes": 18270388224
+    },
+    {
+      "allocated_bytes": 18218771968,
+      "max_allocated_bytes": 19311229952,
+      "max_reserved_bytes": 19528679424,
+      "mem_get_info_free_bytes": 5410848768,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "during_decode_peak",
+      "reserved_bytes": 19528679424
+    },
+    {
+      "allocated_bytes": 18218771968,
+      "max_allocated_bytes": 19311229952,
+      "max_reserved_bytes": 19528679424,
+      "mem_get_info_free_bytes": 5410848768,
+      "mem_get_info_total_bytes": 25296044032,
+      "phase": "after_decode",
+      "reserved_bytes": 19528679424
+    }
+  ],
+  "model_parameter_bytes": 16060530944,
+  "oom_phase": null,
+  "point": {
+    "batch_size": 2,
+    "context_length": 4096,
+    "decode_tokens": 8,
+    "method": "FP16_FULL_MODEL",
+    "phase": "memory"
+  },
+  "status": "PASS",
+  "tensor_rows": [
+    {
+      "category": "fp16_historical_kv",
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "logical_used_bytes": 1073741824,
+      "name": "dynamic_cache.key_value_cache.estimated_from_lifecycle_delta",
+      "numel": 541163776,
+      "owner": "decode_ready_cache",
+      "persistent_or_transient": "persistent",
+      "physical_allocated_bytes": 1082327552,
+      "shape": "32 layers x B2 x 2(K,V) x 8 kv_heads x 4096 seq x 128 head_dim"
+    }
+  ],
+  "tensor_summary": [
+    {
+      "category": "fp16_historical_kv",
+      "logical_used_bytes": 1073741824,
+      "physical_allocated_bytes": 1082327552,
+      "tensor_count": 1
+    }
+  ],
+  "throughput_tok_s": 58.443780448191276
+}

@@ -1,0 +1,11 @@
+{
+  "MEMBERSHIP_CHANGES_IN_TIMED_WINDOW": 0,
+  "PREFILL_CALLS_IN_TIMED_WINDOW": 0,
+  "PREFILL_TOKENS_IN_TIMED_WINDOW": 0,
+  "REFILL_CALLS_IN_TIMED_WINDOW": 0,
+  "decode_only_protocol_valid": true,
+  "fixed_membership_in_timed_window": true,
+  "initial_prefill_outside_timing": true,
+  "protocol_failures": [],
+  "refill_prefill_outside_timing": true
+}
