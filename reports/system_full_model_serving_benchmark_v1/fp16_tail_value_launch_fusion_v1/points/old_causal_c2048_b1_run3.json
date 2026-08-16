@@ -1,0 +1,8 @@
+{
+  "context": 2048,
+  "batch": 1,
+  "decode": 8,
+  "fusion_enabled": false,
+  "status": "BLOCKED",
+  "reason": "FORMAL_PERFORMANCE_BLOCKED_BY_GPU_CONTAMINATION"
+}

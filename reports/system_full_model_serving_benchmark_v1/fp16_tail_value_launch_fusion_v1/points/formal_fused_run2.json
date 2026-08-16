@@ -1,0 +1,30 @@
+{
+  "batch": 1,
+  "context": 2048,
+  "decode": 8,
+  "fallback": 0,
+  "fp16_tail_value_counters": {
+    "fp16_tail_value_fused_calls": 256,
+    "fp16_tail_value_old_calls": 0,
+    "pending_value_calls": 0,
+    "recent_value_calls": 0,
+    "sink_value_calls": 0,
+    "tail_output_add_calls": 256
+  },
+  "fusion_enabled": true,
+  "historical_fp16_k_materialization": 0,
+  "historical_fp16_v_materialization": 0,
+  "mean_tpot_ms": 199.1220663767308,
+  "median_tpot_ms": 199.1220663767308,
+  "membership_changes_in_timed_window": 0,
+  "page_batch_pack_calls": 0,
+  "peak_cuda_allocated_bytes": 16513622016,
+  "peak_cuda_reserved_bytes": 16756244480,
+  "prefill_calls_in_timed_window": 0,
+  "prefill_tokens_in_timed_window": 0,
+  "refill_calls_in_timed_window": 0,
+  "status": "PASS",
+  "throughput_tokens_s": 5.021931894034929,
+  "true_batch_preserved": true,
+  "variant": "fused"
+}

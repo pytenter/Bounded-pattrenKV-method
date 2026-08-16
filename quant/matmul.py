@@ -51,6 +51,15 @@ _STRIDED_K_READER_COUNTERS = {
 	"strided_k_torch_cat_calls": 0,
 }
 
+_FP16_TAIL_VALUE_COUNTERS = {
+	"fp16_tail_value_old_calls": 0,
+	"fp16_tail_value_fused_calls": 0,
+	"sink_value_calls": 0,
+	"pending_value_calls": 0,
+	"recent_value_calls": 0,
+	"tail_output_add_calls": 0,
+}
+
 
 def reset_patternkv_mixed_v_counters() -> None:
 	for key in _MIXED_V_COUNTERS:
@@ -86,6 +95,33 @@ def reset_patternkv_strided_k_reader_counters() -> None:
 
 def get_patternkv_strided_k_reader_counters() -> dict:
 	return dict(_STRIDED_K_READER_COUNTERS)
+
+
+def reset_fp16_tail_value_counters() -> None:
+	for key in _FP16_TAIL_VALUE_COUNTERS:
+		_FP16_TAIL_VALUE_COUNTERS[key] = 0
+
+
+def get_fp16_tail_value_counters() -> dict:
+	return dict(_FP16_TAIL_VALUE_COUNTERS)
+
+
+def fp16_tail_value_fusion_enabled() -> bool:
+	return os.environ.get("PATTERNKV_FP16_TAIL_VALUE_FUSION", "0").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def record_fp16_tail_value_old_call(name: str) -> None:
+	_FP16_TAIL_VALUE_COUNTERS["fp16_tail_value_old_calls"] += 1
+	if name == "sink":
+		_FP16_TAIL_VALUE_COUNTERS["sink_value_calls"] += 1
+	elif name == "pending":
+		_FP16_TAIL_VALUE_COUNTERS["pending_value_calls"] += 1
+	elif name == "recent":
+		_FP16_TAIL_VALUE_COUNTERS["recent_value_calls"] += 1
+
+
+def record_tail_output_add_call() -> None:
+	_FP16_TAIL_VALUE_COUNTERS["tail_output_add_calls"] += 1
 
 
 def record_mixed_v_reference_call(tokens: int = 0) -> None:
@@ -125,6 +161,38 @@ def request_invariant_fixed_split_softmax_cuda(
 			int(pending_physical),
 			int(recent_physical),
 			int(split_size),
+		)
+
+
+def fp16_tail_value_forward_cuda(
+	probs: torch.Tensor,
+	sink_v: torch.Tensor,
+	pending_v: torch.Tensor,
+	recent_v: torch.Tensor,
+	sink_lens: torch.Tensor,
+	pending_lens: torch.Tensor,
+	recent_lens: torch.Tensor,
+	*,
+	sink_offset: int,
+	pending_offset: int,
+	recent_offset: int,
+	num_key_value_groups: int,
+) -> torch.Tensor:
+	with profile_range("value_fp16_tail_fused", tokens=int(sink_v.shape[2] + pending_v.shape[2] + recent_v.shape[2])):
+		_FP16_TAIL_VALUE_COUNTERS["fp16_tail_value_fused_calls"] += 1
+		record_counter("fp16_tail_value_fused_calls")
+		return patternkv_gemv.fp16_tail_value_forward_cuda(
+			probs,
+			sink_v,
+			pending_v,
+			recent_v,
+			sink_lens,
+			pending_lens,
+			recent_lens,
+			int(sink_offset),
+			int(pending_offset),
+			int(recent_offset),
+			int(num_key_value_groups),
 		)
 
 

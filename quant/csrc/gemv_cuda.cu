@@ -3082,6 +3082,144 @@ torch::Tensor request_invariant_fixed_split_softmax_cuda(
   return out;
 }
 
+__device__ __forceinline__ int clamp_segment_len(const int requested, const int physical) {
+  return max(0, min(requested, physical));
+}
+
+__global__ void fp16_tail_value_kernel(
+    const half* probs,
+    const half* sink_v,
+    const half* pending_v,
+    const half* recent_v,
+    const int64_t* sink_lens,
+    const int64_t* pending_lens,
+    const int64_t* recent_lens,
+    half* out,
+    const int B,
+    const int H,
+    const int Hkv,
+    const int T,
+    const int D,
+    const int sink_physical,
+    const int pending_physical,
+    const int recent_physical,
+    const int sink_offset,
+    const int pending_offset,
+    const int recent_offset,
+    const int num_key_value_groups) {
+  const int bh = blockIdx.x;
+  const int b = bh / H;
+  const int h = bh - b * H;
+  const int d = threadIdx.x;
+  if (b >= B || h >= H || d >= D) {
+    return;
+  }
+  const int kv = h / num_key_value_groups;
+  if (kv >= Hkv) {
+    return;
+  }
+
+  float acc = 0.0f;
+  const size_t prob_base = ((size_t)b * H + h) * (size_t)T;
+
+  const int sink_valid = clamp_segment_len((int)sink_lens[b], sink_physical);
+  for (int token = 0; token < sink_valid; ++token) {
+    const float p = __half2float(probs[prob_base + (size_t)sink_offset + token]);
+    const size_t v_idx = (((size_t)b * Hkv + kv) * (size_t)sink_physical + token) * (size_t)D + d;
+    acc += p * __half2float(sink_v[v_idx]);
+  }
+
+  const int pending_valid = clamp_segment_len((int)pending_lens[b], pending_physical);
+  for (int token = 0; token < pending_valid; ++token) {
+    const float p = __half2float(probs[prob_base + (size_t)pending_offset + token]);
+    const size_t v_idx = (((size_t)b * Hkv + kv) * (size_t)pending_physical + token) * (size_t)D + d;
+    acc += p * __half2float(pending_v[v_idx]);
+  }
+
+  const int recent_valid = clamp_segment_len((int)recent_lens[b], recent_physical);
+  for (int token = 0; token < recent_valid; ++token) {
+    const float p = __half2float(probs[prob_base + (size_t)recent_offset + token]);
+    const size_t v_idx = (((size_t)b * Hkv + kv) * (size_t)recent_physical + token) * (size_t)D + d;
+    acc += p * __half2float(recent_v[v_idx]);
+  }
+
+  const size_t out_idx = (((size_t)b * H + h) * (size_t)D) + d;
+  out[out_idx] = __float2half(acc);
+}
+
+torch::Tensor fp16_tail_value_forward_cuda(
+    torch::Tensor _probs,
+    torch::Tensor _sink_v,
+    torch::Tensor _pending_v,
+    torch::Tensor _recent_v,
+    torch::Tensor _sink_lens,
+    torch::Tensor _pending_lens,
+    torch::Tensor _recent_lens,
+    const int sink_offset,
+    const int pending_offset,
+    const int recent_offset,
+    const int num_key_value_groups) {
+  TORCH_CHECK(_probs.dim()==4 && _probs.size(2)==1, "probs must be [B,H,1,T]");
+  TORCH_CHECK(_probs.scalar_type()==torch::kFloat16, "probs must be float16");
+  TORCH_CHECK(_probs.is_cuda(), "probs must be CUDA");
+  TORCH_CHECK(_probs.is_contiguous(), "probs must be contiguous");
+  TORCH_CHECK(num_key_value_groups > 0, "num_key_value_groups must be positive");
+
+  const int B = _probs.size(0);
+  const int H = _probs.size(1);
+  const int T = _probs.size(3);
+  TORCH_CHECK(H % num_key_value_groups == 0, "H must be divisible by num_key_value_groups");
+  const int Hkv = H / num_key_value_groups;
+
+  auto validate_v = [&](const torch::Tensor& value, const char* name) {
+    TORCH_CHECK(value.dim()==4, name, " must be [B,Hkv,L,D]");
+    TORCH_CHECK(value.scalar_type()==torch::kFloat16, name, " must be float16");
+    TORCH_CHECK(value.is_cuda(), name, " must be CUDA");
+    TORCH_CHECK(value.is_contiguous(), name, " must be contiguous");
+    TORCH_CHECK(value.size(0)==B && value.size(1)==Hkv, name, " batch/head shape mismatch");
+  };
+  validate_v(_sink_v, "sink_v");
+  validate_v(_pending_v, "pending_v");
+  validate_v(_recent_v, "recent_v");
+
+  const int D = _sink_v.size(3);
+  TORCH_CHECK(_pending_v.size(3)==D && _recent_v.size(3)==D, "tail Value head_dim mismatch");
+  const int sink_physical = _sink_v.size(2);
+  const int pending_physical = _pending_v.size(2);
+  const int recent_physical = _recent_v.size(2);
+  TORCH_CHECK(sink_offset >= 0 && pending_offset >= 0 && recent_offset >= 0, "segment offsets must be non-negative");
+  TORCH_CHECK(sink_offset + sink_physical <= T, "sink segment exceeds probability length");
+  TORCH_CHECK(pending_offset + pending_physical <= T, "pending segment exceeds probability length");
+  TORCH_CHECK(recent_offset + recent_physical <= T, "recent segment exceeds probability length");
+
+  TORCH_CHECK(_sink_lens.scalar_type()==torch::kInt64, "sink_lens must be int64");
+  TORCH_CHECK(_pending_lens.scalar_type()==torch::kInt64, "pending_lens must be int64");
+  TORCH_CHECK(_recent_lens.scalar_type()==torch::kInt64, "recent_lens must be int64");
+  TORCH_CHECK(_sink_lens.is_cuda() && _pending_lens.is_cuda() && _recent_lens.is_cuda(), "length tensors must be CUDA");
+  TORCH_CHECK(_sink_lens.is_contiguous() && _pending_lens.is_contiguous() && _recent_lens.is_contiguous(), "length tensors must be contiguous");
+  TORCH_CHECK(_sink_lens.dim()==1 && _sink_lens.size(0)==B, "sink_lens must be [B]");
+  TORCH_CHECK(_pending_lens.dim()==1 && _pending_lens.size(0)==B, "pending_lens must be [B]");
+  TORCH_CHECK(_recent_lens.dim()==1 && _recent_lens.size(0)==B, "recent_lens must be [B]");
+
+  auto out = torch::empty({B, H, 1, D}, _probs.options());
+  dim3 blocks(B * H, 1, 1);
+  dim3 threads(std::max(32, D), 1, 1);
+  fp16_tail_value_kernel<<<blocks, threads>>>(
+      reinterpret_cast<const half*>(_probs.data_ptr<at::Half>()),
+      reinterpret_cast<const half*>(_sink_v.data_ptr<at::Half>()),
+      reinterpret_cast<const half*>(_pending_v.data_ptr<at::Half>()),
+      reinterpret_cast<const half*>(_recent_v.data_ptr<at::Half>()),
+      reinterpret_cast<const int64_t*>(_sink_lens.data_ptr<int64_t>()),
+      reinterpret_cast<const int64_t*>(_pending_lens.data_ptr<int64_t>()),
+      reinterpret_cast<const int64_t*>(_recent_lens.data_ptr<int64_t>()),
+      reinterpret_cast<half*>(out.data_ptr<at::Half>()),
+      B, H, Hkv, T, D,
+      sink_physical, pending_physical, recent_physical,
+      sink_offset, pending_offset, recent_offset,
+      num_key_value_groups);
+  return out;
+}
+
 torch::Tensor attn_v_forward_cuda_outer_dim_with_base_gqa_v2(
     torch::Tensor _alpha_q,
     torch::Tensor _vq,

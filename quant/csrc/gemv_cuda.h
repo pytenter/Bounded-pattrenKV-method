@@ -211,3 +211,17 @@ torch::Tensor request_invariant_fixed_split_softmax_cuda(
     const int recent_physical,
     const int split_size
 );
+
+torch::Tensor fp16_tail_value_forward_cuda(
+    torch::Tensor _probs,
+    torch::Tensor _sink_v,
+    torch::Tensor _pending_v,
+    torch::Tensor _recent_v,
+    torch::Tensor _sink_lens,
+    torch::Tensor _pending_lens,
+    torch::Tensor _recent_lens,
+    const int sink_offset,
+    const int pending_offset,
+    const int recent_offset,
+    const int num_key_value_groups
+);

@@ -32,8 +32,12 @@ from quant.matmul import (
     cuda_attn_v_mixed_fused_with_base,
     cuda_bmm_fA_qB_outer,
     cuda_bmm_fA_qB_outer_with_base,
+    fp16_tail_value_forward_cuda,
+    fp16_tail_value_fusion_enabled,
     patternkv_cache_growth_backend,
+    record_fp16_tail_value_old_call,
     record_mixed_v_reference_call,
+    record_tail_output_add_call,
 )
 from quant.page_batch import patternkv_fused_page_batch_decode, record_patternkv_real_decode_counter
 from quant.patternkv_profile import profile_range
@@ -1443,9 +1447,10 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                         attn_output = torch.matmul(attn_weights, repeat_kv(cache.pending_v, self.num_key_value_groups))
                     offset = full_tokens
             else:
+                tail_segments: dict[str, tuple[int, int]] = {}
                 for name, length in value_parts:
-                    weights = attn_weights[:, :, :, offset : offset + length]
                     if name == "packed":
+                        weights = attn_weights[:, :, :, offset : offset + length]
                         v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                         if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
                             part = patternkv_mixed_value_attention(self, cache, weights, v_mask, cache.packed_v_tokens)
@@ -1466,18 +1471,58 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                             )
                         else:
                             part = cuda_bmm_fA_qB_outer(self.group_size, weights, cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, self.v_bits)
+                        if attn_output is not None:
+                            record_tail_output_add_call()
+                        attn_output = part if attn_output is None else attn_output + part
                     else:
-                        source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
-                        with profile_range("value_fp16_tail", tokens=int(length)):
-                            with profile_range(f"value_fp16_{name}", tokens=int(length)):
-                                part = request_invariant_full_value_attention(
-                                    weights,
-                                    source,
-                                    k_segment_valid_lengths(cache, device=weights.device)[name],
-                                    self.num_key_value_groups,
-                                )
-                    attn_output = part if attn_output is None else attn_output + part
+                        tail_segments[name] = (offset, int(length))
+                        if not fp16_tail_value_fusion_enabled():
+                            weights = attn_weights[:, :, :, offset : offset + length]
+                            record_fp16_tail_value_old_call(name)
+                            source = {"sink": cache.sink_v, "pending": cache.pending_v, "recent": cache.recent_v}[name]
+                            with profile_range("value_fp16_tail", tokens=int(length)):
+                                with profile_range(f"value_fp16_{name}", tokens=int(length)):
+                                    part = request_invariant_full_value_attention(
+                                        weights,
+                                        source,
+                                        k_segment_valid_lengths(cache, device=weights.device)[name],
+                                        self.num_key_value_groups,
+                                    )
+                            if attn_output is not None:
+                                record_tail_output_add_call()
+                            attn_output = part if attn_output is None else attn_output + part
                     offset += length
+                if fp16_tail_value_fusion_enabled() and tail_segments:
+                    lengths = k_segment_valid_lengths(cache, device=attn_weights.device)
+                    empty_v = torch.empty(
+                        (bsz, self.num_key_value_heads, 0, self.head_dim),
+                        dtype=attn_weights.dtype,
+                        device=attn_weights.device,
+                    )
+                    sink_offset, sink_length = tail_segments.get("sink", (0, 0))
+                    pending_offset, pending_length = tail_segments.get("pending", (0, 0))
+                    recent_offset, recent_length = tail_segments.get("recent", (0, 0))
+                    sink_v = cache.sink_v if sink_length else empty_v
+                    pending_v = cache.pending_v if pending_length else empty_v
+                    recent_v = cache.recent_v if recent_length else empty_v
+                    zeros = torch.zeros((bsz,), dtype=torch.long, device=attn_weights.device)
+                    with profile_range("value_fp16_tail", tokens=int(sink_length + pending_length + recent_length)):
+                        part = fp16_tail_value_forward_cuda(
+                            attn_weights,
+                            sink_v,
+                            pending_v,
+                            recent_v,
+                            lengths.get("sink", zeros),
+                            lengths.get("pending", zeros),
+                            lengths.get("recent", zeros),
+                            sink_offset=sink_offset,
+                            pending_offset=pending_offset,
+                            recent_offset=recent_offset,
+                            num_key_value_groups=self.num_key_value_groups,
+                        )
+                    if attn_output is not None:
+                        record_tail_output_add_call()
+                    attn_output = part if attn_output is None else attn_output + part
             if cache_validate_enabled() and offset != cache.total_tokens:
                 raise ValueError(f"segmented PatternKV attention consumed {offset} tokens, expected {cache.total_tokens}")
             attn_output = attn_output.transpose(1, 2).contiguous().reshape(bsz, q_len, self.hidden_size)
