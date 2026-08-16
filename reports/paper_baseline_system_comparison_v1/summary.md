@@ -1,0 +1,3 @@
+# Summary
+
+PAPER_BASELINE_SYSTEM_COMPARISON_V1_RESUME is supported. The same-GPU formal comparison contains 117 valid rows across FP16, KIVI-paper-g128, PatternKV-paper, and CAUSAL-V4@25%. All valid rows preserve true batch, zero serial dispatch, zero fallback, decode-only timing, and subprocess isolation. KIVI has the highest observed C4096 capacity (B8); FP16 has the best matched-B decode throughput. The resumed CAUSAL capacity is B4, equal to FP16 rather than the historical 2x result. CAUSAL C2048/B2 includes one elevated protocol-valid repeat; raw rows and the median-based primary statistic are retained in `anomaly_audit.md`.

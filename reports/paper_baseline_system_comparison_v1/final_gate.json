@@ -1,0 +1,13 @@
+{
+  "capacity_stop_rows": 4,
+  "classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_SUPPORTED",
+  "formal_matrix_run": true,
+  "methods": [
+    "FP16_FULL_MODEL",
+    "KIVI_PAPER_G128_FULL_MODEL",
+    "PATTERNKV_PAPER_FULL_MODEL",
+    "CAUSAL_V4_25_FULL_MODEL"
+  ],
+  "same_gpu": true,
+  "valid_rows": 117
+}

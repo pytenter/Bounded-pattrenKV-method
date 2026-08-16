@@ -1,0 +1,32 @@
+{
+  "capacity_oom_rows": [
+    {
+      "batch": 8,
+      "method": "FP16_FULL_MODEL"
+    },
+    {
+      "batch": 16,
+      "method": "KIVI_PAPER_G128_FULL_MODEL"
+    },
+    {
+      "batch": 8,
+      "method": "PATTERNKV_PAPER_FULL_MODEL"
+    },
+    {
+      "batch": 8,
+      "method": "CAUSAL_V4_25_FULL_MODEL"
+    }
+  ],
+  "historical_CAUSAL_B2_reference_tpot_ms": 216.8267,
+  "historical_CAUSAL_B2_reproduced": true,
+  "new_CAUSAL_B2_median_tpot_ms": 288.94841199507937,
+  "new_CAUSAL_B2_repeat_tpot_ms": [
+    412.6601162715815,
+    288.94841199507937,
+    283.6537666444201
+  ],
+  "new_anomalies": [
+    "CAUSAL C2048 B2 has one elevated but protocol-valid repeat; the primary statistic remains the median across all three repeats."
+  ],
+  "unresolved_primary_anomaly": false
+}

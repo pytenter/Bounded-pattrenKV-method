@@ -1,0 +1,13 @@
+{
+  "cuda": "12.4",
+  "gpu": {
+    "driver": "580.173.02",
+    "gpu_uuid": "GPU-624f86d9-284b-cb46-a671-51d77559dab6",
+    "memory_total_mib": "24576",
+    "memory_used_mib": "21",
+    "name": "NVIDIA GeForce RTX 3090",
+    "physical_gpu": "1"
+  },
+  "model": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "torch": "2.4.1+cu124"
+}
