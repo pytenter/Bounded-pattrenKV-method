@@ -1573,6 +1573,20 @@ def value_precision_is_mixed(selector: str | None) -> bool:
     return normalize_value_precision_selector(selector) != "base_v2"
 
 
+def _operator_ready_base_v2_page_pool_compatible(cache: PatternQuantizedKVCache, v_adjusted: torch.Tensor) -> bool:
+    v_centroids = getattr(cache, "v_centroids", None)
+    if not torch.is_tensor(v_centroids) or v_centroids.dim() not in (3, 4):
+        return False
+    centroid_count_dim = 1 if v_centroids.dim() == 3 else 2
+    return (
+        normalize_value_precision_selector(getattr(cache, "v_precision_selector", "base_v2")) == "base_v2"
+        and int(getattr(cache, "v_bits", 0)) == 2
+        and int(getattr(cache, "group_size", 0)) == DEFAULT_PAGE_SIZE
+        and int(v_adjusted.shape[-1]) == DEFAULT_PAGE_SIZE
+        and int(v_centroids.shape[centroid_count_dim]) >= 32
+    )
+
+
 def pattern_v_threshold_and_mask(x: torch.Tensor, base: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     if x.shape != base.shape:
         raise ValueError(f"V threshold tensors must match: {tuple(x.shape)} != {tuple(base.shape)}")
@@ -2308,11 +2322,22 @@ def _pack_pattern_window_impl(
             v_pattern_mask=v_pattern_mask,
         )
     else:
-        packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
-        _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
-        mask_u8_compact = v_pattern_mask.to(torch.uint8)
-        cache.v2_pattern_mask = _cat_v_metadata(cache, "v2_pattern_mask", mask_u8_compact, category="v2_pattern_mask")
-        cache.v2_assignment_idx = _cat_v_metadata(cache, "v2_assignment_idx", v_assignment_idx_storage, category="v2_assignment_idx")
+        if _operator_ready_base_v2_page_pool_compatible(cache, v_adjusted):
+            precision_mask = torch.zeros((v_adjusted.shape[0], tokens), dtype=torch.bool, device=v_adjusted.device)
+            _cat_mixed_packed_v(
+                cache,
+                v_adjusted,
+                precision_mask,
+                tokens,
+                v_assignment_idx=v_assignment_idx_storage,
+                v_pattern_mask=v_pattern_mask,
+            )
+        else:
+            packed_v, scale_v, zero_v = quantize_pack_v_reference(v_adjusted, cache.group_size, cache.v_bits)
+            _cat_packed_v(cache, packed_v, scale_v, zero_v, tokens)
+            mask_u8_compact = v_pattern_mask.to(torch.uint8)
+            cache.v2_pattern_mask = _cat_v_metadata(cache, "v2_pattern_mask", mask_u8_compact, category="v2_pattern_mask")
+            cache.v2_assignment_idx = _cat_v_metadata(cache, "v2_assignment_idx", v_assignment_idx_storage, category="v2_assignment_idx")
     cache.k_assignments = _cat_assignment(cache.k_assignments, k_assignments, category="k_assignments")
     mask_u8 = v_pattern_mask.to(torch.uint8)
     if _capacity_cache_enabled(cache):

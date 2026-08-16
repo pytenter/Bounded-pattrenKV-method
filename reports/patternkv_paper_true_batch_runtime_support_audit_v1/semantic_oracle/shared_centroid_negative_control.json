@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "source": "tests/test_patternkv_paper_true_batch_runtime_support.py::test_patternkv_paper_shared_row0_centroids_negative_control_fails",
+  "meaning": "Replacing row 1's centroid bank with row 0's centroid bank changes row 1 output while preserving row 0, proving that shared-centroid shortcuts are semantically wrong."
+}

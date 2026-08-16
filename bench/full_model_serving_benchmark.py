@@ -27,6 +27,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from bench.run_actual_model_fixed_batch_smoke import PROMPTS
+from bench.paper_config import apply_method_defaults, method_config_dict
 from models.request_lifecycle import extract_request_cache
 from models.segmented_cache import assemble_ragged_patternkv_cache, deserialize_cache, serialize_cache
 from quant.patternkv_profile import profile_enabled, profile_range, record_counter, reset_profile, tensor_bytes
@@ -523,6 +524,64 @@ class PatternKVAdapter:
         return tuple(output.past_key_values), next_tokens
 
 
+class KIVIPaperAdapter:
+    name = "KIVI_PAPER_G128_FULL_MODEL"
+    supports_compressed_domain = True
+
+    @staticmethod
+    def prefill_batch(model: Any, input_ids: torch.Tensor) -> tuple[list[Any], torch.Tensor]:
+        if selective_prefill_enabled() and model_supports_selective_prefill(model):
+            output = run_selective_prefill(model, input_ids)
+            next_tokens = output.logits.argmax(dim=-1)
+        else:
+            output = model(input_ids=input_ids, use_cache=True, return_dict=True)
+            next_tokens = output.logits[:, -1, :].argmax(dim=-1)
+        if int(input_ids.shape[0]) != 1:
+            raise RuntimeError("KIVI per-request split is not used for formal fixed active-batch timing")
+        return [tuple(output.past_key_values)], next_tokens
+
+    @staticmethod
+    def prefill_active_batch(model: Any, input_ids: torch.Tensor) -> tuple[tuple[Any, ...], torch.Tensor]:
+        if selective_prefill_enabled() and model_supports_selective_prefill(model):
+            output = run_selective_prefill(model, input_ids)
+            next_tokens = output.logits.argmax(dim=-1)
+        else:
+            output = model(input_ids=input_ids, use_cache=True, return_dict=True)
+            next_tokens = output.logits[:, -1, :].argmax(dim=-1)
+        return tuple(output.past_key_values), next_tokens
+
+    @staticmethod
+    def assemble_batch(caches: Sequence[Any]) -> tuple[Any, ...]:
+        if len(caches) != 1:
+            raise RuntimeError("KIVI adapter requires active-batch cache reuse for B>1")
+        cache = caches[0]
+        return tuple(cache) if not isinstance(cache, tuple) else cache
+
+    @staticmethod
+    def split_batch(cache: Sequence[Any], batch_size: int) -> list[tuple[Any, ...]]:
+        if int(batch_size) != 1:
+            raise RuntimeError("KIVI split is unsupported outside fixed active-batch timing")
+        return [tuple(cache)]
+
+    @staticmethod
+    def decode_batch(model: Any, tokens: torch.Tensor, cache: Sequence[Any]) -> tuple[tuple[Any, ...], torch.Tensor]:
+        output = model(input_ids=tokens[:, None], past_key_values=cache, use_cache=True, return_dict=True)
+        next_tokens = output.logits[:, -1, :].argmax(dim=-1)
+        return tuple(output.past_key_values), next_tokens
+
+
+class PatternKVPaperAdapter(PatternKVAdapter):
+    name = "PATTERNKV_PAPER_FULL_MODEL"
+
+
+METHOD_ADAPTERS = {
+    FP16Adapter.name: FP16Adapter,
+    KIVIPaperAdapter.name: KIVIPaperAdapter,
+    PatternKVPaperAdapter.name: PatternKVPaperAdapter,
+    PatternKVAdapter.name: PatternKVAdapter,
+}
+
+
 def load_fp16_model(device: torch.device) -> tuple[Any, Any, dict[str, Any]]:
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True, use_fast=False, trust_remote_code=True)
     config = LlamaConfig.from_pretrained(MODEL_PATH, local_files_only=True)
@@ -542,6 +601,95 @@ def load_fp16_model(device: torch.device) -> tuple[Any, Any, dict[str, Any]]:
         "num_key_value_heads": int(config.num_key_value_heads),
         "hidden_size": int(config.hidden_size),
         "head_dim": int(config.hidden_size // config.num_attention_heads),
+    }
+
+
+def _namespace_for_paper_method(method: str) -> argparse.Namespace:
+    args = argparse.Namespace(
+        method=method,
+        k_bits=16,
+        v_bits=16,
+        group_size=0,
+        residual_length=0,
+        sink_length=0,
+        recent_length=128,
+        num_k_base=0,
+        num_v_base=0,
+    )
+    args.paper_method_config = apply_method_defaults(args)
+    return args
+
+
+def load_kivi_paper_model(device: torch.device) -> tuple[Any, Any, dict[str, Any]]:
+    from transformers import AutoTokenizer, LlamaConfig
+    from models.llama_kivi import LlamaForCausalLM_KIVI
+
+    args = _namespace_for_paper_method("kivi_paper_g128")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True, use_fast=False, trust_remote_code=True)
+    config = LlamaConfig.from_pretrained(MODEL_PATH, local_files_only=True)
+    config.k_bits = args.k_bits
+    config.v_bits = args.v_bits
+    config.group_size = args.group_size
+    config.residual_length = args.residual_length
+    config.use_flash = True
+    model = LlamaForCausalLM_KIVI.from_pretrained(
+        MODEL_PATH,
+        local_files_only=True,
+        config=config,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True,
+    ).to(device)
+    model.eval()
+    return tokenizer, model, {
+        "num_hidden_layers": int(config.num_hidden_layers),
+        "num_attention_heads": int(config.num_attention_heads),
+        "num_key_value_heads": int(config.num_key_value_heads),
+        "hidden_size": int(config.hidden_size),
+        "head_dim": int(config.hidden_size // config.num_attention_heads),
+        "method_config": method_config_dict(args),
+    }
+
+
+def load_patternkv_paper_model(device: torch.device) -> tuple[Any, Any, dict[str, Any]]:
+    from transformers import AutoTokenizer, LlamaConfig
+    from models.llama_patternkv import LlamaForCausalLM_PatternKV
+
+    os.environ["PATTERNKV_CACHE_PATH"] = "segmented"
+    os.environ["PATTERNKV_CACHE_MODE"] = "segmented_rolling"
+    args = _namespace_for_paper_method("patternkv_paper")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True, use_fast=False, trust_remote_code=True)
+    config = LlamaConfig.from_pretrained(MODEL_PATH, local_files_only=True)
+    config.k_bits = args.k_bits
+    config.v_bits = args.v_bits
+    config.group_size = args.group_size
+    config.residual_length = args.residual_length
+    config.sink_length = 0
+    config.recent_length = args.recent_length
+    config.use_flash = True
+    config.num_k_base = args.num_k_base
+    config.num_v_base = args.num_v_base
+    config.patternkv_cache_path = "segmented"
+    config.patternkv_cache_mode = "segmented_rolling"
+    config.patternkv_value_objective = "base"
+    config.patternkv_v_precision_selector = "base_v2"
+    config.patternkv_v4_budget_fraction = 0.0
+    model = LlamaForCausalLM_PatternKV.from_pretrained(
+        MODEL_PATH,
+        local_files_only=True,
+        config=config,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True,
+    ).to(device)
+    model.eval()
+    return tokenizer, model, {
+        "num_hidden_layers": int(config.num_hidden_layers),
+        "num_attention_heads": int(config.num_attention_heads),
+        "num_key_value_heads": int(config.num_key_value_heads),
+        "hidden_size": int(config.hidden_size),
+        "head_dim": int(config.hidden_size // config.num_attention_heads),
+        "method_config": method_config_dict(args),
+        "patternkv_v_precision_selector": config.patternkv_v_precision_selector,
+        "patternkv_v4_budget_fraction": config.patternkv_v4_budget_fraction,
     }
 
 
@@ -633,6 +781,11 @@ def run_full_model_benchmark(
     active_batch = ActiveBatchState()
     active_batch_cache_enabled = os.environ.get("PATTERNKV_ACTIVE_BATCH_CACHE", "1").strip().lower() not in {"0", "false", "no", "off"}
     use_active_batch_cache = adapter is PatternKVAdapter and active_batch_cache_enabled
+    use_active_batch_cache = bool(
+        active_batch_cache_enabled
+        and hasattr(adapter, "prefill_active_batch")
+        and adapter in (PatternKVAdapter, PatternKVPaperAdapter, KIVIPaperAdapter)
+    )
     initial_prefill_ms = 0.0
     decode_window_wall_ms = 0.0
     timed_prefill_calls = 0
@@ -835,8 +988,9 @@ def invalid_run_result(config: BenchmarkConfig, device: torch.device, run_index:
     cuda_index = torch.cuda.current_device() if torch.cuda.is_available() else "cpu"
     visible = [item.strip() for item in os.environ.get("CUDA_VISIBLE_DEVICES", "").split(",") if item.strip()]
     physical_gpu: int | str = int(visible[int(cuda_index)]) if isinstance(cuda_index, int) and cuda_index < len(visible) and visible[cuda_index].isdigit() else cuda_index
-    peak_allocated = int(torch.cuda.max_memory_allocated(device)) if torch.cuda.is_available() else None
-    peak_reserved = int(torch.cuda.max_memory_reserved(device)) if torch.cuda.is_available() else None
+    cuda_device = device if isinstance(device, torch.device) and device.type == "cuda" else None
+    peak_allocated = int(torch.cuda.max_memory_allocated(cuda_device)) if torch.cuda.is_available() and cuda_device is not None else None
+    peak_reserved = int(torch.cuda.max_memory_reserved(cuda_device)) if torch.cuda.is_available() and cuda_device is not None else None
     return RunResult(
         method=config.method,
         scope="full_model_decode_serving",
@@ -920,6 +1074,12 @@ def _load_method(method: str, device: torch.device) -> tuple[str, Any, Any, dict
     if method == "FP16_FULL_MODEL":
         tokenizer, model, model_cfg = load_fp16_model(device)
         return method, tokenizer, model, model_cfg, False
+    if method == "KIVI_PAPER_G128_FULL_MODEL":
+        tokenizer, model, model_cfg = load_kivi_paper_model(device)
+        return method, tokenizer, model, model_cfg, True
+    if method == "PATTERNKV_PAPER_FULL_MODEL":
+        tokenizer, model, model_cfg = load_patternkv_paper_model(device)
+        return method, tokenizer, model, model_cfg, True
     if method == "CAUSAL_V4_25_FULL_MODEL":
         tokenizer, model, model_cfg = load_causal_model(device)
         return method, tokenizer, model, model_cfg, True
@@ -938,15 +1098,15 @@ def _method_audit(method: str) -> dict[str, Any]:
             "serving_comparable": True,
             "notes": "PatternKV LlamaForCausalLM_PatternKV full-model decode serving with CAUSAL-V4@25% config.",
         },
-        "ORIGINAL_PATTERNKV_FULL_MODEL": {
-            "available": False,
-            "serving_comparable": False,
-            "notes": "No same-policy production serving harness identified.",
+        "KIVI_PAPER_G128_FULL_MODEL": {
+            "available": True,
+            "serving_comparable": True,
+            "notes": "Canonical kivi_paper_g128 resolved through bench.paper_config to official KIVI backend.",
         },
-        "KIVI_FULL_MODEL": {
-            "available": False,
-            "serving_comparable": False,
-            "notes": "No same-policy production serving harness identified.",
+        "PATTERNKV_PAPER_FULL_MODEL": {
+            "available": True,
+            "serving_comparable": True,
+            "notes": "Canonical patternkv_paper resolved through bench.paper_config with base_v2 Value precision.",
         },
     }[method]
 
@@ -977,12 +1137,7 @@ def main() -> None:
 
     method_audits = {}
 
-    write_json(report_dir / "baseline_audit.json", {
-        "FP16_FULL_MODEL": _method_audit("FP16_FULL_MODEL"),
-        "ORIGINAL_PATTERNKV_FULL_MODEL": _method_audit("ORIGINAL_PATTERNKV_FULL_MODEL"),
-        "KIVI_FULL_MODEL": _method_audit("KIVI_FULL_MODEL"),
-        "CAUSAL_V4_25_FULL_MODEL": _method_audit("CAUSAL_V4_25_FULL_MODEL"),
-    })
+    write_json(report_dir / "baseline_audit.json", {method: _method_audit(method) for method in METHOD_ADAPTERS})
 
     all_results: list[RunResult] = []
     concurrency_sweeps: list[dict[str, Any]] = []
@@ -994,7 +1149,7 @@ def main() -> None:
         try:
             audit = full_model_path_audit_payload(model, tokenizer, method_name, device)
             method_audits[method_name] = audit
-            adapter = PatternKVAdapter if causal else FP16Adapter
+            adapter = METHOD_ADAPTERS[method_name]
             def safe_run(cfg: BenchmarkConfig, run_index: int, warmup: bool) -> RunResult:
                 try:
                     return run_full_model_benchmark(adapter, model, tokenizer, cfg, device, run_index=run_index, warmup=warmup)

@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "source": "tests/test_patternkv_paper_true_batch_runtime_support.py::test_patternkv_paper_request_local_centroid_banks_diverge",
+  "meaning": "Synthetic B2 requests have different centroid banks and different assignment tensors, so request-local routing is observably required."
+}

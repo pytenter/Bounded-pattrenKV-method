@@ -1,0 +1,10 @@
+{
+  "true_batch_supported": true,
+  "zero_serial_dispatch": true,
+  "zero_fallback": true,
+  "request_local_centroids_preserved": true,
+  "request_local_assignments_preserved": true,
+  "request_reorder_preserved": true,
+  "decode_only_protocol_valid": true,
+  "subprocess_isolation": true
+}

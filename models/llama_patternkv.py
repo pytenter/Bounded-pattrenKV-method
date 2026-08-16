@@ -461,6 +461,25 @@ def patternkv_mixed_value_attention(
     )
 
 
+def patternkv_page_value_attention(
+    module: nn.Module,
+    cache: PatternQuantizedKVCache,
+    weights: torch.Tensor,
+    *,
+    attn_f: torch.Tensor | None = None,
+    v_full: torch.Tensor | None = None,
+) -> torch.Tensor:
+    pools = getattr(cache, "operator_ready_page_pools", None)
+    if pools is None:
+        raise RuntimeError("page Value path requires operator-ready page pools")
+    record_patternkv_real_decode_counter("real_decode_steps", 1)
+    out = patternkv_fused_page_batch_decode(weights, pools)
+    if attn_f is not None and v_full is not None:
+        with profile_range("value_fp16_tail", tokens=int(v_full.shape[2])):
+            out = out + torch.matmul(attn_f, repeat_kv(v_full, module.num_key_value_groups))
+    return out
+
+
 class LlamaAttention_PatternKV(nn.Module):
     """Multi-headed attention from 'Attention Is All You Need' paper"""
 
@@ -1404,6 +1423,14 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                             attn_f=attn_weights[:, :, :, quant_tokens:],
                             v_full=cache.pending_v,
                         )
+                    elif getattr(cache, "operator_ready_page_pools", None) is not None:
+                        attn_output = patternkv_page_value_attention(
+                            self,
+                            cache,
+                            attn_weights[:, :, :, :quant_tokens],
+                            attn_f=attn_weights[:, :, :, quant_tokens:],
+                            v_full=cache.pending_v,
+                        )
                     else:
                         v_reader = patternkv_value_reader_fn(self.v_bits)
                         attn_output = v_reader(
@@ -1426,6 +1453,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                     v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                     if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
                         attn_output = patternkv_mixed_value_attention(self, cache, attn_weights, v_mask, quant_tokens)
+                    elif getattr(cache, "operator_ready_page_pools", None) is not None:
+                        attn_output = patternkv_page_value_attention(self, cache, attn_weights)
                     else:
                         v_reader = patternkv_value_reader_fn(self.v_bits)
                         attn_output = v_reader(
@@ -1454,6 +1483,8 @@ class LlamaFlashAttention_PatternKV(LlamaAttention_PatternKV):
                         v_mask = cache.v_pattern_mask if getattr(cache, "v_pattern_mask", None) is not None else cache.v_assignments
                         if value_precision_is_mixed(getattr(cache, "v_precision_selector", "base_v2")):
                             part = patternkv_mixed_value_attention(self, cache, weights, v_mask, cache.packed_v_tokens)
+                        elif getattr(cache, "operator_ready_page_pools", None) is not None:
+                            part = patternkv_page_value_attention(self, cache, weights)
                         elif cache.v_centroids is not None and cache.v_assignment_idx is not None and v_mask is not None:
                             v_reader = patternkv_value_reader_fn(self.v_bits)
                             part = v_reader(

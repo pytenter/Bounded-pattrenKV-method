@@ -1,0 +1,35 @@
+{
+  "method_config": {
+    "asym": true,
+    "backend_method": "patternkv",
+    "cache_mode": "",
+    "compact_kernel_storage_note": "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes.",
+    "group_size": 128,
+    "initial_pattern_count": 32,
+    "k_bits": 2,
+    "key_quant_axis": "per-channel: quantize transposed K along token axis",
+    "kivi_quantized_region_theoretical_bits": null,
+    "method": "patternkv_paper",
+    "mixed_key_int4_ratio": 0.0,
+    "mixed_key_mask_path": "",
+    "pattern_group": 128,
+    "pattern_selection_position": "post-RoPE key/value states",
+    "patternkv_cache_path": "",
+    "quantized_region_affine_bits": 2.25,
+    "recent_length": 128,
+    "residual_length": 128,
+    "sink_length": 0,
+    "v_bits": 2,
+    "value_quant_axis": "per-token: quantize V residual/centroids along head_dim axis"
+  },
+  "model": "/data/zypan/blockgtq-repro/models/DeepSeek-R1-Distill-Llama-8B",
+  "model_config": {
+    "head_dim": 128,
+    "hidden_size": 4096,
+    "num_attention_heads": 32,
+    "num_hidden_layers": 32,
+    "num_key_value_heads": 8,
+    "patternkv_v4_budget_fraction": 0.0,
+    "patternkv_v_precision_selector": "base_v2"
+  }
+}

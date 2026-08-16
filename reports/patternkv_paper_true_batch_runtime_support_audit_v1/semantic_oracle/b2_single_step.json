@@ -1,0 +1,62 @@
+{
+  "batch": 2,
+  "cache_summary": {
+    "centroid_state_indices": [
+      0,
+      1
+    ],
+    "operator_ready_page_pools": true,
+    "packed_v_tokens": 384,
+    "request_packed_v_tokens": null,
+    "v_assignment_idx_shape": [
+      2,
+      8,
+      384
+    ],
+    "v_centroids_shape": [
+      2,
+      8,
+      48,
+      128
+    ],
+    "v_counts": [
+      32,
+      32
+    ],
+    "v_pattern_mask_shape": [
+      2,
+      8,
+      384
+    ]
+  },
+  "decode": 1,
+  "generated_tokens": [
+    [
+      70003
+    ],
+    [
+      25
+    ]
+  ],
+  "logit_metrics": {
+    "cosine": 0.9933561086654663,
+    "inf_count": 0,
+    "max_abs": 2.6103515625,
+    "nan_count": 0,
+    "relative_l2": 0.11736307293176651
+  },
+  "order": [
+    0,
+    1
+  ],
+  "pass": true,
+  "reference_tokens": [
+    [
+      70003
+    ],
+    [
+      25
+    ]
+  ],
+  "top1_agreement": true
+}

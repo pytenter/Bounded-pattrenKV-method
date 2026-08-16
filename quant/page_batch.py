@@ -422,13 +422,14 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
                 page_attn = attn[b : b + 1, :, :, start:stop]
             if v2_count:
                 _PAGE_BATCH_COUNTERS["v2_pages_processed"] += 1
+                centroids = cache.centroids[b] if cache.centroids.dim() == 4 else cache.centroids
                 v2_values = _restore_page_values(
                     cache.v2_payload[v2_page_id],
                     cache.v2_scale[v2_page_id],
                     cache.v2_zero[v2_page_id],
                     cache.v2_pattern_mask[v2_page_id],
                     cache.v2_assignment_idx[v2_page_id],
-                    cache.centroids,
+                    centroids,
                     bits=2,
                     group_size=cache.group_size,
                 )
@@ -444,13 +445,14 @@ def patternkv_page_batch_decode(attn: torch.Tensor, cache: PatternKVPageBatchCac
                     out[b : b + 1] += part2
             if v4_count:
                 _PAGE_BATCH_COUNTERS["v4_pages_processed"] += 1
+                centroids = cache.centroids[b] if cache.centroids.dim() == 4 else cache.centroids
                 v4_values = _restore_page_values(
                     cache.v4_payload[v4_page_id],
                     cache.v4_scale[v4_page_id],
                     cache.v4_zero[v4_page_id],
                     cache.v4_pattern_mask[v4_page_id],
                     cache.v4_assignment_idx[v4_page_id],
-                    cache.centroids,
+                    centroids,
                     bits=4,
                     group_size=cache.group_size,
                 )
