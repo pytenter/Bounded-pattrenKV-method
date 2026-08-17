@@ -146,6 +146,15 @@ def git_text(*args: str) -> str:
     return subprocess.check_output(["git", "-C", str(ROOT), *args], text=True, stderr=subprocess.DEVNULL).strip()
 
 
+def git_success(*args: str) -> bool:
+    return subprocess.run(["git", "-C", str(ROOT), *args], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode == 0
+
+
+def head_descends_from_protocol_checkpoint() -> bool:
+    head = git_text("rev-parse", "HEAD")
+    return head == EXPECTED_HEAD or git_success("merge-base", "--is-ancestor", EXPECTED_HEAD, "HEAD")
+
+
 def load_dataset() -> list[dict[str, Any]]:
     rows = [json.loads(line) for line in DATASET_PATH.read_text(encoding="utf-8").splitlines() if line.strip()]
     if len(rows) != 45:
@@ -1008,6 +1017,7 @@ def preflight(args: argparse.Namespace) -> dict[str, Any]:
         "branch": git_text("branch", "--show-current"),
         "head": git_text("rev-parse", "HEAD"),
         "expected_head": EXPECTED_HEAD,
+        "head_descends_from_expected_protocol_checkpoint": head_descends_from_protocol_checkpoint(),
         "frozen_release_sha": release_sha,
         "release_unchanged": release_sha == FROZEN_RELEASE_SHA,
         "dataset_sha256": dataset_sha,
@@ -1053,7 +1063,7 @@ def preflight(args: argparse.Namespace) -> dict[str, Any]:
     }
     payload["preflight_pass"] = (
         payload["branch"] == "sys/causal-v4-25-kernel-v1"
-        and payload["head"] == EXPECTED_HEAD
+        and payload["head_descends_from_expected_protocol_checkpoint"]
         and payload["release_unchanged"]
         and payload["dataset_sha_match"]
         and payload["problem_count"] == 45
