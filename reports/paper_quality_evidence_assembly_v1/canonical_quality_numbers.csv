@@ -1,0 +1,21 @@
+benchmark,method,metric,value,source
+AIME24,FP16,correct,45,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,FP16,accuracy,0.5,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,PATTERN_BASE,correct,32,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,PATTERN_BASE,accuracy,0.3555555555555555,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,RANDOM_V4_25,correct,36,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,RANDOM_V4_25,accuracy,0.39999999999999997,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,CAUSAL_V4_25,correct,45,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+AIME24,CAUSAL_V4_25,accuracy,0.5,reports/aime24_full_causal25_quality_4gpu/full_aime24_quality_summary.json
+GSM8K,FP16,correct,1029,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,FP16,accuracy_percent,78.0136,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,KIVI,correct,909,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,KIVI,accuracy_percent,68.9158,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,PatternKV,correct,973,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,PatternKV,accuracy_percent,73.768,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,CAUSAL-V4@25%,correct,1041,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+GSM8K,CAUSAL-V4@25%,accuracy_percent,78.92342683851403,reports/paper_repro_v2/gsm8k_full_2048/summary_4gpu_sequence.json or results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25/
+LongBench,FP16,macro_average,43.28619047619048,reports/paper_repro_v2/longbench_21x50_8k_4090/summary.json or results/causal_v4_25_generalization_v1/longbench_full/causal_v4_25/
+LongBench,KIVI,macro_average,41.214285714285715,reports/paper_repro_v2/longbench_21x50_8k_4090/summary.json or results/causal_v4_25_generalization_v1/longbench_full/causal_v4_25/
+LongBench,PatternKV,macro_average,41.61190476190476,reports/paper_repro_v2/longbench_21x50_8k_4090/summary.json or results/causal_v4_25_generalization_v1/longbench_full/causal_v4_25/
+LongBench,CAUSAL-V4@25%,macro_average,42.465666666666664,reports/paper_repro_v2/longbench_21x50_8k_4090/summary.json or results/causal_v4_25_generalization_v1/longbench_full/causal_v4_25/

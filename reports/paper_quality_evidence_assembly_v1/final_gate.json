@@ -1,0 +1,21 @@
+{
+  "algorithm_changed": false,
+  "canonical_quality_numbers": "reports/paper_quality_evidence_assembly_v1/canonical_quality_numbers.json",
+  "classification": "PAPER_QUALITY_EVIDENCE_ASSEMBLY_V1_SUPPORTED",
+  "cuda_workloads_run": false,
+  "frozen_system_release": "8d60485b5d2c93b7c1d478efc449de56d28159c3",
+  "mode": "OFFLINE_ONLY",
+  "model_loaded": false,
+  "new_generations_run": false,
+  "new_gpu_experiments_run": false,
+  "p0_gaps": [
+    "selector_importance_only_error_only_aime24",
+    "aime25_llama_four_method",
+    "second_backbone_causal_quality"
+  ],
+  "quality_freeze_status": "QUALITY_EVIDENCE_GAPS_REMAIN",
+  "release_unchanged": true,
+  "runtime_changed": false,
+  "source_system_checkpoint": "52a3297b777810543e18608bfff0088e624324d1",
+  "system_track": "FROZEN"
+}
