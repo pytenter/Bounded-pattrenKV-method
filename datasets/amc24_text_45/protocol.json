@@ -1,0 +1,134 @@
+{
+  "avg8": {
+    "definition": "correct independent responses / (45 x 8)",
+    "equivalent_definition": "mean of per-problem mean correctness across eight responses"
+  },
+  "benchmark_id": "amc24_text_45",
+  "dataset_sha256": "59a7450d9e480a41aa0d9db6dc2d89d16b1188cdf9a1ea8fd12e19dd2033c4b9",
+  "description": "2024 AMC 12A/12B text-only subset (45 problems)",
+  "display_name": "AMC24-Text",
+  "expected_full_run": {
+    "generations_per_method": 360,
+    "methods": 4,
+    "problems": 45,
+    "responses_per_problem": 8,
+    "total_generations": 1440
+  },
+  "frozen_before_generation": true,
+  "maj8": {
+    "definition": "for each problem, count parsed normalized answers across eight responses; unique modal answer is the prediction; score exact normalized match to gold",
+    "parser_failures": "do not vote; denominator remains 45 problems"
+  },
+  "method_matrix": [
+    {
+      "dtype": "float16",
+      "k_bits": 16,
+      "kv_method": "full_precision",
+      "method": "FP16",
+      "v_bits": 16
+    },
+    {
+      "dtype": "float16",
+      "group_size": 128,
+      "k_bits": 2,
+      "kv_method": "kivi_paper_g128",
+      "method": "KIVI",
+      "residual_length": 128,
+      "v_bits": 2
+    },
+    {
+      "dtype": "float16",
+      "group_size": 128,
+      "initial_pattern_count": 32,
+      "k_bits": 2,
+      "kv_method": "patternkv_paper",
+      "method": "PatternKV",
+      "residual_length": 128,
+      "v_bits": 2
+    },
+    {
+      "algorithm_checkpoint": "c73aeed3247c136859f695d5b238eeb357434b17",
+      "dtype": "float16",
+      "group_size": 128,
+      "k_bits": 2,
+      "kv_method": "causal_v4_25",
+      "method": "CAUSAL-V4@25%",
+      "recent": 128,
+      "residual_pending": 128,
+      "selected_v_bits": 4,
+      "selector": "historical causal importance x positive local quantization-error reduction V2 -> V4",
+      "sink": 16,
+      "v4_budget_fraction": 0.25,
+      "v_base_bits": 2
+    }
+  ],
+  "parser": {
+    "gold_visible_to_parser": false,
+    "parser_failure_policy": "incorrect for Avg@8; contributes no A-E/source-answer vote for Maj@8",
+    "path": "evaluation/amc_source_answer_parser.py",
+    "source_status": "PROJECT_PREREGISTERED",
+    "strategy": "prefer final boxed answer; otherwise explicit final answer line; no whole-CoT gold-informed search"
+  },
+  "patternkv_paper_amc24": {
+    "directly_comparable": false,
+    "reason": "PatternKV exact AMC24 rows/protocol are unpublished; AMC24-Text-45 is an independent public benchmark",
+    "status": "REFERENCE_ONLY"
+  },
+  "problem_count": 45,
+  "prompt": {
+    "aime24_source": "bench/bench_aime24_patternkv.py:render_prompt",
+    "assistant_suffix": "<think>\\n",
+    "chat_template": "tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)",
+    "choices": "not included; upstream public source has no choices field",
+    "duplicate_newline_prevention": "assistant suffix is exactly '<think>\\n' appended once after chat template generation prompt; no extra blank line is appended",
+    "manual_assistant_newline": false,
+    "source_status": "PROJECT_CANONICAL_REUSED_WITH_DATASET_SPECIFIC_GROUND_TRUTH_FORMAT",
+    "system_prompt": null,
+    "user_prompt_template": "{problem}\\n\\nPlease reason step by step, and put your final answer within \\\\boxed{}."
+  },
+  "responses_per_problem": 8,
+  "sampling": {
+    "do_sample": true,
+    "max_model_len": "model/tokenizer context limit validated in runner before generation",
+    "max_new_tokens": 32768,
+    "num_return_sequences": 1,
+    "repetition_penalty": 1.0,
+    "source_status": "PROJECT_CANONICAL_REUSED",
+    "stop_policy": "use normalized tokenizer/model EOS token ids; record eos or length stop reason",
+    "temperature": 0.6,
+    "top_k": null,
+    "top_p": 0.95
+  },
+  "seeds": {
+    "pairing": "same problem_id, response_id, and seed for every method",
+    "response_id_to_seed": {
+      "0": 42,
+      "1": 43,
+      "2": 44,
+      "3": 45,
+      "4": 46,
+      "5": 47,
+      "6": 48,
+      "7": 49
+    },
+    "seed_source": "new fixed 8-response list; no prior 8-response project seed list found",
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "source_status": "PROJECT_PREREGISTERED"
+  },
+  "tie_policy": {
+    "rationale": "conservative, no arbitrary favorable tie-break, no seed-order dependency, no gold-informed selection",
+    "rule": "if there is no unique modal parsed answer, Maj@8 prediction is unresolved and correctness is 0"
+  },
+  "truncation_policy": {
+    "rule": "if max_new_tokens is reached, parse the emitted text with the same parser; parsed answers score normally, parse failures are incorrect; no selective reruns"
+  }
+}

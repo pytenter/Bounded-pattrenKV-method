@@ -1,0 +1,69 @@
+{
+  "benchmark": {
+    "benchmark_id": "amc24_text_45",
+    "description": "2024 AMC 12A/12B text-only subset (45 problems)",
+    "display_name": "AMC24-Text"
+  },
+  "canonical_dataset": {
+    "amc12a_count": 22,
+    "amc12b_count": 23,
+    "path": "datasets/amc24_text_45/amc24_text_45.jsonl",
+    "problem_count": 45,
+    "sha256": "59a7450d9e480a41aa0d9db6dc2d89d16b1188cdf9a1ea8fd12e19dd2033c4b9"
+  },
+  "classification": "AMC24_TEXT_45_PROTOCOL_FREEZE_V1_SUPPORTED",
+  "dataset_checks": {
+    "duplicate_ids": "PASS",
+    "duplicate_problem_text": "PASS",
+    "missing_answer": "PASS",
+    "missing_problem": "PASS",
+    "reproducible_hash": "PASS"
+  },
+  "excluded_problems": [
+    "AMC12A 14",
+    "AMC12A 18",
+    "AMC12A 22",
+    "AMC12B 7",
+    "AMC12B 19"
+  ],
+  "expected_full_run": {
+    "generations_per_method": 360,
+    "methods": 4,
+    "problems": 45,
+    "responses_per_problem": 8,
+    "total_generations": 1440
+  },
+  "frozen_system_release": {
+    "release_unchanged": true,
+    "sha": "8d60485b5d2c93b7c1d478efc449de56d28159c3"
+  },
+  "ground_truth": {
+    "answer_space": "open source answer strings from upstream answer field",
+    "format": "source_answer_string",
+    "invalid": 0,
+    "missing": 0
+  },
+  "model_loads": 0,
+  "gpu_generations_run": 0,
+  "patternkv_paper_amc24": {
+    "directly_comparable": false,
+    "status": "REFERENCE_ONLY"
+  },
+  "protocol_frozen_before_results": true,
+  "public_dataset": {
+    "config": "default",
+    "license": "Not specified by dataset metadata; README notes MAA copyright for problems",
+    "revision": "47b35303156a75cdfc6fcca694db66905d5b2033",
+    "source": "https://huggingface.co/datasets/rawsh/2024_AMC12",
+    "split": "train"
+  },
+  "stop_go": "GO_FOR_NEXT_TASK_ONLY",
+  "system_track": "FROZEN",
+  "validation": {
+    "compileall": "PASS",
+    "dataset_tests": "PASS",
+    "git_diff_check": "PASS",
+    "parser_tests": "PASS",
+    "protocol_tests": "PASS"
+  }
+}
