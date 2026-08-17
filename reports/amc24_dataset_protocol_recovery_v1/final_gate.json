@@ -1,0 +1,115 @@
+{
+  "classification": "AMC24_DATASET_PROTOCOL_RECOVERY_V1_BLOCKED",
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "head_before": "3c6c6710f8b1265477ade76768d310c0c5692739",
+  "frozen_system_release": {
+    "branch": "release/causal-v4-25-system-final",
+    "sha": "8d60485b5d2c93b7c1d478efc449de56d28159c3",
+    "release_unchanged": true
+  },
+  "system_track": "FROZEN",
+  "gpu_generations_run": 0,
+  "patternkv_paper": {
+    "paper": "PatternKV: Flattening KV Representation Expands Quantization Headroom",
+    "arxiv": "2510.05176",
+    "version": "v1",
+    "amc24_present": true,
+    "amc23_present": true,
+    "responses_per_problem": 8,
+    "avg8_source": "PatternKV paper Section 4.2 / Table 2 text",
+    "maj8_source": "PatternKV paper Section 4.2 / Table 2 text"
+  },
+  "amc_citation_chain": {
+    "patternkv_reference": "Li et al. 2024a",
+    "resolved_reference": "NuminaMath: The largest public dataset in ai4maths with 860k pairs of competition math problems and solutions",
+    "dataset_family": "NuminaMath",
+    "classification": "PARTIALLY_VERIFIED"
+  },
+  "upstream_dataset": {
+    "name": "AI-MO/NuminaMath-CoT",
+    "repository": "https://huggingface.co/datasets/AI-MO/NuminaMath-CoT",
+    "revision": "9d8d210c9f6a36c8f3cd84045668c9b7800ef517",
+    "config": "default",
+    "split": "UNRESOLVED"
+  },
+  "amc24_selection": {
+    "filter_rule": "UNRESOLVED",
+    "problem_count": "UNRESOLVED",
+    "problem_ids_available": false,
+    "source_row_ids_available": false,
+    "ambiguity": "NuminaMath-CoT has source category amc_aime but no public competition/year/AMC24 row metadata."
+  },
+  "canonical_local_dataset": {
+    "path": null,
+    "rows": 0,
+    "sha256": null,
+    "duplicate_check": "NOT_RUN",
+    "missing_answer_check": "NOT_RUN",
+    "reproducible_generation": false
+  },
+  "ground_truth": {
+    "format": "UNRESOLVED",
+    "answer_space": "UNRESOLVED",
+    "normalization": "UNRESOLVED"
+  },
+  "prompt_protocol": {
+    "source": "UNRESOLVED",
+    "status": "UNRESOLVED",
+    "template": null,
+    "assistant_suffix_rule": "UNRESOLVED",
+    "duplicate_newline_prevention": "NOT_AUDITABLE_WITHOUT_CANONICAL_ROWS"
+  },
+  "sampling_protocol": {
+    "temperature": "UNRESOLVED_FROM_PATTERNKV_AMC",
+    "top_p": "UNRESOLVED_FROM_PATTERNKV_AMC",
+    "top_k": "UNRESOLVED",
+    "do_sample": "UNRESOLVED_FROM_PATTERNKV_AMC",
+    "max_new_tokens": "UNRESOLVED_FROM_PATTERNKV_AMC",
+    "max_model_len": "UNRESOLVED",
+    "stop_rules": "UNRESOLVED"
+  },
+  "responses": {
+    "responses_per_problem": 8,
+    "original_seed_policy": "ORIGINAL_SEEDS_NOT_PUBLISHED",
+    "project_seed_policy": "NOT_PREREGISTERED_BECAUSE_DATASET_IDENTITY_BLOCKED",
+    "seeds": []
+  },
+  "avg8": {
+    "definition": "correct responses / (N problems x 8)",
+    "source_status": "PAPER_VERIFIED"
+  },
+  "maj8": {
+    "definition": "problem-level majority-vote accuracy across eight extracted responses",
+    "source_status": "PAPER_VERIFIED_PARTIAL"
+  },
+  "tie_policy": {
+    "rule": "UNRESOLVED",
+    "source_status": "UNRESOLVED"
+  },
+  "answer_parser": {
+    "path": null,
+    "strategy": "NOT_IMPLEMENTED_ANSWER_SPACE_UNRESOLVED",
+    "tests": "NOT_RUN",
+    "status": "BLOCKED"
+  },
+  "patternkv_reference_amc24_numbers": {
+    "fp16": {
+      "avg8": 53.06,
+      "maj8": 60.22
+    },
+    "kivi": {
+      "avg8": 30.52,
+      "maj8": 46.05
+    },
+    "patternkv": {
+      "avg8": 34.44,
+      "maj8": 42.11
+    },
+    "source": "PatternKV arXiv 2510.05176v1 Table 2, Llama-8B INT2",
+    "reference_only": true
+  },
+  "pattern_base_aime24_is_paper_patternkv_baseline": "uncertain",
+  "amc24_gpu_run_ready": false,
+  "stop_go": "STOP",
+  "next_task": "continue AMC24 provenance recovery or defer AMC24 to another P0 quality task"
+}
