@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{C4096 capacity under the reconciled allocator protocol.}
+\label{tab:capacity}
+\begin{tabular}{lrrr}
+\toprule
+Method & Max successful batch $\uparrow$ & First OOM batch & Capacity vs FP16 \\
+\midrule
+FP16 & 4 & 8 & 1.0x \\
+KIVI & \textbf{8} & 16 & 2.0x \\
+PatternKV & \textbf{8} & 16 & 2.0x \\
+CAUSAL-V4@25\% & \textbf{8} & 16 & 2.0x \\
+\bottomrule
+\end{tabular}
+\end{table}

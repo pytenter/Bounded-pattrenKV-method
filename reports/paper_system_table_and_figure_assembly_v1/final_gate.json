@@ -1,0 +1,33 @@
+{
+  "classification": "PAPER_SYSTEM_TABLE_AND_FIGURE_ASSEMBLY_V1_SUPPORTED",
+  "source_system_checkpoint": "dc2da40f8bcf5a494e81a423c2f2a0a2aaea665c",
+  "source_final_gate": "reports/paper_baseline_system_comparison_v1_reconciled/final_gate.json",
+  "primary_system_numbers": "FINAL_PAPER_SYSTEM_NUMBERS_V1",
+  "system_experiments_frozen": true,
+  "new_gpu_experiments_run": false,
+  "experimental_numbers_modified": false,
+  "allocator_protocol": "PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True",
+  "method_display_names": {
+    "FP16_FULL_MODEL": "FP16",
+    "KIVI_PAPER_G128_FULL_MODEL": "KIVI",
+    "PATTERNKV_PAPER_FULL_MODEL": "PatternKV",
+    "CAUSAL_V4_25_FULL_MODEL": "CAUSAL-V4@25%"
+  },
+  "computed_pairwise_metrics": {
+    "KIVI_vs_FP16_throughput": 0.506294102268765,
+    "PatternKV_vs_FP16_throughput": 0.19856743923103828,
+    "CAUSAL_vs_FP16_throughput": 0.19044069293688867,
+    "PatternKV_vs_KIVI_throughput": 0.39219781218314337,
+    "CAUSAL_vs_KIVI_throughput": 0.3761463783273416,
+    "CAUSAL_vs_PatternKV_throughput": 0.959073117296467,
+    "CAUSAL_extra_overhead_vs_PatternKV_B4": 4.092688270353295,
+    "CAUSAL_extra_overhead_vs_PatternKV_D256": 3.158245073326116,
+    "memory_reductions": {
+      "FP16_FULL_MODEL": 0.0,
+      "KIVI_PAPER_G128_FULL_MODEL": 9.786720607473388,
+      "PATTERNKV_PAPER_FULL_MODEL": 6.001804639743735,
+      "CAUSAL_V4_25_FULL_MODEL": 5.576824575738792
+    }
+  },
+  "source_final_classification": "PAPER_BASELINE_SYSTEM_COMPARISON_V1_RECONCILED_SUPPORTED"
+}

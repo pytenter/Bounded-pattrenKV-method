@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Decode TPOT over the tested 2K-8K context range at B1/D8.}
+\label{tab:context-scaling}
+\begin{tabular}{lrrr}
+\toprule
+Method & C2048 TPOT $\downarrow$ & C4096 TPOT $\downarrow$ & C8192 TPOT $\downarrow$ \\
+\midrule
+FP16 & 29.033 & 29.150 & 30.584 \\
+KIVI & 56.432 & 57.033 & 56.754 \\
+PatternKV & 153.094 & 156.361 & 153.611 \\
+CAUSAL-V4@25\% & 158.325 & 158.739 & 157.457 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,16 @@
+{
+  "KIVI_vs_FP16_throughput": 0.506294102268765,
+  "PatternKV_vs_FP16_throughput": 0.19856743923103828,
+  "CAUSAL_vs_FP16_throughput": 0.19044069293688867,
+  "PatternKV_vs_KIVI_throughput": 0.39219781218314337,
+  "CAUSAL_vs_KIVI_throughput": 0.3761463783273416,
+  "CAUSAL_vs_PatternKV_throughput": 0.959073117296467,
+  "CAUSAL_extra_overhead_vs_PatternKV_B4": 4.092688270353295,
+  "CAUSAL_extra_overhead_vs_PatternKV_D256": 3.158245073326116,
+  "memory_reductions": {
+    "FP16_FULL_MODEL": 0.0,
+    "KIVI_PAPER_G128_FULL_MODEL": 9.786720607473388,
+    "PATTERNKV_PAPER_FULL_MODEL": 6.001804639743735,
+    "CAUSAL_V4_25_FULL_MODEL": 5.576824575738792
+  }
+}

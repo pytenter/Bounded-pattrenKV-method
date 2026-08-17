@@ -1,0 +1,5 @@
+method,max_success_B,first_OOM_B,capacity_vs_FP16
+FP16,4,8,1.0
+KIVI,8,16,2.0
+PatternKV,8,16,2.0
+CAUSAL-V4@25%,8,16,2.0
