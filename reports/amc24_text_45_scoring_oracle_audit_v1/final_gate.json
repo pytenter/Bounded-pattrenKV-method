@@ -1,0 +1,86 @@
+{
+  "answer_form_inventory": {
+    "fraction": 9,
+    "integer": 33,
+    "interval": 1,
+    "negative_integer": 1,
+    "other": 0,
+    "radical": 3,
+    "string_or_letter": 1,
+    "symbolic_expression": 2,
+    "tuple": 1
+  },
+  "avg8_scoring": {
+    "parser_fail_denominator_policy": "parser failures count incorrect; denominator remains 8 per problem",
+    "status": "PASS"
+  },
+  "benchmark": {
+    "benchmark_id": "amc24_text_45",
+    "dataset_sha256": "59a7450d9e480a41aa0d9db6dc2d89d16b1188cdf9a1ea8fd12e19dd2033c4b9",
+    "problem_count": 45
+  },
+  "boxed_extraction": {
+    "last_boxed_policy": "PASS",
+    "multiple_boxed": "PASS",
+    "nested_braces": "PASS"
+  },
+  "canonical_collision_audit": {
+    "benign_collisions": 6,
+    "collisions": 6,
+    "status": "PASS",
+    "suspicious_collisions": 0
+  },
+  "classification": "AMC24_TEXT_45_SCORING_ORACLE_AUDIT_V1_SUPPORTED",
+  "dataset_sha_unchanged": true,
+  "final_answer_fallback": {
+    "status": "PASS"
+  },
+  "frozen_system_release": {
+    "release_unchanged": true,
+    "sha": "8d60485b5d2c93b7c1d478efc449de56d28159c3"
+  },
+  "generation_protocol": {
+    "prompt_unchanged": true,
+    "responses_per_problem_unchanged": true,
+    "sampling_unchanged": true,
+    "seed_list_unchanged": true
+  },
+  "gold_independence": {
+    "normalizer_receives_gold": false,
+    "parser_receives_gold": false,
+    "status": "PASS"
+  },
+  "ground_truth_normalization": {
+    "45_of_45_supported": true,
+    "normalizer": "normalize_answer",
+    "normalizer_version": "amc24_text_normalizer_v1"
+  },
+  "gpu_generations_run": 0,
+  "maj8_scoring": {
+    "canonical_vote_key": "canonical_answer_key",
+    "status": "PASS"
+  },
+  "model_loads": 0,
+  "normalization_rules": {
+    "status": "DOCUMENTED",
+    "source": "reports/amc24_text_45_scoring_oracle_audit_v1/normalization_rules.md"
+  },
+  "parser_failure_policy": {
+    "unchanged": true
+  },
+  "scoring_oracle_ready": true,
+  "system_track": "FROZEN",
+  "tie_policy": {
+    "rule": "no unique modal canonical answer -> unresolved -> incorrect",
+    "unchanged": true
+  },
+  "truncation_policy": {
+    "unchanged": true
+  },
+  "validation": {
+    "compileall": "PASS",
+    "git_diff_check": "PASS",
+    "regression_tests": "PASS_AMC24_TEXT_DATASET_PROTOCOL_REGRESSION",
+    "targeted_pytest": "PASS_33_TESTS"
+  }
+}

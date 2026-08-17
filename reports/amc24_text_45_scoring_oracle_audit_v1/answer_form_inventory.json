@@ -1,0 +1,740 @@
+{
+  "benchmark_id": "amc24_text_45",
+  "categories": {
+    "fraction": {
+      "answers": [
+        {
+          "answer": "\\frac{\\pi}{2} - 2\\alpha",
+          "problem_id": "12A_10"
+        },
+        {
+          "answer": "(0, \\frac{1}{2})",
+          "problem_id": "12A_13"
+        },
+        {
+          "answer": "\\frac{39}{7}",
+          "problem_id": "12A_19"
+        },
+        {
+          "answer": "[\\frac{3}{4}, \\frac{7}{8}]",
+          "problem_id": "12A_20"
+        },
+        {
+          "answer": "\\frac{91}{180}",
+          "problem_id": "12B_11"
+        },
+        {
+          "answer": "\\frac{3}{2}",
+          "problem_id": "12B_12"
+        },
+        {
+          "answer": "\\log_2 \\frac{7}{\\sqrt{3}}",
+          "problem_id": "12B_15"
+        },
+        {
+          "answer": "\\frac{1}{105}",
+          "problem_id": "12B_17"
+        },
+        {
+          "answer": "\\frac{1 + \\sqrt{2}}{2}",
+          "problem_id": "12B_23"
+        }
+      ],
+      "count": 9,
+      "problems": [
+        "12A_10",
+        "12A_13",
+        "12A_19",
+        "12A_20",
+        "12B_11",
+        "12B_12",
+        "12B_15",
+        "12B_17",
+        "12B_23"
+      ]
+    },
+    "integer": {
+      "answers": [
+        {
+          "answer": "2",
+          "problem_id": "12A_01"
+        },
+        {
+          "answer": "246",
+          "problem_id": "12A_02"
+        },
+        {
+          "answer": "21",
+          "problem_id": "12A_03"
+        },
+        {
+          "answer": "23",
+          "problem_id": "12A_04"
+        },
+        {
+          "answer": "7",
+          "problem_id": "12A_05"
+        },
+        {
+          "answer": "3",
+          "problem_id": "12A_06"
+        },
+        {
+          "answer": "2024",
+          "problem_id": "12A_07"
+        },
+        {
+          "answer": "0",
+          "problem_id": "12A_08"
+        },
+        {
+          "answer": "8",
+          "problem_id": "12A_09"
+        },
+        {
+          "answer": "20",
+          "problem_id": "12A_11"
+        },
+        {
+          "answer": "21",
+          "problem_id": "12A_12"
+        },
+        {
+          "answer": "125",
+          "problem_id": "12A_15"
+        },
+        {
+          "answer": "389",
+          "problem_id": "12A_16"
+        },
+        {
+          "answer": "276",
+          "problem_id": "12A_17"
+        },
+        {
+          "answer": "338551",
+          "problem_id": "12A_21"
+        },
+        {
+          "answer": "68",
+          "problem_id": "12A_23"
+        },
+        {
+          "answer": "1292",
+          "problem_id": "12A_25"
+        },
+        {
+          "answer": "2022",
+          "problem_id": "12B_01"
+        },
+        {
+          "answer": "0",
+          "problem_id": "12B_02"
+        },
+        {
+          "answer": "21",
+          "problem_id": "12B_03"
+        },
+        {
+          "answer": "15",
+          "problem_id": "12B_05"
+        },
+        {
+          "answer": "20",
+          "problem_id": "12B_06"
+        },
+        {
+          "answer": "36",
+          "problem_id": "12B_08"
+        },
+        {
+          "answer": "71",
+          "problem_id": "12B_09"
+        },
+        {
+          "answer": "3",
+          "problem_id": "12B_10"
+        },
+        {
+          "answer": "5",
+          "problem_id": "12B_14"
+        },
+        {
+          "answer": "5",
+          "problem_id": "12B_16"
+        },
+        {
+          "answer": "320",
+          "problem_id": "12B_18"
+        },
+        {
+          "answer": "911",
+          "problem_id": "12B_20"
+        },
+        {
+          "answer": "154",
+          "problem_id": "12B_21"
+        },
+        {
+          "answer": "15",
+          "problem_id": "12B_22"
+        },
+        {
+          "answer": "3",
+          "problem_id": "12B_24"
+        },
+        {
+          "answer": "247",
+          "problem_id": "12B_25"
+        }
+      ],
+      "count": 33,
+      "problems": [
+        "12A_01",
+        "12A_02",
+        "12A_03",
+        "12A_04",
+        "12A_05",
+        "12A_06",
+        "12A_07",
+        "12A_08",
+        "12A_09",
+        "12A_11",
+        "12A_12",
+        "12A_15",
+        "12A_16",
+        "12A_17",
+        "12A_21",
+        "12A_23",
+        "12A_25",
+        "12B_01",
+        "12B_02",
+        "12B_03",
+        "12B_05",
+        "12B_06",
+        "12B_08",
+        "12B_09",
+        "12B_10",
+        "12B_14",
+        "12B_16",
+        "12B_18",
+        "12B_20",
+        "12B_21",
+        "12B_22",
+        "12B_24",
+        "12B_25"
+      ]
+    },
+    "interval": {
+      "answers": [
+        {
+          "answer": "[\\frac{3}{4}, \\frac{7}{8}]",
+          "problem_id": "12A_20"
+        }
+      ],
+      "count": 1,
+      "problems": [
+        "12A_20"
+      ]
+    },
+    "negative_integer": {
+      "answers": [
+        {
+          "answer": "-34",
+          "problem_id": "12B_13"
+        }
+      ],
+      "count": 1,
+      "problems": [
+        "12B_13"
+      ]
+    },
+    "radical": {
+      "answers": [
+        {
+          "answer": "15\\sqrt{7}",
+          "problem_id": "12A_24"
+        },
+        {
+          "answer": "\\log_2 \\frac{7}{\\sqrt{3}}",
+          "problem_id": "12B_15"
+        },
+        {
+          "answer": "\\frac{1 + \\sqrt{2}}{2}",
+          "problem_id": "12B_23"
+        }
+      ],
+      "count": 3,
+      "problems": [
+        "12A_24",
+        "12B_15",
+        "12B_23"
+      ]
+    },
+    "string_or_letter": {
+      "answers": [
+        {
+          "answer": "D",
+          "problem_id": "12B_04"
+        }
+      ],
+      "count": 1,
+      "problems": [
+        "12B_04"
+      ]
+    },
+    "symbolic_expression": {
+      "answers": [
+        {
+          "answer": "\\frac{\\pi}{2} - 2\\alpha",
+          "problem_id": "12A_10"
+        },
+        {
+          "answer": "\\log_2 \\frac{7}{\\sqrt{3}}",
+          "problem_id": "12B_15"
+        }
+      ],
+      "count": 2,
+      "problems": [
+        "12A_10",
+        "12B_15"
+      ]
+    },
+    "tuple": {
+      "answers": [
+        {
+          "answer": "(0, \\frac{1}{2})",
+          "problem_id": "12A_13"
+        }
+      ],
+      "count": 1,
+      "problems": [
+        "12A_13"
+      ]
+    }
+  },
+  "category_counts": {
+    "fraction": 9,
+    "integer": 33,
+    "interval": 1,
+    "negative_integer": 1,
+    "radical": 3,
+    "string_or_letter": 1,
+    "symbolic_expression": 2,
+    "tuple": 1
+  },
+  "problem_count": 45,
+  "rows": [
+    {
+      "answer": "2",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_01",
+      "problem_number": 1
+    },
+    {
+      "answer": "246",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_02",
+      "problem_number": 2
+    },
+    {
+      "answer": "21",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_03",
+      "problem_number": 3
+    },
+    {
+      "answer": "23",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_04",
+      "problem_number": 4
+    },
+    {
+      "answer": "7",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_05",
+      "problem_number": 5
+    },
+    {
+      "answer": "3",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_06",
+      "problem_number": 6
+    },
+    {
+      "answer": "2024",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_07",
+      "problem_number": 7
+    },
+    {
+      "answer": "0",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_08",
+      "problem_number": 8
+    },
+    {
+      "answer": "8",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_09",
+      "problem_number": 9
+    },
+    {
+      "answer": "\\frac{\\pi}{2} - 2\\alpha",
+      "categories": [
+        "fraction",
+        "symbolic_expression"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_10",
+      "problem_number": 10
+    },
+    {
+      "answer": "20",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_11",
+      "problem_number": 11
+    },
+    {
+      "answer": "21",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_12",
+      "problem_number": 12
+    },
+    {
+      "answer": "(0, \\frac{1}{2})",
+      "categories": [
+        "fraction",
+        "tuple"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_13",
+      "problem_number": 13
+    },
+    {
+      "answer": "125",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_15",
+      "problem_number": 15
+    },
+    {
+      "answer": "389",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_16",
+      "problem_number": 16
+    },
+    {
+      "answer": "276",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_17",
+      "problem_number": 17
+    },
+    {
+      "answer": "\\frac{39}{7}",
+      "categories": [
+        "fraction"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_19",
+      "problem_number": 19
+    },
+    {
+      "answer": "[\\frac{3}{4}, \\frac{7}{8}]",
+      "categories": [
+        "fraction",
+        "interval"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_20",
+      "problem_number": 20
+    },
+    {
+      "answer": "338551",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_21",
+      "problem_number": 21
+    },
+    {
+      "answer": "68",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_23",
+      "problem_number": 23
+    },
+    {
+      "answer": "15\\sqrt{7}",
+      "categories": [
+        "radical"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_24",
+      "problem_number": 24
+    },
+    {
+      "answer": "1292",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12A",
+      "problem_id": "12A_25",
+      "problem_number": 25
+    },
+    {
+      "answer": "2022",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_01",
+      "problem_number": 1
+    },
+    {
+      "answer": "0",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_02",
+      "problem_number": 2
+    },
+    {
+      "answer": "21",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_03",
+      "problem_number": 3
+    },
+    {
+      "answer": "D",
+      "categories": [
+        "string_or_letter"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_04",
+      "problem_number": 4
+    },
+    {
+      "answer": "15",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_05",
+      "problem_number": 5
+    },
+    {
+      "answer": "20",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_06",
+      "problem_number": 6
+    },
+    {
+      "answer": "36",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_08",
+      "problem_number": 8
+    },
+    {
+      "answer": "71",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_09",
+      "problem_number": 9
+    },
+    {
+      "answer": "3",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_10",
+      "problem_number": 10
+    },
+    {
+      "answer": "\\frac{91}{180}",
+      "categories": [
+        "fraction"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_11",
+      "problem_number": 11
+    },
+    {
+      "answer": "\\frac{3}{2}",
+      "categories": [
+        "fraction"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_12",
+      "problem_number": 12
+    },
+    {
+      "answer": "-34",
+      "categories": [
+        "negative_integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_13",
+      "problem_number": 13
+    },
+    {
+      "answer": "5",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_14",
+      "problem_number": 14
+    },
+    {
+      "answer": "\\log_2 \\frac{7}{\\sqrt{3}}",
+      "categories": [
+        "fraction",
+        "radical",
+        "symbolic_expression"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_15",
+      "problem_number": 15
+    },
+    {
+      "answer": "5",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_16",
+      "problem_number": 16
+    },
+    {
+      "answer": "\\frac{1}{105}",
+      "categories": [
+        "fraction"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_17",
+      "problem_number": 17
+    },
+    {
+      "answer": "320",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_18",
+      "problem_number": 18
+    },
+    {
+      "answer": "911",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_20",
+      "problem_number": 20
+    },
+    {
+      "answer": "154",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_21",
+      "problem_number": 21
+    },
+    {
+      "answer": "15",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_22",
+      "problem_number": 22
+    },
+    {
+      "answer": "\\frac{1 + \\sqrt{2}}{2}",
+      "categories": [
+        "fraction",
+        "radical"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_23",
+      "problem_number": 23
+    },
+    {
+      "answer": "3",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_24",
+      "problem_number": 24
+    },
+    {
+      "answer": "247",
+      "categories": [
+        "integer"
+      ],
+      "competition": "AMC12B",
+      "problem_id": "12B_25",
+      "problem_number": 25
+    }
+  ]
+}

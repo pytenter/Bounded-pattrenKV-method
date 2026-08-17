@@ -234,9 +234,11 @@ def build_protocol(dataset_sha256: str) -> dict[str, Any]:
         "parser": {
             "source_status": "PROJECT_PREREGISTERED",
             "path": "evaluation/amc_source_answer_parser.py",
+            "normalizer": "normalize_answer",
+            "normalizer_version": "amc24_text_normalizer_v1",
             "strategy": "prefer final boxed answer; otherwise explicit final answer line; no whole-CoT gold-informed search",
             "gold_visible_to_parser": False,
-            "parser_failure_policy": "incorrect for Avg@8; contributes no A-E/source-answer vote for Maj@8",
+            "parser_failure_policy": "incorrect for Avg@8; contributes no canonical answer vote for Maj@8",
         },
         "avg8": {
             "definition": "correct independent responses / (45 x 8)",

@@ -64,7 +64,9 @@
   ],
   "parser": {
     "gold_visible_to_parser": false,
-    "parser_failure_policy": "incorrect for Avg@8; contributes no A-E/source-answer vote for Maj@8",
+    "normalizer": "normalize_answer",
+    "normalizer_version": "amc24_text_normalizer_v1",
+    "parser_failure_policy": "incorrect for Avg@8; contributes no canonical answer vote for Maj@8",
     "path": "evaluation/amc_source_answer_parser.py",
     "source_status": "PROJECT_PREREGISTERED",
     "strategy": "prefer final boxed answer; otherwise explicit final answer line; no whole-CoT gold-informed search"

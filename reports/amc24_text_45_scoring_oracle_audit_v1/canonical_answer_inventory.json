@@ -1,0 +1,418 @@
+{
+  "all_supported": true,
+  "benchmark_id": "amc24_text_45",
+  "normalizer_version": "amc24_text_normalizer_v1",
+  "rows": [
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "2",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "2",
+      "problem_id": "12A_01"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "246",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "246",
+      "problem_id": "12A_02"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "21",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "21",
+      "problem_id": "12A_03"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "23",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "23",
+      "problem_id": "12A_04"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "7",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "7",
+      "problem_id": "12A_05"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "3",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "3",
+      "problem_id": "12A_06"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "2024",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "2024",
+      "problem_id": "12A_07"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "0",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "0",
+      "problem_id": "12A_08"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "8",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "8",
+      "problem_id": "12A_09"
+    },
+    {
+      "answer_category": [
+        "fraction",
+        "symbolic_expression"
+      ],
+      "canonical_answer_key": "\\frac{\\pi}{2}-2\\alpha",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{\\pi}{2} - 2\\alpha",
+      "problem_id": "12A_10"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "20",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "20",
+      "problem_id": "12A_11"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "21",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "21",
+      "problem_id": "12A_12"
+    },
+    {
+      "answer_category": [
+        "fraction",
+        "tuple"
+      ],
+      "canonical_answer_key": "(0,\\frac{1}{2})",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "(0, \\frac{1}{2})",
+      "problem_id": "12A_13"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "125",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "125",
+      "problem_id": "12A_15"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "389",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "389",
+      "problem_id": "12A_16"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "276",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "276",
+      "problem_id": "12A_17"
+    },
+    {
+      "answer_category": [
+        "fraction"
+      ],
+      "canonical_answer_key": "\\frac{39}{7}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{39}{7}",
+      "problem_id": "12A_19"
+    },
+    {
+      "answer_category": [
+        "fraction",
+        "interval"
+      ],
+      "canonical_answer_key": "[\\frac{3}{4},\\frac{7}{8}]",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "[\\frac{3}{4}, \\frac{7}{8}]",
+      "problem_id": "12A_20"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "338551",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "338551",
+      "problem_id": "12A_21"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "68",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "68",
+      "problem_id": "12A_23"
+    },
+    {
+      "answer_category": [
+        "radical"
+      ],
+      "canonical_answer_key": "15\\sqrt{7}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "15\\sqrt{7}",
+      "problem_id": "12A_24"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "1292",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "1292",
+      "problem_id": "12A_25"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "2022",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "2022",
+      "problem_id": "12B_01"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "0",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "0",
+      "problem_id": "12B_02"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "21",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "21",
+      "problem_id": "12B_03"
+    },
+    {
+      "answer_category": [
+        "string_or_letter"
+      ],
+      "canonical_answer_key": "D",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "D",
+      "problem_id": "12B_04"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "15",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "15",
+      "problem_id": "12B_05"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "20",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "20",
+      "problem_id": "12B_06"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "36",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "36",
+      "problem_id": "12B_08"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "71",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "71",
+      "problem_id": "12B_09"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "3",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "3",
+      "problem_id": "12B_10"
+    },
+    {
+      "answer_category": [
+        "fraction"
+      ],
+      "canonical_answer_key": "\\frac{91}{180}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{91}{180}",
+      "problem_id": "12B_11"
+    },
+    {
+      "answer_category": [
+        "fraction"
+      ],
+      "canonical_answer_key": "\\frac{3}{2}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{3}{2}",
+      "problem_id": "12B_12"
+    },
+    {
+      "answer_category": [
+        "negative_integer"
+      ],
+      "canonical_answer_key": "-34",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "-34",
+      "problem_id": "12B_13"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "5",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "5",
+      "problem_id": "12B_14"
+    },
+    {
+      "answer_category": [
+        "fraction",
+        "radical",
+        "symbolic_expression"
+      ],
+      "canonical_answer_key": "\\log_2\\frac{7}{\\sqrt{3}}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\log_2 \\frac{7}{\\sqrt{3}}",
+      "problem_id": "12B_15"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "5",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "5",
+      "problem_id": "12B_16"
+    },
+    {
+      "answer_category": [
+        "fraction"
+      ],
+      "canonical_answer_key": "\\frac{1}{105}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{1}{105}",
+      "problem_id": "12B_17"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "320",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "320",
+      "problem_id": "12B_18"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "911",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "911",
+      "problem_id": "12B_20"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "154",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "154",
+      "problem_id": "12B_21"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "15",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "15",
+      "problem_id": "12B_22"
+    },
+    {
+      "answer_category": [
+        "fraction",
+        "radical"
+      ],
+      "canonical_answer_key": "\\frac{1+\\sqrt{2}}{2}",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "\\frac{1 + \\sqrt{2}}{2}",
+      "problem_id": "12B_23"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "3",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "3",
+      "problem_id": "12B_24"
+    },
+    {
+      "answer_category": [
+        "integer"
+      ],
+      "canonical_answer_key": "247",
+      "normalizer_version": "amc24_text_normalizer_v1",
+      "original_answer": "247",
+      "problem_id": "12B_25"
+    }
+  ]
+}

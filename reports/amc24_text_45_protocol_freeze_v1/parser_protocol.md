@@ -2,6 +2,8 @@
 
 Parser path: `evaluation/amc_source_answer_parser.py`.
 
+Normalizer version: `amc24_text_normalizer_v1`.
+
 ## Ground Truth
 
 The public source uses answer strings, not multiple-choice labels. The answer space is therefore the open set of upstream source answer strings.
@@ -30,4 +32,4 @@ Normalization is intentionally limited:
 
 For Avg@8, parser failure is incorrect.
 
-For Maj@8, parser failures do not vote; the eight-response denominator remains fixed. If the remaining parsed answers do not have a unique modal answer, the problem prediction is unresolved and scored incorrect.
+For Maj@8, parser failures do not vote; the eight-response denominator remains fixed. If the remaining canonical answer keys do not have a unique modal answer, the problem prediction is unresolved and scored incorrect.
