@@ -1,0 +1,18 @@
+{
+  "audit_timestamp_utc": "2026-08-17",
+  "gpu_query": "nvidia-smi --query-gpu=index,name,uuid,memory.total,memory.used,utilization.gpu --format=csv,noheader,nounits",
+  "occupied_gpu_excluded": {
+    "physical_gpu": 0,
+    "memory_used_mib": 18409,
+    "process_pid": 201464,
+    "process_name": "python"
+  },
+  "idle_candidate_mapping_if_unblocked": {
+    "FP16": 1,
+    "KIVI": 2,
+    "PatternKV": 3,
+    "CAUSAL_V4_25": 4
+  },
+  "mapping_used_for_generation": false,
+  "reason_not_used": "AMC24 dataset/protocol Gate 0 blocked before model loading or generation."
+}

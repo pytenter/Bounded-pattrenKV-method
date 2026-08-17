@@ -1,0 +1,28 @@
+{
+  "classification": "AMC24_LONG_COT_GENERALIZATION_V1_BLOCKED",
+  "head_before": "d80d164f7cc72fbadba49fb1abf8efeacc00ff3d",
+  "system_track": "FROZEN",
+  "new_system_experiments_run": false,
+  "new_amc24_generations_run": false,
+  "model_loaded": false,
+  "cuda_workloads_run": false,
+  "frozen_causal_algorithm_checkpoint": "c73aeed3247c136859f695d5b238eeb357434b17",
+  "frozen_system_release": "8d60485b5d2c93b7c1d478efc449de56d28159c3",
+  "release_unchanged": true,
+  "blocking_gates": [
+    "AMC24 canonical dataset source/split/problem IDs absent",
+    "AMC24 ground-truth representation absent",
+    "AMC24 PatternKV-comparable protocol absent",
+    "AMC24 answer parser contract and tests cannot be established"
+  ],
+  "gpu_mapping_audited": true,
+  "candidate_idle_gpus": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "full_run_status": "NOT_RUN",
+  "quality_freeze_status": "QUALITY_EVIDENCE_GAPS_REMAIN",
+  "next_required_action": "Establish and commit a canonical AMC24 dataset/protocol manifest before any AMC24 model generation."
+}

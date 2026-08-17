@@ -1,0 +1,15 @@
+{
+  "status": "NOT_RUN",
+  "gate": "GATE_4_FIXED_SMALL_SUBSET",
+  "planned_problems": 10,
+  "planned_responses_per_problem": 2,
+  "methods": [
+    "FP16",
+    "KIVI",
+    "PatternKV",
+    "CAUSAL_V4_25"
+  ],
+  "reason": "Gate 0 blocked; no canonical AMC24 dataset or protocol exists locally.",
+  "model_loaded": false,
+  "new_generations_run": false
+}

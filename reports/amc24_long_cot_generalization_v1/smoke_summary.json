@@ -1,0 +1,13 @@
+{
+  "status": "NOT_RUN",
+  "gate": "GATE_2_TINY_SEMANTIC_SMOKE",
+  "planned_problems": 5,
+  "planned_responses_per_problem": 1,
+  "methods": [
+    "FP16",
+    "CAUSAL_V4_25"
+  ],
+  "reason": "Blocked by unresolved AMC24 dataset identity, ground-truth mapping, protocol, and parser contract.",
+  "model_loaded": false,
+  "new_generations_run": false
+}

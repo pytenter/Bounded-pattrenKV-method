@@ -1,0 +1,13 @@
+{
+  "status": "NOT_RUN",
+  "reason": "No AMC24 generations exist because Gate 0 is blocked.",
+  "planned_analysis": {
+    "avg8": "paired bootstrap over per-question mean correctness across eight responses",
+    "maj8": "paired bootstrap over per-question majority correctness",
+    "comparisons": [
+      "CAUSAL_V4_25 - FP16",
+      "CAUSAL_V4_25 - KIVI",
+      "CAUSAL_V4_25 - PatternKV"
+    ]
+  }
+}

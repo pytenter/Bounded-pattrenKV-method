@@ -1,0 +1,17 @@
+{
+  "status": "NOT_RUN",
+  "gate": "GATE_5_FULL_AMC24",
+  "problem_count": null,
+  "responses_per_problem": 8,
+  "methods": [
+    "FP16",
+    "KIVI",
+    "PatternKV",
+    "CAUSAL_V4_25"
+  ],
+  "generations_per_method": null,
+  "total_generations": null,
+  "reason": "Formal generation prohibited: canonical dataset source/split/problem IDs/ground truth and AMC24 protocol are unresolved.",
+  "model_loaded": false,
+  "new_generations_run": false
+}
