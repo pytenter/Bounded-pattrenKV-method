@@ -1,0 +1,175 @@
+{
+  "audited_equivalence_caveat": {
+    "interpretation": "Exact normalized-string scoring undercounts FP16 by at least one response; majority result is left as exact-scored unless separately audited.",
+    "items": [
+      {
+        "gold": "\\frac{1+\\sqrt{2}}{2}",
+        "method": "FP16",
+        "prediction": "\\frac{\\sqrt{2}+1}{2}",
+        "problem_id": "12B_23",
+        "reason": "commutative numerator terms are mathematically equivalent",
+        "response_id": 0
+      }
+    ]
+  },
+  "benchmark_id": "amc24_text_45",
+  "classification": "AMC24_TEXT_45_N3_FAST_RESUME_COMPLETE",
+  "completion": {
+    "complete": true,
+    "completed": 540,
+    "expected": 540,
+    "invalid": [],
+    "missing": []
+  },
+  "dataset_sha256": "59a7450d9e480a41aa0d9db6dc2d89d16b1188cdf9a1ea8fd12e19dd2033c4b9",
+  "deltas_accuracy_exact": {
+    "CAUSAL_vs_FP16": 0.07407407407407407,
+    "CAUSAL_vs_KIVI": 0.237037037037037,
+    "CAUSAL_vs_PatternKV": 0.2148148148148148
+  },
+  "deltas_majority_exact": {
+    "CAUSAL_vs_FP16": 0.0888888888888889,
+    "CAUSAL_vs_KIVI": 0.2222222222222222,
+    "CAUSAL_vs_PatternKV": 0.17777777777777776
+  },
+  "frozen_response_ids": [
+    0,
+    1,
+    2
+  ],
+  "frozen_seeds": [
+    42,
+    43,
+    44
+  ],
+  "methods": {
+    "CAUSAL": {
+      "accuracy_audited_lower_bound": 0.6666666666666666,
+      "accuracy_exact": 0.6666666666666666,
+      "audited_equivalent_false_negatives": 0,
+      "completed": 135,
+      "correct_responses_audited_lower_bound": 90,
+      "correct_responses_exact": 90,
+      "display_method": "CAUSAL-V4@25%",
+      "eos_stops": 134,
+      "expected_generations": 135,
+      "generated_tokens": {
+        "max": 32768.0,
+        "mean": 8159.740740740741,
+        "median": 6354.0
+      },
+      "length_stops": 1,
+      "majority_accuracy_exact": 0.6666666666666666,
+      "majority_correct_exact": 30,
+      "method": "CAUSAL",
+      "oom": 0,
+      "parser_failures": 0,
+      "problems": 45,
+      "responses_per_problem": 3,
+      "runtime_errors": 0,
+      "truncated": 1,
+      "wall_time_seconds": {
+        "max": 25825.8681,
+        "mean": 3997.5782148148146,
+        "median": 2417.7159
+      }
+    },
+    "FP16": {
+      "accuracy_audited_lower_bound": 0.6,
+      "accuracy_exact": 0.5925925925925926,
+      "audited_equivalent_false_negatives": 1,
+      "completed": 135,
+      "correct_responses_audited_lower_bound": 81,
+      "correct_responses_exact": 80,
+      "display_method": "FP16",
+      "eos_stops": 133,
+      "expected_generations": 135,
+      "generated_tokens": {
+        "max": 32768.0,
+        "mean": 7764.977777777778,
+        "median": 6174.0
+      },
+      "length_stops": 2,
+      "majority_accuracy_exact": 0.5777777777777777,
+      "majority_correct_exact": 26,
+      "method": "FP16",
+      "oom": 0,
+      "parser_failures": 1,
+      "problems": 45,
+      "responses_per_problem": 3,
+      "runtime_errors": 0,
+      "truncated": 2,
+      "wall_time_seconds": {
+        "max": 2082.1248,
+        "mean": 316.35332666666665,
+        "median": 205.949
+      }
+    },
+    "KIVI": {
+      "accuracy_audited_lower_bound": 0.42962962962962964,
+      "accuracy_exact": 0.42962962962962964,
+      "audited_equivalent_false_negatives": 0,
+      "completed": 135,
+      "correct_responses_audited_lower_bound": 58,
+      "correct_responses_exact": 58,
+      "display_method": "KIVI",
+      "eos_stops": 126,
+      "expected_generations": 135,
+      "generated_tokens": {
+        "max": 32768.0,
+        "mean": 10829.703703703704,
+        "median": 9156.0
+      },
+      "length_stops": 9,
+      "majority_accuracy_exact": 0.4444444444444444,
+      "majority_correct_exact": 20,
+      "method": "KIVI",
+      "oom": 0,
+      "parser_failures": 1,
+      "problems": 45,
+      "responses_per_problem": 3,
+      "runtime_errors": 0,
+      "truncated": 9,
+      "wall_time_seconds": {
+        "max": 2149.3684,
+        "mean": 703.1107348148148,
+        "median": 594.4421
+      }
+    },
+    "PatternKV": {
+      "accuracy_audited_lower_bound": 0.45185185185185184,
+      "accuracy_exact": 0.45185185185185184,
+      "audited_equivalent_false_negatives": 0,
+      "completed": 135,
+      "correct_responses_audited_lower_bound": 61,
+      "correct_responses_exact": 61,
+      "display_method": "PatternKV",
+      "eos_stops": 128,
+      "expected_generations": 135,
+      "generated_tokens": {
+        "max": 32768.0,
+        "mean": 9723.051851851851,
+        "median": 7167.0
+      },
+      "length_stops": 7,
+      "majority_accuracy_exact": 0.4888888888888889,
+      "majority_correct_exact": 22,
+      "method": "PatternKV",
+      "oom": 0,
+      "parser_failures": 2,
+      "problems": 45,
+      "responses_per_problem": 3,
+      "runtime_errors": 0,
+      "truncated": 7,
+      "wall_time_seconds": {
+        "max": 27127.3291,
+        "mean": 4603.195837037037,
+        "median": 2454.8437
+      }
+    }
+  },
+  "normalizer_version": "amc24_text_normalizer_v1",
+  "problem_count": 45,
+  "report_root": "reports/amc24_n3_fast_resume_v3",
+  "result_root": "results/amc24_text_45_four_method_quality_v1/formal"
+}

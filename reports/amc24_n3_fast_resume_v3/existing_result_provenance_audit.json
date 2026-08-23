@@ -1,0 +1,24 @@
+{
+  "benchmark_id": "amc24_text_45",
+  "causal_result": "SCIENTIFIC_MATCH",
+  "generated_at": "2026-08-23T01:12:34.638413+00:00",
+  "notes": [
+    "Existing completed JSON records are retained as historical formal outputs.",
+    "Metadata-only differences are ignored for reuse decisions.",
+    "Scoring caveat: the AMC scorer uses exact normalized-string matching rather than symbolic algebra equivalence.",
+    "Audited false negative: FP16 12B_23:r0 predicts \\\\frac{\\\\sqrt{2}+1}{2}, while the frozen gold key is \\\\frac{1+\\\\sqrt{2}}{2}; this is mathematically equivalent but counted incorrect by the current scorer.",
+    "With that audited correction only, FP16 N3 single-sample score is at least 81/135 instead of the raw 80/135; FP16 majority remains 26/45.",
+    "The CAUSAL-over-FP16 margin should be reported as an observed N3 result with scorer-normalizer limitations, not as a statistically robust superiority claim."
+  ],
+  "patternkv_result": "SCIENTIFIC_MATCH",
+  "selected_response_ids": [
+    0,
+    1,
+    2
+  ],
+  "selected_seeds": [
+    42,
+    43,
+    44
+  ]
+}
