@@ -1,0 +1,19 @@
+{
+  "answer_normalization_policy": "integer modulo 1000 string",
+  "benchmark_id": "aime25",
+  "canonical_row_count": 30,
+  "canonical_schema": [
+    "answer",
+    "dataset",
+    "problem",
+    "problem_id"
+  ],
+  "canonical_sha256": "61529c2edada0fe9dbe47a1475a6f3eabeba6d94f5747c1061f2635df64f94e9",
+  "creation_script": "scripts/assemble_aime_n3_quality_evidence.py",
+  "gate": "PASS",
+  "generation_result_dataset_hashes": [
+    "822a4c6ec6a41f65151cbc731d9d4ce2bb7bbd0f2f39bd7622be1b99d28e0d9d"
+  ],
+  "problem_id_policy": "0..29 from result records",
+  "public_source": "recovered from completed V100 generation result records"
+}
