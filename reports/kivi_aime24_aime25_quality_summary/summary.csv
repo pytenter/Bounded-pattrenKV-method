@@ -1,0 +1,3 @@
+dataset,method,result_dir,files,expected_files,completed_problems,expected_problems,correct,accuracy,failed,eos_stop,length_stop,last_result_local_time
+AIME24,KIVI_PAPER_G128,results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128,90,90,30,30,11,0.122222,0,78,12,2026-08-23 22:37:35
+AIME25,KIVI_PAPER_G128,results/aime25_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128,90,90,30,30,18,0.200000,0,81,9,2026-08-22 21:09:34
