@@ -1,0 +1,22 @@
+{
+  "aime24.CAUSAL_V4_25.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_main_quality_table_v1/method_summary.csv"
+  },
+  "aime24.FP16.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_main_quality_table_v1/method_summary.csv"
+  },
+  "aime24.KIVI_PAPER_G128.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_main_quality_table_v1/method_summary.csv"
+  },
+  "aime24.PATTERN_BASE.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_main_quality_table_v1/method_summary.csv"
+  },
+  "aime24.RANDOM_V4_25.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_main_quality_table_v1/method_summary.csv"
+  }
+}

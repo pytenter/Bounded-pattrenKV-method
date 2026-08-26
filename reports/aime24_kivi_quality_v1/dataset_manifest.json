@@ -1,0 +1,8 @@
+{
+  "benchmark": "aime24",
+  "dataset_sha256_from_results": [
+    "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f"
+  ],
+  "gate": "PASS",
+  "problem_count": 30
+}

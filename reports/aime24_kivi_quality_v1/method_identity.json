@@ -1,0 +1,12 @@
+{
+  "KIVI_PAPER_G128": {
+    "backend_methods": [
+      "kivi_paper_g128"
+    ],
+    "gate": "PASS",
+    "method_config_hashes": [
+      "a32ded9b2d918e25"
+    ],
+    "rows": 90
+  }
+}

@@ -1,0 +1,6 @@
+benchmark,eos_stops,length_stops,max_generated_tokens,mean_generated_tokens,median_generated_tokens,method,oom,p90_generated_tokens,parser_failures,runtime_errors
+aime24,84,6,32768,13597.255555555555,11511.0,FP16,0,23758,2,0
+aime24,78,12,32768,16187.333333333334,14748.0,KIVI_PAPER_G128,0,32768,7,0
+aime24,84,6,32768,13844.044444444444,12399.0,PATTERN_BASE,0,24990,1,0
+aime24,82,8,32768,14005.144444444444,12787.0,RANDOM_V4_25,0,28380,1,0
+aime24,83,7,32768,13823.1,13251.0,CAUSAL_V4_25,0,23765,1,0

@@ -1,0 +1,2 @@
+benchmark,eos_stops,length_stops,max_generated_tokens,mean_generated_tokens,median_generated_tokens,method,oom,p90_generated_tokens,parser_failures,runtime_errors
+aime24,78,12,32768,16187.333333333334,14748.0,KIVI_PAPER_G128,0,32768,7,0

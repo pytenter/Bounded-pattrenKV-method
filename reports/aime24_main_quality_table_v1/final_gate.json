@@ -1,0 +1,5 @@
+{
+  "aggregate_recomputation_gate": "PASS",
+  "cross_lineage_compatibility": "PARTIAL",
+  "main_table_gate": "PARTIAL"
+}

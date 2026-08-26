@@ -1,0 +1,15 @@
+{
+  "aime24.KIVI_PAPER_G128.response_accuracy": {
+    "canonical_field": "accuracy",
+    "canonical_file": "reports/aime24_kivi_quality_v1/method_summary.csv",
+    "dataset_sha256": "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f",
+    "method": "KIVI_PAPER_G128",
+    "method_config_hash": "a32ded9b2d918e25",
+    "row_evidence": "reports/aime24_kivi_quality_v1/canonical_rows.jsonl.gz",
+    "source_result_roots": [
+      "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128/seed42/p00.json",
+      "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128/seed42/p01.json",
+      "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128/seed42/p02.json"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "AIME24_CROSS_LINEAGE_COMPATIBILITY": "PARTIAL",
+  "AIME24_MAIN_ACCURACY": {
+    "CAUSAL_V4_25": "45/90",
+    "FP16": "45/90",
+    "KIVI_PAPER_G128": "11/90",
+    "PATTERN_BASE": "32/90",
+    "RANDOM_V4_25": "36/90"
+  },
+  "AIME25_ACCURACY": {
+    "CAUSAL_V4_25": "27/90",
+    "FP16": "30/90",
+    "KIVI_PAPER_G128": "18/90",
+    "PATTERN_BASE": "21/90"
+  },
+  "AIME25_DATASET_GATE": "PASS",
+  "AIME25_DATASET_SHA256": "61529c2edada0fe9dbe47a1475a6f3eabeba6d94f5747c1061f2635df64f94e9",
+  "AIME25_PROTOCOL_COMPARABILITY": "PARTIAL",
+  "ASSEMBLY_WORKTREE": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-aime-evidence-v1",
+  "CPU_ONLY": true,
+  "NEW_GPU_GENERATIONS": 0,
+  "SOURCE_RESULT_WORKTREE": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method",
+  "TASK": "AIME25_FOUR_METHOD_AND_AIME24_KIVI_CANONICAL_EVIDENCE_ASSEMBLY_V1"
+}

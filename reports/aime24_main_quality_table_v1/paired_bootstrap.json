@@ -1,0 +1,35 @@
+{
+  "comparisons": {
+    "CAUSAL_V4_25_minus_FP16": {
+      "ci95": [
+        -0.1111111111111111,
+        0.1111111111111111
+      ],
+      "observed_accuracy_delta": 0.0
+    },
+    "CAUSAL_V4_25_minus_KIVI_PAPER_G128": {
+      "ci95": [
+        0.25555555555555554,
+        0.5
+      ],
+      "observed_accuracy_delta": 0.3777777777777777
+    },
+    "CAUSAL_V4_25_minus_PATTERN_BASE": {
+      "ci95": [
+        0.04444444444444444,
+        0.24444444444444444
+      ],
+      "observed_accuracy_delta": 0.14444444444444443
+    },
+    "CAUSAL_V4_25_minus_RANDOM_V4_25": {
+      "ci95": [
+        -0.01111111111111111,
+        0.2111111111111111
+      ],
+      "observed_accuracy_delta": 0.1
+    }
+  },
+  "resamples": 10000,
+  "seed": 20260826,
+  "unit": "problem"
+}

@@ -1,0 +1,56 @@
+{
+  "benchmark": "aime24",
+  "comparability": "PARTIAL",
+  "fields": {
+    "dataset_sha256": [
+      "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f",
+      "None"
+    ],
+    "model_identity_hash": [
+      "6af5ef5a437b77f7fb395930f430a9a266efaa5ead3804aa92c8359e141f6185"
+    ],
+    "model_name": [
+      "DeepSeek-R1-Distill-Llama-8B"
+    ],
+    "prompt_protocol": [
+      "None",
+      "deepseek_r1_recommended"
+    ]
+  },
+  "generation_config_cross_method_gate": "PARTIAL",
+  "generation_config_hashes_by_method": {
+    "CAUSAL_V4_25": [
+      "fda7c0ebafea3955"
+    ],
+    "FP16": [
+      "3ad15a5ea5cc236d"
+    ],
+    "KIVI_PAPER_G128": [
+      "116f62b577ab007c"
+    ],
+    "PATTERN_BASE": [
+      "75c5b3cefd493322"
+    ],
+    "RANDOM_V4_25": [
+      "492fa5712211d981"
+    ]
+  },
+  "method_config_hashes_by_method": {
+    "CAUSAL_V4_25": [
+      "df086b3089b7912d"
+    ],
+    "FP16": [
+      "7cffe089a9825640"
+    ],
+    "KIVI_PAPER_G128": [
+      "a32ded9b2d918e25"
+    ],
+    "PATTERN_BASE": [
+      "fe90942e45be9e79"
+    ],
+    "RANDOM_V4_25": [
+      "ac94cabede2d69a9"
+    ]
+  },
+  "prompt_hash_per_problem_gate": "FAIL"
+}

@@ -1,0 +1,3 @@
+{
+  "note": "pooled bootstrap omitted from raw row export in this script version; use year-specific paired_bootstrap for primary claims"
+}

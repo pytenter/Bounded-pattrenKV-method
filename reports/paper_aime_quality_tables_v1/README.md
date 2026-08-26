@@ -1,0 +1,1 @@
+# Paper AIME quality tables

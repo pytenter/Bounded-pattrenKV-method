@@ -1,0 +1,30 @@
+{
+  "benchmark": "aime24",
+  "comparability": "PASS",
+  "fields": {
+    "dataset_sha256": [
+      "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f"
+    ],
+    "model_identity_hash": [
+      "6af5ef5a437b77f7fb395930f430a9a266efaa5ead3804aa92c8359e141f6185"
+    ],
+    "model_name": [
+      "DeepSeek-R1-Distill-Llama-8B"
+    ],
+    "prompt_protocol": [
+      "deepseek_r1_recommended"
+    ]
+  },
+  "generation_config_cross_method_gate": "PASS",
+  "generation_config_hashes_by_method": {
+    "KIVI_PAPER_G128": [
+      "116f62b577ab007c"
+    ]
+  },
+  "method_config_hashes_by_method": {
+    "KIVI_PAPER_G128": [
+      "a32ded9b2d918e25"
+    ]
+  },
+  "prompt_hash_per_problem_gate": "PASS"
+}
