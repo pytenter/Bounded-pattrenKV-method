@@ -1,0 +1,48 @@
+{
+  "benchmark": "aime25",
+  "comparability": "PARTIAL",
+  "fields": {
+    "dataset_sha256": [
+      "822a4c6ec6a41f65151cbc731d9d4ce2bb7bbd0f2f39bd7622be1b99d28e0d9d"
+    ],
+    "model_identity_hash": [
+      "6af5ef5a437b77f7fb395930f430a9a266efaa5ead3804aa92c8359e141f6185"
+    ],
+    "model_name": [
+      "DeepSeek-R1-Distill-Llama-8B"
+    ],
+    "prompt_protocol": [
+      "deepseek_r1_recommended"
+    ]
+  },
+  "generation_config_cross_method_gate": "PARTIAL",
+  "generation_config_hashes_by_method": {
+    "CAUSAL_V4_25": [
+      "b9fbc5449555d6be"
+    ],
+    "FP16": [
+      "40fe960ae9f758e6"
+    ],
+    "KIVI_PAPER_G128": [
+      "8caec949e01b3da2"
+    ],
+    "PATTERN_BASE": [
+      "68dec8c216bba752"
+    ]
+  },
+  "method_config_hashes_by_method": {
+    "CAUSAL_V4_25": [
+      "df086b3089b7912d"
+    ],
+    "FP16": [
+      "7cffe089a9825640"
+    ],
+    "KIVI_PAPER_G128": [
+      "a32ded9b2d918e25"
+    ],
+    "PATTERN_BASE": [
+      "547fd5d9f640c5c3"
+    ]
+  },
+  "prompt_hash_per_problem_gate": "PASS"
+}

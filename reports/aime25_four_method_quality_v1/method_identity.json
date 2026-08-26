@@ -1,0 +1,42 @@
+{
+  "CAUSAL_V4_25": {
+    "backend_methods": [
+      "patternkv"
+    ],
+    "gate": "PASS",
+    "method_config_hashes": [
+      "df086b3089b7912d"
+    ],
+    "rows": 90
+  },
+  "FP16": {
+    "backend_methods": [
+      "fp16"
+    ],
+    "gate": "PASS",
+    "method_config_hashes": [
+      "7cffe089a9825640"
+    ],
+    "rows": 90
+  },
+  "KIVI_PAPER_G128": {
+    "backend_methods": [
+      "kivi_paper_g128"
+    ],
+    "gate": "PASS",
+    "method_config_hashes": [
+      "a32ded9b2d918e25"
+    ],
+    "rows": 90
+  },
+  "PATTERN_BASE": {
+    "backend_methods": [
+      "patternkv_paper"
+    ],
+    "gate": "PASS",
+    "method_config_hashes": [
+      "547fd5d9f640c5c3"
+    ],
+    "rows": 90
+  }
+}

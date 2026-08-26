@@ -1,0 +1,8 @@
+{
+  "benchmark": "aime25",
+  "dataset_sha256_from_results": [
+    "822a4c6ec6a41f65151cbc731d9d4ce2bb7bbd0f2f39bd7622be1b99d28e0d9d"
+  ],
+  "gate": "PASS",
+  "problem_count": 30
+}

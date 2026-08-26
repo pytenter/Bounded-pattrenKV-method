@@ -1,0 +1,9 @@
+{
+  "actual_identities": 360,
+  "bad_effective_seed_count": 0,
+  "benchmark": "aime25",
+  "gate": "PASS",
+  "missing": [],
+  "planned_identities": 360,
+  "unexpected": []
+}

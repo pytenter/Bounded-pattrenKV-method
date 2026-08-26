@@ -1,0 +1,5 @@
+benchmark,method,one_of_3,three_of_3,two_of_3,zero_of_3
+aime25,FP16,4,6,4,16
+aime25,KIVI_PAPER_G128,1,3,4,22
+aime25,PATTERN_BASE,9,2,3,16
+aime25,CAUSAL_V4_25,3,6,3,18

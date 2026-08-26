@@ -1,0 +1,5 @@
+{
+  "note": "EOS-only subset is supplementary",
+  "pattern_vs_causal_transitions_file": "paired_transitions.csv",
+  "primary": "all_samples"
+}

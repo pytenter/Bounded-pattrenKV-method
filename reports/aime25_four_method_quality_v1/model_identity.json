@@ -1,0 +1,10 @@
+{
+  "gate": "PASS",
+  "model_identity_hashes": [
+    "6af5ef5a437b77f7fb395930f430a9a266efaa5ead3804aa92c8359e141f6185"
+  ],
+  "models": [
+    "DeepSeek-R1-Distill-Llama-8B"
+  ],
+  "provenance_completeness": "PARTIAL"
+}

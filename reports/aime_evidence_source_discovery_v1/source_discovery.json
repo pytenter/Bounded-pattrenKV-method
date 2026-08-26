@@ -1,0 +1,56 @@
+{
+  "assembly_worktree": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-aime-evidence-v1",
+  "roots": [
+    {
+      "accepted_rows": 90,
+      "benchmark": "aime25",
+      "duplicates": [],
+      "file_count": 90,
+      "last_mtime": 1787305833.016195,
+      "method": "FP16",
+      "relative_root": "results/aime25_full_causal25_quality_v100/formal/FP16",
+      "root": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime25_full_causal25_quality_v100/formal/FP16"
+    },
+    {
+      "accepted_rows": 90,
+      "benchmark": "aime25",
+      "duplicates": [],
+      "file_count": 90,
+      "last_mtime": 1787404174.137945,
+      "method": "KIVI_PAPER_G128",
+      "relative_root": "results/aime25_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128",
+      "root": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime25_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128"
+    },
+    {
+      "accepted_rows": 90,
+      "benchmark": "aime25",
+      "duplicates": [],
+      "file_count": 90,
+      "last_mtime": 1787643991.126445,
+      "method": "PATTERN_BASE",
+      "relative_root": "results/aime25_full_causal25_quality_v100/formal/PATTERN_BASE",
+      "root": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime25_full_causal25_quality_v100/formal/PATTERN_BASE"
+    },
+    {
+      "accepted_rows": 90,
+      "benchmark": "aime25",
+      "duplicates": [],
+      "file_count": 90,
+      "last_mtime": 1787581855.320934,
+      "method": "CAUSAL_V4_25",
+      "relative_root": "results/aime25_full_causal25_quality_v100/formal/CAUSAL_V4_25",
+      "root": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime25_full_causal25_quality_v100/formal/CAUSAL_V4_25"
+    },
+    {
+      "accepted_rows": 90,
+      "benchmark": "aime24",
+      "duplicates": [],
+      "file_count": 90,
+      "last_mtime": 1787495855.671417,
+      "method": "KIVI_PAPER_G128",
+      "relative_root": "results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128",
+      "root": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/aime24_kivi_paper_g128_quality_v100/formal/KIVI_PAPER_G128"
+    }
+  ],
+  "source_result_worktree": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method"
+}

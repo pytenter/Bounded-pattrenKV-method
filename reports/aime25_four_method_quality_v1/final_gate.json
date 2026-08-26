@@ -1,0 +1,8 @@
+{
+  "aggregate_recomputation_gate": "PASS",
+  "completeness_gate": "PASS",
+  "dataset_gate": "PASS",
+  "final_classification": "PARTIAL_PROVENANCE",
+  "model_gate": "PASS",
+  "protocol_comparability": "PARTIAL"
+}
