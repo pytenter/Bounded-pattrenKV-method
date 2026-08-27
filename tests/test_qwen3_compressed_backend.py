@@ -96,3 +96,22 @@ def test_qwen3_request_local_centroid_shape_b4():
     centroids = cache._initial_centroids(states, 32)
     assert centroids.shape == (4, 8, 32, 128)
     assert not torch.equal(centroids[0], centroids[1])
+
+
+def test_qwen3_attention_mask_drops_future_slot_not_sink_token():
+    cache = system.PatternQuantizedKVCache(
+        sink_k=torch.tensor([[[[1.0, 0.0]]]], dtype=torch.float16),
+        sink_v=torch.tensor([[[[10.0, 0.0]]]], dtype=torch.float16),
+        recent_k=torch.tensor([[[[0.0, 1.0], [1.0, 1.0]]]], dtype=torch.float16),
+        recent_v=torch.tensor([[[[0.0, 10.0], [5.0, 5.0]]]], dtype=torch.float16),
+        total_tokens=3,
+        sink_length=1,
+        recent_length=2,
+    )
+    module = SimpleNamespace(num_heads=1, num_key_value_heads=1, num_key_value_groups=1, scaling=1.0)
+    query = torch.tensor([[[[0.25, 0.75]]]], dtype=torch.float16)
+    future_mask = torch.tensor([[[[0.0, 0.0, 0.0, torch.finfo(torch.float16).min]]]], dtype=torch.float16)
+    out_masked, probs_masked = system._compressed_attention(module, query, cache, future_mask)
+    out_plain, probs_plain = system._compressed_attention(module, query, cache, None)
+    torch.testing.assert_close(probs_masked, probs_plain)
+    torch.testing.assert_close(out_masked, out_plain)

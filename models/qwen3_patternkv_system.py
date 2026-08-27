@@ -335,7 +335,11 @@ def _compressed_attention(
                 and attention_mask.shape[2] == q_len
                 and attention_mask.shape[3] >= int(cache.total_tokens)
             ):
-                attention_mask = attention_mask[:, :, :, -int(cache.total_tokens) :]
+                total_tokens = int(cache.total_tokens)
+                # Qwen3 may allocate one future causal-mask slot before the layer appends
+                # the decode token to PatternKV. Keep the logical cache prefix and drop
+                # future slots instead of right-aligning them into the cache.
+                attention_mask = attention_mask[:, :, :, :total_tokens]
             else:
                 raise ValueError(f"Qwen3 attention mask should be {expected}, got {tuple(attention_mask.size())}")
         attn_weights = attn_weights + attention_mask
