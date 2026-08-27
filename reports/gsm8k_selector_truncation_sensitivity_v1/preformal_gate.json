@@ -1,0 +1,10 @@
+{
+  "gpu2_gpu3_forbidden": true,
+  "method_identity_gate": true,
+  "model_identity_gate": true,
+  "old_evidence_gate": true,
+  "only_max_new_tokens_changed": true,
+  "same_budget_gate": true,
+  "truncation_manifest_sha256": "dfcd85be9df1d1d47b6132f2be478f5f1f036adebf0f2eeffd2b816702aa1077",
+  "union_selection_gate": true
+}

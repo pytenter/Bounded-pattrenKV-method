@@ -1,0 +1,9 @@
+{
+  "branch": "exp/gsm8k-selector-truncation-sensitivity-v1",
+  "date": "2026-08-27T08:42:25Z",
+  "head": "bd5b82659111fbe0b464b2170ed53aa38b2a33b5",
+  "hostname": "nlpg-SYS-4029GP-TRT",
+  "pwd": "/data/zypan/Bounded-pattrenKV-gsm8k-selector-truncation-sensitivity-v1",
+  "remotes": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\nbounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\norigin\thttps://github.com/HCOOOH/PatternKV.git (fetch)\norigin\thttps://github.com/HCOOOH/PatternKV.git (push)",
+  "status_short": "?? reports/gsm8k_selector_truncation_sensitivity_v1/\n?? scripts/run_gsm8k_selector_truncation_sensitivity.py\n?? tests/test_gsm8k_selector_truncation_sensitivity.py"
+}

@@ -1,0 +1,15 @@
+{
+  "batch_size": 1,
+  "chat_template_used": true,
+  "do_sample": false,
+  "dtype": "float16",
+  "new_max_new_tokens": 8192,
+  "num_beams": 1,
+  "num_return_sequences": 1,
+  "old_max_new_tokens": 2048,
+  "only_scientific_config_change": "max_new_tokens 2048 -> 8192",
+  "prompt_template": "{question}\\n\\nLet's think step by step.",
+  "temperature": null,
+  "top_p": null,
+  "use_cache": true
+}

@@ -1,0 +1,62 @@
+{
+  "methods": {
+    "causal_v4_25": {
+      "label": "CAUSAL_V4_25",
+      "patternkv_config": {
+        "base_v_bits": 2,
+        "group_size": 128,
+        "k_bits": 2,
+        "num_k_base": 32,
+        "num_v_base": 32,
+        "patternkv_cache_mode": "segmented_rolling",
+        "patternkv_cache_path": "segmented",
+        "patternkv_v4_budget_fraction": 0.25,
+        "patternkv_value_objective": "base",
+        "recent_length": 128,
+        "residual_length": 128,
+        "selected_v_bits": 4,
+        "sink_length": 16
+      },
+      "selector": "causal_v4"
+    },
+    "error_only_v4_25": {
+      "label": "ERROR_ONLY_V4_25",
+      "patternkv_config": {
+        "base_v_bits": 2,
+        "group_size": 128,
+        "k_bits": 2,
+        "num_k_base": 32,
+        "num_v_base": 32,
+        "patternkv_cache_mode": "segmented_rolling",
+        "patternkv_cache_path": "segmented",
+        "patternkv_v4_budget_fraction": 0.25,
+        "patternkv_value_objective": "base",
+        "recent_length": 128,
+        "residual_length": 128,
+        "selected_v_bits": 4,
+        "sink_length": 16
+      },
+      "selector": "error_only_v4"
+    },
+    "importance_only_v4_25": {
+      "label": "IMPORTANCE_ONLY_V4_25",
+      "patternkv_config": {
+        "base_v_bits": 2,
+        "group_size": 128,
+        "k_bits": 2,
+        "num_k_base": 32,
+        "num_v_base": 32,
+        "patternkv_cache_mode": "segmented_rolling",
+        "patternkv_cache_path": "segmented",
+        "patternkv_v4_budget_fraction": 0.25,
+        "patternkv_value_objective": "base",
+        "recent_length": 128,
+        "residual_length": 128,
+        "selected_v_bits": 4,
+        "sink_length": 16
+      },
+      "selector": "importance_only_v4"
+    }
+  },
+  "unchanged_from_source_pilot": true
+}

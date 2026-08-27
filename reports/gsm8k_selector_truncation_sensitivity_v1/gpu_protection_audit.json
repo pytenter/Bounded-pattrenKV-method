@@ -1,0 +1,97 @@
+{
+  "ACTIVE_AIME_GPU2_GPU3_UNCHANGED": true,
+  "active_aime_processes": [
+    {
+      "cwd": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+      "pid": "489065",
+      "ps": "489065 zypan     4-05:46:55 /data/zypan/.local/share/mamba/envs/patternkv/bin/python scripts/run_aime24_selector_ablation.py --worker --phase formal --method importance_only25 --physical-gpu 2"
+    },
+    {
+      "cwd": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+      "pid": "489138",
+      "ps": "489138 zypan     4-05:46:55 /data/zypan/.local/share/mamba/envs/patternkv/bin/python scripts/run_aime24_selector_ablation.py --worker --phase formal --method error_only25 --physical-gpu 3"
+    }
+  ],
+  "forbidden_gpus": [
+    "2",
+    "3"
+  ],
+  "gpu_snapshot": [
+    {
+      "gpu_util_percent": 0,
+      "index": 0,
+      "memory_free_mib": 24105,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 20,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-0c785495-3462-4b7f-5ee1-0d3ab8fe53bc"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 1,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-624f86d9-284b-cb46-a671-51d77559dab6"
+    },
+    {
+      "gpu_util_percent": 19,
+      "index": 2,
+      "memory_free_mib": 5713,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 18412,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-7d6246ed-c3d1-75bc-c2c7-d02eb2882cca"
+    },
+    {
+      "gpu_util_percent": 29,
+      "index": 3,
+      "memory_free_mib": 5737,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 18388,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-759526ed-efb2-e7f6-881c-ab098e0b05ae"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 4,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-de1f9152-32e5-a033-d2bf-ea7abecb606f"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 5,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-add0e472-fea0-71ce-f1fa-e94281d9a50e"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 6,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-07d9c381-888d-1111-a944-56abcc583573"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 7,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-de53f243-b271-521c-d875-d96611ed8574"
+    }
+  ],
+  "selected_gpus": [
+    "1",
+    "4"
+  ]
+}

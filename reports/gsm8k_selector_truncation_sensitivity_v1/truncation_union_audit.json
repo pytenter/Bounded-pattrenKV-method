@@ -1,0 +1,40 @@
+{
+  "all_three_methods_have_old_rows_for_union": true,
+  "correctness_used_for_selection": false,
+  "manifest_sha256": "dfcd85be9df1d1d47b6132f2be478f5f1f036adebf0f2eeffd2b816702aa1077",
+  "old_counts": {
+    "causal_v4_25": {
+      "errors": 0,
+      "length": 11,
+      "rows": 50
+    },
+    "error_only_v4_25": {
+      "errors": 0,
+      "length": 4,
+      "rows": 50
+    },
+    "importance_only_v4_25": {
+      "errors": 0,
+      "length": 8,
+      "rows": 50
+    }
+  },
+  "old_final_gate_pass": true,
+  "truncation_union_ids": [
+    111,
+    186,
+    359,
+    525,
+    566,
+    672,
+    731,
+    855,
+    894,
+    923,
+    991,
+    1203
+  ],
+  "truncation_union_n": 12,
+  "union_unique": true,
+  "union_uses_only_truncation_status": true
+}

@@ -1,0 +1,6 @@
+{
+  "base_commit": "bd5b82659111fbe0b464b2170ed53aa38b2a33b5",
+  "new_result_dir": "results/gsm8k_selector_truncation_sensitivity_v1",
+  "old_report_dir": "reports/gsm8k_selector_components_pilot_v1",
+  "old_result_dir": "/data/zypan/Bounded-pattrenKV-gsm8k-selector-components-pilot-v1/results/gsm8k_selector_components_pilot_v1/pilot"
+}
