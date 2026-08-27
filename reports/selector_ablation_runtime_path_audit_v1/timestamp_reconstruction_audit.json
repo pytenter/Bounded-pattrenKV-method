@@ -1,0 +1,70 @@
+{
+  "averaging_note": "mean generated tokens / mean wall time differs from mean per-sample tok/s and aggregate tok/s because ratios are nonlinear and invalid intervals are excluded.",
+  "causal_json_runtime_fields_present": true,
+  "causal_runtime": "REAL_PER_RESULT_RUNTIME_SECONDS",
+  "invalid_interval_policy": "first records, large gaps, restarts, and non-consecutive identities are invalid",
+  "preferred_timing_priority_applied": [
+    "real per-result runtime_seconds",
+    "worker-local consecutive completion timestamps"
+  ],
+  "selector_json_runtime_fields_present": false,
+  "summaries": [
+    {
+      "aggregate_tps": 1.682266491954833,
+      "confidence": [
+        "INVALID",
+        "MEDIUM"
+      ],
+      "invalid_timing_count": 1,
+      "mean_generated_tokens_all_rows": 13663.255813953489,
+      "mean_per_sample_tps": 2.083604585443833,
+      "mean_seconds_valid_rows": 8215.800964213553,
+      "median_generated_tokens_all_rows": 12025,
+      "median_per_sample_tps": 1.982885606808657,
+      "method": "importance_only25",
+      "p25_tps": 1.6737718785876334,
+      "p75_tps": 2.564112470873318,
+      "paper_grade": false,
+      "timing_type": "ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE",
+      "valid_timing_count": 42
+    },
+    {
+      "aggregate_tps": 1.7645707128576333,
+      "confidence": [
+        "INVALID",
+        "MEDIUM"
+      ],
+      "invalid_timing_count": 1,
+      "mean_generated_tokens_all_rows": 11847.5,
+      "mean_per_sample_tps": 2.186444946143314,
+      "mean_seconds_valid_rows": 6816.333215292762,
+      "median_generated_tokens_all_rows": 9900.0,
+      "median_per_sample_tps": 2.1933888618739688,
+      "method": "error_only25",
+      "p25_tps": 1.834395015528994,
+      "p75_tps": 2.5798529722401473,
+      "paper_grade": false,
+      "timing_type": "ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE",
+      "valid_timing_count": 51
+    },
+    {
+      "aggregate_tps": 8.00940968620897,
+      "confidence": [
+        "HIGH"
+      ],
+      "invalid_timing_count": 0,
+      "mean_generated_tokens_all_rows": 13823.1,
+      "mean_per_sample_tps": 8.450563333333333,
+      "mean_seconds_valid_rows": 1725.8575277777777,
+      "median_generated_tokens_all_rows": 13251.0,
+      "median_per_sample_tps": 8.5581,
+      "method": "CAUSAL_V4_25",
+      "p25_tps": 8.107225,
+      "p75_tps": 8.893525,
+      "paper_grade": true,
+      "timing_type": "REAL_PER_RESULT_RUNTIME_SECONDS",
+      "valid_timing_count": 90
+    }
+  ],
+  "timestamp_based_selector_runtime": "ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE"
+}

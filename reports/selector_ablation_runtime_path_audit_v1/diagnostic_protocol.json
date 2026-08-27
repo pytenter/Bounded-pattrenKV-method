@@ -1,0 +1,45 @@
+{
+  "fixed_identities": [
+    {
+      "base_seed": 42,
+      "problem_id": 0,
+      "sample_id": 0
+    },
+    {
+      "base_seed": 42,
+      "problem_id": 5,
+      "sample_id": 0
+    },
+    {
+      "base_seed": 42,
+      "problem_id": 10,
+      "sample_id": 0
+    },
+    {
+      "base_seed": 42,
+      "problem_id": 15,
+      "sample_id": 0
+    },
+    {
+      "base_seed": 42,
+      "problem_id": 20,
+      "sample_id": 0
+    }
+  ],
+  "methods": [
+    "importance_only25",
+    "error_only25",
+    "CAUSAL_V4_25"
+  ],
+  "policy": "Run only after selector formal completes or on confirmed idle RTX3090 without affecting formal.",
+  "prepared": true,
+  "run": false,
+  "tier1": {
+    "max_new_tokens": 2048,
+    "purpose": "short path diagnostic"
+  },
+  "tier2": {
+    "max_new_tokens": 32768,
+    "purpose": "formal-cap spot check"
+  }
+}

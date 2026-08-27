@@ -1,0 +1,17 @@
+{
+  "active_branch": "sys/causal-v4-25-kernel-v1",
+  "active_diff_sha256": "51d0ff5ce01059aaaf994eeaf4df111436955fda8059b3d0a4049ad198d51974",
+  "active_dirty": true,
+  "active_head": "1882a1d90e2bcd2478eeec2248a38ccdc0be3e0b",
+  "active_worktree": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090",
+  "diff_stat": " models/segmented_cache.py               | 21 ++++++++++++++++---\n tests/test_selective_value_precision.py | 37 +++++++++++++++++++++++++++++++--\n 2 files changed, 53 insertions(+), 5 deletions(-)\n",
+  "file_sha256": {
+    "bench/bench_aime24_patternkv.py": "ee060ba286ae1aabab08664292872f37f62dfb73d9238ef9be2954062d08ae5f",
+    "configs/aime24_selector_error_only.yaml": "404a9cb6ba8db31542a98b023e0c142e45813ec3dc44e62283aea1dfe2e1fe7c",
+    "configs/aime24_selector_importance_only.yaml": "2d5d05cb490556f4a4cdaab51daad505f38795f3c4e64b3ff57b725b6860a44d",
+    "models/segmented_cache.py": "ec0fe36704b7470e9020396039b710248a9c9d71d6ab7b8fc28b608ea7f38a1c",
+    "scripts/run_aime24_full_causal25_quality.py": "1582c3e76f8b088c16d20bbafef86d6036c52a697adb5f9ac5a77da0732450c9",
+    "scripts/run_aime24_selector_ablation.py": "92927da802f665286b4918d9352d0d3dbe0eac97de0ba5e1f22df0510c5b0c6a"
+  },
+  "note": "Active formal uses uncommitted/untracked source; audit branch is based on committed HEAD and records active source hashes as provenance."
+}

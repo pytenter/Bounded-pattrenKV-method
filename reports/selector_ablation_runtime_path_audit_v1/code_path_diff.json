@@ -1,0 +1,7 @@
+{
+  "apparent_slowdown_root_cause": "INSUFFICIENT_PROVENANCE_IMPLEMENTATION_PATH_DIFFERENCE_PLAUSIBLE",
+  "hard_identity_failure": false,
+  "hot_loop_python_sort": "'_topk_mask' loops over batch and tokens, calls .item(), sorts Python rows, then writes mask; this affects causal_v4, importance_only_v4, and error_only_v4 selectors.",
+  "local_gain_common": "local_v2_v4_gain is computed before selector branching for random_v4, causal_v4, importance_only_v4, and error_only_v4.",
+  "selector_runtime_fields_dropped": "'wall_time_seconds' and 'tokens_per_second' are produced by bench.run_task but omitted by selector compact_record"
+}

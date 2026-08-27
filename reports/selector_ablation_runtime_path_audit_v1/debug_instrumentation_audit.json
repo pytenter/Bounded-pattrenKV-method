@@ -1,0 +1,13 @@
+{
+  "debug_instrumentation_difference": "NO_ACTIVE_DEBUG_FLAG_FOUND_BUT_CODE_HAS_REFERENCE_PYTHON_TOPK",
+  "hot_terms_in_segmented_cache": {
+    ".cpu()": 1,
+    ".item()": 68,
+    ".numpy()": 0,
+    ".tolist()": 3,
+    "for t in range(tokens)": 2,
+    "sorted(": 2,
+    "torch.cuda.synchronize()": 0
+  },
+  "runtime_env_debug_flags": "No PATTERNKV debug/profiler env vars observed in active PID environ; result records do not store full instrumentation state."
+}

@@ -1,0 +1,14 @@
+{
+  "error_only25": {
+    "bad_records": [],
+    "checked_records": 52,
+    "gate": "PASS",
+    "summary": "all compact records report v4_realized_fraction exactly 0.25"
+  },
+  "importance_only25": {
+    "bad_records": [],
+    "checked_records": 43,
+    "gate": "PASS",
+    "summary": "all compact records report v4_realized_fraction exactly 0.25"
+  }
+}

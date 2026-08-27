@@ -1,0 +1,7 @@
+{
+  "current_formal_decision": "CONTINUE",
+  "partial_quality_may_enter_paper_claim": false,
+  "quality_evidence_validity": "QUALITY_EVIDENCE_VALID_BUT_RUNTIME_NONCOMPARABLE",
+  "quality_partial_provenance": true,
+  "reason": "Same-budget and selector formula gates pass by current records/code review; compact result lineage lacks model/prompt hashes and runtime fields, so provenance is partial and runtime is noncomparable."
+}

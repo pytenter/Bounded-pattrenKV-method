@@ -1,0 +1,7 @@
+{
+  "attention_path_gate": "PASS_BY_CODE_REVIEW_WITH_PROVENANCE_GAP",
+  "cache_backend_gate": "PASS_BY_CONFIG_AND_CODE_REVIEW",
+  "cache_mode": "segmented_rolling",
+  "cache_path": "segmented",
+  "fallback_to_legacy_tuple_cache_detected": false
+}

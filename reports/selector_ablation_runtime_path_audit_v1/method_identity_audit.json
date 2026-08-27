@@ -1,0 +1,14 @@
+{
+  "dataset_prompt_protocol_gate": "PARTIAL_PASS_WITH_PROVENANCE_GAP",
+  "eligible_domain_gate": "PASS_BY_CODE_REVIEW",
+  "model_identity_gate": "PARTIAL_PASS_WITH_PROVENANCE_GAP",
+  "notes": [
+    "Selector compact records omit model_path, prompt_hash, input_token_hash, prompt_protocol, and runtime fields, so result-only lineage is partial.",
+    "Active run command and runner set MODEL_PATH, DATASET_PATH, generation config, k/v bits, sink/recent/residual lengths, and v4_budget_fraction uniformly.",
+    "set_selector_task_context clears per-layer v_causal_importance and v_oracle_importance; bench.run_task resets PatternKV runtime state before each sample."
+  ],
+  "request_reset_gate": "PASS_BY_CODE_REVIEW",
+  "same_budget_gate": "PASS",
+  "selector_formula_gate": "PASS_BY_CODE_REVIEW",
+  "selector_schedule_gate": "PASS_BY_CODE_REVIEW"
+}

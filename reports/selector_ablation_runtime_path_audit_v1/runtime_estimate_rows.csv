@@ -1,0 +1,186 @@
+method,seed,problem,timing_type,confidence,seconds,generated_tokens,tokens_per_second,reason
+importance_only25,seed42,p00,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,INVALID,,7031,,first completion has no prior end timestamp
+importance_only25,seed42,p01,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,27330.88904595375,32768,1.1989364833651905,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p02,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7388.555642127991,14032,1.899153323011129,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p03,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7940.91379904747,14812,1.8652765128588515,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p04,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2486.897787809372,6214,2.498695374800149,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p05,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2125.025549173355,5382,2.532675431640633,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p06,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7712.306541919708,14319,1.8566430058465735,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p07,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5848.91304397583,12025,2.055937557899808,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p08,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1130.5677690505981,3254,2.8781998647746416,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p09,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,933.2200028896332,2747,2.9435717103085635,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p10,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2011.9774870872498,5361,2.664542736887751,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p11,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2056.105740070343,5466,2.658423588571373,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p12,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1654.740716934204,4566,2.7593446835946525,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p13,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5182.193753004074,11070,2.1361609634110676,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p14,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5209.092136859894,11135,2.1376085712149293,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p15,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,9195.263157129288,16515,1.796033426971099,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p16,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8658.142679929733,16247,1.8764994526668917,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p17,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,12736.932929039001,21244,1.6679054618844456,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p18,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1828.054207086563,5010,2.7406189491418966,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p19,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3194.906879901886,7929,2.481762473228483,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p20,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7356.722018003464,14613,1.9863466315892975,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p21,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,25400.901659965515,32768,1.290032946021196,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p22,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,11624.044826984406,20177,1.735798536595498,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p23,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,18144.96004509926,26832,1.4787577340103877,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p24,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1245.8606679439545,3467,2.7828151969205313,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p25,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5337.345874071121,11588,2.1711165574437694,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p26,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1336.4306499958038,3843,2.8755700866424054,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p27,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,10103.556208848953,18149,1.796298216671932,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p28,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,15573.035340070724,23965,1.538877905088679,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed42,p29,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,25531.99697613716,32768,1.2834092073027341,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p00,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,854.2557668685913,2480,2.90311180349514,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p01,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,12560.94240307808,20440,1.627266437826444,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p02,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,11989.922944068909,20034,1.6709031487070798,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p03,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7564.588998794556,14324,1.8935595843055824,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p04,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4613.197996139526,10189,2.208663059449537,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p05,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,26383.528712034225,32768,1.2419870123382566,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p06,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,13162.733527898788,22044,1.6747281218811514,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p07,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5920.912626028061,11720,1.9794245820280165,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p08,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1898.8522911071777,4401,2.3177158226635295,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p09,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2933.1978018283844,6625,2.258627084702696,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p10,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,12236.490982055664,19112,1.5618856768682297,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p11,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,6560.187393903732,12414,1.8923239923810886,same method worker inferred from uninterrupted consecutive completion timestamps
+importance_only25,seed43,p12,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2105.2759170532227,5672,2.694183671629683,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p00,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,INVALID,,2647,,first completion has no prior end timestamp
+error_only25,seed42,p01,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,15138.478549003601,20191,1.3337535826101197,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p02,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,6782.610218048096,13283,1.9583905860688824,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p03,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,6294.689987897873,12525,1.989772335743377,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p04,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2256.9001882076263,5709,2.529575756087798,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p05,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2155.667479991913,5424,2.516158011540977,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p06,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2533.492611885071,6347,2.5052372247801626,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p07,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3041.399465084076,7435,2.444598312505611,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p08,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,981.8489828109741,2863,2.915927041858723,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p09,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1064.588679075241,3079,2.892196827299145,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p10,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,10368.65237402916,17926,1.728864982000947,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p11,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1460.225832939148,4029,2.7591622536155342,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p12,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1947.7854180335999,5025,2.5798529722401473,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p13,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,26138.551468133926,32768,1.2536272348507214,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p14,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3887.454053878784,8912,2.292502979194796,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p15,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,6891.024178028107,13623,1.9769194894768567,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p16,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3561.073091030121,8327,2.338340097813389,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p17,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,20122.139668941498,26765,1.3301269368143662,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p18,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3864.5629889965057,8505,2.2007663024813207,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p19,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8465.461292982101,15529,1.834395015528994,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p20,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,19435.36128306389,26816,1.3797531010327888,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p21,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8079.189608097076,14665,1.815157300591452,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p22,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,9957.404775857925,16532,1.6602719656513723,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p23,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,20389.744930028915,26615,1.3053130429700897,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p24,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1048.0588719844818,3120,2.9769320058255246,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p25,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8797.684596061707,16435,1.8681051611417334,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p26,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1578.786525964737,3821,2.4202132062567046,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p27,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4536.577126979828,10250,2.2594127054605626,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p28,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8706.718080997467,16034,1.8415664606155593,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed42,p29,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,25401.324347019196,32768,1.2900114794150594,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p00,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1730.5684900283813,4523,2.6135920225415767,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p01,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,11181.199499845505,18953,1.6950775272601013,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p02,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,18140.07438802719,25932,1.4295420980806801,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p03,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4954.107956171036,10465,2.112388363875756,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p04,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,8265.490404844284,15191,1.8378824795558137,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p05,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4542.244429111481,9787,2.1546616772260445,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p06,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4035.869369983673,8915,2.2089416635494485,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p07,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,4642.322160959244,10013,2.1568946860704323,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p08,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1550.181314945221,4192,2.704199798813943,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p09,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1173.0627660751343,3422,2.9171499590336687,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p10,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,9726.017004966736,17692,1.8190385633672361,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p11,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1905.5195291042328,5221,2.7399351831646377,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p12,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1831.618397951126,5042,2.7527568000190716,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p13,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7028.423605918884,14116,2.0084162241035695,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p14,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3586.662735939026,8881,2.4761179552821435,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p15,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1055.1632540225983,3305,3.132216732719179,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p16,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,1829.1269161701202,5301,2.8981039823630117,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p17,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,5970.213593959808,13095,2.1933888618739688,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p18,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,2322.0926480293274,6356,2.7371862209693045,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p19,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,3480.079828977585,8805,2.530114374585145,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p20,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,7362.776895999908,15160,2.0590057547765994,same method worker inferred from uninterrupted consecutive completion timestamps
+error_only25,seed43,p21,ESTIMATED_FROM_COMPLETION_TIMESTAMPS_NOT_PAPER_GRADE,MEDIUM,6432.7221138477325,13735,2.1351769526049695,same method worker inferred from uninterrupted consecutive completion timestamps
+CAUSAL_V4_25,seed42,p00,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,268.9265,2379,8.8463,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p01,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4948.6656,32768,6.6216,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p02,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1322.8721,11352,8.5813,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p03,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1414.3083,12029,8.5052,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p04,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2699.0536,21313,7.8965,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p05,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,3154.2886,23765,7.5342,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p06,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1079.6926,8697,8.0551,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p07,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,234.545,2141,9.1283,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p08,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1160.109,9894,8.5285,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p09,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,295.3684,2592,8.7755,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p10,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2056.7398,16575,8.0589,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p11,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,600.2062,5246,8.7403,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p12,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1552.9791,13163,8.476,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p13,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1842.4557,15686,8.5136,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p14,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1681.5143,14477,8.6095,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p15,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1374.0503,12010,8.7406,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p16,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,447.0551,4131,9.2405,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p17,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2724.909,21190,7.7764,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p18,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1996.9002,16798,8.412,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p19,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1204.4232,10673,8.8615,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p20,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2583.1308,20961,8.1146,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p21,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1662.4223,14171,8.5243,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p22,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4669.9184,32768,7.0168,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p23,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,795.223,7209,9.0654,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p24,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,336.3576,3119,9.2729,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p25,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1601.4176,13842,8.6436,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p26,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,451.9396,4221,9.3397,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p27,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,737.5958,6684,9.0619,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p28,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2646.2083,21297,8.0481,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed42,p29,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1668.7955,14380,8.617,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p00,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,260.7286,2429,9.3162,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p01,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2722.6716,21610,7.9371,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p02,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1546.2366,13494,8.727,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p03,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1590.2448,13811,8.6848,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p04,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4697.1514,32768,6.9761,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p05,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,3560.478,26424,7.4215,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p06,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2373.7378,19192,8.0851,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p07,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1201.4445,10392,8.6496,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p08,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,550.9723,4900,8.8934,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p09,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,570.6644,5081,8.9037,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p10,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2423.603,19407,8.0075,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p11,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,453.4662,3821,8.4262,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p12,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1042.825,9166,8.7896,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p13,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1110.8449,9566,8.6115,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p14,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1596.675,13301,8.3304,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p15,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2156.1373,17534,8.1321,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p16,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,768.2122,6791,8.84,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p17,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1503.0216,12704,8.4523,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p18,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1461.8995,11929,8.1599,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p19,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,667.4749,5856,8.7734,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p20,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4885.595,32768,6.7071,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p21,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2556.2329,19351,7.5701,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p22,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,902.0345,8100,8.9797,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p23,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2004.7158,16312,8.1368,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p24,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,359.902,3316,9.2136,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p25,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4690.1035,32768,6.9866,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p26,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,747.3069,6762,9.0485,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p27,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1238.7572,10320,8.3309,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p28,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,3065.5781,23753,7.7483,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed43,p29,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1549.9193,13201,8.5172,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p00,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,370.2733,3450,9.3174,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p01,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4724.3782,32768,6.9359,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p02,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,708.2406,6264,8.8445,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p03,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1111.7785,9888,8.8939,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p04,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1379.5245,12159,8.8139,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p05,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2406.2282,19626,8.1563,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p06,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2702.7707,21952,8.122,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p07,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,609.3285,5679,9.3201,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p08,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,563.6716,5206,9.2359,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p09,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,293.6946,2750,9.3635,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p10,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1584.8925,13756,8.6795,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p11,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,531.2867,4923,9.2662,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p12,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,518.6688,4819,9.2911,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p13,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1961.6713,16690,8.5081,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p14,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2524.2732,20736,8.2146,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p15,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1831.7731,15748,8.5971,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p16,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4234.9767,30166,7.1231,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p17,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1274.0005,11464,8.9984,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p18,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1168.673,10523,9.0042,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p19,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,675.0564,6316,9.3563,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p20,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2811.1355,22662,8.0615,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p21,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1791.2465,15501,8.6538,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p22,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,4617.3493,32768,7.0967,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p23,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1830.1829,15696,8.5762,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p24,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,340.2882,3278,9.633,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p25,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1825.6896,15165,8.3065,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p26,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1773.8925,14515,8.1826,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p27,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1717.2737,14662,8.538,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p28,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,2318.5187,18451,7.9581,recorded runtime_seconds/tokens_per_second in canonical JSON
+CAUSAL_V4_25,seed44,p29,REAL_PER_RESULT_RUNTIME_SECONDS,HIGH,1655.7334,14140,8.54,recorded runtime_seconds/tokens_per_second in canonical JSON

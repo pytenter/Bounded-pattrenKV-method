@@ -1,0 +1,9 @@
+{
+  "cache_flush_count": "NOT_RECORDED_IN_RESULT_JSON",
+  "error_gain_compute_count": "NOT_RECORDED_IN_RESULT_JSON",
+  "evidence": "select_value_precision_mask is invoked for mixed V precision during packed V cache update; all three selectors share _budget_k, local_v2_v4_gain, and _topk_mask.",
+  "gate": "PASS_BY_CODE_REVIEW_WITH_MISSING_COUNTERS",
+  "importance_update_count": "NOT_RECORDED_IN_RESULT_JSON",
+  "selector_invocation_count": "NOT_RECORDED_IN_RESULT_JSON",
+  "topk_invocation_count": "NOT_RECORDED_IN_RESULT_JSON"
+}

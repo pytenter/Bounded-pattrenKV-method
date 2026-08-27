@@ -1,0 +1,278 @@
+{
+  "CAUSAL_V4_25": {
+    "completed": 90,
+    "config_name": [
+      "pattern_rolling_k2v2_s16_r128_causal_v4_b025"
+    ],
+    "do_sample": "MISSING_IN_COMPACT_RECORDS",
+    "duplicate_identities": false,
+    "experiment_id": [
+      "aime24_full_causal25_quality_formal"
+    ],
+    "formal_config_hash": [
+      "35fdc9fe0d9dda5e"
+    ],
+    "git_commit": [
+      "96e042ddde0b833209ede6e3308391c9cd322d9e",
+      "e3fe0d3df798f3b0c0b86035be3539a4feb4681b"
+    ],
+    "group_size": "MISSING_IN_COMPACT_RECORDS",
+    "k_bits": "MISSING_IN_COMPACT_RECORDS",
+    "max_new_tokens": "MISSING_IN_COMPACT_RECORDS",
+    "method": [
+      "CAUSAL_V4_25"
+    ],
+    "method_config_hash": [
+      "df086b3089b7912d"
+    ],
+    "method_label": "MISSING_IN_COMPACT_RECORDS",
+    "num_k_base": "MISSING_IN_COMPACT_RECORDS",
+    "num_v_base": "MISSING_IN_COMPACT_RECORDS",
+    "phase": [
+      "formal"
+    ],
+    "recent_length": "MISSING_IN_COMPACT_RECORDS",
+    "residual_length": "MISSING_IN_COMPACT_RECORDS",
+    "root": "results/aime24_full_causal25_quality_4gpu/formal/CAUSAL_V4_25",
+    "selected_v_bits": "MISSING_IN_COMPACT_RECORDS",
+    "selector": "MISSING_IN_COMPACT_RECORDS",
+    "sink_length": "MISSING_IN_COMPACT_RECORDS",
+    "temperature": "MISSING_IN_COMPACT_RECORDS",
+    "top_p": "MISSING_IN_COMPACT_RECORDS",
+    "v4_budget_fraction": "MISSING_IN_COMPACT_RECORDS",
+    "v_bits": "MISSING_IN_COMPACT_RECORDS"
+  },
+  "PATTERN_BASE": {
+    "completed": 90,
+    "config_name": [
+      "pattern_rolling_k2v2_s16_r128"
+    ],
+    "do_sample": "MISSING_IN_COMPACT_RECORDS",
+    "duplicate_identities": false,
+    "experiment_id": [
+      "aime24_full_causal25_quality_formal"
+    ],
+    "formal_config_hash": [
+      "35fdc9fe0d9dda5e"
+    ],
+    "git_commit": [
+      "e3fe0d3df798f3b0c0b86035be3539a4feb4681b"
+    ],
+    "group_size": "MISSING_IN_COMPACT_RECORDS",
+    "k_bits": "MISSING_IN_COMPACT_RECORDS",
+    "max_new_tokens": "MISSING_IN_COMPACT_RECORDS",
+    "method": [
+      "PATTERN_BASE"
+    ],
+    "method_config_hash": [
+      "fe90942e45be9e79"
+    ],
+    "method_label": "MISSING_IN_COMPACT_RECORDS",
+    "num_k_base": "MISSING_IN_COMPACT_RECORDS",
+    "num_v_base": "MISSING_IN_COMPACT_RECORDS",
+    "phase": [
+      "formal"
+    ],
+    "recent_length": "MISSING_IN_COMPACT_RECORDS",
+    "residual_length": "MISSING_IN_COMPACT_RECORDS",
+    "root": "results/aime24_full_causal25_quality_4gpu/formal/PATTERN_BASE",
+    "selected_v_bits": "MISSING_IN_COMPACT_RECORDS",
+    "selector": "MISSING_IN_COMPACT_RECORDS",
+    "sink_length": "MISSING_IN_COMPACT_RECORDS",
+    "temperature": "MISSING_IN_COMPACT_RECORDS",
+    "top_p": "MISSING_IN_COMPACT_RECORDS",
+    "v4_budget_fraction": "MISSING_IN_COMPACT_RECORDS",
+    "v_bits": "MISSING_IN_COMPACT_RECORDS"
+  },
+  "RANDOM_V4_25": {
+    "completed": 90,
+    "config_name": [
+      "pattern_rolling_k2v2_s16_r128_random_v4_b025"
+    ],
+    "do_sample": "MISSING_IN_COMPACT_RECORDS",
+    "duplicate_identities": false,
+    "experiment_id": [
+      "aime24_full_causal25_quality_formal"
+    ],
+    "formal_config_hash": [
+      "35fdc9fe0d9dda5e"
+    ],
+    "git_commit": [
+      "96e042ddde0b833209ede6e3308391c9cd322d9e",
+      "e3fe0d3df798f3b0c0b86035be3539a4feb4681b"
+    ],
+    "group_size": "MISSING_IN_COMPACT_RECORDS",
+    "k_bits": "MISSING_IN_COMPACT_RECORDS",
+    "max_new_tokens": "MISSING_IN_COMPACT_RECORDS",
+    "method": [
+      "RANDOM_V4_25"
+    ],
+    "method_config_hash": [
+      "ac94cabede2d69a9"
+    ],
+    "method_label": "MISSING_IN_COMPACT_RECORDS",
+    "num_k_base": "MISSING_IN_COMPACT_RECORDS",
+    "num_v_base": "MISSING_IN_COMPACT_RECORDS",
+    "phase": [
+      "formal"
+    ],
+    "recent_length": "MISSING_IN_COMPACT_RECORDS",
+    "residual_length": "MISSING_IN_COMPACT_RECORDS",
+    "root": "results/aime24_full_causal25_quality_4gpu/formal/RANDOM_V4_25",
+    "selected_v_bits": "MISSING_IN_COMPACT_RECORDS",
+    "selector": "MISSING_IN_COMPACT_RECORDS",
+    "sink_length": "MISSING_IN_COMPACT_RECORDS",
+    "temperature": "MISSING_IN_COMPACT_RECORDS",
+    "top_p": "MISSING_IN_COMPACT_RECORDS",
+    "v4_budget_fraction": "MISSING_IN_COMPACT_RECORDS",
+    "v_bits": "MISSING_IN_COMPACT_RECORDS"
+  },
+  "error_only25": {
+    "completed": 52,
+    "config_name": [
+      "pattern_rolling_k2v2_s16_r128_error_only_v4_b025"
+    ],
+    "do_sample": [
+      true
+    ],
+    "duplicate_identities": false,
+    "experiment_id": [
+      "aime24_selector_ablation_formal"
+    ],
+    "formal_config_hash": [
+      "7f9e4f8ef18501cc"
+    ],
+    "git_commit": [
+      "73110593d6e4f75d51334e8a0b952d4aa4a5f4e2"
+    ],
+    "group_size": [
+      128
+    ],
+    "k_bits": [
+      2
+    ],
+    "max_new_tokens": [
+      32768
+    ],
+    "method": [
+      "error_only25"
+    ],
+    "method_config_hash": [
+      "4ba2ba941aae3a79"
+    ],
+    "method_label": [
+      "Error-only25"
+    ],
+    "num_k_base": [
+      32
+    ],
+    "num_v_base": [
+      32
+    ],
+    "phase": [
+      "formal"
+    ],
+    "recent_length": [
+      128
+    ],
+    "residual_length": [
+      128
+    ],
+    "root": "results/aime24_selector_ablation/error_only/formal",
+    "selected_v_bits": [
+      4
+    ],
+    "selector": [
+      "error_only_v4"
+    ],
+    "sink_length": [
+      16
+    ],
+    "temperature": [
+      0.6
+    ],
+    "top_p": [
+      0.95
+    ],
+    "v4_budget_fraction": [
+      0.25
+    ],
+    "v_bits": [
+      2
+    ]
+  },
+  "importance_only25": {
+    "completed": 43,
+    "config_name": [
+      "pattern_rolling_k2v2_s16_r128_importance_only_v4_b025"
+    ],
+    "do_sample": [
+      true
+    ],
+    "duplicate_identities": false,
+    "experiment_id": [
+      "aime24_selector_ablation_formal"
+    ],
+    "formal_config_hash": [
+      "8d2bb00c213eee1d"
+    ],
+    "git_commit": [
+      "73110593d6e4f75d51334e8a0b952d4aa4a5f4e2"
+    ],
+    "group_size": [
+      128
+    ],
+    "k_bits": [
+      2
+    ],
+    "max_new_tokens": [
+      32768
+    ],
+    "method": [
+      "importance_only25"
+    ],
+    "method_config_hash": [
+      "79d145ab32809994"
+    ],
+    "method_label": [
+      "Importance-only25"
+    ],
+    "num_k_base": [
+      32
+    ],
+    "num_v_base": [
+      32
+    ],
+    "phase": [
+      "formal"
+    ],
+    "recent_length": [
+      128
+    ],
+    "residual_length": [
+      128
+    ],
+    "root": "results/aime24_selector_ablation/importance_only/formal",
+    "selected_v_bits": [
+      4
+    ],
+    "selector": [
+      "importance_only_v4"
+    ],
+    "sink_length": [
+      16
+    ],
+    "temperature": [
+      0.6
+    ],
+    "top_p": [
+      0.95
+    ],
+    "v4_budget_fraction": [
+      0.25
+    ],
+    "v_bits": [
+      2
+    ]
+  }
+}

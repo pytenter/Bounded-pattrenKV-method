@@ -1,0 +1,5 @@
+intersection,aligned_n,method_correct,reference_correct,method_accuracy,reference_accuracy,delta_correct,selector_only,reference_only,both_correct,both_wrong
+importance_only25_intersect_CAUSAL_V4_25,43,19,22,0.4418604651162791,0.5116279069767442,-3,4,7,15,17
+error_only25_intersect_CAUSAL_V4_25,52,29,26,0.5576923076923077,0.5,3,9,6,20,17
+importance_error_causal_common,43,,,,,,,,,
+importance_error_causal_random_common,43,,,,,,,,,
