@@ -15,17 +15,17 @@ class Qwen3SystemGate:
     model: str = "Qwen3-8B"
     fp16_backend: str = "qwen3_native_eager_fp16"
     causal_backend: str = "qwen3_patternkv_compressed"
-    compressed_domain_runtime_preserved: bool = False
+    compressed_domain_runtime_preserved: bool = True
     historical_fp16_k_materialization: int = 0
     historical_fp16_v_materialization: int = 0
     fallback_count: int = 0
     true_batch_preserved: bool = False
-    classification: str = "QWEN_COMPRESSED_BACKEND_REQUIRES_GPU_SEMANTIC_AND_TRUE_BATCH_CLOSURE"
+    classification: str = "QWEN_COMPRESSED_TRUE_BATCH_B2_FAIL"
     formal_timing_allowed: bool = False
     reason: str = (
-        "A Qwen3 compressed backend scaffold is present and its static counters do not "
-        "record full historical K/V materialization, but GPU semantic parity, "
-        "full-model true-batch decode, and timed-window purity gates are not closed."
+        "B1 semantic parity is closed on GPU4 with compressed historical K/V materialization at zero, "
+        "but full-model B2 true-batch decode fails in the legacy CUDA QK reader because request-local "
+        "centroids are [B,H,M,D] while the kernel only accepts [H,M,D]."
     )
 
 def write_json(path: Path, payload: Any) -> None:

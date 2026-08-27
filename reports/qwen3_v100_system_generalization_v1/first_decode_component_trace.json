@@ -1,0 +1,119 @@
+{
+  "first_component": "layer_output",
+  "layer": 7,
+  "qkv_projection_summaries": {
+    "k_norm": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 8.3984375,
+      "mean": 0.06627339869737625,
+      "min": -6.2109375,
+      "present": true,
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ],
+      "std": 1.8014405965805054,
+      "sum": 67.86396026611328
+    },
+    "k_projection": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 5.796875,
+      "mean": 0.03393448889255524,
+      "min": -5.0703125,
+      "present": true,
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ],
+      "std": 1.402274250984192,
+      "sum": 34.74891662597656
+    },
+    "q_norm": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 10.3515625,
+      "mean": -0.0035597393289208412,
+      "min": -6.078125,
+      "present": true,
+      "shape": [
+        1,
+        32,
+        1,
+        128
+      ],
+      "std": 1.5242952108383179,
+      "sum": -14.580692291259766
+    },
+    "q_projection": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 11.2109375,
+      "mean": 0.023951184004545212,
+      "min": -10.8828125,
+      "present": true,
+      "shape": [
+        1,
+        32,
+        1,
+        128
+      ],
+      "std": 1.3616633415222168,
+      "sum": 98.10404968261719
+    },
+    "rope_k": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 8.3984375,
+      "mean": 0.04017484188079834,
+      "min": -6.21875,
+      "present": true,
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ],
+      "std": 1.8021998405456543,
+      "sum": 41.1390380859375
+    },
+    "rope_q": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 10.3515625,
+      "mean": 0.012509508989751339,
+      "min": -6.0546875,
+      "present": true,
+      "shape": [
+        1,
+        32,
+        1,
+        128
+      ],
+      "std": 1.5241893529891968,
+      "sum": 51.238948822021484
+    },
+    "scaling": 0.08838834764831845,
+    "v_projection": {
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "max": 2.755859375,
+      "mean": 0.06216496229171753,
+      "min": -4.94921875,
+      "present": true,
+      "shape": [
+        1,
+        8,
+        1,
+        128
+      ],
+      "std": 0.8343063592910767,
+      "sum": 63.65692138671875
+    }
+  }
+}

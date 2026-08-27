@@ -1,0 +1,32 @@
+{
+  "b1_max_logits_rel_l2": 0.22561141848564148,
+  "b1_no_nan_inf": true,
+  "b1_reference_vs_compressed": "PASS",
+  "b1_token_parity": true,
+  "b1_top1_parity": true,
+  "backend_after": "CUDA_COMPRESSED_LEGACY_MASK_ALIGNED",
+  "backend_before": "CUDA_COMPRESSED_LEGACY",
+  "backend_readiness": "FAIL",
+  "blockers": [
+    "B2 full-model true-batch decode fails because legacy CUDA QK reader requires centroids [nh_kv,M,D] but request-local true-batch centroids are [B,nh_kv,M,D].",
+    "Fused-page V backend symbol remains unavailable: patternkv_gemv.attn_v_forward_cuda_page_mixed_pool."
+  ],
+  "classification": "QWEN_COMPRESSED_TRUE_BATCH_B2_FAIL",
+  "fallback": 0,
+  "formal_timing_allowed": false,
+  "historical_fp16_k_materialization_calls": 0,
+  "historical_fp16_k_materialized_bytes": 0,
+  "historical_fp16_v_materialization_calls": 0,
+  "historical_fp16_v_materialized_bytes": 0,
+  "model": "Qwen3-8B",
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "serial_attention_dispatch": 0,
+  "serial_request_dispatch": 0,
+  "supported_conclusion": "B1 semantic parity is fixed and compressed path keeps historical K/V materialization at zero, but backend readiness is not established because B2 true-batch fails before request invariance and timed-window gates can run.",
+  "timed_window_b1": "NOT_RUN",
+  "timed_window_b4": "NOT_RUN",
+  "true_batch_b2": "FAIL",
+  "true_batch_b2_classification": "TRUE_BATCH_B2_RUNTIME_FAIL",
+  "true_batch_b2_error": "RuntimeError('centroids must be [nh_kv, M, IC]')",
+  "true_batch_b4": "NOT_RUN"
+}

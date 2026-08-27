@@ -1,0 +1,248 @@
+# true_batch_b2_reclosure
+
+```json
+{
+  "b2": {
+    "batch": 2,
+    "counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 72,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 36,
+      "prefill_tokens": 18432,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 0,
+      "real_decode_new_pages_allocated": 144,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 72,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "decode": 8,
+    "error": "RuntimeError('centroids must be [nh_kv, M, IC]')",
+    "status": "FAIL",
+    "traceback_tail": [
+      "    return forward_call(*args, **kwargs)",
+      "  File \"/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1/models/qwen3_patternkv_system.py\", line 457, in forward",
+      "    attn_output, attn_weights = _compressed_attention(self, query_states, layer_cache, attention_mask)",
+      "  File \"/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1/models/qwen3_patternkv_system.py\", line 288, in _compressed_attention",
+      "    packed_scores = cuda_bmm_fA_qB_outer_with_base(",
+      "  File \"/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1/quant/matmul.py\", line 559, in cuda_bmm_fA_qB_outer_with_base",
+      "    out = patternkv_gemv.gemv_forward_cuda_outer_dim_with_base(",
+      "RuntimeError: centroids must be [nh_kv, M, IC]"
+    ]
+  },
+  "classification": "TRUE_BATCH_B2_RUNTIME_FAIL",
+  "decode": 8,
+  "independent_b1": [
+    {
+      "batch": 1,
+      "counters": {
+        "fallback_count": 0,
+        "historical_fp16_k_materialization_calls": 0,
+        "historical_fp16_k_materialized_bytes": 0,
+        "historical_fp16_v_materialization_calls": 0,
+        "historical_fp16_v_materialized_bytes": 0,
+        "membership_changes": 0,
+        "page_batch_accumulate_calls": 0,
+        "page_batch_attention_slice_calls": 0,
+        "page_batch_gpu_tensor_item_calls": 0,
+        "page_batch_historical_v_materialization_bytes": 0,
+        "page_batch_host_sync_item_calls": 0,
+        "page_batch_logical_pages_processed": 0,
+        "page_batch_matmul_calls": 0,
+        "page_batch_page_batch_decode_calls": 0,
+        "page_batch_page_batch_pack_calls": 72,
+        "page_batch_page_value_materialization_calls": 0,
+        "page_batch_page_value_materialized_bytes": 0,
+        "page_batch_python_serial_b1_dispatches": 0,
+        "page_batch_repeat_kv_calls": 0,
+        "page_batch_v2_pages_processed": 0,
+        "page_batch_v2_tokens_processed": 0,
+        "page_batch_v4_pages_processed": 0,
+        "page_batch_v4_tokens_processed": 0,
+        "page_local_v_materialization_calls": 0,
+        "page_local_v_materialized_bytes": 0,
+        "prefill_calls": 36,
+        "prefill_tokens": 18432,
+        "real_decode_fused_page_operator_calls": 0,
+        "real_decode_gpu_tensor_item_calls_hot_path": 0,
+        "real_decode_historical_v_materialization_bytes": 0,
+        "real_decode_legacy_mixed_v_operator_calls": 288,
+        "real_decode_new_pages_allocated": 72,
+        "real_decode_operator_ready_pool_full_rebuilds": 0,
+        "real_decode_operator_ready_pool_incremental_updates": 72,
+        "real_decode_page_value_materialization_bytes": 0,
+        "real_decode_python_page_dispatches": 0,
+        "real_decode_real_decode_steps": 0,
+        "real_decode_serial_b1_dispatches": 0,
+        "refill_calls": 0,
+        "serial_attention_dispatches": 0,
+        "serial_request_forward_dispatches": 0
+      },
+      "decode": 8,
+      "no_nan_inf": true,
+      "stats0": {
+        "cache_mode": "segmented_rolling",
+        "chunk_length": 128,
+        "chunk_tokens": 0,
+        "k_assignment_tokens": 256,
+        "packed_history_tokens": 256,
+        "pending_history_tokens": 120,
+        "recent_tokens": 128,
+        "sink_tokens": 16,
+        "total_tokens": 520,
+        "v_assignment_tokens": 256,
+        "v_pattern_mask_tokens": 256
+      },
+      "status": "PASS",
+      "tokens": [
+        [
+          323
+        ],
+        [
+          2874
+        ],
+        [
+          911
+        ],
+        [
+          43893
+        ],
+        [
+          34784
+        ],
+        [
+          15516
+        ],
+        [
+          13
+        ],
+        [
+          49795
+        ]
+      ]
+    },
+    {
+      "batch": 1,
+      "counters": {
+        "fallback_count": 0,
+        "historical_fp16_k_materialization_calls": 0,
+        "historical_fp16_k_materialized_bytes": 0,
+        "historical_fp16_v_materialization_calls": 0,
+        "historical_fp16_v_materialized_bytes": 0,
+        "membership_changes": 0,
+        "page_batch_accumulate_calls": 0,
+        "page_batch_attention_slice_calls": 0,
+        "page_batch_gpu_tensor_item_calls": 0,
+        "page_batch_historical_v_materialization_bytes": 0,
+        "page_batch_host_sync_item_calls": 0,
+        "page_batch_logical_pages_processed": 0,
+        "page_batch_matmul_calls": 0,
+        "page_batch_page_batch_decode_calls": 0,
+        "page_batch_page_batch_pack_calls": 72,
+        "page_batch_page_value_materialization_calls": 0,
+        "page_batch_page_value_materialized_bytes": 0,
+        "page_batch_python_serial_b1_dispatches": 0,
+        "page_batch_repeat_kv_calls": 0,
+        "page_batch_v2_pages_processed": 0,
+        "page_batch_v2_tokens_processed": 0,
+        "page_batch_v4_pages_processed": 0,
+        "page_batch_v4_tokens_processed": 0,
+        "page_local_v_materialization_calls": 0,
+        "page_local_v_materialized_bytes": 0,
+        "prefill_calls": 36,
+        "prefill_tokens": 18432,
+        "real_decode_fused_page_operator_calls": 0,
+        "real_decode_gpu_tensor_item_calls_hot_path": 0,
+        "real_decode_historical_v_materialization_bytes": 0,
+        "real_decode_legacy_mixed_v_operator_calls": 288,
+        "real_decode_new_pages_allocated": 72,
+        "real_decode_operator_ready_pool_full_rebuilds": 0,
+        "real_decode_operator_ready_pool_incremental_updates": 72,
+        "real_decode_page_value_materialization_bytes": 0,
+        "real_decode_python_page_dispatches": 0,
+        "real_decode_real_decode_steps": 0,
+        "real_decode_serial_b1_dispatches": 0,
+        "refill_calls": 0,
+        "serial_attention_dispatches": 0,
+        "serial_request_forward_dispatches": 0
+      },
+      "decode": 8,
+      "no_nan_inf": true,
+      "stats0": {
+        "cache_mode": "segmented_rolling",
+        "chunk_length": 128,
+        "chunk_tokens": 0,
+        "k_assignment_tokens": 256,
+        "packed_history_tokens": 256,
+        "pending_history_tokens": 120,
+        "recent_tokens": 128,
+        "sink_tokens": 16,
+        "total_tokens": 520,
+        "v_assignment_tokens": 256,
+        "v_pattern_mask_tokens": 256
+      },
+      "status": "PASS",
+      "tokens": [
+        [
+          323
+        ],
+        [
+          2874
+        ],
+        [
+          911
+        ],
+        [
+          43893
+        ],
+        [
+          34784
+        ],
+        [
+          15516
+        ],
+        [
+          13
+        ],
+        [
+          49795
+        ]
+      ]
+    }
+  ],
+  "serial_attention_dispatches": 0,
+  "serial_request_forward_dispatches": 0,
+  "status": "FAIL"
+}
+```

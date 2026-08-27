@@ -1,0 +1,12 @@
+{
+  "b1_reclosure_status": "PASS",
+  "b2_blocker": "RuntimeError('centroids must be [nh_kv, M, IC]')",
+  "controlled_substitution": "mask probe showed pre-fix actual mask vs no-mask attention output rel_l2 0.4354763; after prefix slicing actual mask vs no-mask rel_l2 0.0",
+  "dominant_root_cause": "ATTENTION_MASK_FUTURE_SLOT_ALIGNMENT_DRIFT",
+  "first_decode_logits_rel_l2_after": 0.014264937490224838,
+  "first_decode_logits_rel_l2_before": 0.40075185894966125,
+  "legacy_v_classification": "LEGACY_CUDA_V_READER_CORRECT",
+  "qk_classification": "PASS",
+  "softmax_classification": "PASS",
+  "status": "ROOT_CAUSE_IDENTIFIED_AND_FIXED_FOR_B1"
+}

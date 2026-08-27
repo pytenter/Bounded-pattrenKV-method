@@ -1,0 +1,104 @@
+# first_decode_mask_probe_v1
+
+```json
+{
+  "decode_token": 323,
+  "mask": {
+    "dtype": "torch.float16",
+    "max": -0.0,
+    "min": -65504.0,
+    "neg_inf_like_count": 0,
+    "present": true,
+    "shape": [
+      1,
+      1,
+      1,
+      514
+    ],
+    "tail_values": [
+      -0.0,
+      -0.0,
+      -0.0,
+      -0.0,
+      -0.0,
+      -0.0,
+      -0.0,
+      -65504.0
+    ],
+    "zero_count": 513
+  },
+  "out_actual_vs_mask_replay": {
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      32,
+      1,
+      128
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      128
+    ]
+  },
+  "out_actual_vs_none": {
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      32,
+      1,
+      128
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      128
+    ]
+  },
+  "probs_actual_vs_mask_replay": {
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      32,
+      1,
+      513
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      513
+    ]
+  },
+  "probs_actual_vs_none": {
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      32,
+      1,
+      513
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      513
+    ]
+  },
+  "status": "DONE"
+}
+```

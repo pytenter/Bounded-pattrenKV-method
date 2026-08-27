@@ -1,0 +1,163 @@
+# first_decode_cache_equivalence_probe_v1
+
+```json
+{
+  "compressed_summary": {
+    "k_assign_shape": [
+      1,
+      8,
+      256
+    ],
+    "k_centroids_shape": [
+      8,
+      32,
+      128
+    ],
+    "stats": {
+      "cache_mode": "segmented_rolling",
+      "chunk_length": 128,
+      "chunk_tokens": 0,
+      "k_assignment_tokens": 256,
+      "packed_history_tokens": 256,
+      "pending_history_tokens": 113,
+      "recent_tokens": 128,
+      "sink_tokens": 16,
+      "total_tokens": 513,
+      "v_assignment_tokens": 256,
+      "v_pattern_mask_tokens": 256
+    },
+    "v_centroids_shape": [
+      8,
+      32,
+      128
+    ],
+    "v_idx_shape": [
+      1,
+      8,
+      256
+    ],
+    "v_mask_shape": [
+      1,
+      8,
+      256
+    ],
+    "v_precision_shape": [
+      1,
+      256
+    ],
+    "v_precision_true": 64
+  },
+  "compressed_token": 323,
+  "context": 512,
+  "full_k": {
+    "cosine": 1.000160813331604,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "present": true,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      8,
+      513,
+      128
+    ],
+    "shape_b": [
+      1,
+      8,
+      513,
+      128
+    ]
+  },
+  "full_v": {
+    "cosine": 1.0000147819519043,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "present": true,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      8,
+      513,
+      128
+    ],
+    "shape_b": [
+      1,
+      8,
+      513,
+      128
+    ]
+  },
+  "k_assignments_equal": true,
+  "logits": {
+    "cosine": 0.9435863494873047,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 7.44921875,
+    "mean_abs": 1.8395442962646484,
+    "present": true,
+    "rel_l2": 0.40075185894966125,
+    "shape_a": [
+      1,
+      151936
+    ],
+    "shape_b": [
+      1,
+      151936
+    ]
+  },
+  "reference_summary": {
+    "k_assign_shape": [
+      1,
+      8,
+      256
+    ],
+    "k_centroids_shape": [
+      8,
+      32,
+      128
+    ],
+    "stats": {
+      "cache_mode": "segmented_rolling",
+      "chunk_length": 128,
+      "chunk_tokens": 0,
+      "k_assignment_tokens": 256,
+      "packed_history_tokens": 256,
+      "pending_history_tokens": 113,
+      "recent_tokens": 128,
+      "sink_tokens": 16,
+      "total_tokens": 513,
+      "v_assignment_tokens": 256,
+      "v_pattern_mask_tokens": 256
+    },
+    "v_centroids_shape": [
+      8,
+      32,
+      128
+    ],
+    "v_idx_shape": [
+      1,
+      8,
+      256
+    ],
+    "v_mask_shape": [
+      1,
+      8,
+      256
+    ],
+    "v_precision_shape": [
+      1,
+      256
+    ],
+    "v_precision_true": 64
+  },
+  "reference_token": 323,
+  "status": "DONE",
+  "v_assignment_idx_equal": true,
+  "v_pattern_mask_equal": true,
+  "v_precision_mask_equal": true
+}
+```

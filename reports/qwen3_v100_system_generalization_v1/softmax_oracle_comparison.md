@@ -1,0 +1,51 @@
+# softmax_oracle_comparison
+
+```json
+{
+  "classification": "PASS",
+  "prob_sum_max": 1.0002232789993286,
+  "prob_sum_min": 0.9998446702957153,
+  "reference_vs_compressed_probs": {
+    "cosine": 0.9999998807907104,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 0.0006866455078125,
+    "mean_abs": 3.1727054761176987e-07,
+    "present": true,
+    "rel_l2": 0.0002845816488843411,
+    "shape_a": [
+      1,
+      32,
+      1,
+      513
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      513
+    ]
+  },
+  "segmented_vs_torch_same_scores": {
+    "cosine": 1.0,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 5.960464477539063e-08,
+    "mean_abs": 3.6308872575219198e-12,
+    "present": true,
+    "rel_l2": 1.8747783769867965e-08,
+    "shape_a": [
+      1,
+      32,
+      1,
+      513
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      513
+    ]
+  }
+}
+```

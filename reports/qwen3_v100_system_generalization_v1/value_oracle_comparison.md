@@ -1,0 +1,149 @@
+# value_oracle_comparison
+
+```json
+{
+  "fp16_tail_fusion_enabled": false,
+  "full_reference_vs_compressed_attention_value": {
+    "cosine": 0.9999998807907104,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 0.0009765625,
+    "mean_abs": 1.7725906218402088e-05,
+    "present": true,
+    "rel_l2": 0.00045475171646103263,
+    "shape_a": [
+      1,
+      32,
+      1,
+      128
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      128
+    ]
+  },
+  "historical_segments": [
+    {
+      "metrics": {
+        "cosine": 1.0,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 0.000244140625,
+        "mean_abs": 3.4132826840505004e-06,
+        "present": true,
+        "rel_l2": 0.0003052506363019347,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "packed"
+    }
+  ],
+  "manual_sum_vs_backend_compressed_value": {
+    "cosine": 1.0000001192092896,
+    "dtype_a": "torch.float16",
+    "dtype_b": "torch.float16",
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "present": true,
+    "rel_l2": 0.0,
+    "shape_a": [
+      1,
+      32,
+      1,
+      128
+    ],
+    "shape_b": [
+      1,
+      32,
+      1,
+      128
+    ]
+  },
+  "tail_segments": [
+    {
+      "metrics": {
+        "cosine": 1.0,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 0.0001220703125,
+        "mean_abs": 7.555645424872637e-07,
+        "present": true,
+        "rel_l2": 0.00035167206078767776,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "sink"
+    },
+    {
+      "metrics": {
+        "cosine": 1.0000001192092896,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 3.0517578125e-05,
+        "mean_abs": 2.6389898266643286e-07,
+        "present": true,
+        "rel_l2": 0.00014518003445118666,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "pending"
+    },
+    {
+      "metrics": {
+        "cosine": 1.0,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 0.000244140625,
+        "mean_abs": 4.583402187563479e-06,
+        "present": true,
+        "rel_l2": 0.0002561644359957427,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "recent"
+    }
+  ]
+}
+```

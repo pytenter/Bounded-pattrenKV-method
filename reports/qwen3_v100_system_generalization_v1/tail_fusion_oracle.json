@@ -1,0 +1,78 @@
+{
+  "classification": "TAIL_PYTORCH_PATH_CHECKED",
+  "fp16_tail_fusion_enabled": false,
+  "tail_segments": [
+    {
+      "metrics": {
+        "cosine": 1.0,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 0.0001220703125,
+        "mean_abs": 7.555645424872637e-07,
+        "present": true,
+        "rel_l2": 0.00035167206078767776,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "sink"
+    },
+    {
+      "metrics": {
+        "cosine": 1.0000001192092896,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 3.0517578125e-05,
+        "mean_abs": 2.6389898266643286e-07,
+        "present": true,
+        "rel_l2": 0.00014518003445118666,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "pending"
+    },
+    {
+      "metrics": {
+        "cosine": 1.0,
+        "dtype_a": "torch.float16",
+        "dtype_b": "torch.float16",
+        "max_abs": 0.000244140625,
+        "mean_abs": 4.583402187563479e-06,
+        "present": true,
+        "rel_l2": 0.0002561644359957427,
+        "shape_a": [
+          1,
+          32,
+          1,
+          128
+        ],
+        "shape_b": [
+          1,
+          32,
+          1,
+          128
+        ]
+      },
+      "name": "recent"
+    }
+  ]
+}
