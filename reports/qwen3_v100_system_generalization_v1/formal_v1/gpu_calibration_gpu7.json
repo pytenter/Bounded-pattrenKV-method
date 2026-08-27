@@ -1,0 +1,11 @@
+{
+  "CV": 0.0008678844877626015,
+  "clock_sm": "1530",
+  "gpu_uuid": "GPU-19a85b05-d946-6a04-199d-9476b68db1ec",
+  "mean_tpot_ms": 40.360687255859375,
+  "physical_gpu": 7,
+  "pstate": "P0",
+  "temperature": "31",
+  "tok_s": 24.776594369480378,
+  "valid_runs": 2
+}

@@ -1,0 +1,17 @@
+{
+  "backend": "CUDA_COMPRESSED_LEGACY",
+  "batch": 1,
+  "context": 8192,
+  "decode": 8,
+  "dtype": "torch.float16",
+  "invalid_reason": "OutOfMemoryError('CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 31.74 GiB of which 3.43 GiB is free. Process 36815 has 28.30 GiB memory in use. Of the allocated memory 27.75 GiB is allocated by PyTorch, and 187.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+  "method": "CAUSAL",
+  "model": "Qwen3-8B",
+  "phase": "warmup",
+  "physical_gpu": 5,
+  "repetition_id": 0,
+  "run_id": "context_scaling_CAUSAL_gpu5_ctx8192_b1_dec8_warmup0",
+  "run_valid": false,
+  "timestamp": "2026-08-28T00:14:55+0800",
+  "warmup": 1
+}

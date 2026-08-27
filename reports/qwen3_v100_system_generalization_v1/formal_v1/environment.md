@@ -1,0 +1,132 @@
+# Environment
+
+```json
+{
+  "TORCH_CUDA_ARCH_LIST": "7.0",
+  "attention_compute_dtype": "torch.float16",
+  "autocast_state": false,
+  "causal_model_dtype": "torch.float16",
+  "compute_capability": "sm70",
+  "extension_build_command": "CUDA_HOME=/home/qinch2023/miniconda3/envs/patternkv-v100 TORCH_CUDA_ARCH_LIST=7.0 PATH=/home/qinch2023/miniconda3/envs/patternkv-v100/bin:$PATH python setup.py build_ext --inplace",
+  "fp16_model_dtype": "torch.float16",
+  "git_branch": "exp/qwen3-8b-v100-system-formal-v1",
+  "git_head": "322059bd8952065ec29bebc5f73e1472447b4c08",
+  "gpu_query": [
+    {
+      "clocks.sm": "1530",
+      "index": "0",
+      "memory.total": "32768",
+      "memory.used": "16905",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "190.07",
+      "pstate": "P0",
+      "temperature.gpu": "53",
+      "utilization.gpu": "86",
+      "uuid": "GPU-58dbb776-4c54-7f96-dd35-e3906245f307"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "1",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "41.74",
+      "pstate": "P0",
+      "temperature.gpu": "36",
+      "utilization.gpu": "0",
+      "uuid": "GPU-d810b116-fec0-9d27-1f8a-2445b44352c8"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "2",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "41.79",
+      "pstate": "P0",
+      "temperature.gpu": "29",
+      "utilization.gpu": "0",
+      "uuid": "GPU-44f231fb-b846-27e6-2e03-2065fb9aebb2"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "3",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "40.27",
+      "pstate": "P0",
+      "temperature.gpu": "25",
+      "utilization.gpu": "0",
+      "uuid": "GPU-b9e76e6d-2dd3-d533-c5e4-5690cb4970c0"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "4",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "40.32",
+      "pstate": "P0",
+      "temperature.gpu": "27",
+      "utilization.gpu": "0",
+      "uuid": "GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "5",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "39.32",
+      "pstate": "P0",
+      "temperature.gpu": "27",
+      "utilization.gpu": "0",
+      "uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "6",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "41.28",
+      "pstate": "P0",
+      "temperature.gpu": "28",
+      "utilization.gpu": "0",
+      "uuid": "GPU-f9be145a-d8d5-a2e1-3c42-72047878fcf8"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "7",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "39.26",
+      "pstate": "P0",
+      "temperature.gpu": "28",
+      "utilization.gpu": "0",
+      "uuid": "GPU-19a85b05-d946-6a04-199d-9476b68db1ec"
+    }
+  ],
+  "head_dim": 128,
+  "hidden_size": 4096,
+  "model_config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 36,
+  "num_key_value_heads": 8,
+  "nvidia_smi": "Thu Aug 27 23:56:57 2026       \n+-----------------------------------------------------------------------------+\n| NVIDIA-SMI 525.60.13    Driver Version: 525.60.13    CUDA Version: 12.0     |\n|-------------------------------+----------------------+----------------------+\n| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |\n|                               |                      |               MIG M. |\n|===============================+======================+======================|\n|   0  Tesla V100-SXM2...  Off  | 00000000:2D:00.0 Off |                    0 |\n| N/A   54C    P0   192W / 300W |  16905MiB / 32768MiB |     86%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   1  Tesla V100-SXM2...  Off  | 00000000:32:00.0 Off |                    0 |\n| N/A   36C    P0    41W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   2  Tesla V100-SXM2...  Off  | 00000000:5B:00.0 Off |                    0 |\n| N/A   29C    P0    41W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   3  Tesla V100-SXM2...  Off  | 00000000:5F:00.0 Off |                    0 |\n| N/A   25C    P0    40W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   4  Tesla V100-SXM2...  Off  | 00000000:B5:00.0 Off |                    0 |\n| N/A   27C    P0    40W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   5  Tesla V100-SXM2...  Off  | 00000000:BE:00.0 Off |                    0 |\n| N/A   27C    P0    39W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   6  Tesla V100-SXM2...  Off  | 00000000:DF:00.0 Off |                    0 |\n| N/A   28C    P0    41W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n|   7  Tesla V100-SXM2...  Off  | 00000000:E7:00.0 Off |                    0 |\n| N/A   28C    P0    39W / 300W |      0MiB / 32768MiB |      0%      Default |\n|                               |                      |                  N/A |\n+-------------------------------+----------------------+----------------------+\n                                                                               \n+-----------------------------------------------------------------------------+\n| Processes:                                                                  |\n|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |\n|        ID   ID                                                   Usage      |\n|=============================================================================|\n+-----------------------------------------------------------------------------+\n",
+  "patternkv_gemv_path": "/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-formal-v1/quant/patternkv_gemv.cpython-310-x86_64-linux-gnu.so",
+  "patternkv_gemv_sha256": "ff153a5b2429bf049aad4b2ba4db0d8a52b7cd5f2622f6f3f2c9d33588d0f64c",
+  "platform": "Linux-4.18.0-80.7.1.el8_0.x86_64-x86_64-with-glibc2.31",
+  "python": "/home/qinch2023/miniconda3/envs/patternkv-v100/bin/python",
+  "timestamp": "2026-08-27T23:56:57+0800",
+  "tokenizer_class": "Qwen2TokenizerFast",
+  "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+  "torch_cuda_runtime": "11.8",
+  "torch_version": "2.4.1+cu118",
+  "transformers_version": "4.51.3",
+  "triton_version": "3.0.0"
+}
+```

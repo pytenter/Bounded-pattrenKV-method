@@ -563,9 +563,11 @@ def paper_and_final(fp16_backend: str) -> None:
     for d in [256,512,1024]:
         row = next((r for r in long if r.get("decode") == d), None)
         if row: add(f"Long Decode {d}", row)
+    def fmt(value):
+        return "NA" if value is None else f"{value:.4f}"
     md = "# Paper System Table\n\n| Setting | FP16 TPOT ms | CAUSAL TPOT ms | FP16 tok/s | CAUSAL tok/s | Relative throughput | Relative TPOT |\n|---|---:|---:|---:|---:|---:|---:|\n"
     for r in all_rows:
-        md += f"| {r['Setting']} | {r['FP16 TPOT']:.4f} | {r['CAUSAL TPOT']:.4f} | {r['FP16 tok/s']:.4f} | {r['CAUSAL tok/s']:.4f} | {r['Relative throughput']:.4f} | {r['Relative TPOT']:.4f} |\n"
+        md += f"| {r['Setting']} | {fmt(r['FP16 TPOT'])} | {fmt(r['CAUSAL TPOT'])} | {fmt(r['FP16 tok/s'])} | {fmt(r['CAUSAL tok/s'])} | {fmt(r['Relative throughput'])} | {fmt(r['Relative TPOT'])} |\n"
     (OUT / "paper_system_table.md").write_text(md)
     ratios = [r.get("CAUSAL_over_FP16_throughput") for r in batch + context + long if r.get("CAUSAL_over_FP16_throughput") is not None]
     avg = statistics.mean(ratios) if ratios else None
@@ -579,14 +581,20 @@ def paper_and_final(fp16_backend: str) -> None:
         cls = "QWEN_V100_RELATIVE_OVERHEAD_SUBSTANTIALLY_REDUCED"
     else:
         cls = "QWEN_V100_RUNTIME_OVERHEAD_REMAINS_MATERIAL"
-    final = {"status": "PASS", "fp16_backend_selected": fp16_backend, "mean_relative_throughput": avg, "QWEN_V100_FULL_MODEL_DECODE_THROUGHPUT_ADVANTAGE": "SUPPORTED" if advantage else "NOT_SUPPORTED", "QWEN_V100_NEAR_FP16_DECODE_EFFICIENCY": "SUPPORTED" if near else "NOT_SUPPORTED", "FINAL_CLASSIFICATION": cls, "batch_scaling": batch, "context_scaling": context, "long_decode": long, "gpu7_anchor": anchor, "limitations": ["Tesla V100-SXM2-32GB only", "Qwen3-8B only", "fixed-batch formal protocol", "ragged Qwen true-batch smoke not dynamically closed in this experiment", "decode-only timing", "no new peak-memory evaluation", "no capacity/OOM evaluation", "legacy compressed CUDA backend", "cross-environment comparison to RTX3090/Llama is confounded"]}
+    invalid_points = []
+    for table_name, rows, key in [("batch_scaling", batch, "batch"), ("context_scaling", context, "context"), ("long_decode", long, "decode"), ("gpu7_anchor_replication", anchor, "decode")]:
+        for row in rows:
+            if row.get("protocol_status") != "PASS":
+                invalid_points.append({"table": table_name, key: row.get(key), "protocol_status": row.get("protocol_status"), "CAUSAL_valid_runs": row.get("CAUSAL_valid_runs"), "FP16_valid_runs": row.get("FP16_valid_runs")})
+    gate = {"status": "PASS" if not invalid_points else "PASS_WITH_REPORTED_INVALID_POINTS", "invalid_runs": invalid_points}
+    final = {"status": gate["status"], "fp16_backend_selected": fp16_backend, "mean_relative_throughput": avg, "QWEN_V100_FULL_MODEL_DECODE_THROUGHPUT_ADVANTAGE": "SUPPORTED" if advantage else "NOT_SUPPORTED", "QWEN_V100_NEAR_FP16_DECODE_EFFICIENCY": "SUPPORTED" if near else "NOT_SUPPORTED", "FINAL_CLASSIFICATION": cls, "batch_scaling": batch, "context_scaling": context, "long_decode": long, "gpu7_anchor": anchor, "formal_protocol_gate": gate, "limitations": ["Tesla V100-SXM2-32GB only", "Qwen3-8B only", "fixed-batch formal protocol", "ragged Qwen true-batch smoke not dynamically closed in this experiment", "decode-only timing", "no new peak-memory evaluation", "no capacity/OOM evaluation", "legacy compressed CUDA backend", "cross-environment comparison to RTX3090/Llama is confounded"]}
     write_json(OUT / "final_decision.json", final)
     write_md(OUT / "final_decision.md", "Final Decision", final)
     write_md(OUT / "formal_system_summary.md", "Formal System Summary", final)
     (OUT / "limitations.md").write_text("# Limitations\n\n" + "\n".join(f"- {x}" for x in final["limitations"]) + "\n")
-    (OUT / "claim_audit.md").write_text("# Claim Audit\n\nNo peak-memory or capacity claim is made. Cross-environment RTX3090/Llama comparison is descriptive only and not causal.\n")
-    write_json(OUT / "formal_protocol_gate.json", {"status":"PASS", "invalid_runs": []})
-    write_md(OUT / "formal_protocol_gate.md", "Formal Protocol Gate", {"status":"PASS", "invalid_runs": []})
+    (OUT / "claim_audit.md").write_text("# Claim Audit\n\nNo peak-memory or capacity claim is made. Cross-environment RTX3090/Llama comparison is descriptive only and not causal. Context 8K CAUSAL is reported as INVALID from the formal point, not as a capacity/OOM sweep.\n")
+    write_json(OUT / "formal_protocol_gate.json", gate)
+    write_md(OUT / "formal_protocol_gate.md", "Formal Protocol Gate", gate)
 
 
 def main() -> int:

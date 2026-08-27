@@ -1,0 +1,16 @@
+# Formal Protocol Gate
+
+```json
+{
+  "invalid_runs": [
+    {
+      "CAUSAL_valid_runs": 0,
+      "FP16_valid_runs": 3,
+      "context": 8192,
+      "protocol_status": "INVALID",
+      "table": "context_scaling"
+    }
+  ],
+  "status": "PASS_WITH_REPORTED_INVALID_POINTS"
+}
+```

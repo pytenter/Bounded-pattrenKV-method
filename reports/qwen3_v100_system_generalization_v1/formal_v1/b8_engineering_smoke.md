@@ -1,0 +1,240 @@
+# B8 Engineering Smoke
+
+```json
+{
+  "rows": [
+    {
+      "backend": "CUDA_COMPRESSED_LEGACY",
+      "batch": 8,
+      "context": 512,
+      "decode": 16,
+      "decode_wall_ms": 5918.06884765625,
+      "dtype": "torch.float16",
+      "fp16_backend_selected": "sdpa",
+      "gpu_uuid": "GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba",
+      "invalid_reason": null,
+      "method": "CAUSAL",
+      "model": "Qwen3-8B",
+      "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+      "nan_inf": false,
+      "output_tokens": 128,
+      "phase": "measured",
+      "physical_gpu": 4,
+      "protocol_counters": {
+        "fallback_count": 0,
+        "historical_fp16_k_materialization_calls": 0,
+        "historical_fp16_k_materialized_bytes": 0,
+        "historical_fp16_v_materialization_calls": 0,
+        "historical_fp16_v_materialized_bytes": 0,
+        "membership_changes": 0,
+        "page_batch_accumulate_calls": 0,
+        "page_batch_attention_slice_calls": 0,
+        "page_batch_gpu_tensor_item_calls": 0,
+        "page_batch_historical_v_materialization_bytes": 0,
+        "page_batch_host_sync_item_calls": 0,
+        "page_batch_logical_pages_processed": 0,
+        "page_batch_matmul_calls": 0,
+        "page_batch_page_batch_decode_calls": 0,
+        "page_batch_page_batch_pack_calls": 36,
+        "page_batch_page_value_materialization_calls": 0,
+        "page_batch_page_value_materialized_bytes": 0,
+        "page_batch_python_serial_b1_dispatches": 0,
+        "page_batch_repeat_kv_calls": 0,
+        "page_batch_v2_pages_processed": 0,
+        "page_batch_v2_tokens_processed": 0,
+        "page_batch_v4_pages_processed": 0,
+        "page_batch_v4_tokens_processed": 0,
+        "page_local_v_materialization_calls": 0,
+        "page_local_v_materialized_bytes": 0,
+        "prefill_calls": 0,
+        "prefill_tokens": 0,
+        "real_decode_fused_page_operator_calls": 0,
+        "real_decode_gpu_tensor_item_calls_hot_path": 0,
+        "real_decode_historical_v_materialization_bytes": 0,
+        "real_decode_legacy_mixed_v_operator_calls": 576,
+        "real_decode_new_pages_allocated": 288,
+        "real_decode_operator_ready_pool_full_rebuilds": 0,
+        "real_decode_operator_ready_pool_incremental_updates": 36,
+        "real_decode_page_value_materialization_bytes": 0,
+        "real_decode_python_page_dispatches": 0,
+        "real_decode_real_decode_steps": 0,
+        "real_decode_serial_b1_dispatches": 0,
+        "refill_calls": 0,
+        "serial_attention_dispatches": 0,
+        "serial_request_forward_dispatches": 0
+      },
+      "repetition_id": 0,
+      "run_id": "b8_smoke_CAUSAL_gpu4_ctx512_b8_dec16_measured0",
+      "run_valid": true,
+      "timestamp": "2026-08-28T00:02:26+0800",
+      "tok_s": 21.628677072706278,
+      "tokens": [
+        [
+          323,
+          9934,
+          65908,
+          25,
+          11,
+          2697,
+          5624,
+          11
+        ],
+        [
+          2874,
+          25,
+          25,
+          9429,
+          1779,
+          27804,
+          10126,
+          28316
+        ],
+        [
+          911,
+          10339,
+          264,
+          4621,
+          6821,
+          323,
+          21438,
+          11
+        ],
+        [
+          43893,
+          6500,
+          31085,
+          1506,
+          5048,
+          10146,
+          25,
+          323
+        ],
+        [
+          34784,
+          25111,
+          42465,
+          7162,
+          11,
+          45120,
+          3754,
+          53458
+        ],
+        [
+          15516,
+          11,
+          1378,
+          11320,
+          323,
+          16982,
+          30169,
+          95839
+        ],
+        [
+          13,
+          6529,
+          44378,
+          448,
+          12564,
+          3019,
+          84,
+          59726
+        ],
+        [
+          49795,
+          11,
+          1182,
+          6146,
+          279,
+          553,
+          2380,
+          13
+        ],
+        [
+          11064,
+          323,
+          1412,
+          1681,
+          1590,
+          3019,
+          11,
+          38918
+        ],
+        [
+          25529,
+          72349,
+          323,
+          6845,
+          897,
+          13,
+          49368,
+          95254
+        ],
+        [
+          25,
+          55980,
+          7424,
+          304,
+          13,
+          1198,
+          3147,
+          25
+        ],
+        [
+          6979,
+          47116,
+          1449,
+          264,
+          76443,
+          6863,
+          11,
+          28143
+        ],
+        [
+          264,
+          13,
+          7907,
+          72349,
+          292,
+          850,
+          323,
+          25941
+        ],
+        [
+          8500,
+          739,
+          3950,
+          19163,
+          32711,
+          1211,
+          57620,
+          11
+        ],
+        [
+          323,
+          28431,
+          13,
+          13,
+          5185,
+          18778,
+          32676,
+          28316
+        ],
+        [
+          2874,
+          9934,
+          5724,
+          36765,
+          25,
+          13242,
+          13,
+          11
+        ]
+      ],
+      "tpot_ms": 46.23491287231445,
+      "warmup": 0,
+      "workload_sha256": "eeed157884f89a13941dc266caedb64b1f1052f213f6b62793f9c2d460d95ae2"
+    }
+  ],
+  "status": "PASS"
+}
+```

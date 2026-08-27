@@ -1,0 +1,120 @@
+{
+  "free_m": {
+    "cmd": [
+      "free",
+      "-m"
+    ],
+    "output": "              total        used        free      shared  buff/cache   available\nMem:         614400        7541      106037         831      500820      606858\nSwap:         32767           0       32767\n",
+    "returncode": 0
+  },
+  "gpu": [
+    {
+      "clocks.sm": "1530",
+      "index": "0",
+      "memory.total": "32768",
+      "memory.used": "16175",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "127.08",
+      "pstate": "P0",
+      "temperature.gpu": "38",
+      "utilization.gpu": "54",
+      "uuid": "GPU-58dbb776-4c54-7f96-dd35-e3906245f307"
+    },
+    {
+      "clocks.sm": "1530",
+      "index": "1",
+      "memory.total": "32768",
+      "memory.used": "16197",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "116.52",
+      "pstate": "P0",
+      "temperature.gpu": "43",
+      "utilization.gpu": "56",
+      "uuid": "GPU-d810b116-fec0-9d27-1f8a-2445b44352c8"
+    },
+    {
+      "clocks.sm": "1530",
+      "index": "2",
+      "memory.total": "32768",
+      "memory.used": "16201",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "130.01",
+      "pstate": "P0",
+      "temperature.gpu": "43",
+      "utilization.gpu": "41",
+      "uuid": "GPU-44f231fb-b846-27e6-2e03-2065fb9aebb2"
+    },
+    {
+      "clocks.sm": "1530",
+      "index": "3",
+      "memory.total": "32768",
+      "memory.used": "16197",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "126.50",
+      "pstate": "P0",
+      "temperature.gpu": "40",
+      "utilization.gpu": "56",
+      "uuid": "GPU-b9e76e6d-2dd3-d533-c5e4-5690cb4970c0"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "4",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "40.30",
+      "pstate": "P0",
+      "temperature.gpu": "28",
+      "utilization.gpu": "0",
+      "uuid": "GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "5",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "39.32",
+      "pstate": "P0",
+      "temperature.gpu": "28",
+      "utilization.gpu": "0",
+      "uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "6",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "41.77",
+      "pstate": "P0",
+      "temperature.gpu": "29",
+      "utilization.gpu": "0",
+      "uuid": "GPU-f9be145a-d8d5-a2e1-3c42-72047878fcf8"
+    },
+    {
+      "clocks.sm": "135",
+      "index": "7",
+      "memory.total": "32768",
+      "memory.used": "0",
+      "name": "Tesla V100-SXM2-32GB",
+      "power.draw": "39.73",
+      "pstate": "P0",
+      "temperature.gpu": "29",
+      "utilization.gpu": "0",
+      "uuid": "GPU-19a85b05-d946-6a04-199d-9476b68db1ec"
+    }
+  ],
+  "label": "before_gpu7_anchor_replication",
+  "loadavg": "5.39 4.26 2.98 5/2440 14741",
+  "processes": {
+    "cmd": [
+      "bash",
+      "-lc",
+      "ps -u qinch2023 -o pid,ppid,stat,etime,cmd | grep -E 'qwen3|aime|python|bench' | grep -v grep | head -n 120"
+    ],
+    "output": "   78     1 Ss   12-08:18:34 /opt/conda/bin/python /opt/conda/bin/jupyter-lab --no-browser --LabApp.base_url=/proxy/service/45f26b0c04007 --LabApp.token= --LabApp.allow_remote_access=True --LabApp.ip=0.0.0.0 --LabApp.port=8888 --notebook-dir=/home/qinch2023/jupyterlab\n 3527  3526 Ss   10-04:24:59 /home/qinch2023/lab415/opd/.conda-env/bin/python /home/qinch2023/lab415/opd/.worktrees/radar-continuous-research/.codex/hooks/checkpoint_agent.py\n13798     1 Rl         00:00 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_patternkv_paper.py --worker\n13799     1 Rl         00:00 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_patternkv_paper.py --worker\n13800     1 Rl         00:00 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_patternkv_paper.py --worker\n13801     1 Rl         00:00 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_patternkv_paper.py --worker\n14658 14548 Sl+        00:00 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/qwen3_v100_formal_system_benchmark.py --table gpu7_anchor_replication --gpu 7 --fp16-backend sdpa\n18212 18051 S     9-02:53:44 /home/qinch2023/lab415/opd/.conda-env/bin/python -m opd.research.daemon --root /home/qinch2023/lab415/opd --poll-interval 5.0\n20211 16005 S       10:34:19 bash ./scripts/watch_qwen3_aime24_pattern_causal_status.sh\n",
+    "returncode": 0
+  },
+  "timestamp": "2026-08-28T01:17:06+0800"
+}

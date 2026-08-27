@@ -1,0 +1,1100 @@
+[
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 424.8514709472656,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 0,
+    "run_id": "context_scaling_FP16_gpu5_ctx2048_b1_dec8_measured1",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:11:48+0800",
+    "tok_s": 18.830110161000228,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 53.1064338684082,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 338.5210876464844,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 1,
+    "run_id": "context_scaling_FP16_gpu5_ctx2048_b1_dec8_measured2",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:11:50+0800",
+    "tok_s": 23.63220576779652,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 42.31513595581055,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 331.0561218261719,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 2,
+    "run_id": "context_scaling_FP16_gpu5_ctx2048_b1_dec8_measured3",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:11:51+0800",
+    "tok_s": 24.165087042856655,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 41.382015228271484,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 2804.758544921875,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 0,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx2048_b1_dec8_measured1",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:23+0800",
+    "tok_s": 2.8522954371542295,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 350.5948181152344,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 2238.55712890625,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 1,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx2048_b1_dec8_measured2",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:32+0800",
+    "tok_s": 3.5737305502266845,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 279.81964111328125,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 2048,
+    "decode": 8,
+    "decode_wall_ms": 2229.370849609375,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 2,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx2048_b1_dec8_measured3",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:42+0800",
+    "tok_s": 3.588456358170172,
+    "tokens": [
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ]
+    ],
+    "tpot_ms": 278.6713562011719,
+    "warmup": 1,
+    "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 406.3764343261719,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 0,
+    "run_id": "context_scaling_FP16_gpu5_ctx4096_b1_dec8_measured1",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:56+0800",
+    "tok_s": 19.686180900880984,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 50.797054290771484,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 407.8766174316406,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 1,
+    "run_id": "context_scaling_FP16_gpu5_ctx4096_b1_dec8_measured2",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:57+0800",
+    "tok_s": 19.613774504592154,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 50.98457717895508,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 406.1521911621094,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 2,
+    "run_id": "context_scaling_FP16_gpu5_ctx4096_b1_dec8_measured3",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:12:59+0800",
+    "tok_s": 19.697049958317038,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 50.76902389526367,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 2735.708251953125,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 0,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx4096_b1_dec8_measured1",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:13:45+0800",
+    "tok_s": 2.9242884340055264,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 341.9635314941406,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 2742.963134765625,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 1,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx4096_b1_dec8_measured2",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:14:03+0800",
+    "tok_s": 2.916553962612249,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 342.8703918457031,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 4096,
+    "decode": 8,
+    "decode_wall_ms": 2744.236083984375,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {
+      "fallback_count": 0,
+      "historical_fp16_k_materialization_calls": 0,
+      "historical_fp16_k_materialized_bytes": 0,
+      "historical_fp16_v_materialization_calls": 0,
+      "historical_fp16_v_materialized_bytes": 0,
+      "membership_changes": 0,
+      "page_batch_accumulate_calls": 0,
+      "page_batch_attention_slice_calls": 0,
+      "page_batch_gpu_tensor_item_calls": 0,
+      "page_batch_historical_v_materialization_bytes": 0,
+      "page_batch_host_sync_item_calls": 0,
+      "page_batch_logical_pages_processed": 0,
+      "page_batch_matmul_calls": 0,
+      "page_batch_page_batch_decode_calls": 0,
+      "page_batch_page_batch_pack_calls": 0,
+      "page_batch_page_value_materialization_calls": 0,
+      "page_batch_page_value_materialized_bytes": 0,
+      "page_batch_python_serial_b1_dispatches": 0,
+      "page_batch_repeat_kv_calls": 0,
+      "page_batch_v2_pages_processed": 0,
+      "page_batch_v2_tokens_processed": 0,
+      "page_batch_v4_pages_processed": 0,
+      "page_batch_v4_tokens_processed": 0,
+      "page_local_v_materialization_calls": 0,
+      "page_local_v_materialized_bytes": 0,
+      "prefill_calls": 0,
+      "prefill_tokens": 0,
+      "real_decode_fused_page_operator_calls": 0,
+      "real_decode_gpu_tensor_item_calls_hot_path": 0,
+      "real_decode_historical_v_materialization_bytes": 0,
+      "real_decode_legacy_mixed_v_operator_calls": 288,
+      "real_decode_new_pages_allocated": 0,
+      "real_decode_operator_ready_pool_full_rebuilds": 0,
+      "real_decode_operator_ready_pool_incremental_updates": 0,
+      "real_decode_page_value_materialization_bytes": 0,
+      "real_decode_python_page_dispatches": 0,
+      "real_decode_real_decode_steps": 0,
+      "real_decode_serial_b1_dispatches": 0,
+      "refill_calls": 0,
+      "serial_attention_dispatches": 0,
+      "serial_request_forward_dispatches": 0
+    },
+    "repetition_id": 2,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx4096_b1_dec8_measured3",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:14:21+0800",
+    "tok_s": 2.9152010815282137,
+    "tokens": [
+      [
+        323
+      ],
+      [
+        2874
+      ],
+      [
+        911
+      ],
+      [
+        43893
+      ],
+      [
+        34784
+      ],
+      [
+        15516
+      ],
+      [
+        13
+      ],
+      [
+        49795
+      ]
+    ],
+    "tpot_ms": 343.0295104980469,
+    "warmup": 1,
+    "workload_sha256": "179861a619bec479ec78f5781cae8a07638247e7742a6e50a05261176aa1a275"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "decode_wall_ms": 561.490966796875,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 0,
+    "run_id": "context_scaling_FP16_gpu5_ctx8192_b1_dec8_measured1",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:14:37+0800",
+    "tok_s": 14.247780415128354,
+    "tokens": [
+      [
+        11064
+      ],
+      [
+        25529
+      ],
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ]
+    ],
+    "tpot_ms": 70.18637084960938,
+    "warmup": 1,
+    "workload_sha256": "65a3b755ce21bd7ac7f4a9019d92dc088a85c2dc04d114026228518edc4d0be3"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "decode_wall_ms": 566.1040649414062,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 1,
+    "run_id": "context_scaling_FP16_gpu5_ctx8192_b1_dec8_measured2",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:14:40+0800",
+    "tok_s": 14.131677363645196,
+    "tokens": [
+      [
+        11064
+      ],
+      [
+        25529
+      ],
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ]
+    ],
+    "tpot_ms": 70.76300811767578,
+    "warmup": 1,
+    "workload_sha256": "65a3b755ce21bd7ac7f4a9019d92dc088a85c2dc04d114026228518edc4d0be3"
+  },
+  {
+    "backend": "sdpa",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "decode_wall_ms": 562.2282104492188,
+    "dtype": "torch.float16",
+    "fp16_backend_selected": "sdpa",
+    "gpu_uuid": "GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029",
+    "invalid_reason": null,
+    "method": "FP16",
+    "model": "Qwen3-8B",
+    "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+    "nan_inf": false,
+    "output_tokens": 8,
+    "phase": "measured",
+    "physical_gpu": 5,
+    "protocol_counters": {},
+    "repetition_id": 2,
+    "run_id": "context_scaling_FP16_gpu5_ctx8192_b1_dec8_measured3",
+    "run_valid": true,
+    "timestamp": "2026-08-28T00:14:43+0800",
+    "tok_s": 14.229097457788578,
+    "tokens": [
+      [
+        11064
+      ],
+      [
+        25529
+      ],
+      [
+        25
+      ],
+      [
+        6979
+      ],
+      [
+        264
+      ],
+      [
+        8500
+      ],
+      [
+        323
+      ],
+      [
+        2874
+      ]
+    ],
+    "tpot_ms": 70.27852630615234,
+    "warmup": 1,
+    "workload_sha256": "65a3b755ce21bd7ac7f4a9019d92dc088a85c2dc04d114026228518edc4d0be3"
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "dtype": "torch.float16",
+    "invalid_reason": "OutOfMemoryError('CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 31.74 GiB of which 7.43 GiB is free. Process 36815 has 24.30 GiB memory in use. Of the allocated memory 19.75 GiB is allocated by PyTorch, and 4.18 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "phase": "measured",
+    "physical_gpu": 5,
+    "repetition_id": 0,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx8192_b1_dec8_measured1",
+    "run_valid": false,
+    "timestamp": "2026-08-28T00:14:56+0800",
+    "warmup": 1
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "dtype": "torch.float16",
+    "invalid_reason": "OutOfMemoryError('CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 31.74 GiB of which 7.43 GiB is free. Process 36815 has 24.30 GiB memory in use. Of the allocated memory 19.75 GiB is allocated by PyTorch, and 4.18 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "phase": "measured",
+    "physical_gpu": 5,
+    "repetition_id": 1,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx8192_b1_dec8_measured2",
+    "run_valid": false,
+    "timestamp": "2026-08-28T00:14:57+0800",
+    "warmup": 1
+  },
+  {
+    "backend": "CUDA_COMPRESSED_LEGACY",
+    "batch": 1,
+    "context": 8192,
+    "decode": 8,
+    "dtype": "torch.float16",
+    "invalid_reason": "OutOfMemoryError('CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 31.74 GiB of which 7.43 GiB is free. Process 36815 has 24.30 GiB memory in use. Of the allocated memory 19.75 GiB is allocated by PyTorch, and 4.18 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+    "method": "CAUSAL",
+    "model": "Qwen3-8B",
+    "phase": "measured",
+    "physical_gpu": 5,
+    "repetition_id": 2,
+    "run_id": "context_scaling_CAUSAL_gpu5_ctx8192_b1_dec8_measured3",
+    "run_valid": false,
+    "timestamp": "2026-08-28T00:14:58+0800",
+    "warmup": 1
+  }
+]

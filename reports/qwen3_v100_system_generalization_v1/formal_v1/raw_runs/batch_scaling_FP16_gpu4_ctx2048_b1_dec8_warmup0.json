@@ -1,0 +1,53 @@
+{
+  "backend": "sdpa",
+  "batch": 1,
+  "context": 2048,
+  "decode": 8,
+  "decode_wall_ms": 347.39813232421875,
+  "dtype": "torch.float16",
+  "fp16_backend_selected": "sdpa",
+  "gpu_uuid": "GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba",
+  "invalid_reason": null,
+  "method": "FP16",
+  "model": "Qwen3-8B",
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "nan_inf": false,
+  "output_tokens": 8,
+  "phase": "warmup",
+  "physical_gpu": 4,
+  "protocol_counters": {},
+  "repetition_id": 0,
+  "run_id": "batch_scaling_FP16_gpu4_ctx2048_b1_dec8_warmup0",
+  "run_valid": true,
+  "timestamp": "2026-08-28T00:03:27+0800",
+  "tok_s": 23.02833336056563,
+  "tokens": [
+    [
+      25
+    ],
+    [
+      6979
+    ],
+    [
+      264
+    ],
+    [
+      8500
+    ],
+    [
+      323
+    ],
+    [
+      2874
+    ],
+    [
+      911
+    ],
+    [
+      43893
+    ]
+  ],
+  "tpot_ms": 43.424766540527344,
+  "warmup": 1,
+  "workload_sha256": "221ed25c430f13478156e65a921ce578d98468084daf220ea8870265b071d743"
+}

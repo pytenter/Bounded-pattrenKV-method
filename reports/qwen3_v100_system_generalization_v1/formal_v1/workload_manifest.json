@@ -1,0 +1,14 @@
+{
+  "model": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "prompts": [
+    "Mathematics proof sketch: define a sequence and reason about modular arithmetic carefully. ",
+    "System benchmark prompt: explain cache compression, attention, and deterministic greedy decoding. ",
+    "Long context QA: a researcher compares two inference backends and records every generated token. ",
+    "Hardware note: compare vectorized batch execution with serial request dispatch in a deterministic backend. ",
+    "Algebraic reasoning note: expand definitions, check edge cases, and compute the final value. ",
+    "Combinatorics scratchpad: count valid arrangements and verify symmetry constraints step by step. ",
+    "Number theory memo: track congruences, divisibility, and invariant quantities. ",
+    "Geometry derivation: relate angles, lengths, and auxiliary constructions systematically. "
+  ],
+  "workload_generation": "tokenize deterministic repeated prompt strings, slice exact context length before timed window"
+}

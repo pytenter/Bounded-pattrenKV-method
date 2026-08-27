@@ -1,0 +1,77 @@
+{
+  "backend": "sdpa",
+  "batch": 4,
+  "context": 2048,
+  "decode": 8,
+  "decode_wall_ms": 486.55975341796875,
+  "dtype": "torch.float16",
+  "fp16_backend_selected": "sdpa",
+  "gpu_uuid": "GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba",
+  "invalid_reason": null,
+  "method": "FP16",
+  "model": "Qwen3-8B",
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "nan_inf": false,
+  "output_tokens": 32,
+  "phase": "measured",
+  "physical_gpu": 4,
+  "protocol_counters": {},
+  "repetition_id": 1,
+  "run_id": "batch_scaling_FP16_gpu4_ctx2048_b4_dec8_measured2",
+  "run_valid": true,
+  "timestamp": "2026-08-28T00:05:59+0800",
+  "tok_s": 65.76787285674055,
+  "tokens": [
+    [
+      25,
+      6529,
+      44378,
+      448
+    ],
+    [
+      6979,
+      11,
+      1182,
+      6146
+    ],
+    [
+      264,
+      323,
+      1412,
+      1681
+    ],
+    [
+      8500,
+      72349,
+      323,
+      6845
+    ],
+    [
+      323,
+      55980,
+      7424,
+      304
+    ],
+    [
+      2874,
+      47116,
+      1449,
+      264
+    ],
+    [
+      911,
+      13,
+      7907,
+      72349
+    ],
+    [
+      43893,
+      739,
+      3950,
+      19163
+    ]
+  ],
+  "tpot_ms": 15.204992294311523,
+  "warmup": 1,
+  "workload_sha256": "13e8f55c6f3f921e58174a07da7764907b40cc5d229248413d5a9ff691aabc2f"
+}

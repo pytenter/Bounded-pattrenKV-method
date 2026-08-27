@@ -1,0 +1,22 @@
+{
+  "candidates": [
+    {
+      "backend": "eager",
+      "mean_tpot_ms": 44.01956748962402,
+      "same_greedy_tokens": true,
+      "status": "PASS",
+      "tok_s": 22.717255566798933,
+      "valid_runs": 2
+    },
+    {
+      "backend": "sdpa",
+      "mean_tpot_ms": 40.80299186706543,
+      "same_greedy_tokens": true,
+      "status": "PASS",
+      "tok_s": 24.50805338697769,
+      "valid_runs": 2
+    }
+  ],
+  "selected": "sdpa",
+  "selection_rule": "fastest stable valid already-available native FP16 backend on tiny calibration before formal CAUSAL timing"
+}
