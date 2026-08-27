@@ -78,3 +78,21 @@ def test_qwen3_v100_system_gate():
     counters = system.get_qwen3_compressed_counters()
     assert counters["historical_fp16_k_materialization_calls"] == 0
     assert counters["historical_fp16_v_materialization_calls"] == 0
+
+
+def test_qwen3_request_local_centroid_shape_b2():
+    cfg = SimpleNamespace(num_hidden_layers=1)
+    cache = system.Qwen3PatternKVCompressedCache(cfg)
+    states = torch.randn(2, 8, 512, 128)
+    centroids = cache._initial_centroids(states, 32)
+    assert centroids.shape == (2, 8, 32, 128)
+    assert torch.equal(centroids[0], states[0].index_select(1, torch.linspace(0, 511, steps=32).round().long()))
+
+
+def test_qwen3_request_local_centroid_shape_b4():
+    cfg = SimpleNamespace(num_hidden_layers=1)
+    cache = system.Qwen3PatternKVCompressedCache(cfg)
+    states = torch.randn(4, 8, 256, 128)
+    centroids = cache._initial_centroids(states, 32)
+    assert centroids.shape == (4, 8, 32, 128)
+    assert not torch.equal(centroids[0], centroids[1])

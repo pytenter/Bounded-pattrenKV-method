@@ -1,0 +1,45 @@
+{
+  "compressed_final_stats0": [
+    {
+      "cache_mode": "segmented_rolling",
+      "chunk_length": 128,
+      "chunk_tokens": 0,
+      "k_assignment_tokens": 384,
+      "packed_history_tokens": 384,
+      "pending_history_tokens": 48,
+      "recent_tokens": 128,
+      "sink_tokens": 16,
+      "total_tokens": 576,
+      "v_assignment_tokens": 384,
+      "v_pattern_mask_tokens": 384
+    },
+    {
+      "cache_mode": "segmented_rolling",
+      "chunk_length": 128,
+      "chunk_tokens": 0,
+      "k_assignment_tokens": 384,
+      "packed_history_tokens": 384,
+      "pending_history_tokens": 48,
+      "recent_tokens": 128,
+      "sink_tokens": 16,
+      "total_tokens": 576,
+      "v_assignment_tokens": 384,
+      "v_pattern_mask_tokens": 384
+    },
+    {
+      "cache_mode": "segmented_rolling",
+      "chunk_length": 128,
+      "chunk_tokens": 0,
+      "k_assignment_tokens": 384,
+      "packed_history_tokens": 384,
+      "pending_history_tokens": 48,
+      "recent_tokens": 128,
+      "sink_tokens": 16,
+      "total_tokens": 576,
+      "v_assignment_tokens": 384,
+      "v_pattern_mask_tokens": 384
+    }
+  ],
+  "reason": "B1 compressed run produced packed history and V assignment/mask stats, but semantic parity failed before selector gate can be declared ready.",
+  "status": "PARTIAL"
+}

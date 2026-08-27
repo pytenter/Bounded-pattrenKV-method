@@ -102,12 +102,12 @@ class Qwen3PatternKVCompressedCache(Cache):
         if count <= 0 or states.shape[2] <= 0:
             return None
         bsz, heads, tokens, dim = states.shape
-        flat = states.permute(1, 0, 2, 3).reshape(heads, bsz * tokens, dim).contiguous()
-        k = min(int(count), int(flat.shape[1]))
+        k = min(int(count), int(tokens))
         if k <= 0:
             return None
-        idx = torch.linspace(0, flat.shape[1] - 1, steps=k, device=flat.device).round().long()
-        return flat.index_select(1, idx).contiguous()
+        idx = torch.linspace(0, tokens - 1, steps=k, device=states.device).round().long()
+        # Request-local centroids: [B,H,M,D]. Do not flatten B into the centroid bank.
+        return states.index_select(2, idx).contiguous()
 
     def update_prefill(self, key_states: torch.Tensor, value_states: torch.Tensor, layer_idx: int) -> None:
         layer_idx = int(layer_idx)
@@ -205,7 +205,7 @@ def patternkv_mixed_value_attention(
     v_full: torch.Tensor | None = None,
 ) -> torch.Tensor:
     pools = getattr(cache, "operator_ready_page_pools", None)
-    if pools is not None:
+    if pools is not None and os.environ.get("QWEN3_COMPRESSED_V_BACKEND", "legacy_cuda").strip().lower() == "fused_page":
         return patternkv_page_value_attention(module, cache, weights, attn_f=attn_f, v_full=v_full)
     if cache.v_centroids is None or cache.v_assignment_idx is None or v_mask is None:
         raise RuntimeError("compressed mixed Value path requires centroid, assignment, and mask metadata")
@@ -326,8 +326,18 @@ def _compressed_attention(
         record_ragged_k_counter("ragged_k_path_calls", 1)
         attn_weights = attn_weights.masked_fill(~k_valid_mask[:, None, None, :], torch.finfo(attn_weights.dtype).min)
     if attention_mask is not None:
-        if attention_mask.size() != (bsz, 1, q_len, int(cache.total_tokens)):
-            raise ValueError(f"Qwen3 attention mask should be {(bsz, 1, q_len, int(cache.total_tokens))}, got {tuple(attention_mask.size())}")
+        expected = (bsz, 1, q_len, int(cache.total_tokens))
+        if attention_mask.size() != expected:
+            if (
+                attention_mask.dim() == 4
+                and attention_mask.shape[0] == bsz
+                and attention_mask.shape[1] == 1
+                and attention_mask.shape[2] == q_len
+                and attention_mask.shape[3] >= int(cache.total_tokens)
+            ):
+                attention_mask = attention_mask[:, :, :, -int(cache.total_tokens) :]
+            else:
+                raise ValueError(f"Qwen3 attention mask should be {expected}, got {tuple(attention_mask.size())}")
         attn_weights = attn_weights + attention_mask
         attn_weights = torch.max(
             attn_weights,

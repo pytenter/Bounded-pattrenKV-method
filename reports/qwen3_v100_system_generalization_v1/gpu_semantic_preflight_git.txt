@@ -1,0 +1,33 @@
+pwd
+/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1
+
+branch
+sys/qwen3-8b-v100-system-generalization-v1
+
+head
+2d4b423aaa734c549a7d7256d536476553dd4b96
+
+status_short
+?? reports/qwen3_v100_system_generalization_v1/gpu_semantic_preflight_git.txt
+
+porcelain
+?? reports/qwen3_v100_system_generalization_v1/gpu_semantic_preflight_git.txt
+
+diff_stat
+
+diff_name_status
+
+diff_check
+
+untracked
+reports/qwen3_v100_system_generalization_v1/gpu_semantic_preflight_git.txt
+
+remote
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+origin	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+origin	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+
+worktree
+/home/qinch2023/Bounded-pattrenKV-method                       20caa33 [exp/aime-int2-wave1-v100-8gpu]
+/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1  2d4b423 [sys/qwen3-8b-v100-system-generalization-v1]
