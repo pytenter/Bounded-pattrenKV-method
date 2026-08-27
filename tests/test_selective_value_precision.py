@@ -15,6 +15,7 @@ from models.segmented_cache import (
     reconstruct_full_k,
     reconstruct_full_v,
     reconstruct_packed_v,
+    normalize_value_precision_selector,
     select_value_precision_mask,
     serialize_cache,
     deserialize_cache,
@@ -189,6 +190,30 @@ def test_oracle_selection_budget() -> None:
     m = torch.zeros(1, 1, 4, dtype=torch.bool)
     chosen = select_value_precision_mask(cache, v, torch.zeros_like(v), m, absolute_start=0)
     assert int(chosen.sum().item()) == 2
+
+
+def test_component_selector_aliases() -> None:
+    assert normalize_value_precision_selector("importance-only-v4") == "importance_only_v4"
+    assert normalize_value_precision_selector("error_only") == "error_only_v4"
+
+
+def test_importance_only_selector_uses_importance_without_gain_product() -> None:
+    cache = PatternQuantizedKVCache(group_size=16, v_precision_selector="importance_only_v4", v4_budget_fraction=0.5)
+    cache.v_causal_importance = torch.tensor([[0.0, 3.0, 1.0, 2.0]])
+    v = torch.randn(1, 1, 4, 16)
+    m = torch.zeros(1, 1, 4, dtype=torch.bool)
+    chosen = select_value_precision_mask(cache, v, torch.zeros_like(v), m, absolute_start=0)
+    assert chosen.tolist() == [[False, True, False, True]]
+
+
+def test_error_only_selector_uses_local_v2_v4_gain_budget() -> None:
+    cache = PatternQuantizedKVCache(group_size=16, v_precision_selector="error_only_v4", v4_budget_fraction=0.5)
+    v = torch.randn(1, 1, 4, 16)
+    m = torch.zeros(1, 1, 4, dtype=torch.bool)
+    gain = local_v2_v4_gain(v, torch.zeros_like(v), m, group_size=16)
+    chosen = select_value_precision_mask(cache, v, torch.zeros_like(v), m, absolute_start=0)
+    assert int(chosen.sum().item()) == 2
+    assert torch.equal(chosen, torch.zeros_like(chosen).scatter(1, torch.topk(gain, 2, dim=1).indices, True))
 
 
 def test_selective_config_bit_cost_equal() -> None:

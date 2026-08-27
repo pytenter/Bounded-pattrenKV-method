@@ -1,0 +1,18 @@
+{
+  "dataset_1319_rows": true,
+  "exact_50_manifest": true,
+  "gpu_policy_user_override": true,
+  "method_registration": true,
+  "pass": true,
+  "pilot_to_paper_claim_blocked": true,
+  "selected_gpus_exclude_forbidden": true,
+  "selection_not_correctness_based": true,
+  "selector_identities": {
+    "causal_v4_25": "causal_v4",
+    "error_only_v4_25": "error_only_v4",
+    "importance_only_v4_25": "importance_only_v4"
+  },
+  "smoke_excluded_from_pilot": true,
+  "strata_25_25": true,
+  "v4_budget_fraction_25": true
+}

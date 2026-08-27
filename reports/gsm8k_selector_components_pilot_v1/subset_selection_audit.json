@@ -1,0 +1,12 @@
+{
+  "activation_rule": "LENGTH_PROXY_ACTIVATION_ENRICHED",
+  "canonical_records": 1319,
+  "canonical_root": "/data/zypan/Bounded-pattrenKV-pseudodecode-3090/results/causal_v4_25_generalization_v1/gsm8k_full/causal_v4_25",
+  "correctness_used_for_selection": false,
+  "duplicate_problem_ids": [],
+  "random_seed": 20260827,
+  "selection_timestamp": "2026-08-27T06:13:19Z",
+  "stratum_a_count": 25,
+  "stratum_b_count": 25,
+  "total_count": 50
+}

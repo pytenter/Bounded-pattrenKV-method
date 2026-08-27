@@ -1161,11 +1161,19 @@ def normalize_value_precision_selector(selector: str | None) -> str:
         "causal": "causal_v4",
         "causal_importance": "causal_v4",
         "causal_importance_v4": "causal_v4",
+        "importance": "importance_only_v4",
+        "importance_v4": "importance_only_v4",
+        "importance_only": "importance_only_v4",
+        "importance_only_v4": "importance_only_v4",
+        "error": "error_only_v4",
+        "error_v4": "error_only_v4",
+        "error_only": "error_only_v4",
+        "error_only_v4": "error_only_v4",
         "oracle": "oracle_v4",
         "oracle_v4": "oracle_v4",
     }
     value = aliases.get(value, value)
-    if value not in {"base_v2", "all_v2", "all_v4", "random_v4", "causal_v4", "oracle_v4"}:
+    if value not in {"base_v2", "all_v2", "all_v4", "random_v4", "causal_v4", "importance_only_v4", "error_only_v4", "oracle_v4"}:
         raise ValueError(f"unsupported Value precision selector: {selector!r}")
     return value
 
@@ -1348,14 +1356,18 @@ def select_value_precision_mask(
                         scores[b, t] = float(h) / float((1 << 64) - 1)
             return _topk_mask(scores, k, tie_break=gain, largest=False)
         abs_positions = torch.arange(absolute_start, absolute_start + tokens, device=v_window.device).unsqueeze(0).expand(bsz, -1)
-        if selector == "causal_v4":
+        if selector in {"causal_v4", "importance_only_v4"}:
             with profile_range("selector_score", tokens=tokens):
                 importance = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)
                 causal = getattr(cache, "v_causal_importance", None)
                 if torch.is_tensor(causal) and causal.shape[1] >= absolute_start + tokens:
                     importance = causal[:, absolute_start : absolute_start + tokens].to(gain.device, gain.dtype)
-                score = (importance + 1e-8) * gain
+                score = importance if selector == "importance_only_v4" else (importance + 1e-8) * gain
             return _topk_mask(score, k, tie_break=gain - abs_positions.to(gain.dtype) * 0.0, largest=True)
+        if selector == "error_only_v4":
+            with profile_range("selector_score", tokens=tokens):
+                score = gain
+            return _topk_mask(score, k, largest=True)
         with profile_range("selector_score", tokens=tokens):
             oracle = getattr(cache, "v_oracle_importance", None)
             future = torch.zeros(bsz, tokens, dtype=gain.dtype, device=v_window.device)

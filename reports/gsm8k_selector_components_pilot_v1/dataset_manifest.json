@@ -1,0 +1,7 @@
+{
+  "dataset_path": "datasets/gsm8k/gsm8k_test.jsonl",
+  "problem_id_max": 1318,
+  "problem_id_min": 0,
+  "rows": 1319,
+  "sha256": "abc53551be3430370b069ed676832d027e89970e73b9ea8164971ffcf96fdb2b"
+}

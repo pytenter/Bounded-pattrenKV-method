@@ -9,6 +9,12 @@ import torch
 from models.segmented_cache import cache_segment_stats, deserialize_cache
 
 
+SELECTOR_COMPONENT_METHODS = {
+    "causal_v4_25": "causal_v4",
+    "importance_only_v4_25": "importance_only_v4",
+    "error_only_v4_25": "error_only_v4",
+}
+
 PAPER_METHODS = {"kivi_paper_g128", "patternkv_paper"}
 
 
@@ -96,7 +102,8 @@ def apply_method_defaults(args) -> MethodConfig:
             pattern_group=128,
             pattern_selection_position="post-RoPE key/value states",
         )
-    if args.method == "causal_v4_25":
+    if args.method in SELECTOR_COMPONENT_METHODS:
+        selector = SELECTOR_COMPONENT_METHODS[args.method]
         args.k_bits = 2
         args.v_bits = 2
         args.group_size = 128
@@ -108,7 +115,7 @@ def apply_method_defaults(args) -> MethodConfig:
         args.patternkv_cache_path = "segmented"
         args.patternkv_cache_mode = "segmented_rolling"
         args.patternkv_value_objective = "base"
-        args.patternkv_v_precision_selector = "causal_v4"
+        args.patternkv_v_precision_selector = selector
         args.patternkv_v4_budget_fraction = 0.25
         args.patternkv_random_selector_seed = 20260809
         return MethodConfig(
@@ -126,7 +133,7 @@ def apply_method_defaults(args) -> MethodConfig:
             initial_pattern_count=32,
             pattern_group=128,
             pattern_selection_position="post-RoPE key/value states",
-            value_precision_selector="causal_v4",
+            value_precision_selector=selector,
             v4_budget_fraction=0.25,
         )
     if args.method == "kivi_official":
@@ -203,7 +210,7 @@ def method_config_dict(args) -> dict[str, Any]:
     out["compact_kernel_storage_note"] = "Packed payload plus FP16 scale/min; Python cache may store indices/masks at wider tensor dtypes."
     out["mixed_key_mask_path"] = str(getattr(args, "mixed_key_mask_path", "") or "")
     out["mixed_key_int4_ratio"] = float(getattr(args, "mixed_key_int4_ratio", 0.0) or 0.0)
-    is_pattern_backend = str(getattr(args, "method", "")).startswith("pattern") or getattr(args, "method", "") == "causal_v4_25"
+    is_pattern_backend = str(getattr(args, "method", "")).startswith("pattern") or getattr(args, "method", "") in SELECTOR_COMPONENT_METHODS
     out["patternkv_cache_path"] = str(getattr(args, "patternkv_cache_path", "") or "") if is_pattern_backend else None
     out["cache_mode"] = str(getattr(args, "patternkv_cache_mode", "") or "") if is_pattern_backend else None
     return out

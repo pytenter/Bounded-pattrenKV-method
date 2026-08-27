@@ -1,0 +1,462 @@
+{
+  "created_at": "2026-08-27T06:13:19Z",
+  "dataset_path": "datasets/gsm8k/gsm8k_test.jsonl",
+  "dataset_rows": 1319,
+  "experiment_id": "gsm8k_selector_components_pilot_v1",
+  "generation_config": {
+    "batch_size": 1,
+    "do_sample": false,
+    "dtype": "float16",
+    "max_new_tokens": 2048,
+    "num_beams": 1,
+    "num_return_sequences": 1,
+    "temperature": null,
+    "top_p": null,
+    "use_cache": true
+  },
+  "gpu_policy": {
+    "forbidden_physical_gpus": [
+      "2",
+      "3"
+    ],
+    "original_fixed_gpu_policy_superseded": true,
+    "selected_physical_gpus": [
+      "1",
+      "4"
+    ],
+    "user_override": "Use any two currently idle GPUs; do not use active AIME GPUs."
+  },
+  "method_labels": {
+    "causal_v4_25": "CAUSAL_V4_25",
+    "error_only_v4_25": "ERROR_ONLY_V4_25",
+    "importance_only_v4_25": "IMPORTANCE_ONLY_V4_25"
+  },
+  "methods": [
+    "importance_only_v4_25",
+    "error_only_v4_25",
+    "causal_v4_25"
+  ],
+  "rows": [
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 0,
+      "problem_id": 560,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 1,
+      "problem_id": 987,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 2,
+      "problem_id": 789,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 3,
+      "problem_id": 1076,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 4,
+      "problem_id": 740,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 5,
+      "problem_id": 809,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 6,
+      "problem_id": 65,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 7,
+      "problem_id": 848,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 8,
+      "problem_id": 692,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 9,
+      "problem_id": 140,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 10,
+      "problem_id": 136,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 11,
+      "problem_id": 481,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 12,
+      "problem_id": 1230,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 13,
+      "problem_id": 637,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 14,
+      "problem_id": 412,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 15,
+      "problem_id": 100,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 16,
+      "problem_id": 785,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 17,
+      "problem_id": 864,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 18,
+      "problem_id": 1305,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 19,
+      "problem_id": 543,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 20,
+      "problem_id": 714,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 21,
+      "problem_id": 371,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 22,
+      "problem_id": 872,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 23,
+      "problem_id": 330,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": null,
+      "canonical_packed_history_tokens": null,
+      "order": 24,
+      "problem_id": 928,
+      "selection_signal": "numpy.random.default_rng(20260827)",
+      "stratum": "UNIFORM_RANDOM"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 2048,
+      "order": 25,
+      "problem_id": 186,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 26,
+      "problem_id": 111,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 27,
+      "problem_id": 359,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 28,
+      "problem_id": 566,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 29,
+      "problem_id": 672,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 30,
+      "problem_id": 731,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 31,
+      "problem_id": 855,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 32,
+      "problem_id": 894,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 33,
+      "problem_id": 923,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 34,
+      "problem_id": 991,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 2048,
+      "canonical_packed_history_tokens": 1920,
+      "order": 35,
+      "problem_id": 1203,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 1303,
+      "canonical_packed_history_tokens": 1152,
+      "order": 36,
+      "problem_id": 162,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 1076,
+      "canonical_packed_history_tokens": 1024,
+      "order": 37,
+      "problem_id": 12,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 775,
+      "canonical_packed_history_tokens": 640,
+      "order": 38,
+      "problem_id": 525,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 633,
+      "canonical_packed_history_tokens": 512,
+      "order": 39,
+      "problem_id": 1190,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 574,
+      "canonical_packed_history_tokens": 512,
+      "order": 40,
+      "problem_id": 1166,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 561,
+      "canonical_packed_history_tokens": 512,
+      "order": 41,
+      "problem_id": 1174,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 556,
+      "canonical_packed_history_tokens": 512,
+      "order": 42,
+      "problem_id": 1003,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 454,
+      "canonical_packed_history_tokens": 512,
+      "order": 43,
+      "problem_id": 1077,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 539,
+      "canonical_packed_history_tokens": 384,
+      "order": 44,
+      "problem_id": 13,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 529,
+      "canonical_packed_history_tokens": 384,
+      "order": 45,
+      "problem_id": 772,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 519,
+      "canonical_packed_history_tokens": 384,
+      "order": 46,
+      "problem_id": 858,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 504,
+      "canonical_packed_history_tokens": 384,
+      "order": 47,
+      "problem_id": 660,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 491,
+      "canonical_packed_history_tokens": 384,
+      "order": 48,
+      "problem_id": 607,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    },
+    {
+      "canonical_generated_tokens": 483,
+      "canonical_packed_history_tokens": 384,
+      "order": 49,
+      "problem_id": 427,
+      "selection_signal": "packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",
+      "stratum": "LENGTH_PROXY_ACTIVATION_ENRICHED"
+    }
+  ],
+  "selectors": {
+    "causal_v4_25": "causal_v4",
+    "error_only_v4_25": "error_only_v4",
+    "importance_only_v4_25": "importance_only_v4"
+  },
+  "shared_patternkv_config": {
+    "base_v_bits": 2,
+    "group_size": 128,
+    "k_bits": 2,
+    "num_k_base": 32,
+    "num_v_base": 32,
+    "patternkv_cache_mode": "segmented_rolling",
+    "patternkv_cache_path": "segmented",
+    "patternkv_v4_budget_fraction": 0.25,
+    "patternkv_value_objective": "base",
+    "recent_length": 128,
+    "residual_length": 128,
+    "selected_v_bits": 4,
+    "sink_length": 16
+  },
+  "subset_count": 50
+}

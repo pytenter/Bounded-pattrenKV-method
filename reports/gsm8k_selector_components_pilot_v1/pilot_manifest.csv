@@ -1,0 +1,51 @@
+order,problem_id,stratum,selection_signal,canonical_packed_history_tokens,canonical_generated_tokens
+0,560,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+1,987,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+2,789,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+3,1076,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+4,740,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+5,809,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+6,65,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+7,848,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+8,692,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+9,140,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+10,136,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+11,481,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+12,1230,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+13,637,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+14,412,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+15,100,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+16,785,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+17,864,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+18,1305,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+19,543,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+20,714,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+21,371,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+22,872,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+23,330,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+24,928,UNIFORM_RANDOM,numpy.random.default_rng(20260827),,
+25,186,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",2048,2048
+26,111,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+27,359,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+28,566,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+29,672,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+30,731,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+31,855,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+32,894,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+33,923,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+34,991,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+35,1203,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1920,2048
+36,162,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1152,1303
+37,12,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",1024,1076
+38,525,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",640,775
+39,1190,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",512,633
+40,1166,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",512,574
+41,1174,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",512,561
+42,1003,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",512,556
+43,1077,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",512,454
+44,13,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,539
+45,772,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,529
+46,858,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,519
+47,660,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,504
+48,607,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,491
+49,427,LENGTH_PROXY_ACTIVATION_ENRICHED,"packed_history_tokens>0, packed_history_tokens desc, generated_tokens desc, problem_id asc",384,483

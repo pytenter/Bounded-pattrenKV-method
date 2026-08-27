@@ -1,0 +1,77 @@
+{
+  "forbidden_gpus": [
+    "2",
+    "3"
+  ],
+  "gpu_snapshot": [
+    {
+      "gpu_util_percent": 71,
+      "index": 0,
+      "memory_free_mib": 4316,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 19809,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 1,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 29,
+      "index": 2,
+      "memory_free_mib": 5713,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 18412,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 28,
+      "index": 3,
+      "memory_free_mib": 5737,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 18388,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 4,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 5,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 6,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "gpu_util_percent": 0,
+      "index": 7,
+      "memory_free_mib": 24104,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 21,
+      "name": "NVIDIA GeForce RTX 3090"
+    }
+  ],
+  "note": "The original 30000 MiB threshold is impossible on 24 GiB RTX 3090 cards; user override selected two idle GPUs by current free memory/utilization.",
+  "selected_gpus": [
+    "1",
+    "4"
+  ]
+}
