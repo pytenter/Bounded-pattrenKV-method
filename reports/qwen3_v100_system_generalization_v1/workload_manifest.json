@@ -1,0 +1,36 @@
+{
+  "formal_matrix_requested": {
+    "batch_scaling": {
+      "batch": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "context": 2048,
+      "decode": 8,
+      "gpu": 4
+    },
+    "context_scaling": {
+      "batch": 1,
+      "context": [
+        2048,
+        4096,
+        8192
+      ],
+      "decode": 8,
+      "gpu": 5
+    },
+    "long_decode": {
+      "batch": 1,
+      "context": 2048,
+      "decode": [
+        256,
+        512,
+        1024
+      ],
+      "gpu": 6
+    }
+  },
+  "model": "Qwen3-8B"
+}

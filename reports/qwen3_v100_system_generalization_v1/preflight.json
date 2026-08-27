@@ -1,0 +1,71 @@
+{
+  "git": {
+    "branch": {
+      "cmd": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "output": "sys/qwen3-8b-v100-system-generalization-v1\n",
+      "returncode": 0
+    },
+    "diff_check": {
+      "cmd": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "output": "",
+      "returncode": 0
+    },
+    "head": {
+      "cmd": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "output": "c2548b61495c5fdbef8b77332c64bc338ca783ea\n",
+      "returncode": 0
+    },
+    "remote": {
+      "cmd": [
+        "git",
+        "remote",
+        "-v"
+      ],
+      "output": "bounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\nbounded\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\norigin\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)\norigin\tgit@github.com:pytenter/Bounded-pattrenKV-method.git (push)\n",
+      "returncode": 0
+    },
+    "status_short": {
+      "cmd": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "output": "?? bench/qwen3_full_model_serving_benchmark.py\n?? models/qwen3_patternkv.py\n?? scripts/qwen3_native_preflight.py\n?? scripts/qwen3_v100_system_generalization_v1.py\n?? tests/test_qwen3_v100_system_gate.py\n",
+      "returncode": 0
+    }
+  },
+  "gpu0_3_touched": false,
+  "gpu_allowed_pool": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "gpu_read_only_pool": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "nvidia_smi_query": {
+    "cmd": [
+      "nvidia-smi",
+      "--query-gpu=index,name,uuid,memory.total,memory.used,utilization.gpu,pstate,power.limit",
+      "--format=csv"
+    ],
+    "output": "index, name, uuid, memory.total [MiB], memory.used [MiB], utilization.gpu [%], pstate, power.limit [W]\n0, Tesla V100-SXM2-32GB, GPU-58dbb776-4c54-7f96-dd35-e3906245f307, 32768 MiB, 17555 MiB, 96 %, P0, 300.00 W\n1, Tesla V100-SXM2-32GB, GPU-d810b116-fec0-9d27-1f8a-2445b44352c8, 32768 MiB, 17759 MiB, 98 %, P0, 300.00 W\n2, Tesla V100-SXM2-32GB, GPU-44f231fb-b846-27e6-2e03-2065fb9aebb2, 32768 MiB, 17693 MiB, 95 %, P0, 300.00 W\n3, Tesla V100-SXM2-32GB, GPU-b9e76e6d-2dd3-d533-c5e4-5690cb4970c0, 32768 MiB, 17283 MiB, 94 %, P0, 300.00 W\n4, Tesla V100-SXM2-32GB, GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba, 32768 MiB, 0 MiB, 0 %, P0, 300.00 W\n5, Tesla V100-SXM2-32GB, GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029, 32768 MiB, 0 MiB, 0 %, P0, 300.00 W\n6, Tesla V100-SXM2-32GB, GPU-f9be145a-d8d5-a2e1-3c42-72047878fcf8, 32768 MiB, 0 MiB, 0 %, P0, 300.00 W\n7, Tesla V100-SXM2-32GB, GPU-19a85b05-d946-6a04-199d-9476b68db1ec, 32768 MiB, 0 MiB, 0 %, P0, 300.00 W\n",
+    "returncode": 0
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "CAUSAL_QWEN_SEMANTIC_PARITY": "NOT_RUN",
+  "FP16_QWEN_NATIVE_PARITY": "NOT_RUN",
+  "reason": "Formal semantic smoke requires a Qwen3 compressed-domain system adapter. The available Qwen3 adapter is a reference path that reconstructs historical K/V."
+}

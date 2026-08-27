@@ -1,0 +1,13 @@
+{
+  "causal_backend": "qwen3_patternkv_reference_adapter",
+  "classification": "V100_COMPRESSED_BACKEND_NOT_READY",
+  "compressed_domain_runtime_preserved": false,
+  "fallback_count": 0,
+  "formal_timing_allowed": false,
+  "fp16_backend": "qwen3_native_eager_fp16",
+  "historical_fp16_k_materialization": 1,
+  "historical_fp16_v_materialization": 1,
+  "model": "Qwen3-8B",
+  "reason": "The audited Qwen3 PatternKV adapter reconstructs full historical K/V during decode. It is valid as a semantic/reference path, but it does not satisfy the compressed-domain system-performance gate.",
+  "true_batch_preserved": false
+}

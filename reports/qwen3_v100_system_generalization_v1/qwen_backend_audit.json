@@ -1,0 +1,14 @@
+{
+  "architectures": [
+    "Qwen3ForCausalLM"
+  ],
+  "config_json_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+  "head_dim": 128,
+  "hidden_size": 4096,
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "model_type": "qwen3",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 36,
+  "num_key_value_heads": 8,
+  "torch_dtype": "bfloat16"
+}
