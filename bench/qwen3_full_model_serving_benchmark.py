@@ -14,18 +14,18 @@ MODEL_PATH = Path("/home/qinch2023/modelscope_models/Qwen3-8B")
 class Qwen3SystemGate:
     model: str = "Qwen3-8B"
     fp16_backend: str = "qwen3_native_eager_fp16"
-    causal_backend: str = "qwen3_patternkv_reference_adapter"
+    causal_backend: str = "qwen3_patternkv_compressed"
     compressed_domain_runtime_preserved: bool = False
-    historical_fp16_k_materialization: int = 1
-    historical_fp16_v_materialization: int = 1
+    historical_fp16_k_materialization: int = 0
+    historical_fp16_v_materialization: int = 0
     fallback_count: int = 0
     true_batch_preserved: bool = False
-    classification: str = "V100_COMPRESSED_BACKEND_NOT_READY"
+    classification: str = "QWEN_COMPRESSED_BACKEND_REQUIRES_GPU_SEMANTIC_AND_TRUE_BATCH_CLOSURE"
     formal_timing_allowed: bool = False
     reason: str = (
-        "The audited Qwen3 PatternKV adapter reconstructs full historical K/V "
-        "during decode. It is valid as a semantic/reference path, but it does "
-        "not satisfy the compressed-domain system-performance gate."
+        "A Qwen3 compressed backend scaffold is present and its static counters do not "
+        "record full historical K/V materialization, but GPU semantic parity, "
+        "full-model true-batch decode, and timed-window purity gates are not closed."
     )
 
 def write_json(path: Path, payload: Any) -> None:

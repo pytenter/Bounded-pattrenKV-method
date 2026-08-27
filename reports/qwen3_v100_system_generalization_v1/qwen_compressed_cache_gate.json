@@ -1,0 +1,10 @@
+{
+  "GROUP_SIZE": 128,
+  "K_BITS": 2,
+  "RECENT": 128,
+  "SELECTOR": "causal_v4",
+  "SINK": 16,
+  "V4_FRACTION": 0.25,
+  "V_BITS": 2,
+  "status": "PASS_CONFIG_AUDIT_ONLY"
+}

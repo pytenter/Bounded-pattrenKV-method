@@ -1,0 +1,107 @@
+pwd
+/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1
+
+git branch --show-current
+sys/qwen3-8b-v100-system-generalization-v1
+
+git rev-parse HEAD
+a2dafa31f2809cf3bee1a97aad88bcc30cc76141
+
+git status --short
+?? reports/qwen3_v100_system_generalization_v1/backend_preflight_terminal_audit.txt
+
+git status --porcelain=v1
+?? reports/qwen3_v100_system_generalization_v1/backend_preflight_terminal_audit.txt
+
+git diff --stat
+
+git diff --name-status
+
+git diff --check
+
+git ls-files --others --exclude-standard
+reports/qwen3_v100_system_generalization_v1/backend_preflight_terminal_audit.txt
+
+git remote -v
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+bounded	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+origin	git@github.com:pytenter/Bounded-pattrenKV-method.git (fetch)
+origin	git@github.com:pytenter/Bounded-pattrenKV-method.git (push)
+
+git worktree list
+/home/qinch2023/Bounded-pattrenKV-method                       20caa33 [exp/aime-int2-wave1-v100-8gpu]
+/home/qinch2023/Bounded-pattrenKV-method-qwen3-v100-system-v1  a2dafa3 [sys/qwen3-8b-v100-system-generalization-v1]
+
+nvidia-smi
+Thu Aug 27 21:02:57 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.60.13    Driver Version: 525.60.13    CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla V100-SXM2...  Off  | 00000000:2D:00.0 Off |                    0 |
+| N/A   53C    P0   206W / 300W |  17715MiB / 32768MiB |     98%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla V100-SXM2...  Off  | 00000000:32:00.0 Off |                    0 |
+| N/A   67C    P0   169W / 300W |  17939MiB / 32768MiB |     65%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   2  Tesla V100-SXM2...  Off  | 00000000:5B:00.0 Off |                    0 |
+| N/A   62C    P0   222W / 300W |  17713MiB / 32768MiB |     96%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   3  Tesla V100-SXM2...  Off  | 00000000:5F:00.0 Off |                    0 |
+| N/A   53C    P0   214W / 300W |  17443MiB / 32768MiB |     96%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   4  Tesla V100-SXM2...  Off  | 00000000:B5:00.0 Off |                    0 |
+| N/A   25C    P0    40W / 300W |      0MiB / 32768MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   5  Tesla V100-SXM2...  Off  | 00000000:BE:00.0 Off |                    0 |
+| N/A   24C    P0    38W / 300W |      0MiB / 32768MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   6  Tesla V100-SXM2...  Off  | 00000000:DF:00.0 Off |                    0 |
+| N/A   26C    P0    40W / 300W |      0MiB / 32768MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   7  Tesla V100-SXM2...  Off  | 00000000:E7:00.0 Off |                    0 |
+| N/A   24C    P0    38W / 300W |      0MiB / 32768MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+
+nvidia-smi query
+index, name, uuid, memory.used [MiB], utilization.gpu [%], pstate
+0, Tesla V100-SXM2-32GB, GPU-58dbb776-4c54-7f96-dd35-e3906245f307, 17715 MiB, 96 %, P0
+1, Tesla V100-SXM2-32GB, GPU-d810b116-fec0-9d27-1f8a-2445b44352c8, 17939 MiB, 84 %, P0
+2, Tesla V100-SXM2-32GB, GPU-44f231fb-b846-27e6-2e03-2065fb9aebb2, 17713 MiB, 96 %, P0
+3, Tesla V100-SXM2-32GB, GPU-b9e76e6d-2dd3-d533-c5e4-5690cb4970c0, 17443 MiB, 96 %, P0
+4, Tesla V100-SXM2-32GB, GPU-aa5df360-c59b-6a93-6bda-8ddc3506c1ba, 0 MiB, 0 %, P0
+5, Tesla V100-SXM2-32GB, GPU-0988a195-2c6a-3363-a9cc-ed32c09d8029, 0 MiB, 0 %, P0
+6, Tesla V100-SXM2-32GB, GPU-f9be145a-d8d5-a2e1-3c42-72047878fcf8, 0 MiB, 0 %, P0
+7, Tesla V100-SXM2-32GB, GPU-19a85b05-d946-6a04-199d-9476b68db1ec, 0 MiB, 0 %, P0
+
+python/torch processes
+root        37     1  0 Aug14 ?        00:00:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root        42     1  0 Aug14 ?        00:00:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+qinch20+    78     1  0 Aug14 ?        00:35:58 /opt/conda/bin/python /opt/conda/bin/jupyter-lab --no-browser --LabApp.base_url=/proxy/service/45f26b0c04007 --LabApp.token= --LabApp.allow_remote_access=True --LabApp.ip=0.0.0.0 --LabApp.port=8888 --notebook-dir=/home/qinch2023/jupyterlab
+qinch20+  3527  3526  0 Aug16 ?        00:00:00 /home/qinch2023/lab415/opd/.conda-env/bin/python /home/qinch2023/lab415/opd/.worktrees/radar-continuous-research/.codex/hooks/checkpoint_agent.py
+qinch20+ 18212 18051  0 Aug17 pts/86   00:20:24 /home/qinch2023/lab415/opd/.conda-env/bin/python -m opd.research.daemon --root /home/qinch2023/lab415/opd --poll-interval 5.0
+qinch20+ 20207     1 99 Aug26 pts/130  1-07:27:16 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_generalization.py --worker --methods PATTERN_BASE
+qinch20+ 20208     1 99 Aug26 pts/130  1-07:17:10 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_generalization.py --worker --methods PATTERN_BASE
+qinch20+ 20209     1 99 Aug26 pts/130  1-07:15:52 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_generalization.py --worker --methods CAUSAL_V4_25
+qinch20+ 20210     1 99 Aug26 pts/130  1-07:28:15 /home/qinch2023/miniconda3/envs/patternkv-v100/bin/python bench/bench_aime24_qwen3_generalization.py --worker --methods CAUSAL_V4_25
+
+tmux ls
+qwen3_aime24_patternkv_paper_wait: 1 windows (created Thu Aug 27 20:24:56 2026)
