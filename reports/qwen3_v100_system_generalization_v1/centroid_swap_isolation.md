@@ -1,0 +1,11 @@
+# centroid_swap_isolation
+
+```json
+{
+  "k_swap_max_abs": 0.0,
+  "k_swap_mean_abs": 0.0,
+  "status": "PASS",
+  "v2_oracle_max_abs": 0.0,
+  "v2_oracle_status": "PASS"
+}
+```

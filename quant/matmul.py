@@ -645,7 +645,12 @@ def cuda_attn_v_fused_with_base(
     assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
     B, nh_in, _, K = attn_q.shape
     assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
-    assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
+    if v_centroids.dim() == 3:
+        assert v_centroids.shape[0] == nh_kv, f"v_centroids shape wrong: {v_centroids.shape}"
+    elif v_centroids.dim() == 4:
+        assert v_centroids.shape[:2] == (B, nh_kv), f"v_centroids shape wrong: {v_centroids.shape}"
+    else:
+        raise AssertionError(f"v_centroids shape wrong: {v_centroids.shape}")
     OC = v_centroids.size(-1)
 
     pack = 32 // bits
@@ -1144,7 +1149,12 @@ def cuda_attn_v_fused_with_base_debug(
     assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,K], got {attn_q.shape}"
     B, nh_in, _, K = attn_q.shape
     assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
-    assert v_centroids.dim() == 3, f"v_centroids shape wrong: {v_centroids.shape}"
+    if v_centroids.dim() == 3:
+        assert v_centroids.shape[0] == nh_kv, f"v_centroids shape wrong: {v_centroids.shape}"
+    elif v_centroids.dim() == 4:
+        assert v_centroids.shape[:2] == (B, nh_kv), f"v_centroids shape wrong: {v_centroids.shape}"
+    else:
+        raise AssertionError(f"v_centroids shape wrong: {v_centroids.shape}")
     OC = v_centroids.size(-1)
 
     pack = 32 // bits
@@ -1286,23 +1296,41 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
     assert attn_q.dim() == 4 and attn_q.size(2) == 1, f"attn_q must be [B,nh,1,T], got {attn_q.shape}"
     B, nh_in, _, total_tokens = attn_q.shape
     assert nh_in == nh, f"nh mismatch: attn_q has {nh_in}, arg nh={nh}"
-    if B != 1:
-        raise RuntimeError("Phase S1 mixed fused Value attention currently supports B=1, matching frozen mixed cache packing")
     if precision_mask.dim() != 2 or precision_mask.shape != (B, total_tokens):
         raise RuntimeError(f"precision_mask must be [B,T]={B,total_tokens}, got {tuple(precision_mask.shape)}")
     if v_mask_q.shape != (B, nh_kv, total_tokens):
         raise RuntimeError(f"v_mask_q must be [B,nh_kv,T]={B,nh_kv,total_tokens}, got {tuple(v_mask_q.shape)}")
     if v_idx_q.shape != (B, nh_kv, total_tokens):
         raise RuntimeError(f"v_idx_q must be [B,nh_kv,T]={B,nh_kv,total_tokens}, got {tuple(v_idx_q.shape)}")
-    if v_centroids is None or v_centroids.dim() != 3:
-        raise RuntimeError("fused mixed Value attention requires Pattern centroids")
+    if v_centroids is None or v_centroids.dim() not in (3, 4):
+        raise RuntimeError("fused mixed Value attention requires Pattern centroids [H,M,D] or [B,H,M,D]")
+    if v_centroids.dim() == 4 and tuple(v_centroids.shape[:2]) != (B, nh_kv):
+        raise RuntimeError(f"request-local V centroids must be [B,nh_kv,M,D], got {tuple(v_centroids.shape)}")
+
+    def _compact_order(mask: torch.Tensor, *, select_high: bool) -> torch.Tensor:
+        selected = mask.bool() if select_high else ~mask.bool()
+        counts = selected.sum(dim=1)
+        if counts.numel() and not torch.equal(counts, torch.full_like(counts, int(counts[0].item()))):
+            raise RuntimeError("legacy mixed-V requires equal V2/V4 counts per request")
+        count = int(counts[0].item()) if counts.numel() else 0
+        positions = torch.arange(mask.shape[1], dtype=torch.long, device=mask.device).unsqueeze(0).expand(mask.shape[0], -1)
+        sort_key = torch.where(selected, positions, positions + int(mask.shape[1]))
+        return torch.argsort(sort_key, dim=1)[:, :count].contiguous()
+
+    def _gather_attn(weights: torch.Tensor, order: torch.Tensor) -> torch.Tensor:
+        idx = order[:, None, None, :].expand(-1, weights.shape[1], weights.shape[2], -1)
+        return torch.gather(weights, 3, idx).contiguous()
+
+    def _gather_meta(meta: torch.Tensor, order: torch.Tensor) -> torch.Tensor:
+        idx = order[:, None, :].expand(-1, meta.shape[1], -1)
+        return torch.gather(meta, 2, idx).contiguous()
 
     with profile_range("mixed_v_mapping_prepare", tokens=int(total_tokens)):
-        mask = precision_mask[0].bool()
-        low_mask = ~mask
-        high_mask = mask
-        v2_tokens = int(low_mask.sum().item())
-        v4_tokens = int(high_mask.sum().item())
+        mask = precision_mask.bool()
+        low_order = _compact_order(mask, select_high=False)
+        high_order = _compact_order(mask, select_high=True)
+        v2_tokens = int(low_order.shape[1])
+        v4_tokens = int(high_order.shape[1])
         gqa_backend = patternkv_gqa_v_backend()
         capacity_backend = patternkv_cache_growth_backend()
         use_strided_capacity = capacity_backend in {"fixed_capacity", "chunked_capacity"}
@@ -1322,15 +1350,15 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
         if vq2.shape[2] != v2_tokens:
             raise RuntimeError(f"V2 payload token mismatch: payload={vq2.shape[2]} mask={v2_tokens}")
         with profile_range("mixed_v_layout_prepare_v2", tokens=v2_tokens):
-            attn2 = attn_q[..., low_mask].contiguous()
-            if use_strided_capacity:
-                if v2_mask_q is None or v2_idx_q is None:
-                    raise RuntimeError("capacity mixed-V requires compact V2 metadata")
+            attn2 = _gather_attn(attn_q, low_order)
+            if v2_mask_q is not None and v2_idx_q is not None:
                 mask2 = v2_mask_q
                 idx2 = v2_idx_q
+            elif use_strided_capacity:
+                raise RuntimeError("capacity mixed-V requires compact V2 metadata")
             else:
-                mask2 = v_mask_q[:, :, low_mask].contiguous()
-                idx2 = v_idx_q[:, :, low_mask].contiguous()
+                mask2 = _gather_meta(v_mask_q, low_order)
+                idx2 = _gather_meta(v_idx_q, low_order)
         record_temp_allocation("mixed_v_attn2_compact", attn2)
         record_temp_allocation("mixed_v_mask2_compact", mask2)
         record_temp_allocation("mixed_v_idx2_compact", idx2)
@@ -1377,15 +1405,15 @@ def _cuda_attn_v_mixed_fused_with_base_impl(
         if vq4.shape[2] != v4_tokens:
             raise RuntimeError(f"V4 payload token mismatch: payload={vq4.shape[2]} mask={v4_tokens}")
         with profile_range("mixed_v_layout_prepare_v4", tokens=v4_tokens):
-            attn4 = attn_q[..., high_mask].contiguous()
-            if use_strided_capacity:
-                if v4_mask_q is None or v4_idx_q is None:
-                    raise RuntimeError("capacity mixed-V requires compact V4 metadata")
+            attn4 = _gather_attn(attn_q, high_order)
+            if v4_mask_q is not None and v4_idx_q is not None:
                 mask4 = v4_mask_q
                 idx4 = v4_idx_q
+            elif use_strided_capacity:
+                raise RuntimeError("capacity mixed-V requires compact V4 metadata")
             else:
-                mask4 = v_mask_q[:, :, high_mask].contiguous()
-                idx4 = v_idx_q[:, :, high_mask].contiguous()
+                mask4 = _gather_meta(v_mask_q, high_order)
+                idx4 = _gather_meta(v_idx_q, high_order)
         record_temp_allocation("mixed_v_attn4_compact", attn4)
         record_temp_allocation("mixed_v_mask4_compact", mask4)
         record_temp_allocation("mixed_v_idx4_compact", idx4)

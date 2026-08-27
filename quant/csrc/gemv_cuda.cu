@@ -1495,7 +1495,7 @@ __global__ void battn_v_kernel_with_base(
   half*            __restrict__ _out,       // [B*nh, OC]
   const int K, const int OC, const int Lf,
   const int group_size, const int nh, const int nh_kv,
-  const int Mcent, const int idx_bytes)
+  const int Mcent, const int Bcent, const int idx_bytes)
 {
   static_assert(BIT==2 || BIT==4, "BIT must be 2 or 4");
   static_assert(MODE==ABLATION_FULL || MODE==ABLATION_RESIDUAL_ONLY ||
@@ -1548,7 +1548,10 @@ __global__ void battn_v_kernel_with_base(
   const half*     vsc_base= _vscale_lin + bkv * (size_t)(OC / group_size) * K;
   const half*     vzr_base= _vzero_lin  + bkv * (size_t)(OC / group_size) * K;
 
-  const half* C = _centroids + (size_t)hk * (size_t)Mcent * OC; // [Mcent, OC]
+  const size_t cent_offset = (Bcent == 1)
+                             ? ((size_t)hk * (size_t)Mcent * OC)
+                             : (((size_t)b * nh_kv + hk) * (size_t)Mcent * OC);
+  const half* C = _centroids + cent_offset; // [Mcent, OC]
   const uint8_t* mask_row = _mask_q + bkv * (size_t)K;          // [K]
   const char*    idx_row  = reinterpret_cast<const char*>(_idx_q)
                            + bkv * (size_t)K * idx_bytes;
@@ -1792,7 +1795,7 @@ __global__ void battn_v_kernel_with_base_strided(
   half*            __restrict__ _out,       // [B*nh, OC]
   const int K, const int OC, const int Lf,
   const int group_size, const int nh, const int nh_kv,
-  const int Mcent, const int idx_bytes,
+  const int Mcent, const int Bcent, const int idx_bytes,
   const long long vq_stride_b,
   const long long vq_stride_h,
   const long long vq_stride_t,
@@ -1837,7 +1840,10 @@ __global__ void battn_v_kernel_with_base_strided(
   const half* vsc_bh = _vscale + (long long)b * vscale_stride_b + (long long)hk * vscale_stride_h;
   const half* vzr_bh = _vzero + (long long)b * vzero_stride_b + (long long)hk * vzero_stride_h;
   const uint8_t* mask_bh = _mask_q + (long long)b * mask_stride_b + (long long)hk * mask_stride_h;
-  const half* C = _centroids + (size_t)hk * (size_t)Mcent * OC;
+  const size_t cent_offset = (Bcent == 1)
+                             ? ((size_t)hk * (size_t)Mcent * OC)
+                             : (((size_t)b * nh_kv + hk) * (size_t)Mcent * OC);
+  const half* C = _centroids + cent_offset;
 
   extern __shared__ float s_Sacc[];
   const int sacc_rows = blockDim.y;
@@ -2390,7 +2396,7 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
     const int group_size,
     const int nh,
     const int nh_kv,
-    torch::Tensor _centroids,  // [nh_kv, Mcent, OC]
+    torch::Tensor _centroids,  // [nh_kv, Mcent, OC] or [B, nh_kv, Mcent, OC]
     torch::Tensor _mask_q,     // [B, nh_kv, K]  (uint8)
     torch::Tensor _idx_q,      // [B, nh_kv, K]  (u8/u16/i32)
     torch::Tensor _alpha_f,    // [B*nh, Lf]     (可空 size=0)
@@ -2401,15 +2407,20 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   const int BSnh = _alpha_q.size(0);
   const int K    = _alpha_q.size(2);
 
-  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
-  const int OC   = _centroids.size(2);
+  const int B = BSnh / nh;
+  TORCH_CHECK(
+      (_centroids.dim()==3 && _centroids.size(0)==nh_kv) ||
+      (_centroids.dim()==4 && _centroids.size(0)==B && _centroids.size(1)==nh_kv),
+      "centroids must be [nh_kv,M,OC] or [B,nh_kv,M,OC]");
+  const int OC = (_centroids.dim()==4) ? _centroids.size(3) : _centroids.size(2);
+  const int Bcent = (_centroids.dim()==4) ? B : 1;
 
   TORCH_CHECK(_vq.dim()==3 && _vq.size(2)==K, "vq must be [B*nh_kv, OC/pack, K]");
   const int PACK = 32 / bit;
   TORCH_CHECK(_vq.size(1) * PACK == OC, "vq.pack mismatch: (OC/pack)*pack must equal OC");
 
   TORCH_CHECK(_vscale.dim()==3 && _vzero.dim()==3, "scale/zero must be 3D [B*nh_kv, OC/group, K]");
-  const int Mcent = _centroids.size(1);
+  const int Mcent = (_centroids.dim()==4) ? _centroids.size(2) : _centroids.size(1);
 
   TORCH_CHECK(_mask_q.dim()==3 && _mask_q.size(2)==K && _mask_q.size(1)==nh_kv, "mask_q must be [B,nh_kv,K]");
   TORCH_CHECK(_idx_q .dim()==3 && _idx_q .size(2)==K && _idx_q .size(1)==nh_kv, "idx_q must be [B,nh_kv,K]");
@@ -2449,12 +2460,12 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base(
   if (bit == 4) {
     battn_v_kernel_with_base<4, ABLATION_LANE0_TABLE_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
-      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, Bcent, idx_bytes
     );
   } else if (bit == 2) {
     battn_v_kernel_with_base<2, ABLATION_LANE0_TABLE_FULL><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
-      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, Bcent, idx_bytes
     );
   } else {
     TORCH_CHECK(false, "Only 2-bit or 4-bit are supported.");
@@ -2471,7 +2482,7 @@ static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
     const int group_size,
     const int nh,
     const int nh_kv,
-    torch::Tensor _centroids,  // [nh_kv, Mcent, OC]
+    torch::Tensor _centroids,  // [nh_kv, Mcent, OC] or [B, nh_kv, Mcent, OC]
     torch::Tensor _mask_q,     // [B, nh_kv, K] uint8, may be strided on K
     torch::Tensor _idx_q,      // [B, nh_kv, K] u8/i16/i32, may be strided on K
     torch::Tensor _alpha_f,    // [B*nh, Lf] size=0 allowed
@@ -2482,7 +2493,9 @@ static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
   TORCH_CHECK(_vq.dim()==4, "vq must be [B,nh_kv,K,OC/pack]");
   TORCH_CHECK(_vscale.dim()==4 && _vzero.dim()==4, "scale/zero must be [B,nh_kv,K,OC/group]");
   TORCH_CHECK(_mask_q.dim()==3 && _idx_q.dim()==3, "mask/idx must be [B,nh_kv,K]");
-  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
+  TORCH_CHECK((_centroids.dim()==3 && _centroids.size(0)==nh_kv) ||
+              (_centroids.dim()==4 && _centroids.size(0)==_vq.size(0) && _centroids.size(1)==nh_kv),
+              "centroids must be [nh_kv,M,OC] or [B,nh_kv,M,OC]");
   TORCH_CHECK(_vq.scalar_type()==torch::kInt32, "strided vq must be int32");
   TORCH_CHECK(_vscale.scalar_type()==torch::kFloat16 && _vzero.scalar_type()==torch::kFloat16,
               "strided scale/zero must be float16");
@@ -2493,9 +2506,10 @@ static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
   const int B = _vq.size(0);
   const int K = _alpha_q.size(2);
   const int BSnh = _alpha_q.size(0);
-  const int OC = _centroids.size(2);
+  const int OC = (_centroids.dim()==4) ? _centroids.size(3) : _centroids.size(2);
   const int PACK = 32 / bit;
-  const int Mcent = _centroids.size(1);
+  const int Mcent = (_centroids.dim()==4) ? _centroids.size(2) : _centroids.size(1);
+  const int Bcent = (_centroids.dim()==4) ? B : 1;
   TORCH_CHECK(nh % nh_kv == 0, "nh must be divisible by nh_kv");
   TORCH_CHECK(BSnh == B * nh, "alpha_q batch/head mismatch");
   TORCH_CHECK(_vq.size(1)==nh_kv && _vq.size(2)==K && _vq.size(3)*PACK==OC,
@@ -2540,7 +2554,7 @@ static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
   if (bit == 2) {
     battn_v_kernel_with_base_strided<2><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
-      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes,
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, Bcent, idx_bytes,
       _vq.stride(0), _vq.stride(1), _vq.stride(2), _vq.stride(3),
       _vscale.stride(0), _vscale.stride(1), _vscale.stride(2), _vscale.stride(3),
       _vzero.stride(0), _vzero.stride(1), _vzero.stride(2), _vzero.stride(3),
@@ -2550,7 +2564,7 @@ static torch::Tensor attn_v_forward_cuda_outer_dim_with_base_strided_bit(
   } else {
     battn_v_kernel_with_base_strided<4><<<blocks, threads, shmem>>>(
       alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp,
-      K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes,
+      K, OC, Lf, group_size, nh, nh_kv, Mcent, Bcent, idx_bytes,
       _vq.stride(0), _vq.stride(1), _vq.stride(2), _vq.stride(3),
       _vscale.stride(0), _vscale.stride(1), _vscale.stride(2), _vscale.stride(3),
       _vzero.stride(0), _vzero.stride(1), _vzero.stride(2), _vzero.stride(3),
@@ -3328,16 +3342,21 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
   TORCH_CHECK(_alpha_q.dim()==3 && _alpha_q.size(1)==1, "alpha_q must be [B*nh,1,K]");
   const int BSnh = _alpha_q.size(0);
   const int K    = _alpha_q.size(2);
+  TORCH_CHECK(BSnh % nh == 0, "alpha_q first dim must be divisible by nh");
+  const int B    = BSnh / nh;
 
-  TORCH_CHECK(_centroids.dim()==3 && _centroids.size(0)==nh_kv, "centroids must be [nh_kv,M,OC]");
-  const int OC   = _centroids.size(2);
+  TORCH_CHECK((_centroids.dim()==3 && _centroids.size(0)==nh_kv) ||
+              (_centroids.dim()==4 && _centroids.size(0)==B && _centroids.size(1)==nh_kv),
+              "centroids must be [nh_kv,M,OC] or [B,nh_kv,M,OC]");
+  const int OC   = _centroids.size(-1);
 
   TORCH_CHECK(_vq.dim()==3 && _vq.size(2)==K, "vq must be [B*nh_kv, OC/pack, K]");
   const int PACK = 32 / bit;
   TORCH_CHECK(_vq.size(1) * PACK == OC, "vq.pack mismatch: (OC/pack)*pack must equal OC");
 
   TORCH_CHECK(_vscale.dim()==3 && _vzero.dim()==3, "scale/zero must be 3D [B*nh_kv, OC/group, K]");
-  const int Mcent = _centroids.size(1);
+  const int Bcent = (_centroids.dim()==4) ? B : 1;
+  const int Mcent = (_centroids.dim()==4) ? _centroids.size(2) : _centroids.size(1);
 
   TORCH_CHECK(_mask_q.dim()==3 && _mask_q.size(2)==K && _mask_q.size(1)==nh_kv, "mask_q must be [B,nh_kv,K]");
   TORCH_CHECK(_idx_q .dim()==3 && _idx_q .size(2)==K && _idx_q .size(1)==nh_kv, "idx_q must be [B,nh_kv,K]");
@@ -3375,7 +3394,7 @@ torch::Tensor attn_v_forward_cuda_outer_dim_with_base_debug(
 #define DISPATCH_V_ABLATION(BIT_VALUE, MODE_VALUE) \
   battn_v_kernel_with_base<BIT_VALUE, MODE_VALUE><<<blocks, threads, shmem>>>( \
     alpha_q, vq, vsc, vzr, cent, mask, idx, alpha_f, v_full, outp, \
-    K, OC, Lf, group_size, nh, nh_kv, Mcent, idx_bytes)
+    K, OC, Lf, group_size, nh, nh_kv, Mcent, Bcent, idx_bytes)
 
   if (bit == 4) {
     if (debug_mode == ABLATION_FULL) DISPATCH_V_ABLATION(4, ABLATION_FULL);

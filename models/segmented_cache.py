@@ -1778,6 +1778,30 @@ def select_value_precision_mask(
         return _topk_mask(score, k, tie_break=gain, largest=True)
 
 
+
+
+def _precision_compact_token_order(mask: torch.Tensor, *, select_high: bool) -> torch.Tensor:
+    if mask.dim() != 2:
+        raise ValueError(f"precision mask must be [B,T], got {tuple(mask.shape)}")
+    selected = mask.bool() if select_high else ~mask.bool()
+    counts = selected.sum(dim=1)
+    if counts.numel() and not torch.equal(counts, torch.full_like(counts, int(counts[0].item()))):
+        raise ValueError("legacy compact mixed-V requires equal V2/V4 counts per request")
+    count = int(counts[0].item()) if counts.numel() else 0
+    positions = torch.arange(mask.shape[1], dtype=torch.long, device=mask.device).unsqueeze(0).expand(mask.shape[0], -1)
+    sort_key = torch.where(selected, positions, positions + int(mask.shape[1]))
+    return torch.argsort(sort_key, dim=1)[:, :count].contiguous()
+
+
+def _gather_tokens_by_order(value: torch.Tensor, order: torch.Tensor) -> torch.Tensor:
+    if value.dim() == 4:
+        idx = order[:, None, :, None].expand(-1, value.shape[1], -1, value.shape[3])
+        return torch.gather(value, 2, idx).contiguous()
+    if value.dim() == 3:
+        idx = order[:, None, :].expand(-1, value.shape[1], -1)
+        return torch.gather(value, 2, idx).contiguous()
+    raise ValueError(f"expected token tensor rank 3 or 4, got {tuple(value.shape)}")
+
 def _cat_mixed_packed_v(
     cache: PatternQuantizedKVCache,
     v_adjusted: torch.Tensor,
@@ -1802,24 +1826,16 @@ def _cat_mixed_packed_v(
         chunk_pools = build_operator_ready_page_pools(chunk_page_cache)
         cache.operator_ready_page_pools = append_operator_ready_page_pools(getattr(cache, "operator_ready_page_pools", None), chunk_pools)
 
-        if v_adjusted.shape[0] != 1:
-            cache.v_precision_mask = _cat_v_precision_mask(cache, precision_mask.to(torch.uint8))
-            cache.packed_v_tokens += int(tokens)
-            cache.packed_v4_tokens += int(precision_mask.bool().sum().item())
-            if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
-                cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(tokens)
-            if torch.is_tensor(getattr(cache, "request_packed_v4_tokens", None)):
-                cache.request_packed_v4_tokens = cache.request_packed_v4_tokens.to(device=v_adjusted.device, dtype=torch.long) + precision_mask.bool().sum(dim=1).to(dtype=torch.long)
-            cache.pack_count_v += 1
-            return
-
-        mask = precision_mask[0].bool()
-        low = v_adjusted[:, :, ~mask, :].contiguous()
-        high = v_adjusted[:, :, mask, :].contiguous()
-        v2_pattern = v_pattern_mask[:, :, ~mask].to(torch.uint8).contiguous()
-        v2_idx = v_assignment_idx[:, :, ~mask].contiguous()
-        v4_pattern = v_pattern_mask[:, :, mask].to(torch.uint8).contiguous()
-        v4_idx = v_assignment_idx[:, :, mask].contiguous()
+        mask = precision_mask.bool()
+        low_order = _precision_compact_token_order(mask, select_high=False)
+        high_order = _precision_compact_token_order(mask, select_high=True)
+        low = _gather_tokens_by_order(v_adjusted, low_order)
+        high = _gather_tokens_by_order(v_adjusted, high_order)
+        v2_pattern = _gather_tokens_by_order(v_pattern_mask, low_order).to(torch.uint8).contiguous()
+        v2_idx = _gather_tokens_by_order(v_assignment_idx, low_order).contiguous()
+        v4_pattern = _gather_tokens_by_order(v_pattern_mask, high_order).to(torch.uint8).contiguous()
+        v4_idx = _gather_tokens_by_order(v_assignment_idx, high_order).contiguous()
+        v4_counts = mask.sum(dim=1).to(dtype=torch.long)
         if low.shape[2]:
             packed2, scale2, zero2 = quantize_pack_v_reference(low, cache.group_size, 2)
             if _capacity_cache_enabled(cache):
@@ -1860,10 +1876,15 @@ def _cat_mixed_packed_v(
         mask_u8 = precision_mask.to(torch.uint8)
         _cat_v_precision_mask(cache, mask_u8)
         cache.packed_v_tokens += int(tokens)
+        batch_size = int(v4_counts.numel())
+        if batch_size > 1 and not torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
+            cache.request_packed_v_tokens = torch.zeros(batch_size, dtype=torch.long, device=v_adjusted.device)
+        if batch_size > 1 and not torch.is_tensor(getattr(cache, "request_packed_v4_tokens", None)):
+            cache.request_packed_v4_tokens = torch.zeros(batch_size, dtype=torch.long, device=v_adjusted.device)
         if torch.is_tensor(getattr(cache, "request_packed_v_tokens", None)):
             cache.request_packed_v_tokens = cache.request_packed_v_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(tokens)
         if torch.is_tensor(getattr(cache, "request_packed_v4_tokens", None)):
-            cache.request_packed_v4_tokens = cache.request_packed_v4_tokens.to(device=v_adjusted.device, dtype=torch.long) + int(mask.sum().item())
+            cache.request_packed_v4_tokens = cache.request_packed_v4_tokens.to(device=v_adjusted.device, dtype=torch.long) + v4_counts.to(device=v_adjusted.device, dtype=torch.long)
         cache.pack_count_v += 1
 
 
@@ -1871,8 +1892,6 @@ def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
     if not isinstance(cache, PatternQuantizedKVCache) or cache.v_precision_mask is None:
         packed_v = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, cache.v_bits)
         return packed_v[:, :, : cache.packed_v_tokens, :].contiguous() if packed_v is not None else None
-    if cache.v_precision_mask.shape[0] != 1:
-        raise ValueError("mixed Value precision currently requires batch size 1")
     mask = cache.v_precision_mask[:, : cache.packed_v_tokens].bool()
     low = dequantize_v_reference(cache.packed_v, cache.packed_v_scale, cache.packed_v_zero, cache.group_size, 2)
     high = dequantize_v_reference(cache.packed_v4, cache.packed_v4_scale, cache.packed_v4_zero, cache.group_size, 4)
@@ -1881,9 +1900,11 @@ def reconstruct_packed_v(cache: QuantizedKVCache) -> torch.Tensor | None:
         return None
     out = torch.empty(template.shape[0], template.shape[1], cache.packed_v_tokens, template.shape[-1], dtype=template.dtype, device=template.device)
     if low is not None:
-        out[:, :, ~mask[0], :] = low[:, :, : int((~mask[0]).sum().item()), :]
+        low_order = _precision_compact_token_order(mask, select_high=False)
+        out.scatter_(2, low_order[:, None, :, None].expand(-1, out.shape[1], -1, out.shape[3]), low[:, :, : low_order.shape[1], :])
     if high is not None:
-        out[:, :, mask[0], :] = high[:, :, : int(mask[0].sum().item()), :]
+        high_order = _precision_compact_token_order(mask, select_high=True)
+        out.scatter_(2, high_order[:, None, :, None].expand(-1, out.shape[1], -1, out.shape[3]), high[:, :, : high_order.shape[1], :])
     return out.contiguous()
 
 
