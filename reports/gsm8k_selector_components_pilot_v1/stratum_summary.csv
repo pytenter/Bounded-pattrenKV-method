@@ -1,0 +1,7 @@
+method,stratum,planned,completed,correct,accuracy_completed,strict_accuracy,parse_success_rate,eos_count,length_count,oom_count,error_count,avg_input_tokens,avg_generated_tokens,median_generated_tokens,avg_tokens_per_second_record_mean,aggregate_tokens_per_second,avg_wall_time_seconds,max_peak_reserved_bytes
+importance_only_v4_25,LENGTH_PROXY_ACTIVATION_ENRICHED,25,25,5,20.0,20.0,100.0,17,8,0,0,113.68,1041.84,616,9.187076,8.90895,116.943068,17678991360
+importance_only_v4_25,UNIFORM_RANDOM,25,25,23,92.0,92.0,100.0,25,0,0,0,103.28,221.24,212,12.25724,11.896786,18.59662,17525899264
+error_only_v4_25,LENGTH_PROXY_ACTIVATION_ENRICHED,25,25,9,36.0,36.0,100.0,21,4,0,0,113.68,823.92,517,9.251088,8.802985,93.595528,17664311296
+error_only_v4_25,UNIFORM_RANDOM,25,25,22,88.0,88.0,100.0,25,0,0,0,103.28,218.52,212,11.331884,11.02591,19.818772,17525899264
+causal_v4_25,LENGTH_PROXY_ACTIVATION_ENRICHED,25,25,9,36.0,36.0,96.0,14,11,0,0,113.68,1261,1076,9.220768,9.005989,140.017932,17683185664
+causal_v4_25,UNIFORM_RANDOM,25,25,22,88.0,88.0,100.0,25,0,0,0,103.28,218.68,212,12.40878,12.050639,18.146756,17527996416

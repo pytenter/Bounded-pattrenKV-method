@@ -1,0 +1,4 @@
+method,method_label,selector,planned,completed,correct,accuracy_completed,strict_accuracy,parse_success_rate,eos_count,length_count,oom_count,error_count,avg_input_tokens,avg_generated_tokens,median_generated_tokens,avg_tokens_per_second_record_mean,aggregate_tokens_per_second,avg_wall_time_seconds,max_peak_reserved_bytes
+importance_only_v4_25,IMPORTANCE_ONLY_V4_25,importance_only_v4,50,50,28,56.0,56.0,100.0,42,8,0,0,108.48,631.54,319.0,10.722158,9.318894,67.769844,17678991360
+error_only_v4_25,ERROR_ONLY_V4_25,error_only_v4,50,50,31,62.0,62.0,100.0,46,4,0,0,108.48,521.22,289.5,10.291486,9.191434,56.70715,17664311296
+causal_v4_25,CAUSAL_V4_25,causal_v4,50,50,31,62.0,62.0,98.0,39,11,0,0,108.48,739.84,387.5,10.814774,9.355312,79.082344,17683185664

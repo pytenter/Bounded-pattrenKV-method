@@ -1,0 +1,5 @@
+{
+  "basis": "Matched 50-item pilot only; use paired accuracy/runtime signs to decide priority, not as paper evidence.",
+  "pilot_to_paper_claim_allowed": false,
+  "recommend_full_run": true
+}

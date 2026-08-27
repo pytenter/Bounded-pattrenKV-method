@@ -1,0 +1,53 @@
+{
+  "max_new_tokens": 2048,
+  "method": "causal_v4_25",
+  "pass": true,
+  "physical_gpus": [
+    "1",
+    "4"
+  ],
+  "problems": [
+    {
+      "hash_match": true,
+      "length_match": true,
+      "problem_id": 0,
+      "rows": [
+        {
+          "generated_tokens": 258,
+          "gpu": "gpu1",
+          "hash": "ab43e0352fde60c7",
+          "is_correct": true,
+          "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu1/causal_v4_25/p0000_f6547824af38e5e3.json"
+        },
+        {
+          "generated_tokens": 258,
+          "gpu": "gpu4",
+          "hash": "ab43e0352fde60c7",
+          "is_correct": true,
+          "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu4/causal_v4_25/p0000_f6547824af38e5e3.json"
+        }
+      ]
+    },
+    {
+      "hash_match": true,
+      "length_match": true,
+      "problem_id": 1,
+      "rows": [
+        {
+          "generated_tokens": 114,
+          "gpu": "gpu1",
+          "hash": "6c54b7f17b5139a0",
+          "is_correct": true,
+          "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu1/causal_v4_25/p0001_f6547824af38e5e3.json"
+        },
+        {
+          "generated_tokens": 114,
+          "gpu": "gpu4",
+          "hash": "6c54b7f17b5139a0",
+          "is_correct": true,
+          "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu4/causal_v4_25/p0001_f6547824af38e5e3.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+comparison,paired_n,both_correct,both_wrong,left_correct_right_wrong,left_wrong_right_correct,paired_accuracy_delta
+importance_only_v4_25_vs_causal_v4_25,50,24,15,4,7,-0.06
+error_only_v4_25_vs_causal_v4_25,50,27,15,4,4,0.0

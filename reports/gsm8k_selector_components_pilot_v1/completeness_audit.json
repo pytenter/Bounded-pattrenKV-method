@@ -1,0 +1,18 @@
+{
+  "expected_per_method": 50,
+  "methods": {
+    "causal_v4_25": {
+      "completed": 50,
+      "missing_problem_ids": []
+    },
+    "error_only_v4_25": {
+      "completed": 50,
+      "missing_problem_ids": []
+    },
+    "importance_only_v4_25": {
+      "completed": 50,
+      "missing_problem_ids": []
+    }
+  },
+  "pass": true
+}

@@ -1,0 +1,142 @@
+{
+  "complete": true,
+  "cross_gpu_check": {
+    "max_new_tokens": 2048,
+    "method": "causal_v4_25",
+    "pass": true,
+    "physical_gpus": [
+      "1",
+      "4"
+    ],
+    "problems": [
+      {
+        "hash_match": true,
+        "length_match": true,
+        "problem_id": 0,
+        "rows": [
+          {
+            "generated_tokens": 258,
+            "gpu": "gpu1",
+            "hash": "ab43e0352fde60c7",
+            "is_correct": true,
+            "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu1/causal_v4_25/p0000_f6547824af38e5e3.json"
+          },
+          {
+            "generated_tokens": 258,
+            "gpu": "gpu4",
+            "hash": "ab43e0352fde60c7",
+            "is_correct": true,
+            "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu4/causal_v4_25/p0000_f6547824af38e5e3.json"
+          }
+        ]
+      },
+      {
+        "hash_match": true,
+        "length_match": true,
+        "problem_id": 1,
+        "rows": [
+          {
+            "generated_tokens": 114,
+            "gpu": "gpu1",
+            "hash": "6c54b7f17b5139a0",
+            "is_correct": true,
+            "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu1/causal_v4_25/p0001_f6547824af38e5e3.json"
+          },
+          {
+            "generated_tokens": 114,
+            "gpu": "gpu4",
+            "hash": "6c54b7f17b5139a0",
+            "is_correct": true,
+            "path": "results/gsm8k_selector_components_pilot_v1/smoke/cross_gpu/gpu4/causal_v4_25/p0001_f6547824af38e5e3.json"
+          }
+        ]
+      }
+    ]
+  },
+  "cross_gpu_check_pass": true,
+  "experiment_id": "gsm8k_selector_components_pilot_v1",
+  "methods": {
+    "causal_v4_25": {
+      "accuracy_completed": 62.0,
+      "aggregate_tokens_per_second": 9.355312,
+      "avg_generated_tokens": 739.84,
+      "avg_input_tokens": 108.48,
+      "avg_tokens_per_second_record_mean": 10.814774,
+      "avg_wall_time_seconds": 79.082344,
+      "completed": 50,
+      "correct": 31,
+      "eos_count": 39,
+      "error_count": 0,
+      "length_count": 11,
+      "max_peak_reserved_bytes": 17683185664,
+      "median_generated_tokens": 387.5,
+      "oom_count": 0,
+      "parse_success_rate": 98.0,
+      "planned": 50,
+      "strict_accuracy": 62.0
+    },
+    "error_only_v4_25": {
+      "accuracy_completed": 62.0,
+      "aggregate_tokens_per_second": 9.191434,
+      "avg_generated_tokens": 521.22,
+      "avg_input_tokens": 108.48,
+      "avg_tokens_per_second_record_mean": 10.291486,
+      "avg_wall_time_seconds": 56.70715,
+      "completed": 50,
+      "correct": 31,
+      "eos_count": 46,
+      "error_count": 0,
+      "length_count": 4,
+      "max_peak_reserved_bytes": 17664311296,
+      "median_generated_tokens": 289.5,
+      "oom_count": 0,
+      "parse_success_rate": 100.0,
+      "planned": 50,
+      "strict_accuracy": 62.0
+    },
+    "importance_only_v4_25": {
+      "accuracy_completed": 56.0,
+      "aggregate_tokens_per_second": 9.318894,
+      "avg_generated_tokens": 631.54,
+      "avg_input_tokens": 108.48,
+      "avg_tokens_per_second_record_mean": 10.722158,
+      "avg_wall_time_seconds": 67.769844,
+      "completed": 50,
+      "correct": 28,
+      "eos_count": 42,
+      "error_count": 0,
+      "length_count": 8,
+      "max_peak_reserved_bytes": 17678991360,
+      "median_generated_tokens": 319.0,
+      "oom_count": 0,
+      "parse_success_rate": 100.0,
+      "planned": 50,
+      "strict_accuracy": 56.0
+    }
+  },
+  "no_method_errors": true,
+  "paired_vs_causal": [
+    {
+      "both_correct": 24,
+      "both_wrong": 15,
+      "comparison": "importance_only_v4_25_vs_causal_v4_25",
+      "left_correct_right_wrong": 4,
+      "left_wrong_right_correct": 7,
+      "paired_accuracy_delta": -0.06,
+      "paired_n": 50
+    },
+    {
+      "both_correct": 27,
+      "both_wrong": 15,
+      "comparison": "error_only_v4_25_vs_causal_v4_25",
+      "left_correct_right_wrong": 4,
+      "left_wrong_right_correct": 4,
+      "paired_accuracy_delta": 0.0,
+      "paired_n": 50
+    }
+  ],
+  "pass": true,
+  "pilot_to_paper_claim_allowed": false,
+  "same_50_problem_ids": true,
+  "smoke_excluded": true
+}

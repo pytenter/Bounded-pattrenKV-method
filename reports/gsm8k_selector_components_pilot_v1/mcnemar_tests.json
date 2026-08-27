@@ -1,0 +1,14 @@
+{
+  "error_only_v4_25": {
+    "discordant_left_only": 4,
+    "discordant_right_only": 4,
+    "exact_two_sided_p": 1.0,
+    "note": "Exploratory only; n=50 pilot is not a paper claim."
+  },
+  "importance_only_v4_25": {
+    "discordant_left_only": 4,
+    "discordant_right_only": 7,
+    "exact_two_sided_p": 0.54882812,
+    "note": "Exploratory only; n=50 pilot is not a paper claim."
+  }
+}

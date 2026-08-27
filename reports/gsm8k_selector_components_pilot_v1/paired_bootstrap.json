@@ -1,0 +1,22 @@
+{
+  "error_only_v4_25": {
+    "ci95": [
+      -0.12,
+      0.12
+    ],
+    "delta_mean": 0.0,
+    "draws": 10000,
+    "paired_n": 50,
+    "seed": 20260827
+  },
+  "importance_only_v4_25": {
+    "ci95": [
+      -0.18,
+      0.06
+    ],
+    "delta_mean": -0.06,
+    "draws": 10000,
+    "paired_n": 50,
+    "seed": 20260827
+  }
+}

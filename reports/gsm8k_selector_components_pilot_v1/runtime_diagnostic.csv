@@ -1,0 +1,4 @@
+method,avg_tokens_per_second,aggregate_tokens_per_second,avg_generated_tokens,avg_input_tokens,avg_wall_time_seconds
+importance_only_v4_25,10.722158,9.318894,631.54,108.48,67.769844
+error_only_v4_25,10.291486,9.191434,521.22,108.48,56.70715
+causal_v4_25,10.814774,9.355312,739.84,108.48,79.082344
