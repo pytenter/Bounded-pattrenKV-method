@@ -1,0 +1,8 @@
+{
+  "actual_model_class": "Qwen3ForCausalLM",
+  "collapse_detected": false,
+  "config_model_type": "qwen3",
+  "finite_parameter_check": true,
+  "generated_text_head": "<think>\nOkay, let's try to figure out this problem step by step. So, Aya walks 9 kilometers every morning and then stops at a coffee shop. The problem gives us two scenarios with different walking speeds and total times, including the time spent at the coffee shop. We need to find out how long",
+  "generated_tokens": 64
+}

@@ -1,0 +1,10 @@
+{
+  "cosine": 0.9999898672103882,
+  "gate": "PASS",
+  "got_top1": 3,
+  "max_abs_error": 0.0,
+  "mean_abs_error": 0.0,
+  "ref_top1": 3,
+  "tokens": 128,
+  "top1_equal": true
+}

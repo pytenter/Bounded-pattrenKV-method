@@ -1,0 +1,59 @@
+{
+  "records": [
+    {
+      "method": "PATTERN_BASE",
+      "problem_id": 0,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, let's try to figure out this problem step by step. So, Aya walks 9 kilometers every morning and then stops at a coffee shop. The problem gives us two different scenarios with different walking speeds and total times, including the time spent at the coffee shop. We need to find out how "
+    },
+    {
+      "method": "PATTERN_BASE",
+      "problem_id": 1,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, so I need to solve this geometry problem. Let me first try to understand what's given and what's being asked.\n\nWe have triangle ABC inscribed in a circle ω. The tangents at B and C to ω meet at point D. Then, the line AD intersects ω again at point P. We're given the lengths of the sid"
+    },
+    {
+      "method": "PATTERN_BASE",
+      "problem_id": 2,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, so I need to find the probability that a randomly colored regular octagon (with each vertex colored red or blue independently with equal chance) can be rotated so that all blue vertices end up on positions that were originally red. The answer should be in the form m/n where m and n are"
+    },
+    {
+      "method": "CAUSAL_V4_25",
+      "problem_id": 0,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, let's try to figure out this problem step by step. So, Aya walks 9 kilometers every morning and then stops at a coffee shop. The problem gives us two different scenarios with different walking speeds and total times, including the time spent at the coffee shop. We need to find out how "
+    },
+    {
+      "method": "CAUSAL_V4_25",
+      "problem_id": 1,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, so I need to solve this geometry problem. Let me first try to understand what's given and what's being asked.\n\nWe have triangle ABC inscribed in a circle ω. The tangents at B and C to ω meet at point D. Then, the line AD intersects ω again at point P. We're given the lengths of the sid"
+    },
+    {
+      "method": "CAUSAL_V4_25",
+      "problem_id": 2,
+      "base_seed": 42,
+      "error": null,
+      "tokens": 512,
+      "correct": false,
+      "text_head": "<think>\nOkay, so I need to find the probability that a randomly colored regular octagon (with each vertex colored red or blue independently with equal chance) can be rotated so that all blue vertices end up on positions that were originally red. The answer should be in the form m/n where m and n are"
+    }
+  ],
+  "gate": "PASS"
+}

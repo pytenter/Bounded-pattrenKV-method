@@ -1,0 +1,98 @@
+{
+  "dataset": "aime24",
+  "experiment": "qwen3_8b_aime24_quality_final_v1",
+  "methods": [
+    {
+      "accuracy": 0.7888888888888889,
+      "by_seed": {
+        "seed42": {
+          "accuracy": 0.8,
+          "correct": 24,
+          "flags": 0,
+          "scored": 30
+        },
+        "seed43": {
+          "accuracy": 0.8333333333333334,
+          "correct": 25,
+          "flags": 0,
+          "scored": 30
+        },
+        "seed44": {
+          "accuracy": 0.7333333333333333,
+          "correct": 22,
+          "flags": 0,
+          "scored": 30
+        }
+      },
+      "correct": 71,
+      "flags": 0,
+      "latest": "2026-08-29 00:47:30 +0800",
+      "method": "FP16",
+      "parse_errors": 0,
+      "result_dir": "results/qwen3_8b_aime24_native_generalization_v1/formal/FP16",
+      "scored": 90
+    },
+    {
+      "accuracy": 0.7,
+      "by_seed": {
+        "seed42": {
+          "accuracy": 0.6666666666666666,
+          "correct": 20,
+          "flags": 0,
+          "scored": 30
+        },
+        "seed43": {
+          "accuracy": 0.7333333333333333,
+          "correct": 22,
+          "flags": 1,
+          "scored": 30
+        },
+        "seed44": {
+          "accuracy": 0.7,
+          "correct": 21,
+          "flags": 1,
+          "scored": 30
+        }
+      },
+      "correct": 63,
+      "flags": 2,
+      "latest": "2026-08-27 23:05:32 +0800",
+      "method": "CAUSAL_V4_25",
+      "parse_errors": 0,
+      "result_dir": "results/qwen3_8b_aime24_native_generalization_v1/formal/CAUSAL_V4_25",
+      "scored": 90
+    },
+    {
+      "accuracy": 0.6111111111111112,
+      "by_seed": {
+        "seed42": {
+          "accuracy": 0.5666666666666667,
+          "correct": 17,
+          "flags": 0,
+          "scored": 30
+        },
+        "seed43": {
+          "accuracy": 0.6666666666666666,
+          "correct": 20,
+          "flags": 1,
+          "scored": 30
+        },
+        "seed44": {
+          "accuracy": 0.6,
+          "correct": 18,
+          "flags": 1,
+          "scored": 30
+        }
+      },
+      "correct": 55,
+      "flags": 2,
+      "latest": "2026-08-28 19:55:12 +0800",
+      "method": "PATTERNKV_PAPER",
+      "parse_errors": 0,
+      "result_dir": "results/qwen3_8b_aime24_patternkv_paper_v1/formal/PATTERNKV_PAPER",
+      "scored": 90
+    }
+  ],
+  "model": "Qwen3-8B",
+  "note": "Current Qwen3 AIME24 PATTERN_BASE formal/smoke result data intentionally removed; retained methods are FP16, CAUSAL_V4_25, and PATTERNKV_PAPER."
+}

@@ -1,0 +1,56 @@
+{
+  "FORMAL_CAP_SMOKE_GATE": "PASS",
+  "FULL_FORMAL_UNLOCKED": true,
+  "causal_pass": true,
+  "checks": {
+    "CAUSAL_V4_25": {
+      "attention_class": "Qwen3Attention_PatternKV",
+      "backend_class": "Qwen3ForCausalLM_PatternKV",
+      "cache_nonempty": true,
+      "contains_llama_class": false,
+      "correct": true,
+      "generated_text_head": "<think>\nOkay, let's try to figure out this problem step by step. So, Aya walks 9 kilometers every morning and then stops at a coffee shop. The problem gives us two different scenarios with different walking speeds and total times, including the time spent at the coffee shop. We need to find out how long the walk takes her when she walks at a speed of s + 1/2 km/h, including the time at the coffee shop.\n\nFirst, let me parse the information given. \n\nIn the first scenario, when Aya walks at a constant speed of s km/h, the total time taken is 4 hours, which includes t minutes spent at the coffee s",
+      "generated_tokens": 4644,
+      "k_bits": 2,
+      "max_packed_history_tokens": 4608,
+      "method_config_hash": "20326a8336800ff3b46ba66a0d5ce062a971da91d5a565b1e95556f261b306b8",
+      "model_type": "qwen3",
+      "path": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/qwen3_8b_aime24_native_generalization_v1/smoke/formal_cap/CAUSAL_V4_25/seed42/p00.json",
+      "prompt_protocol": "qwen3_native_thinking_v1",
+      "readable_nonempty": true,
+      "runtime_error": null,
+      "selector": "causal_v4",
+      "stop_reason": "eos",
+      "v4_budget_fraction": 0.25,
+      "v_bits": 2
+    },
+    "PATTERN_BASE": {
+      "attention_class": "Qwen3Attention_PatternKV",
+      "backend_class": "Qwen3ForCausalLM_PatternKV",
+      "cache_nonempty": true,
+      "contains_llama_class": false,
+      "correct": true,
+      "generated_text_head": "<think>\nOkay, let's try to figure out this problem step by step. So, Aya walks 9 kilometers every morning and then stops at a coffee shop. The problem gives us two different scenarios with different walking speeds and total times, including the time spent at the coffee shop. We need to find out how long the walk takes her when she walks at a speed of s + 1/2 km/h, including the time at the coffee shop.\n\nFirst, let me parse the information given. \n\nIn the first scenario, when Aya walks at a constant speed of s km/h, the total time taken for the walk, including t minutes in the coffee shop, is 4",
+      "generated_tokens": 4468,
+      "k_bits": 2,
+      "max_packed_history_tokens": 4352,
+      "method_config_hash": "cfdf9c18e51f0755fa7279094ec4d131b09cd055ba474fb33f28512c5dcdc723",
+      "model_type": "qwen3",
+      "path": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/results/qwen3_8b_aime24_native_generalization_v1/smoke/formal_cap/PATTERN_BASE/seed42/p00.json",
+      "prompt_protocol": "qwen3_native_thinking_v1",
+      "readable_nonempty": true,
+      "runtime_error": null,
+      "selector": "base_v2",
+      "stop_reason": "eos",
+      "v4_budget_fraction": 0.0,
+      "v_bits": 2
+    }
+  },
+  "git_head": "8c18222badd58bb37b836bb733dfb8e8c5abe20e",
+  "method_identity": {
+    "causal_complete_eligible_window": "32 V4 / 96 V2 verified in fixed identity preflight",
+    "pattern_selected_v4_count": "0 by base_v2 selector/method config",
+    "runtime_cache_stats_present": true
+  },
+  "pattern_pass": true
+}

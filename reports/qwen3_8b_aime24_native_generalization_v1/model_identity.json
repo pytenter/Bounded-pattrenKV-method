@@ -1,0 +1,49 @@
+{
+  "absolute_model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "architectures": [
+    "Qwen3ForCausalLM"
+  ],
+  "chat_template_hash": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+  "config_json_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+  "created_at": "2026-08-26 13:38:15 +0800",
+  "cuda_runtime": "11.8",
+  "generation_config_json_sha256": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+  "git_head": "8c18222badd58bb37b836bb733dfb8e8c5abe20e",
+  "head_dim": 128,
+  "hidden_size": 4096,
+  "max_position_embeddings": 40960,
+  "model_directory_basename": "Qwen3-8B",
+  "model_type": "qwen3",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 36,
+  "num_key_value_heads": 8,
+  "rope_scaling": null,
+  "safetensors_index_sha256": "f9fdbcb91c23971c13ec5d5f2573d2349e8f61f2f049371ec699281748fdb1bc",
+  "tokenizer_config_json_sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+  "torch_dtype": "torch.bfloat16",
+  "torch_version": "2.4.1+cu118",
+  "transformers_version": "4.51.0",
+  "vocab_size": 151936,
+  "weight_shards": [
+    {
+      "name": "model-00001-of-00005.safetensors",
+      "size": 3996250744
+    },
+    {
+      "name": "model-00002-of-00005.safetensors",
+      "size": 3993160032
+    },
+    {
+      "name": "model-00003-of-00005.safetensors",
+      "size": 3959604768
+    },
+    {
+      "name": "model-00004-of-00005.safetensors",
+      "size": 3187841392
+    },
+    {
+      "name": "model-00005-of-00005.safetensors",
+      "size": 1244659840
+    }
+  ]
+}

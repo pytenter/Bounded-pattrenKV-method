@@ -1,0 +1,10 @@
+{
+  "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+  "enable_thinking_resolved": false,
+  "enable_thinking_supported": false,
+  "input_token_hash": "94575da1eadd244c539d82d810248b5e75e54a5a7cbf540be7c1fc178200dafa",
+  "prompt_protocol": "qwen3_native_thinking_v1",
+  "raw_user_message": "Every morning Aya goes for a $9$-kilometer-long walk and stops at a coffee shop afterwards. When she walks at a constant speed of $s$ kilometers per hour, the walk takes her 4 hours, including $t$ minutes spent in the coffee shop. When she walks $s+2$ kilometers per hour, the walk takes her 2 hours and 24 minutes, including $t$ minutes spent in the coffee shop. Suppose Aya walks at $s+\\frac{1}{2}$ kilometers per hour. Find the number of minutes the walk takes her, including the $t$ minutes spent in the coffee shop.\n\nPlease reason step by step, and put your final answer within \\boxed{}.",
+  "rendered_prompt": "<|im_start|>user\nEvery morning Aya goes for a $9$-kilometer-long walk and stops at a coffee shop afterwards. When she walks at a constant speed of $s$ kilometers per hour, the walk takes her 4 hours, including $t$ minutes spent in the coffee shop. When she walks $s+2$ kilometers per hour, the walk takes her 2 hours and 24 minutes, including $t$ minutes spent in the coffee shop. Suppose Aya walks at $s+\\frac{1}{2}$ kilometers per hour. Find the number of minutes the walk takes her, including the $t$ minutes spent in the coffee shop.\n\nPlease reason step by step, and put your final answer within \\boxed{}.<|im_end|>\n<|im_start|>assistant\n",
+  "rendered_prompt_sha256": "15ab2d3075cd704acdf1159c8bc53a93983c3ab2d1a4dbd1f1dfc503c8a59623"
+}

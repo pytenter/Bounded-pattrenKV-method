@@ -1,0 +1,10 @@
+{
+  "branch": "sys/causal-v4-25-kernel-v1",
+  "dataset_path": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method/datasets/aime/aime24.jsonl",
+  "dataset_sha256": "07ec3f0c489406676be9d6057e2f97c9c32bc18e856d13df1d05c76724cbb08f",
+  "dirty_worktree": " M reports/quant_unit_test.md\n M results/quant_unit_test.json\n?? .tmp_qwen3_src/\n?? artifacts/invalid_runs/\n?? bench/bench_aime24_qwen3_generalization.py\n?? models/qwen3_patternkv.py\n?? reports/aime24_kivi_paper_g128_quality_v100/\n?? reports/aime24_qwen3_8b_causal_v4_25_generalization_v100/\n?? reports/aime25_full_causal25_quality_summary/\n?? reports/aime25_full_causal25_quality_v100/\n?? reports/aime25_kivi_paper_g128_quality_v100/\n?? reports/qwen3_8b_aime24_native_generalization_v1/\n?? scripts/launch_qwen3_aime24_pattern_causal_4v100.sh\n?? scripts/qwen3_native_preflight.py\n?? scripts/run_aime24_aime25_quality_auto.py\n?? scripts/run_aime24_qwen3_8b_causal_v4_25_generalization_v100.py\n?? scripts/run_aime25_full_causal25_quality_v100.py\n?? scripts/run_aime25_patternkv_gpu0_3_handoff.py\n?? scripts/run_aime_kivi_paper_g128_quality_v100.py\n?? scripts/wait_kivi_then_run_aime25_pattern_gpu0.py\n?? scripts/watch_qwen3_aime24_pattern_causal_status.sh\n?? tests/test_aime_quality_autostart.py\n?? vendor/\n",
+  "git_head": "8c18222badd58bb37b836bb733dfb8e8c5abe20e",
+  "gpu_query": "0, GPU-58dbb776-4c54-7f96-dd35-e3906245f307, Tesla V100-SXM2-32GB, 32768\n1, GPU-d810b116-fec0-9d27-1f8a-2445b44352c8, Tesla V100-SXM2-32GB, 32768\n2, GPU-44f231fb-b846-27e6-2e03-2065fb9aebb2, Tesla V100-SXM2-32GB, 32768\n3, GPU-b9e76e6d-2dd3-d533-c5e4-5690cb4970c0, Tesla V100-SXM2-32GB, 32768\n",
+  "model_path": "/home/qinch2023/modelscope_models/Qwen3-8B",
+  "repository_path": "/home/qinch2023/v100_aime24_aime25_quality_work/Bounded-pattrenKV-method"
+}
