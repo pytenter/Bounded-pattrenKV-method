@@ -1,98 +1,190 @@
 {
-  "dataset": "aime24",
   "experiment": "qwen3_8b_aime24_quality_final_v1",
-  "methods": [
-    {
-      "accuracy": 0.7888888888888889,
-      "by_seed": {
-        "seed42": {
-          "accuracy": 0.8,
-          "correct": 24,
-          "flags": 0,
-          "scored": 30
-        },
-        "seed43": {
-          "accuracy": 0.8333333333333334,
-          "correct": 25,
-          "flags": 0,
-          "scored": 30
-        },
-        "seed44": {
-          "accuracy": 0.7333333333333333,
-          "correct": 22,
-          "flags": 0,
-          "scored": 30
-        }
-      },
-      "correct": 71,
-      "flags": 0,
-      "latest": "2026-08-29 00:47:30 +0800",
-      "method": "FP16",
-      "parse_errors": 0,
-      "result_dir": "results/qwen3_8b_aime24_native_generalization_v1/formal/FP16",
-      "scored": 90
-    },
-    {
+  "methods": {
+    "CAUSAL_V4_25": {
       "accuracy": 0.7,
       "by_seed": {
         "seed42": {
-          "accuracy": 0.6666666666666666,
+          "accuracy": 0.666667,
           "correct": 20,
+          "done": 30,
+          "expected": 30,
           "flags": 0,
-          "scored": 30
+          "length_stop": 3,
+          "runtime_errors": 0
         },
         "seed43": {
-          "accuracy": 0.7333333333333333,
+          "accuracy": 0.733333,
           "correct": 22,
+          "done": 30,
+          "expected": 30,
           "flags": 1,
-          "scored": 30
+          "length_stop": 4,
+          "runtime_errors": 0
         },
         "seed44": {
           "accuracy": 0.7,
           "correct": 21,
+          "done": 30,
+          "expected": 30,
           "flags": 1,
-          "scored": 30
+          "length_stop": 2,
+          "runtime_errors": 0
         }
       },
       "correct": 63,
+      "done": 90,
+      "expected": 90,
       "flags": 2,
-      "latest": "2026-08-27 23:05:32 +0800",
-      "method": "CAUSAL_V4_25",
-      "parse_errors": 0,
-      "result_dir": "results/qwen3_8b_aime24_native_generalization_v1/formal/CAUSAL_V4_25",
-      "scored": 90
+      "latest": {
+        "base_seed": 44,
+        "is_correct": false,
+        "path": "results/qwen3_8b_aime24_native_generalization_v1/formal/CAUSAL_V4_25/seed44/p29.json",
+        "problem_id": 29,
+        "time": "2026-08-27 23:05:32 +0800"
+      },
+      "length_stop": 9,
+      "runtime_errors": 0
     },
-    {
-      "accuracy": 0.6111111111111112,
+    "FP16": {
+      "accuracy": 0.788889,
       "by_seed": {
         "seed42": {
-          "accuracy": 0.5666666666666667,
-          "correct": 17,
+          "accuracy": 0.8,
+          "correct": 24,
+          "done": 30,
+          "expected": 30,
           "flags": 0,
-          "scored": 30
+          "length_stop": 1,
+          "runtime_errors": 0
         },
         "seed43": {
-          "accuracy": 0.6666666666666666,
-          "correct": 20,
+          "accuracy": 0.833333,
+          "correct": 25,
+          "done": 30,
+          "expected": 30,
+          "flags": 0,
+          "length_stop": 0,
+          "runtime_errors": 0
+        },
+        "seed44": {
+          "accuracy": 0.733333,
+          "correct": 22,
+          "done": 30,
+          "expected": 30,
+          "flags": 0,
+          "length_stop": 2,
+          "runtime_errors": 0
+        }
+      },
+      "correct": 71,
+      "done": 90,
+      "expected": 90,
+      "flags": 0,
+      "latest": {
+        "base_seed": 44,
+        "is_correct": false,
+        "path": "results/qwen3_8b_aime24_native_generalization_v1/formal/FP16/seed44/p28.json",
+        "problem_id": 28,
+        "time": "2026-08-29 00:47:30 +0800"
+      },
+      "length_stop": 3,
+      "runtime_errors": 0
+    },
+    "KIVI_PAPER_G128": {
+      "accuracy": 0.588889,
+      "by_seed": {
+        "seed42": {
+          "accuracy": 0.566667,
+          "correct": 17,
+          "done": 30,
+          "expected": 30,
+          "flags": 0,
+          "length_stop": 3,
+          "runtime_errors": 0
+        },
+        "seed43": {
+          "accuracy": 0.533333,
+          "correct": 16,
+          "done": 30,
+          "expected": 30,
           "flags": 1,
-          "scored": 30
+          "length_stop": 4,
+          "runtime_errors": 0
+        },
+        "seed44": {
+          "accuracy": 0.666667,
+          "correct": 20,
+          "done": 30,
+          "expected": 30,
+          "flags": 1,
+          "length_stop": 4,
+          "runtime_errors": 0
+        }
+      },
+      "correct": 53,
+      "done": 90,
+      "expected": 90,
+      "flags": 2,
+      "latest": {
+        "base_seed": 44,
+        "is_correct": false,
+        "path": "results/qwen3_8b_aime24_native_generalization_v1/formal/KIVI_PAPER_G128/seed44/p29.json",
+        "problem_id": 29,
+        "time": "2026-08-29 18:53:36 +0800"
+      },
+      "length_stop": 11,
+      "runtime_errors": 0
+    },
+    "PATTERNKV_PAPER": {
+      "accuracy": 0.611111,
+      "by_seed": {
+        "seed42": {
+          "accuracy": 0.566667,
+          "correct": 17,
+          "done": 30,
+          "expected": 30,
+          "flags": 0,
+          "length_stop": 2,
+          "runtime_errors": 0
+        },
+        "seed43": {
+          "accuracy": 0.666667,
+          "correct": 20,
+          "done": 30,
+          "expected": 30,
+          "flags": 1,
+          "length_stop": 4,
+          "runtime_errors": 0
         },
         "seed44": {
           "accuracy": 0.6,
           "correct": 18,
+          "done": 30,
+          "expected": 30,
           "flags": 1,
-          "scored": 30
+          "length_stop": 2,
+          "runtime_errors": 0
         }
       },
       "correct": 55,
+      "done": 90,
+      "expected": 90,
       "flags": 2,
-      "latest": "2026-08-28 19:55:12 +0800",
-      "method": "PATTERNKV_PAPER",
-      "parse_errors": 0,
-      "result_dir": "results/qwen3_8b_aime24_patternkv_paper_v1/formal/PATTERNKV_PAPER",
-      "scored": 90
+      "latest": {
+        "base_seed": 43,
+        "is_correct": false,
+        "path": "results/qwen3_8b_aime24_patternkv_paper_v1/formal/PATTERNKV_PAPER/seed43/p28.json",
+        "problem_id": 28,
+        "time": "2026-08-28 19:55:12 +0800"
+      },
+      "length_stop": 8,
+      "runtime_errors": 0
     }
+  },
+  "notes": [
+    "Current-run PATTERN_BASE artifacts are intentionally excluded.",
+    "KIVI_PAPER_G128 uses Qwen3ForCausalLM_KIVI with K/V INT2, group_size=128, residual_length=128, recent_length=128, sink_length=0."
   ],
-  "model": "Qwen3-8B",
-  "note": "Current Qwen3 AIME24 PATTERN_BASE formal/smoke result data intentionally removed; retained methods are FP16, CAUSAL_V4_25, and PATTERNKV_PAPER."
+  "updated_at": "2026-08-29 18:57:08 +0800"
 }

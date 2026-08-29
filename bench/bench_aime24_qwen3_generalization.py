@@ -14,6 +14,7 @@ import torch
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 from bench.aime_answer_parser import normalize_aime_answer, parse_aime_answer
 from models.qwen3_patternkv import Qwen3ForCausalLM_PatternKV, collect_qwen3_patternkv_dynamic_stats
+from models.qwen3_kivi import Qwen3ForCausalLM_KIVI, collect_qwen3_kivi_dynamic_stats
 
 EXP='qwen3_8b_aime24_native_generalization_v1'
 MODEL_PATH=Path('/home/qinch2023/modelscope_models/Qwen3-8B')
@@ -26,6 +27,7 @@ METHODS={
  'FP16': {},
  'PATTERN_BASE': {'patternkv_v_precision_selector':'base_v2','patternkv_v4_budget_fraction':0.0},
  'CAUSAL_V4_25': {'patternkv_v_precision_selector':'causal_v4','patternkv_v4_budget_fraction':0.25},
+ 'KIVI_PAPER_G128': {'k_bits':2,'v_bits':2,'group_size':128,'sink_length':0,'recent_length':128,'residual_length':128,'kivi_cache_mode':'segmented_rolling'},
 }
 BASE_CFG=dict(k_bits=2,v_bits=2,group_size=128,sink_length=16,recent_length=128,residual_length=128,num_k_base=32,num_v_base=32,patternkv_cache_mode='segmented_rolling',patternkv_value_objective='base',patternkv_random_selector_seed=20260809)
 GEN_CFG=dict(do_sample=True,temperature=0.6,top_p=0.95,max_new_tokens=32768,repetition_penalty=1.0,num_return_sequences=1,use_cache=True)
@@ -53,12 +55,18 @@ def configure(method:str, taskkey:str):
     if method != 'FP16':
         for k,v in BASE_CFG.items(): setattr(cfg,k,v)
         for k,v in METHODS[method].items(): setattr(cfg,k,v)
-        setattr(cfg,'patternkv_selector_task_key',taskkey)
+        if method != 'KIVI_PAPER_G128':
+            setattr(cfg,'patternkv_selector_task_key',taskkey)
     return cfg
 
 def load_model(method:str, taskkey:str):
     cfg=configure(method, taskkey)
-    cls = AutoModelForCausalLM if method == 'FP16' else Qwen3ForCausalLM_PatternKV
+    if method == 'FP16':
+        cls = AutoModelForCausalLM
+    elif method == 'KIVI_PAPER_G128':
+        cls = Qwen3ForCausalLM_KIVI
+    else:
+        cls = Qwen3ForCausalLM_PatternKV
     model=cls.from_pretrained(str(MODEL_PATH), local_files_only=True, trust_remote_code=False, config=cfg, torch_dtype=torch.float16, low_cpu_mem_usage=True).to('cuda:0')
     model.eval(); return model
 
@@ -75,8 +83,15 @@ def run_one(method:str, row:dict, base_seed:int, max_new_tokens:int|None=None, p
         with torch.no_grad(): out=model.generate(**enc, **gen, return_dict_in_generate=True, output_scores=False, pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id)
         torch.cuda.synchronize(); seq=out.sequences; gids=seq[0,enc.input_ids.shape[1]:].detach().cpu().tolist(); text=tok.decode(gids,skip_special_tokens=True)
         parsed=parse_aime_answer(text); ref=normalize_aime_answer(row['answer']); correct=parsed['parsed_answer']==ref; stop='length' if len(gids)>=gen['max_new_tokens'] else 'eos'
-        stats={} if method == 'FP16' else collect_qwen3_patternkv_dynamic_stats(model, out.past_key_values)
-        method_cfg={} if method == 'FP16' else {**BASE_CFG,**METHODS[method]}
+        if method == 'FP16':
+            stats = {}
+            method_cfg = {}
+        elif method == 'KIVI_PAPER_G128':
+            stats = collect_qwen3_kivi_dynamic_stats(model, out.past_key_values)
+            method_cfg = {**BASE_CFG, **METHODS[method]}
+        else:
+            stats = collect_qwen3_patternkv_dynamic_stats(model, out.past_key_values)
+            method_cfg = {**BASE_CFG, **METHODS[method]}
         rec={'experiment_id':EXP,'phase':phase,'dataset':'aime24','dataset_sha256':sha(DATASET.read_bytes()),'model_path':str(MODEL_PATH),'model_name':MODEL_PATH.name,'model_type':'qwen3','model_architecture':'Qwen3ForCausalLM','backend_class':model.__class__.__name__,'attention_class':model.model.layers[0].self_attn.__class__.__name__,'method':method,'display_method':method,'method_config':method_cfg,'method_config_hash':stable(method_cfg),'problem_id':pid,'base_seed':base_seed,'sample_id':0,'effective_seed':seed,'task_key':tid,'prompt_protocol':'qwen3_native_thinking_v1','rendered_prompt':prompt,'prompt_hash':stable({'prompt':prompt}),'input_token_hash':stable(enc.input_ids.detach().cpu().tolist()),'generation_config':gen,'generation_config_hash':stable(gen),'generated_text':text,'generated_token_hash':stable(gids),'generated_tokens':len(gids),'parsed_answer':parsed['parsed_answer'],'reference_answer':ref,'is_correct':correct,'parser_strategy':parsed['parser_strategy'],'parser_error':parsed['parser_error'],'stop_reason':stop,'wall_time_seconds':round(time.perf_counter()-t0,4),'gpu_physical_id':os.environ.get('CUDA_VISIBLE_DEVICES'),'git_commit':os.popen('git rev-parse HEAD').read().strip(),'timestamp':time.strftime('%Y-%m-%d %H:%M:%S %z'),'cache_statistics':stats}
     except Exception as e:
         rec={'experiment_id':EXP,'phase':phase,'method':method,'problem_id':pid,'base_seed':base_seed,'task_key':tid,'runtime_error':repr(e),'traceback':traceback.format_exc(),'timestamp':time.strftime('%Y-%m-%d %H:%M:%S %z')}
@@ -113,7 +128,7 @@ def status():
                 if fp.exists():
                     done+=1; rec=json.loads(fp.read_text()); correct+=int(bool(rec.get('is_correct'))); err+=int('runtime_error' in rec)
         payload[m]={'done':done,'expected':90,'correct':correct,'errors':err,'accuracy':correct/done if done else None}; total+=done
-    payload['TOTAL']={'done':total,'expected':180}
+    payload['TOTAL']={'done':total,'expected':90*len(METHODS)}
     print(json.dumps(payload,indent=2,sort_keys=True))
 
 def main():
